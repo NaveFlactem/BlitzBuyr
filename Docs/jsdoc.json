@@ -1,0 +1,10 @@
+{
+  "source": {
+    "include": ["./Backend", "./Frontend"],
+    "exclude": ["node_modules/"]
+  },
+  "opts": {
+    "destination": "./Docs",
+    "readme": "./Docs/index.md"
+  }
+}
