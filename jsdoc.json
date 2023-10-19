@@ -5,6 +5,6 @@
   },
   "opts": {
     "destination": "./Docs",
-    "readme": "./Docs/index.md"
+    "readme": "./index.md"
   }
 }
