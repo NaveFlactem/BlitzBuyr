@@ -3,13 +3,15 @@
  * @module Server
  */
 
-// server setup
+// Server setup
 var express = require("express");
+const bodyParser = require("body-parser"); // might need this later
+app.use(express.json());
 var app = express();
 var path = require("path");
 
-// Serve static files from the 'out' directory (JSDocs)
-app.use('/docs', express.static(path.join(__dirname, "../docs")));
+// Serve static files from the docs directory
+app.use("/docs", express.static(path.join(__dirname, "../docs")));
 
 // Database setup
 const { Client } = require("pg");
@@ -38,9 +40,10 @@ connectToDatabase();
  * GET request endpoint at the root which will load up the docs homepage
  * @function
  * @name getRoot
- * @param {Request} req - The request that is received.
- * @param {Response} res - The response to return.
+ * @param {Object} req - Received express.js request object.
+ * @param {Object} res - To be sent back express.js response object.
  * @throws {500} - Internal Server Error
+ * @returns {void}
  */
 app.get("/", function (req, res) {
   res.redirect("docs/index.html");
@@ -50,10 +53,10 @@ app.get("/", function (req, res) {
  * GET request endpoint at /accounts for retrieving a list of accounts.
  * @function
  * @name getAccounts
- * @param {Request} req - The request that is received.
- * @param {Response} res - The response to return.
+ * @param {Object} req - Received express.js request object.
+ * @param {Object} res - To be sent back express.js response object.
+ * @throws {500} - Internal Server Error in case of database querying error.
  * @returns {JSON} - JSON List of accounts in the database
- * @throws {500} - Internal Server Error
  */
 app.get("/accounts", function (req, res) {
   // Query the database for a list of accounts
@@ -61,11 +64,97 @@ app.get("/accounts", function (req, res) {
     .query("SELECT * FROM Accounts")
     .then((result) => {
       console.log(result.rows);
-      res.send(result.rows);
+      return res.status(200).json({ Accounts: result.rows });
     })
     .catch((error) => {
       console.error("Error querying the database:", error);
-      res.status(500).send("Internal Server Error");
+      return res.status(500).json({ error: "Internal Server Error" });
+    });
+});
+
+/**
+ * Handles login requests and performs authentication
+ * @name handleLoginRequest
+ * @function
+ * @param {Object} req - Received express.js request object.
+ * @param {Object} res - To be sent back express.js response object.
+ * @throws {500} - Internal Server Error in case of database querying error.
+ * @returns {JSON} - Returns respective login response as JSON object.
+ * @example
+ * // Sample HTTP POST request to '/login'
+ * // Request body should contain a JSON object with 'username' and 'password' fields.
+ * // If authentication is successful, it will respond with a success message.
+ * // If authentication fails (username not found or incorrect password), it will respond with an error message.
+ */
+app.post("/login", function (req, res) {
+  const { username, password } = req.body;
+
+  client
+    .query("SELECT * FROM Accounts WHERE Username = '" + username + "'")
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return res.status(401).json({ error: "Username not found" }); // 401 = Unauthorized
+      }
+
+      if (password === result.rows[0].password) {
+        return res.status(200).json({ message: "Login successful" });
+      } else {
+        return res.status(401).json({ error: "Incorrect password" });
+      }
+    })
+    .catch((error) => {
+      console.error("Error querying the database:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    });
+});
+
+/**
+ * Handle user registration requests and account creation.
+ * @name handleRegistrationRequest
+ * @function
+ * @param {Object} req - Received express.js request object.
+ * @param {Object} res - To be sent back express.js response object.
+ * @throws {500} - Internal Server Error in case of database querying error.
+ * @returns {JSON} - Returns respective login response as JSON object.
+ * @example
+ * // Sample HTTP POST request to '/register'
+ * // Request body should contain a JSON object with 'username' and 'password' fields.
+ * // If the username is available, it will create a new account and respond with a success message.
+ * // If the username is already taken, it will respond with a 409 Conflict status code.
+ */
+app.post("/register", function (req, res) {
+  const { username, password } = req.body;
+
+  client
+    .query("SELECT Username FROM Accounts WHERE Username = $1", [username])
+    .then((result) => {
+      if (result.rows.length > 0) {
+        return res.status(409).json({ error: "Username already exists" }); // 409 = Conflict
+      } else {
+        // WIP: Consider hashing and/or salting the password for security.
+        client
+          .query(
+            "INSERT INTO Accounts (Username, Password) VALUES ($1, $2) RETURNING Username", // consider adding email?
+            [username, password]
+          )
+          .then((result) => {
+            // WIP: Consider adding constraints to the password (such as checking that it's strong enough with length, characters, etc.)
+            return res
+              .status(201)
+              .json({
+                message: "Account created",
+                username: result.rows[0].username,
+              });
+          })
+          .catch((error) => {
+            console.error("Error registering the account:", error);
+            return res.status(500).json({ error: "Internal Server Error" });
+          });
+      }
+    })
+    .catch((error) => {
+      console.error("Error checking username availability:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
     });
 });
 
