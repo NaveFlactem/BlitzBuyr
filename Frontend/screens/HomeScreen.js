@@ -7,7 +7,8 @@ const HomeScreen = () => {
 
     return (
         <View>
-            <Text>Listing Home Screen</Text>
+            <Text>Home Screen</Text>
+            
         </View>
     );
 }
