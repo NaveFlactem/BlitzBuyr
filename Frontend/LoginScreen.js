@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 const LoginScreen = () => {
     const navigation = useNavigation(); // Get the navigation object
@@ -11,7 +12,31 @@ const LoginScreen = () => {
   
     const handleLogin = () => {
       // You can add your login logic here. For this example, we'll just set loggedIn to true.
-      setLoggedIn(true);
+      const loginData = {
+        username: username, // Get the username from the input field
+        password: password, // Get the password from the input field
+      };
+    
+      axios
+        .post('/login', loginData)
+        .then((response) => {
+          // Authentication successful, handle the response as needed
+          // For example, you can navigate to the user's profile or a dashboard page
+          // or store user information in the app's state
+          console.log('Login successful', response.data);
+          setLoggedIn(true);
+        })
+        .catch((error) => {
+          // Handle authentication error, e.g., incorrect username or password
+          if (error.response && error.response.status === 401) {
+            Alert.alert('Authentication failed. Please check your username and password.');
+            // You can display an error message to the user
+          } else {
+            // Handle other errors (e.g., server not reachable)
+            Alert.alert('Login failed. Please try again later.');
+            // You can display an error message to the user
+          }
+        });
     };
   
     const handleCreateAccount = () => {
@@ -20,12 +45,12 @@ const LoginScreen = () => {
     };
     
     return (
-        <View style={styles.container}>
+      <View style={styles.container}>
         {loggedIn ? (
-          <Text>Welcome, {username}!</Text>
+          <Text style={styles.welcomeText}>Welcome, {username}!</Text>
         ) : (
           <View style={styles.loginContainer}>
-            <Text>Login</Text>
+            <Text style={styles.loginText}>Login</Text>
             <TextInput
               style={styles.input}
               placeholder="Username"
@@ -57,6 +82,24 @@ const LoginScreen = () => {
     loginContainer: {
       alignItems: 'center',
       justifyContent: 'center',
+      backgroundColor: '#f0f0f0',
+      padding: 20,
+      borderRadius: 10,
+      shadowColor: 'rgba(0, 0, 0, 0.3)',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowRadius: 5,
+      elevation: 5,
+    },
+    loginText: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      marginBottom: 20,
+    },
+    welcomeText: {
+      fontSize: 24,
     },
     input: {
       width: 200,
@@ -64,9 +107,12 @@ const LoginScreen = () => {
       borderColor: 'gray',
       borderWidth: 1,
       marginBottom: 10,
+      paddingHorizontal: 10,
+      borderRadius: 5,
     },
     createAccountText: {
       color: 'blue',
+      marginTop: 10,
     },
   });
   
