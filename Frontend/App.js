@@ -1,21 +1,13 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import StackNavigator from './StackNavigator'; 
 
-import CreateAccountScreen from './CreateAccountScreen';
-import LoginScreen from './LoginScreen';
-
-const Stack = createStackNavigator();
-
-export default function App() {
-
+const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
-      </Stack.Navigator>
+      <StackNavigator />
     </NavigationContainer>
   );
-}
+};
+
+export default App;
