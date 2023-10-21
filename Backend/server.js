@@ -6,8 +6,8 @@
 // Server setup
 var express = require("express");
 const bodyParser = require("body-parser"); // might need this later
-app.use(express.json());
 var app = express();
+app.use(express.json());
 var path = require("path");
 
 // Serve static files from the docs directory

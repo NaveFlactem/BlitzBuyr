@@ -1,6 +1,9 @@
 # dependencies
 /node_modules
 /.pnp
+/.expo
+/.expo-shared
+yarn-error.log
 .pnp.js
 
 # testing
@@ -8,6 +11,9 @@
 
 # production
 /build
+.expo
+.build
+.cache
 
 .vscode
 
@@ -42,6 +48,13 @@ local.properties
 .cxx/
 *.keystore
 !debug.keystore
+android/app/build
+
+/metro-cache
+/debug.log
+.vscode/
+package-log.json
+yarn.lock
 
 # node.js
 node_modules/
