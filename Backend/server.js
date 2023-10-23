@@ -9,6 +9,8 @@ const app = express();
 const path = require("path");
 const db = require("./db");
 const validator = require("validator");
+const apiRouter = express.Router();
+app.use("/api", apiRouter);
 
 // Middleware for parsing JSON request bodies
 app.use(express.json());
@@ -28,13 +30,13 @@ app.get("/", function (req, res) {
 // #region Account Management API functions
 
 /**
- * GET request endpoint at /accounts for retrieving a list of accounts.
+ * GET request endpoint at /api/accounts for retrieving a list of accounts.
  * @function
  * @name getAccounts
  * @param {Object} req - Express.js request object.
  * @param {Object} res - Express.js response object.
  */
-app.get("/accounts", function (req, res) {
+apiRouter.get("/accounts", function (req, res) {
   // Query the database for a list of accounts
   db.all("SELECT * FROM Accounts", (err, rows) => {
     if (err) {
@@ -54,12 +56,12 @@ app.get("/accounts", function (req, res) {
  * @param {Object} req - Express.js request object with a JSON body containing 'username' and 'password'.
  * @param {Object} res - Express.js response object.
  * @example
- * // Sample HTTP POST request to '/login'
+ * // Sample HTTP POST request to '/api/login'
  * // Request body should contain a JSON object with 'username' and 'password' fields.
  * // If authentication is successful, it will respond with a success message.
  * // If authentication fails (username not found or incorrect password), it will respond with an error message.
  */
-app.post("/login", function (req, res) {
+apiRouter.post("/login", function (req, res) {
   const { username, password } = req.body;
 
   db.get(
@@ -91,12 +93,12 @@ app.post("/login", function (req, res) {
  * @param {Object} req - Express.js request object with a JSON body containing 'username', 'password', 'confirmPassword', and 'email'.
  * @param {Object} res - Express.js response object.
  * @example
- * // Sample HTTP POST request to '/register'
+ * // Sample HTTP POST request to '/api/register'
  * // Request body should contain a JSON object with 'username', 'password', 'confirmPassword', and 'email' fields.
  * // If the username is available, it will create a new account and respond with a success message.
  * // If the username is already taken, it will respond with a 409 Conflict status code.
  */
-app.post("/register", function (req, res) {
+apiRouter.post("/register", function (req, res) {
   const { username, password, confirmPassword, email } = req.body;
 
   // Check if password and confirmPassword match
@@ -149,13 +151,13 @@ app.post("/register", function (req, res) {
 // #region Listings Management API functions
 
 /**
- * POST request endpoint at /createListing for creating a new listing.
+ * POST request endpoint for creating a new listing.
  * @function
  * @name createListing
  * @param {Object} req - Express.js request object with a JSON body containing 'price', 'images', 'title', 'description', and 'userName'.
  * @param {Object} res - Express.js response object.
  * @example
- * // Sample HTTP POST request to '/createListing'
+ * // Sample HTTP POST request to '/api/createListing'
  * // Request body should contain a JSON object with the required fields.
  * const requestPayload = {
  *   "price": 100.0,
@@ -165,7 +167,7 @@ app.post("/register", function (req, res) {
  *   "userName": "sampleUser"
  * };
  */
-app.post("/createListing", function (req, res) {
+apiRouter.post("/createListing", function (req, res) {
   const { price, images, title, description, userName } = req.body;
 
   const sqlTimeStamp = new Date().toISOString().slice(0, 19).replace("T", " ");
