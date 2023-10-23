@@ -14,6 +14,7 @@ yarn-error.log
 .expo
 .build
 .cache
+*.db
 
 # OSX
 .DS_Store
