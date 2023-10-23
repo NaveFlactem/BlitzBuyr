@@ -1,61 +1,40 @@
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require("sqlite3").verbose();
 
-const db = new sqlite3.Database('./blitzbuyr.db', (err) => {
+const db = new sqlite3.Database("./blitzbuyr.db", (err) => {
   if (err) {
     console.error(err.message);
   } else {
-    console.log('Connected to the database.');
+    console.log("Connected to the database.");
   }
 });
 
 // Accounts Table //
 const accountsTable = `
-  CREATE TABLE IF NOT EXISTS Accounts (
+CREATE TABLE IF NOT EXISTS Accounts (
   Username TEXT PRIMARY KEY,
   Password TEXT,
   Email INTEGER
   );`;
-
-db.run(accountsTable, function (err) {
-  if (err) {
-    console.error('Error creating table:', err.message);
-  } else {
-    console.log('Table created successfully.');
-  }
-});
-
-const listingsTable = `
-CREATE TABLE IF NOT EXISTS Listings (
+  
+// Listings Table //
+  const listingsTable = `
+  CREATE TABLE IF NOT EXISTS Listings (
   ListingId INTEGER PRIMARY KEY AUTOINCREMENT,
   Price REAL,
   Title TEXT,
   Description TEXT,
   PostDate TIMESTAMP
   );`;
-
-db.run(listingsTable, function (err) {
-  if (err) {
-    console.error('Error creating table: ', err.message);
-  } else {
-    console.log('Table created successfully');
-  }
-});
-
+  
+// Images Table //
 const images = `
 CREATE TABLE IF NOT EXISTS Images (
   ImageId INTEGER PRIMARY KEY AUTOINCREMENT,
   ListingId INTEGER, 
   Imagedata BLOB
   );`;
-
-db.run(images, function (err) {
-  if (err) {
-    console.error('Error creating table: ', err.message);
-  } else {
-    console.log('Table created successfully');
-  }
-});
-
+  
+// Rating Table //
 const rating = `
 CREATE TABLE IF NOT EXISTS Ratings (
   UserRatedId INTEGER, 
@@ -63,15 +42,8 @@ CREATE TABLE IF NOT EXISTS Ratings (
   Rating INTEGER,
   ReviewDescription VARCHAR(255)
   );`;
-
-db.run(rating, function (err) {
-  if (err) {
-    console.error('Error creating table: ', err.message);
-  } else {
-    console.log('Table created successfully');
-  }
-});
-
+  
+// Profile Table //
 const profile = `
 CREATE TABLE IF NOT EXISTS Profile (
   Username VARCHAR(50), 
@@ -79,38 +51,50 @@ CREATE TABLE IF NOT EXISTS Profile (
   ListingId VARCHAR(255),
   ReviewDescription VARCHAR(255)
   );`;
-
-db.run(profile, function (err) {
-  if (err) {
-    console.error('Error creating table: ', err.message);
-  } else {
-    console.log('Table created successfully');
-  }
-});
-
+  
+// Likes Table //
 const likes = `
 CREATE TABLE IF NOT EXISTS Likes (
   UserId VARCHAR(255),
   ItemId VARCHAR(255)
   );`;
 
-db.run(likes, function (err) {
-  if (err) {
-    console.error('Error creating table: ', err.message);
-  } else {
-    console.log('Table created successfully');
-  }
-});
+// Create tables using Promises
+const tables = [
+  { sql: accountsTable, name: 'Accounts' },
+  { sql: listingsTable, name: 'Listings' },
+  { sql: images, name: 'Images' },
+  { sql: rating, name: 'Ratings' },
+  { sql: profile, name: 'Profile' },
+  { sql: likes, name: 'Likes' }
+];
 
+// Function to create tables
+function createTable(sql, tableName) {
+  return new Promise((resolve, reject) => {
+    db.run(sql, (err) => {
+      if (err) {
+        console.error(`Error creating table ${tableName}:`, err.message);
+        reject(err);
+      } else {
+        console.log(`Table ${tableName} created successfully.`);
+        resolve();
+      }
+    });
+  });
+}
 
-// Closes the database connection //
-db.close((err) => {
-  if (err) {
-  } else {
-    console.log('Database connection closed.');
-  }
-});
+async function createTables() {
+  try {
+    for (const table of tables) {
+      await createTable(table.sql, table.name);
+    }
+  } catch (err) {} //error already logged
+}
+
+createTables();
 
 module.exports = {
   db,
 };
+
