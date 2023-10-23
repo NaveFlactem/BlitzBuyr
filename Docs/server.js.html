@@ -35,16 +35,29 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-const db = require("./db");
+const db = require("./db").db;
 const validator = require("validator");
 const apiRouter = express.Router();
 app.use("/api", apiRouter);
 
 // Middleware for parsing JSON request bodies
-app.use(express.json());
+var bodyParser = require("body-parser");
+apiRouter.use(bodyParser.json());
+apiRouter.use(bodyParser.urlencoded({ extended: true }));
+
+// Middleware for printing out request information
+apiRouter.use(function (req, res, next) {
+  console.log(`Received request:
+    IP: ${req.ip}
+    Endpoint: ${req.url}
+    Method: ${req.method}
+    Query Parameters: ${JSON.stringify(req.query)}
+    Request Body: ${JSON.stringify(req.body)}`);
+  next();
+});
 
 // Serve static files from the docs directory
-app.use("/docs", express.static(path.join(__dirname, "../docs")));
+app.use("/docs", express.static(path.join(__dirname, "../Docs")));
 
 /**
  * GET request endpoint at the root which will redirect to the docs homepage.
@@ -96,7 +109,7 @@ apiRouter.post("/login", function (req, res) {
   const { username, password } = req.body;
 
   db.get(
-    "SELECT * FROM Accounts WHERE Username = ?",
+    "SELECT Username, Password FROM Accounts WHERE Username = ?",
     [username],
     (err, row) => {
       if (err) {
@@ -108,7 +121,7 @@ apiRouter.post("/login", function (req, res) {
         return res.status(401).json({ error: "Username not found" }); // 401 = Unauthorized
       }
 
-      if (password === row.password) {
+      if (password === row.Password) {
         return res.status(200).json({ message: "Login successful" });
       } else {
         return res.status(401).json({ error: "Incorrect password" });
@@ -145,8 +158,8 @@ apiRouter.post("/register", function (req, res) {
   }
 
   db.get(
-    "SELECT Username FROM Accounts WHERE Username = ?",
-    [username],
+    "SELECT Username, Email FROM Accounts WHERE Username = ? OR Email = ?",
+    [username, email],
     (err, row) => {
       if (err) {
         console.error("Error checking username availability:", err);
@@ -154,12 +167,16 @@ apiRouter.post("/register", function (req, res) {
       }
 
       if (row) {
-        return res.status(409).json({ error: "Username already exists" }); // 409 = Conflict
+        return res.status(409).json({
+          error: `${
+            row.username == username ? "Username" : "Email"
+          } already exists`,
+        }); // 409 = Conflict
       } else {
         // WIP: Consider hashing and/or salting the password for security.
         db.run(
-          "INSERT INTO Accounts (Username, Password) VALUES (?, ?)",
-          [username, password],
+          "INSERT INTO Accounts (Username, Password, Email) VALUES (?, ?, ?)",
+          [username, password, email],
           (err) => {
             if (err) {
               console.error("Error registering the account:", err);
@@ -199,14 +216,14 @@ apiRouter.post("/register", function (req, res) {
  * };
  */
 apiRouter.post("/createListing", function (req, res) {
-  const { price, images, title, description, userName } = req.body;
+  const { price, images, title, description, username } = req.body;
 
   const sqlTimeStamp = new Date().toISOString().slice(0, 19).replace("T", " ");
 
   // Insert the listing into the Listings table
   db.run(
     "INSERT INTO Listings (price, title, description, userName, postDate) VALUES (?, ?, ?, ?, ?)",
-    [price, title, description, userName, sqlTimeStamp],
+    [price, title, description, username, sqlTimeStamp],
     (err) => {
       if (err) {
         console.error("Error querying the database:", err);
@@ -216,7 +233,7 @@ apiRouter.post("/createListing", function (req, res) {
       // Insert images into the Images table
       images.forEach((image) => {
         db.run(
-          "INSERT INTO Images (imageId, listingId, imageData) VALUES (?, ?)",
+          "INSERT INTO Images (listingId, imageData) VALUES (?, ?)",
           [listingId, image],
           (err) => {
             if (err) {
@@ -230,6 +247,23 @@ apiRouter.post("/createListing", function (req, res) {
       return res.status(201).json({ message: "Listing created successfully" });
     }
   );
+});
+
+/**
+ * GET request endpoint at /api/listings for retrieving a list of all listings.
+ * @function
+ * @name getListings
+ * @param {Object} req - Express.js request object.
+ * @param {Object} res - Express.js response object.
+ */
+apiRouter.get("/listings", function (req, res) {
+  db.all("SELECT * FROM Listings", (err, rows) => {
+    if (err) {
+      console.error("Error querying the database:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+    return res.status(200).json({ Listings: rows });
+  });
 });
 
 // #endregion
@@ -251,13 +285,13 @@ const server = app.listen(80, () => {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Server.html">Server</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-API.html">API</a></li><li><a href="module-Server.html">Server</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Oct 22 2023 20:12:04 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon Oct 23 2023 10:41:33 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
