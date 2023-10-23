@@ -1,9 +1,8 @@
 import React, {useEffect, useRef} from 'react';
 import { SafeAreaView, View, Image, StyleSheet, Dimensions, FlatList, Text, Button, TouchableOpacity} from 'react-native';
 import Swiper from 'react-native-swiper';
-import Icon from "@mui/material/Icon"
-import StackNavigator from '../StackNavigator';
 import { useNavigation } from '@react-navigation/native';
+import BottomBar from '../components/BottomBar';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
@@ -161,10 +160,11 @@ const HomeScreen = () => {
         </Swiper>
       </View>
 
-      <View style={styles.bottomBar}>
+      <BottomBar />            
+      {/* <View style={styles.bottomBar}>
         <TouchableOpacity
           style={styles.HomeButton}
-          onPress={() => navigation.navigate('Home')} // Navigate to the 'Home' screen
+          onPress={() => navigation.navigate()} // Navigate to the 'Home' screen
         />
         <TouchableOpacity
           style={styles.ListingButton}
@@ -174,7 +174,7 @@ const HomeScreen = () => {
           style={styles.ProfileButton}
           onPress={() => navigation.navigate('Profile')} // Navigate to the 'Profile' screen
         />
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 };
