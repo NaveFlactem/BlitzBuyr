@@ -26,8 +26,8 @@ db.run(accountsTable, function (err) {
 
 const listingsTable = `
 CREATE TABLE IF NOT EXISTS Listings (
-  ListingID INTEGER PRIMARY KEY AUTOINCREMENT,
-  Lrice REAL,
+  ListingId INTEGER PRIMARY KEY AUTOINCREMENT,
+  Price REAL,
   Title TEXT,
   Description TEXT,
   PostDate TIMESTAMP
@@ -43,8 +43,8 @@ db.run(listingsTable, function (err) {
 
 const images = `
 CREATE TABLE IF NOT EXISTS Images (
-  ImageID INTEGER PRIMARY KEY AUTOINCREMENT,
-  ListingID INTEGER, 
+  ImageId INTEGER PRIMARY KEY AUTOINCREMENT,
+  ListingId INTEGER, 
   Imagedata BLOB
   );`;
 
@@ -58,8 +58,8 @@ db.run(images, function (err) {
 
 const rating = `
 CREATE TABLE IF NOT EXISTS Ratings (
-  UserRatedID INTEGER, 
-  UserID INTEGER,
+  UserRatedId INTEGER, 
+  UserId INTEGER,
   Rating INTEGER,
   ReviewDescription VARCHAR(255)
   );`;
@@ -76,7 +76,7 @@ const profile = `
 CREATE TABLE IF NOT EXISTS Profile (
   Username VARCHAR(50), 
   ContactInfo VARCHAR(200),
-  ListingIDs VARCHAR(255),
+  ListingId VARCHAR(255),
   ReviewDescription VARCHAR(255)
   );`;
 
@@ -90,8 +90,8 @@ db.run(profile, function (err) {
 
 const likes = `
 CREATE TABLE IF NOT EXISTS Likes (
-  UserID VARCHAR(255),
-  ItemID VARCHAR(255)
+  UserId VARCHAR(255),
+  ItemId VARCHAR(255)
   );`;
 
 db.run(likes, function (err) {
