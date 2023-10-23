@@ -7,16 +7,29 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-const db = require("./db");
+const db = require("./db").db;
 const validator = require("validator");
 const apiRouter = express.Router();
 app.use("/api", apiRouter);
 
 // Middleware for parsing JSON request bodies
-app.use(express.json());
+var bodyParser = require("body-parser");
+apiRouter.use(bodyParser.json());
+apiRouter.use(bodyParser.urlencoded({ extended: true }));
+
+// Middleware for printing out request information
+apiRouter.use(function (req, res, next) {
+  console.log(`Received request:
+    IP: ${req.ip}
+    Endpoint: ${req.url}
+    Method: ${req.method}
+    Query Parameters: ${JSON.stringify(req.query)}
+    Request Body: ${JSON.stringify(req.body)}`);
+  next();
+});
 
 // Serve static files from the docs directory
-app.use("/docs", express.static(path.join(__dirname, "../docs")));
+app.use("/docs", express.static(path.join(__dirname, "../Docs")));
 
 /**
  * GET request endpoint at the root which will redirect to the docs homepage.
@@ -65,6 +78,7 @@ apiRouter.get("/accounts", function (req, res) {
  * // If authentication fails (username not found or incorrect password), it will respond with an error message.
  */
 apiRouter.post("/login", function (req, res) {
+  console.log(req.body);
   const { username, password } = req.body;
 
   db.get(
@@ -102,10 +116,11 @@ apiRouter.post("/login", function (req, res) {
  * // If the username is already taken, it will respond with a 409 Conflict status code.
  */
 apiRouter.post("/register", function (req, res) {
+  console.log(req.body);
   const { username, password, confirmPassword, email } = req.body;
 
   // Check if password and confirmPassword match
-  if (confirmPassword !== password) {
+  if (confirmPassword != password) {
     return res
       .status(400)
       .json({ error: "Password and confirm password are not equal" });
@@ -117,8 +132,8 @@ apiRouter.post("/register", function (req, res) {
   }
 
   db.get(
-    "SELECT Username FROM Accounts WHERE Username = ?",
-    [username],
+    "SELECT Username FROM Accounts WHERE Username = ? OR Email = ?",
+    [username, email],
     (err, row) => {
       if (err) {
         console.error("Error checking username availability:", err);
@@ -126,12 +141,18 @@ apiRouter.post("/register", function (req, res) {
       }
 
       if (row) {
-        return res.status(409).json({ error: "Username already exists" }); // 409 = Conflict
+        return res
+          .status(409)
+          .json({
+            error: `${
+              row.username == username ? "Username" : "Email"
+            } already exists`,
+          }); // 409 = Conflict
       } else {
         // WIP: Consider hashing and/or salting the password for security.
         db.run(
-          "INSERT INTO Accounts (Username, Password) VALUES (?, ?)",
-          [username, password],
+          "INSERT INTO Accounts (Username, Password, Email) VALUES (?, ?, ?)",
+          [username, password, email],
           (err) => {
             if (err) {
               console.error("Error registering the account:", err);
@@ -171,14 +192,14 @@ apiRouter.post("/register", function (req, res) {
  * };
  */
 apiRouter.post("/createListing", function (req, res) {
-  const { price, images, title, description, userName } = req.body;
+  const { price, images, title, description, username } = req.body;
 
   const sqlTimeStamp = new Date().toISOString().slice(0, 19).replace("T", " ");
 
   // Insert the listing into the Listings table
   db.run(
     "INSERT INTO Listings (price, title, description, userName, postDate) VALUES (?, ?, ?, ?, ?)",
-    [price, title, description, userName, sqlTimeStamp],
+    [price, title, description, username, sqlTimeStamp],
     (err) => {
       if (err) {
         console.error("Error querying the database:", err);
@@ -202,6 +223,23 @@ apiRouter.post("/createListing", function (req, res) {
       return res.status(201).json({ message: "Listing created successfully" });
     }
   );
+});
+
+/**
+ * GET request endpoint at /api/listings for retrieving a list of all listings.
+ * @function
+ * @name getListings
+ * @param {Object} req - Express.js request object.
+ * @param {Object} res - Express.js response object.
+ */
+apiRouter.get("/listings", function (req, res) {
+  db.all("SELECT * FROM Listings", (err, rows) => {
+    if (err) {
+      console.error("Error querying the database:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+    return res.status(200).json({ Listings: rows });
+  });
 });
 
 // #endregion
