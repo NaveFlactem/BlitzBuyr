@@ -1,6 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 
-const db = new sqlite3.Database('./my_database.db', (err) => {
+const db = new sqlite3.Database('./blitzbuyr.db', (err) => {
   if (err) {
     console.error(err.message);
   } else {
@@ -26,11 +26,11 @@ db.run(accountsTable, function (err) {
 
 const listingsTable = `
 CREATE TABLE IF NOT EXISTS Listings (
-  listingID INTEGER PRIMARY KEY,
-  price NUMERIC(10,2),
+  listingID INTEGER PRIMARY KEY AUTOINCREMENT,
+  price REAL,
   title TEXT,
   description TEXT,
-  postDate DATE
+  postDate TIMESTAMP
   );`;
 
 db.run(listingsTable, function (err) {
@@ -43,9 +43,9 @@ db.run(listingsTable, function (err) {
 
 const images = `
 CREATE TABLE IF NOT EXISTS Images (
-  listingID INTEGER PRIMARY KEY, 
-  imageID INTEGER,
-  image DATA BLOB
+  imageID INTEGER PRIMARY KEY AUTOINCREMENT,
+  listingID INTEGER, 
+  imagedata BLOB
   );`;
 
 db.run(images, function (err) {
@@ -111,3 +111,6 @@ db.close((err) => {
   }
 });
 
+module.exports = {
+  db,
+};
