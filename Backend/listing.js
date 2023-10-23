@@ -68,7 +68,7 @@ router.post("/createListing", function (req, res) {
  * @param {Object} res - Express.js response object.
  */
 router.get("/listings", function (req, res) {
-  db.all("SELECT * FROM Listings", (err, rows) => {
+  db.all("SELECT * FROM Listings ORDER BY ListingId DESC", (err, rows) => {
     if (err) {
       console.error("Error querying the database:", err);
       return res.status(500).json({ error: "Internal Server Error" });
