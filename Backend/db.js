@@ -1,5 +1,3 @@
-const client = require("./server"); //testing importing/exporting in js (file to file)
-
 const sqlite3 = require("sqlite3").verbose();
 
 //opens connection to SQLite database (for now the file will be accessed/created in the same folder for testing)
