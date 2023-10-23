@@ -1,4 +1,5 @@
 /**
+ * Express application for serving static files and handling API requests.
  * @module API
  */
 
