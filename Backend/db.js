@@ -1,10 +1,5 @@
-const client = require('./server'); //testing importing/exporting in js (file to file)
-
-
 const sqlite3 = require('sqlite3').verbose();
 
-//opens connection to SQLite database (for now the file will be accessed/created in the same folder for testing)
-//also don't know best practices for db maintenance (i.e. where to put all the data)
 const db = new sqlite3.Database('./my_database.db', (err) => {
   if (err) {
     console.error(err.message);
@@ -13,105 +8,106 @@ const db = new sqlite3.Database('./my_database.db', (err) => {
   }
 });
 
+// Accounts Table //
+const accountsTable = `
+  CREATE TABLE IF NOT EXISTS Accounts (
+  username TEXT PRIMARY KEY,
+  password TEXT,
+  emailAddress INTEGER
+  );`;
 
-///////////////////////// ------------SAMPLE QUERY CALLS------------ /////////////////////////////
+db.run(accountsTable, function (err) {
+  if (err) {
+    console.error('Error creating table:', err.message);
+  } else {
+    console.log('Table created successfully.');
+  }
+});
 
-// db.run('CREATE TABLE IF NOT EXISTS my_table (id INTEGER PRIMARY KEY, name TEXT, age INTEGER)');
+const listingsTable = `
+CREATE TABLE IF NOT EXISTS Listings (
+  listingID INTEGER PRIMARY KEY,
+  price NUMERIC(10,2),
+  title TEXT,
+  description TEXT,
+  postDate DATE
+  );`;
 
-// db.run('INSERT INTO my_table (name, age) VALUES (?, ?)', ['John', 30], (err) => {
-//   if (err) {
-//     console.error(err.message);
-//   } else {
-//     console.log('Data inserted successfully.');
-//   }
-// });
+db.run(listingsTable, function (err) {
+  if (err) {
+    console.error('Error creating table: ', err.message);
+  } else {
+    console.log('Table created successfully');
+  }
+});
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const images = `
+CREATE TABLE IF NOT EXISTS Images (
+  listingID INTEGER PRIMARY KEY, 
+  imageID INTEGER,
+  image DATA BLOB
+  );`;
 
-//NOTES: 
-//I was reading about how db queries should not be run async, and should instead be ran with promises
-//Each query should finish before the next one starts
+db.run(images, function (err) {
+  if (err) {
+    console.error('Error creating table: ', err.message);
+  } else {
+    console.log('Table created successfully');
+  }
+});
 
-//Example:
+const rating = `
+CREATE TABLE IF NOT EXISTS Ratings (
+  userRatedID INTEGER, 
+  userID INTEGER,
+  rating INTEGER,
+  reviewDescription VARCHAR(255)
+  );`;
 
-// function createTable() {
-//   return new Promise((resolve, reject) => {
-//     db.run('CREATE TABLE IF NOT EXISTS mytable (id INTEGER PRIMARY KEY, name TEXT)', (err) => {
-//       if (err) {
-//         reject(err);
-//       } else {
-//         resolve();
-//       }
-//     });
-//   });
-// }
+db.run(rating, function (err) {
+  if (err) {
+    console.error('Error creating table: ', err.message);
+  } else {
+    console.log('Table created successfully');
+  }
+});
 
-// function insertData(name) {
-//   return new Promise((resolve, reject) => {
-//     db.run('INSERT INTO mytable (name) VALUES (?)', [name], (err) => {
-//       if (err) {
-//         reject(err);
-//       } else {
-//         resolve();
-//       }
-//     });
-//   });
-// }
+const profile = `
+CREATE TABLE IF NOT EXISTS Profile (
+  username VARCHAR(50), 
+  contactInfo VARCHAR(200),
+  listingIDs VARCHAR(255),
+  reviewDescription VARCHAR(255)
+  );`;
 
-// async function main() {
-//   try {
-//     await createTable();
-//     await insertData('John');
-//     await insertData('Alice');
-//     await insertData('Bob');
-//   } catch (error) {
-//     console.error(error);
-//   } finally {
-//     db.close();
-//   }
-// }
+db.run(profile, function (err) {
+  if (err) {
+    console.error('Error creating table: ', err.message);
+  } else {
+    console.log('Table created successfully');
+  }
+});
 
+const likes = `
+CREATE TABLE IF NOT EXISTS Likes (
+  userID VARCHAR(255),
+  itemID VARCHAR(255)
+  );`;
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+db.run(likes, function (err) {
+  if (err) {
+    console.error('Error creating table: ', err.message);
+  } else {
+    console.log('Table created successfully');
+  }
+});
 
 
-// Closes the database connection
+// Closes the database connection //
 db.close((err) => {
   if (err) {
-    console.error(err.message);
   } else {
     console.log('Database connection closed.');
   }
 });
 
-// const path = require('path');
-
-// // Specify the path to your SQLite database file
-// const dbPath = path.resolve(__dirname, 'mydatabase.db');
-
-// // Create a new SQLite database connection
-// const db = new sqlite3.Database(dbPath, (err) => {
-//   if (err) {
-//     console.error('Error opening database:', err.message);
-//   } else {
-//     console.log('Connected to the database');
-//   }
-// });
-
-
-
-// // Define a function to close the database connection when needed
-// function closeDatabase() {
-//   db.close((err) => {
-//     if (err) {
-//       console.error('Error closing database:', err.message);
-//     } else {
-//       console.log('Database connection closed');
-//     }
-//   });
-// }
-
-// module.exports = {
-//   db,
-//   closeDatabase,
-// };
