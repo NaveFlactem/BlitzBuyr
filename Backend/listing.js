@@ -3,8 +3,10 @@
  * @module API
  */
 
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+var bodyParser = require("body-parser");
+router.use(bodyParser.urlencoded({ extended: true })).use(bodyParser.json());
 const db = require("./db").db;
 
 /**
@@ -74,7 +76,6 @@ router.get("/listings", function (req, res) {
     return res.status(200).json({ Listings: rows });
   });
 });
-
 
 // Export the router
 module.exports = router;

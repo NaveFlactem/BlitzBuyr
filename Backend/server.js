@@ -7,15 +7,12 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-var bodyParser = require("body-parser");
 
 // server routes and settings
 app
   .use("/api", require("./listing"))
   .use("/api", require("./account"))
-  .use("/docs", express.static(path.join(__dirname, "../Docs")))
-  .use(bodyParser.urlencoded({ extended: true }))
-  .use(bodyParser.json());
+  .use("/docs", express.static(path.join(__dirname, "../Docs")));
 
 // Middleware for printing out request information
 app.use(function (req, res, next) {
