@@ -19,11 +19,12 @@ CREATE TABLE IF NOT EXISTS Accounts (
 // Listings Table //
   const listingsTable = `
   CREATE TABLE IF NOT EXISTS Listings (
-  ListingId INTEGER PRIMARY KEY AUTOINCREMENT,
-  Price REAL,
-  Title TEXT,
-  Description TEXT,
-  PostDate TIMESTAMP
+    ListingId INTEGER PRIMARY KEY AUTOINCREMENT,
+    Price REAL,
+    Title TEXT,
+    Username TEXT,
+    Description TEXT,
+    PostDate TIMESTAMP
   );`;
   
 // Images Table //
