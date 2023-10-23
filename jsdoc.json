@@ -5,6 +5,7 @@
   },
   "opts": {
     "destination": "./Docs",
-    "readme": "./index.md"
+    "readme": "./index.md",
+    "title": "BlitzBuyr Docs"
   }
 }
