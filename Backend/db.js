@@ -1,10 +1,10 @@
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require("sqlite3").verbose();
 
-const db = new sqlite3.Database('./blitzbuyr.db', (err) => {
+const db = new sqlite3.Database("./blitzbuyr.db", (err) => {
   if (err) {
     console.error(err.message);
   } else {
-    console.log('Connected to the database.');
+    console.log("Connected to the database.");
   }
 });
 
@@ -18,9 +18,9 @@ const accountsTable = `
 
 db.run(accountsTable, function (err) {
   if (err) {
-    console.error('Error creating table:', err.message);
+    console.error("Error creating table:", err.message);
   } else {
-    console.log('Table created successfully.');
+    console.log("Table created successfully.");
   }
 });
 
@@ -35,9 +35,9 @@ CREATE TABLE IF NOT EXISTS Listings (
 
 db.run(listingsTable, function (err) {
   if (err) {
-    console.error('Error creating table: ', err.message);
+    console.error("Error creating table: ", err.message);
   } else {
-    console.log('Table created successfully');
+    console.log("Table created successfully");
   }
 });
 
@@ -50,9 +50,9 @@ CREATE TABLE IF NOT EXISTS Images (
 
 db.run(images, function (err) {
   if (err) {
-    console.error('Error creating table: ', err.message);
+    console.error("Error creating table: ", err.message);
   } else {
-    console.log('Table created successfully');
+    console.log("Table created successfully");
   }
 });
 
@@ -66,9 +66,9 @@ CREATE TABLE IF NOT EXISTS Ratings (
 
 db.run(rating, function (err) {
   if (err) {
-    console.error('Error creating table: ', err.message);
+    console.error("Error creating table: ", err.message);
   } else {
-    console.log('Table created successfully');
+    console.log("Table created successfully");
   }
 });
 
@@ -82,9 +82,9 @@ CREATE TABLE IF NOT EXISTS Profile (
 
 db.run(profile, function (err) {
   if (err) {
-    console.error('Error creating table: ', err.message);
+    console.error("Error creating table: ", err.message);
   } else {
-    console.log('Table created successfully');
+    console.log("Table created successfully");
   }
 });
 
@@ -96,18 +96,17 @@ CREATE TABLE IF NOT EXISTS Likes (
 
 db.run(likes, function (err) {
   if (err) {
-    console.error('Error creating table: ', err.message);
+    console.error("Error creating table: ", err.message);
   } else {
-    console.log('Table created successfully');
+    console.log("Table created successfully");
   }
 });
-
 
 // Closes the database connection //
 db.close((err) => {
   if (err) {
   } else {
-    console.log('Database connection closed.');
+    console.log("Database connection closed.");
   }
 });
 
