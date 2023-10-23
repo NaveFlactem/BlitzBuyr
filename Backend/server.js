@@ -15,6 +15,9 @@ app.use("/api", apiRouter);
 // Middleware for parsing JSON request bodies
 app.use(express.json());
 
+// Serve static files from the docs directory
+app.use("/docs", express.static(path.join(__dirname, "../docs")));
+
 /**
  * GET request endpoint at the root which will redirect to the docs homepage.
  * @function
