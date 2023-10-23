@@ -11,9 +11,9 @@ const db = new sqlite3.Database('./blitzbuyr.db', (err) => {
 // Accounts Table //
 const accountsTable = `
   CREATE TABLE IF NOT EXISTS Accounts (
-  username TEXT PRIMARY KEY,
-  password TEXT,
-  emailAddress INTEGER
+  Username TEXT PRIMARY KEY,
+  Password TEXT,
+  Email INTEGER
   );`;
 
 db.run(accountsTable, function (err) {
@@ -26,11 +26,11 @@ db.run(accountsTable, function (err) {
 
 const listingsTable = `
 CREATE TABLE IF NOT EXISTS Listings (
-  listingID INTEGER PRIMARY KEY AUTOINCREMENT,
-  price REAL,
-  title TEXT,
-  description TEXT,
-  postDate TIMESTAMP
+  ListingID INTEGER PRIMARY KEY AUTOINCREMENT,
+  Lrice REAL,
+  Title TEXT,
+  Description TEXT,
+  PostDate TIMESTAMP
   );`;
 
 db.run(listingsTable, function (err) {
@@ -43,9 +43,9 @@ db.run(listingsTable, function (err) {
 
 const images = `
 CREATE TABLE IF NOT EXISTS Images (
-  imageID INTEGER PRIMARY KEY AUTOINCREMENT,
-  listingID INTEGER, 
-  imagedata BLOB
+  ImageID INTEGER PRIMARY KEY AUTOINCREMENT,
+  ListingID INTEGER, 
+  Imagedata BLOB
   );`;
 
 db.run(images, function (err) {
@@ -58,10 +58,10 @@ db.run(images, function (err) {
 
 const rating = `
 CREATE TABLE IF NOT EXISTS Ratings (
-  userRatedID INTEGER, 
-  userID INTEGER,
-  rating INTEGER,
-  reviewDescription VARCHAR(255)
+  UserRatedID INTEGER, 
+  UserID INTEGER,
+  Rating INTEGER,
+  ReviewDescription VARCHAR(255)
   );`;
 
 db.run(rating, function (err) {
@@ -74,10 +74,10 @@ db.run(rating, function (err) {
 
 const profile = `
 CREATE TABLE IF NOT EXISTS Profile (
-  username VARCHAR(50), 
-  contactInfo VARCHAR(200),
-  listingIDs VARCHAR(255),
-  reviewDescription VARCHAR(255)
+  Username VARCHAR(50), 
+  ContactInfo VARCHAR(200),
+  ListingIDs VARCHAR(255),
+  ReviewDescription VARCHAR(255)
   );`;
 
 db.run(profile, function (err) {
@@ -90,8 +90,8 @@ db.run(profile, function (err) {
 
 const likes = `
 CREATE TABLE IF NOT EXISTS Likes (
-  userID VARCHAR(255),
-  itemID VARCHAR(255)
+  UserID VARCHAR(255),
+  ItemID VARCHAR(255)
   );`;
 
 db.run(likes, function (err) {
