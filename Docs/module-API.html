@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: API</title>
+    <title>Blitz Buyr: Module: API</title>
 
+    <link rel="icon" href="../favicon.ico" type="image/x-icon"/>
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
@@ -33,6 +34,8 @@
 <article>
     <div class="container-overview">
     
+        
+            <div class="description">Express application for serving static files and handling API requests.</div>
         
 
         
@@ -230,7 +233,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line9">line 9</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line12">line 12</a>
     </li></ul></dd>
     
 
@@ -261,7 +264,15 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/createListing'// Request body should contain a JSON object with the required fields.const requestPayload = {  "price": 100.0,  "images": [image1_in_binary, image2_in_binary],  "title": "Sample Listing",  "description": "This is a sample listing.",  "userName": "sampleUser"};</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/createListing'
+// Request body should contain a JSON object with the required fields.
+const requestPayload = {
+  "price": 100.0,
+  "images": [image1_in_binary, image2_in_binary],
+  "title": "Sample Listing",
+  "description": "This is a sample listing.",
+  "userName": "sampleUser"
+};</code></pre>
 
 
 
@@ -395,7 +406,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="account.js.html">account.js</a>, <a href="account.js.html#line10">line 10</a>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line13">line 13</a>
     </li></ul></dd>
     
 
@@ -555,7 +566,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line60">line 60</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line63">line 63</a>
     </li></ul></dd>
     
 
@@ -715,7 +726,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="account.js.html">account.js</a>, <a href="account.js.html#line30">line 30</a>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line33">line 33</a>
     </li></ul></dd>
     
 
@@ -746,7 +757,10 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/login'// Request body should contain a JSON object with 'username' and 'password' fields.// If authentication is successful, it will respond with a success message.// If authentication fails (username not found or incorrect password), it will respond with an error message.</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/login'
+// Request body should contain a JSON object with 'username' and 'password' fields.
+// If authentication is successful, it will respond with a success message.
+// If authentication fails (username not found or incorrect password), it will respond with an error message.</code></pre>
 
 
 
@@ -880,7 +894,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="account.js.html">account.js</a>, <a href="account.js.html#line67">line 67</a>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line70">line 70</a>
     </li></ul></dd>
     
 
@@ -911,7 +925,10 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/register'// Request body should contain a JSON object with 'username', 'password', 'confirmPassword', and 'email' fields.// If the username is available, it will create a new account and respond with a success message.// If the username is already taken, it will respond with a 409 Conflict status code.</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/register'
+// Request body should contain a JSON object with 'username', 'password', 'confirmPassword', and 'email' fields.
+// If the username is available, it will create a new account and respond with a success message.
+// If the username is already taken, it will respond with a 409 Conflict status code.</code></pre>
 
 
 
@@ -940,6 +957,8 @@
 <article>
     <div class="container-overview">
     
+        
+            <div class="description">Express application for serving static files and handling API requests.</div>
         
 
         
@@ -1137,7 +1156,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line9">line 9</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line12">line 12</a>
     </li></ul></dd>
     
 
@@ -1168,7 +1187,15 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/createListing'// Request body should contain a JSON object with the required fields.const requestPayload = {  "price": 100.0,  "images": [image1_in_binary, image2_in_binary],  "title": "Sample Listing",  "description": "This is a sample listing.",  "userName": "sampleUser"};</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/createListing'
+// Request body should contain a JSON object with the required fields.
+const requestPayload = {
+  "price": 100.0,
+  "images": [image1_in_binary, image2_in_binary],
+  "title": "Sample Listing",
+  "description": "This is a sample listing.",
+  "userName": "sampleUser"
+};</code></pre>
 
 
 
@@ -1302,7 +1329,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="account.js.html">account.js</a>, <a href="account.js.html#line10">line 10</a>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line13">line 13</a>
     </li></ul></dd>
     
 
@@ -1462,7 +1489,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line60">line 60</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line63">line 63</a>
     </li></ul></dd>
     
 
@@ -1622,7 +1649,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="account.js.html">account.js</a>, <a href="account.js.html#line30">line 30</a>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line33">line 33</a>
     </li></ul></dd>
     
 
@@ -1653,7 +1680,10 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/login'// Request body should contain a JSON object with 'username' and 'password' fields.// If authentication is successful, it will respond with a success message.// If authentication fails (username not found or incorrect password), it will respond with an error message.</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/login'
+// Request body should contain a JSON object with 'username' and 'password' fields.
+// If authentication is successful, it will respond with a success message.
+// If authentication fails (username not found or incorrect password), it will respond with an error message.</code></pre>
 
 
 
@@ -1787,7 +1817,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="account.js.html">account.js</a>, <a href="account.js.html#line67">line 67</a>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line70">line 70</a>
     </li></ul></dd>
     
 
@@ -1818,7 +1848,10 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/register'// Request body should contain a JSON object with 'username', 'password', 'confirmPassword', and 'email' fields.// If the username is available, it will create a new account and respond with a success message.// If the username is already taken, it will respond with a 409 Conflict status code.</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/register'
+// Request body should contain a JSON object with 'username', 'password', 'confirmPassword', and 'email' fields.
+// If the username is available, it will create a new account and respond with a success message.
+// If the username is already taken, it will respond with a 409 Conflict status code.</code></pre>
 
 
 
@@ -1844,7 +1877,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon Oct 23 2023 10:41:33 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon Oct 23 2023 12:32:30 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
