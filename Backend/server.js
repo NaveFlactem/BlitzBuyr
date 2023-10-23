@@ -78,11 +78,10 @@ apiRouter.get("/accounts", function (req, res) {
  * // If authentication fails (username not found or incorrect password), it will respond with an error message.
  */
 apiRouter.post("/login", function (req, res) {
-  console.log(req.body);
   const { username, password } = req.body;
 
   db.get(
-    "SELECT * FROM Accounts WHERE Username = ?",
+    "SELECT Username, Password FROM Accounts WHERE Username = ?",
     [username],
     (err, row) => {
       if (err) {
@@ -94,7 +93,7 @@ apiRouter.post("/login", function (req, res) {
         return res.status(401).json({ error: "Username not found" }); // 401 = Unauthorized
       }
 
-      if (password === row.password) {
+      if (password === row.Password) {
         return res.status(200).json({ message: "Login successful" });
       } else {
         return res.status(401).json({ error: "Incorrect password" });
@@ -116,11 +115,10 @@ apiRouter.post("/login", function (req, res) {
  * // If the username is already taken, it will respond with a 409 Conflict status code.
  */
 apiRouter.post("/register", function (req, res) {
-  console.log(req.body);
   const { username, password, confirmPassword, email } = req.body;
 
   // Check if password and confirmPassword match
-  if (confirmPassword != password) {
+  if (confirmPassword !== password) {
     return res
       .status(400)
       .json({ error: "Password and confirm password are not equal" });
@@ -132,7 +130,7 @@ apiRouter.post("/register", function (req, res) {
   }
 
   db.get(
-    "SELECT Username FROM Accounts WHERE Username = ? OR Email = ?",
+    "SELECT Username, Email FROM Accounts WHERE Username = ? OR Email = ?",
     [username, email],
     (err, row) => {
       if (err) {
@@ -141,13 +139,11 @@ apiRouter.post("/register", function (req, res) {
       }
 
       if (row) {
-        return res
-          .status(409)
-          .json({
-            error: `${
-              row.username == username ? "Username" : "Email"
-            } already exists`,
-          }); // 409 = Conflict
+        return res.status(409).json({
+          error: `${
+            row.username == username ? "Username" : "Email"
+          } already exists`,
+        }); // 409 = Conflict
       } else {
         // WIP: Consider hashing and/or salting the password for security.
         db.run(
@@ -209,7 +205,7 @@ apiRouter.post("/createListing", function (req, res) {
       // Insert images into the Images table
       images.forEach((image) => {
         db.run(
-          "INSERT INTO Images (imageId, listingId, imageData) VALUES (?, ?)",
+          "INSERT INTO Images (listingId, imageData) VALUES (?, ?)",
           [listingId, image],
           (err) => {
             if (err) {
