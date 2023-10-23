@@ -5,14 +5,9 @@
 
 // Required modules
 const express = require("express");
+var favicon = require("serve-favicon");
 const app = express();
 const path = require("path");
-
-// server routes and settings
-app
-  .use("/api", require("./listing"))
-  .use("/api", require("./account"))
-  .use("/docs", express.static(path.join(__dirname, "../Docs")));
 
 // Middleware for printing out request information
 app.use(function (req, res, next) {
@@ -24,6 +19,13 @@ app.use(function (req, res, next) {
     Request Body: ${JSON.stringify(req.body)}`);
   next();
 });
+
+// server routes and settings
+app
+  .use("/api", require("./listing"))
+  .use("/api", require("./account"))
+  .use("/docs", express.static(path.join(__dirname, "../Docs")))
+  .use(favicon(path.join(__dirname, "../favicon.ico")));
 
 /**
  * GET request endpoint at the root which will redirect to the docs homepage.
