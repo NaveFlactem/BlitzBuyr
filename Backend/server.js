@@ -8,6 +8,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const db = require("./db");
+const validator = require("validator");
 
 // Middleware for parsing JSON request bodies
 app.use(express.json());
@@ -103,6 +104,11 @@ app.post("/register", function (req, res) {
     return res
       .status(400)
       .json({ error: "Password and confirm password are not equal" });
+  }
+
+  // Validate an email address
+  if (!validator.isEmail(email)) {
+    return res.status(400).json({ error: "Email is not valid" });
   }
 
   db.get(
