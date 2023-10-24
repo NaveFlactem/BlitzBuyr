@@ -39,7 +39,7 @@ router.post("/createListing", upload, function (req, res) {
   const { price, title, description, username } = req.body;
   const images = req.files;
   //console.log(
-    //`price: ${price}\nimages: ${images}\ntitle: ${title}\ndescription: ${description}\nUserName: ${username}`
+  //`price: ${price}\nimages: ${images}\ntitle: ${title}\ndescription: ${description}\nUserName: ${username}`
   //);
 
   const sqlTimeStamp = new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -71,17 +71,15 @@ router.post("/createListing", upload, function (req, res) {
                     .json({ error: "Internal Server Error" });
                 }
                 // console.log(`Inserted image ${image.originalname}`);
-              }
+              },
             );
           });
         }
-        return res
-          .status(201)
-          .json({
-            message: "Listing created successfully",
-            listingId: listingId,
-          });
-      }
+        return res.status(201).json({
+          message: "Listing created successfully",
+          listingId: listingId,
+        });
+      },
     );
   } catch (err) {
     return res.status(500).json({ error: err });
@@ -104,7 +102,7 @@ router.get("/listings", function (req, res) {
         return res.status(500).json({ error: "Internal Server Error" });
       }
       return res.status(200).json({ Listings: rows });
-    }
+    },
   );
 });
 
@@ -129,7 +127,7 @@ router.get("/images", function (req, res) {
           return res.status(500).json({ error: "Internal Server Error" });
         }
         return res.status(200).json({ Images: rows });
-      }
+      },
     );
   } else {
     // If 'listingId' is not provided, retrieve all images.

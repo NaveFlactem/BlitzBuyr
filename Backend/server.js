@@ -19,7 +19,7 @@ app.use(function (req, res, next) {
     Endpoint: ${req.url}
     Method: ${req.method}
     Query Parameters: ${JSON.stringify(req.query)}
-    Request Body: ${JSON.stringify(req.body)}`);
+    Request Body: ${req.body}`);
   next();
 });
 

@@ -1,18 +1,18 @@
-import React, {useState} from 'react';
-import {View, Text, Dimensions, StyleSheet} from 'react-native';
-import Swiper from 'react-native-swiper';
+import React, { useState } from "react";
+import { View, Text, Dimensions, StyleSheet } from "react-native";
+import Swiper from "react-native-swiper";
 
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
+const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 
 const Feed = () => {
   // Define an array of colors
-  const colors = ['#FF5733', '#33FFA2', '#3373FF', '#FFE333', '#E333FF'];
+  const colors = ["#FF5733", "#33FFA2", "#3373FF", "#FFE333", "#E333FF"];
 
   return (
     <Swiper style={styles.wrapper} showsPagination={false}>
       {colors.map((color, index) => (
-        <View key={index} style={[styles.slide, {backgroundColor: color}]}>
+        <View key={index} style={[styles.slide, { backgroundColor: color }]}>
           <Text style={styles.colorText}>{color}</Text>
         </View>
       ))}
@@ -26,12 +26,12 @@ const styles = StyleSheet.create({
   },
   slide: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   colorText: {
     fontSize: 24,
-    color: 'white',
+    color: "white",
   },
 });
 
