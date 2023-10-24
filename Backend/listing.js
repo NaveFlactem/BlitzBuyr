@@ -9,10 +9,22 @@ var bodyParser = require("body-parser");
 router.use(bodyParser.urlencoded({ extended: true })).use(bodyParser.json());
 const db = require("./db").db;
 const multer = require("multer");
-const storage = multer.memoryStorage();
+const path = require("path");
 
-const upload = multer({
-  storage: storage,
+const imageStorage = multer.diskStorage({
+  destination: "./img/", // Set the directory where uploaded files will be stored
+  filename: (req, file, callback) => {
+    // Generate a unique filename for each uploaded file
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    callback(
+      null,
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+    );
+  },
+});
+
+const imageUpload = multer({
+  storage: imageStorage,
   limits: {
     fileSize: 10 * 1024 * 1024, // Adjust the file size limit as needed
   },
@@ -35,7 +47,7 @@ const upload = multer({
  *   "userName": "sampleUser"
  * };
  */
-router.post("/createListing", upload, function (req, res) {
+router.post("/createListing", imageUpload, function (req, res) {
   const { price, title, description, username } = req.body;
   const images = req.files;
   //console.log(
@@ -60,9 +72,10 @@ router.post("/createListing", upload, function (req, res) {
         // Insert images into the Images table
         if (images.length > 0) {
           images.forEach((image) => {
+            const imagePath = "img/" + image.filename;
             db.run(
-              "INSERT INTO Images (listingId, imageData) VALUES (?, ?)",
-              [listingId, image.buffer.toString("base64")],
+              "INSERT INTO Images (listingId, ImageURI) VALUES (?, ?)",
+              [listingId, imagePath],
               (err) => {
                 if (err) {
                   console.error("Error querying the database:", err);
@@ -71,7 +84,7 @@ router.post("/createListing", upload, function (req, res) {
                     .json({ error: "Internal Server Error" });
                 }
                 // console.log(`Inserted image ${image.originalname}`);
-              },
+              }
             );
           });
         }
@@ -79,7 +92,7 @@ router.post("/createListing", upload, function (req, res) {
           message: "Listing created successfully",
           listingId: listingId,
         });
-      },
+      }
     );
   } catch (err) {
     return res.status(500).json({ error: err });
@@ -102,7 +115,7 @@ router.get("/listings", function (req, res) {
         return res.status(500).json({ error: "Internal Server Error" });
       }
       return res.status(200).json({ Listings: rows });
-    },
+    }
   );
 });
 
@@ -127,11 +140,11 @@ router.get("/images", function (req, res) {
           return res.status(500).json({ error: "Internal Server Error" });
         }
         return res.status(200).json({ Images: rows });
-      },
+      }
     );
   } else {
     // If 'listingId' is not provided, retrieve all images.
-    db.all("SELECT * FROM Images", function (err, rows) {
+    db.all("SELECT * FROM Images ORDER BY ImageId DESC", function (err, rows) {
       if (err) {
         console.error("Error querying the database:", err);
         return res.status(500).json({ error: "Internal Server Error" });
