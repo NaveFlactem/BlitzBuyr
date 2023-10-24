@@ -16,7 +16,7 @@ app.use(
   "/img",
   expressStaticGzip(path.join(__dirname, "./img"), {
     enableBrotli: true, // Enable Brotli compression
-  })
+  }),
 );
 
 // Middleware for printing out request information

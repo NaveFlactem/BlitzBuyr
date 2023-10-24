@@ -1,57 +1,57 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import React, {useEffect, useRef} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import Icon, {Icons} from '../components/Icons';
-import Colors from '../constants/Colors';
-import * as Animatable from 'react-native-animatable';
-import HomeScreen from '../screens/HomeScreen';
-import ProfileScreen from '../screens/ProfileScreen';
-import CreateListing from '../screens/CreateListing';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import React, { useEffect, useRef } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Icon, { Icons } from "../components/Icons";
+import Colors from "../constants/Colors";
+import * as Animatable from "react-native-animatable";
+import HomeScreen from "../screens/HomeScreen";
+import ProfileScreen from "../screens/ProfileScreen";
+import CreateListing from "../screens/CreateListing";
 
 const TabArr = [
   {
-    route: 'CreateListing',
-    label: 'Create Listing',
+    route: "CreateListing",
+    label: "Create Listing",
     type: Icons.MaterialCommunityIcons,
-    activeIcon: 'timeline-plus',
-    inActiveIcon: 'timeline-plus-outline',
+    activeIcon: "timeline-plus",
+    inActiveIcon: "timeline-plus-outline",
     component: CreateListing,
   },
   {
-    route: 'Home',
-    label: 'Home',
+    route: "Home",
+    label: "Home",
     type: Icons.Ionicons,
-    activeIcon: 'grid',
-    inActiveIcon: 'grid-outline',
+    activeIcon: "grid",
+    inActiveIcon: "grid-outline",
     component: HomeScreen,
   },
   {
-    route: 'Account',
-    label: 'Account',
+    route: "Account",
+    label: "Account",
     type: Icons.FontAwesome,
-    activeIcon: 'user-circle',
-    inActiveIcon: 'user-circle-o',
+    activeIcon: "user-circle",
+    inActiveIcon: "user-circle-o",
     component: ProfileScreen,
   },
 ];
 
 const Tab = createBottomTabNavigator();
 
-const TabButton = props => {
-  const {item, onPress, accessibilityState} = props;
+const TabButton = (props) => {
+  const { item, onPress, accessibilityState } = props;
   const focused = accessibilityState.selected;
   const viewRef = useRef(null);
 
   useEffect(() => {
     if (focused) {
       viewRef.current.animate({
-        0: {scale: 0.5, rotate: '0deg'},
-        1: {scale: 1.5, rotate: '360deg'},
+        0: { scale: 0.5, rotate: "0deg" },
+        1: { scale: 1.5, rotate: "360deg" },
       });
     } else {
       viewRef.current.animate({
-        0: {scale: 1.5, rotate: '360deg'},
-        1: {scale: 1, rotate: '0deg'},
+        0: { scale: 1.5, rotate: "360deg" },
+        1: { scale: 1, rotate: "0deg" },
       });
     }
   }, [focused]);
@@ -60,7 +60,8 @@ const TabButton = props => {
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={1}
-      style={styles.container}>
+      style={styles.container}
+    >
       <Animatable.View ref={viewRef} duration={100} style={styles.container}>
         <Icon
           type={item.type}
@@ -79,13 +80,14 @@ export default function BottomNavOverlay() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          height: '6%',
-          position: 'absolute',
-          bottom: '1%',
-          backgroundColor: 'transparent',
+          height: "6%",
+          position: "absolute",
+          bottom: "1%",
+          backgroundColor: "transparent",
           borderTopWidth: 0,
         },
-      }}>
+      }}
+    >
       {TabArr.map((item, index) => {
         return (
           <Tab.Screen
@@ -94,7 +96,7 @@ export default function BottomNavOverlay() {
             component={item.component}
             options={{
               tabBarShowLabel: false,
-              tabBarButton: props => <TabButton {...props} item={item} />,
+              tabBarButton: (props) => <TabButton {...props} item={item} />,
             }}
           />
         );
@@ -106,8 +108,8 @@ export default function BottomNavOverlay() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "transparent",
   },
 });

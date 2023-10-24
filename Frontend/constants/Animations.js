@@ -11,18 +11,18 @@ export const Animations = [
 
   "flipInX",
   "flipInY",
- 
+
   "slideInDown",
   "slideInUp",
   "slideInLeft",
   "slideInRight",
-  
+
   "zoomIn",
   "zoomInDown",
   "zoomInUp",
   "zoomInLeft",
   "zoomInRight",
-]
+];
 
 export const fadeOutAnim = [
   "fadeOut",
@@ -34,4 +34,4 @@ export const fadeOutAnim = [
   "fadeOutLeftBig",
   "fadeOutRight",
   "fadeOutRightBi",
-]
+];
