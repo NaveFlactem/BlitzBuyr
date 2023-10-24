@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
@@ -50,7 +50,10 @@ const LoginScreen = () => {
           <Text style={styles.welcomeText}>Welcome, {username}!</Text>
         ) : (
           <View style={styles.loginContainer}>
-            <Text style={styles.loginText}>Login</Text>
+            <Image
+              source={require('.//assets/icon_transparent.png')} // Provide the correct path to your logo image
+              style={styles.logo} // Define a style for your logo
+            />
             <TextInput
               style={styles.input}
               placeholder="Username"
@@ -75,14 +78,14 @@ const LoginScreen = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: '#D6447F',
       alignItems: 'center',
       justifyContent: 'center',
     },
     loginContainer: {
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#f0f0f0',
+      backgroundColor: '#F7A859',
       padding: 20,
       borderRadius: 10,
       shadowColor: 'rgba(0, 0, 0, 0.3)',
@@ -113,6 +116,12 @@ const LoginScreen = () => {
     createAccountText: {
       color: 'blue',
       marginTop: 10,
+    },
+    logo: {
+      width: 100, // Adjust the width as needed
+      height: 100, // Adjust the height as needed
+      marginBottom: 20, // Adjust the spacing
+      // Add other styles as needed
     },
   });
   
