@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import HomeScreen from './HomeScreen';
+import HomeScreen from '../HomeScreen';
+import BottomNavOverlay from '../../nav/BottomNavOverlay';
 
 const LoginScreen = () => {
     const navigation = useNavigation(); // Get the navigation object
@@ -23,7 +24,7 @@ const LoginScreen = () => {
     return (
         <View style={styles.container}>
         {loggedIn ? (
-          <HomeScreen />
+          navigation.navigate('BottomNavOverlay')
         ) : (
           <View style={styles.loginContainer}>
             <Text>Login</Text>
