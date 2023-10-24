@@ -34,7 +34,7 @@ const LoginScreen = ({ navigation }) => {
 
     if (response.status <= 201) {
       console.log("Response data:", responseData);
-      navigation.navigate("Home");
+      navigation.navigate("BottomNavOverlay");
     } else {
       Alert.alert(responseData.error);
     }

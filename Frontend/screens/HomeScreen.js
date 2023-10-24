@@ -1,114 +1,33 @@
-import React, { useEffect, useRef } from "react";
-import {
-  SafeAreaView,
-  View,
-  Image,
-  StyleSheet,
-  Dimensions,
-  FlatList,
-  Text,
-  Button,
-  TouchableOpacity,
-} from "react-native";
-import Swiper from "react-native-swiper";
-import Icon from "@mui/material/Icon";
-import StackNavigator from "../StackNavigator";
-import { useNavigation } from "@react-navigation/native";
-
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
+import React, {useEffect, useRef} from 'react';
+import { SafeAreaView, View, Image, StyleSheet, Dimensions, FlatList, Text, Button, TouchableOpacity} from 'react-native';
+import Swiper from 'react-native-swiper';
+import { useNavigation } from '@react-navigation/native';
+import BottomBar from '../components/BottomBar';
+import TopBar from '../components/TopBar';
 
 const styles = StyleSheet.create({
-  screenfield: {
-    height: screenHeight,
-    width: screenWidth,
-  },
   container: {
     alignItems: "center",
     justifyContent: "center",
     zIndex: -1,
-    backgroundColor: "#D6447F",
-    height: screenHeight,
-    width: screenWidth,
+    backgroundColor: '#D6447F',
+    height: "100%",
+    width: "100%",     
   },
   image: {
-    height: 0.08 * screenHeight,
-    width: 0.08 * screenHeight,
-    top: 0.015 * screenHeight,
-  },
-  topBar: {
-    position: "absolute",
-    top: 0,
-    height: 0.13 * screenHeight,
-    width: screenWidth,
-    backgroundColor: "#58293F",
-    alignItems: "center",
-    justifyContent: "center",
-    borderBottomWidth: 4,
-    borderBottomColor: "#F7A859",
-  },
-  bottomBar: {
-    position: "absolute",
-    bottom: 0,
-    height: 0.1 * screenHeight,
-    width: screenWidth,
-    backgroundColor: "#58293F",
-    alignItems: "center",
-    justifyContent: "center",
-    borderTopWidth: 4,
-    borderTopColor: "#F7A859",
+    height: "8%",
+    width: "8%",
+    top: "1.5%",
   },
   card: {
-    backgroundColor: "#F7A859",
-    width: 0.9 * screenWidth,
-    height: 0.7 * screenHeight,
+    backgroundColor: '#F7A859',
+    width: "90%",
+    height: "70%",
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
     margin: 20,
-    top: 0.09 * screenHeight,
-  },
-  leftTapArea: {
-    position: "absolute",
-    width: 0.3 * screenWidth,
-    height: 0.7 * screenHeight,
-    left: 10,
-    backgroundColor: "cyan",
-    borderTopLeftRadius: 20,
-    borderBottomLeftRadius: 20,
-  },
-  rightTapArea: {
-    position: "absolute",
-    width: 0.3 * screenWidth,
-    height: 0.7 * screenHeight,
-    right: 0,
-    backgroundColor: "cyan",
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
-  },
-  HomeButton: {
-    position: "absolute",
-    width: 0.3 * screenWidth,
-    height: 0.09 * screenHeight,
-    backgroundColor: "white",
-    borderRadius: 20,
-    bottom: 0,
-  },
-  ListingButton: {
-    position: "absolute",
-    width: 0.3 * screenWidth,
-    height: 0.09 * screenHeight,
-    backgroundColor: "white",
-    borderRadius: 20,
-    right: 0,
-  },
-  ProfileButton: {
-    position: "absolute",
-    width: 0.3 * screenWidth,
-    height: 0.09 * screenHeight,
-    backgroundColor: "white",
-    borderRadius: 20,
-    left: 0,
+    top: "9%",
   },
 });
 
@@ -140,13 +59,10 @@ const HomeScreen = () => {
   const navigation = useNavigation();
 
   return (
+    
+    
     <SafeAreaView style={styles.screenfield}>
-      <View style={styles.topBar}>
-        <Image
-          style={styles.image}
-          source={require("../assets/icon_transparent.png")}
-        />
-      </View>
+      <TopBar />
 
       <View style={styles.container}>
         <Swiper
@@ -164,28 +80,8 @@ const HomeScreen = () => {
                 loop={false}
               >
                 {Listings[page].map((color, index) => (
-                  <View
-                    style={{
-                      backgroundColor: color,
-                      width: 0.9 * screenWidth,
-                      height: 0.7 * screenHeight,
-                      borderRadius: 20,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      margin: 20,
-                      top: 0.09 * screenHeight,
-                    }}
-                    key={index}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 30,
-                        fontWeight: "bold",
-                        color: "white",
-                      }}
-                    >
-                      {listing[0]}
-                    </Text>
+                  <View style={{backgroundColor: color, width: "90%", height: "70%", borderRadius: 20, alignItems: 'center', justifyContent: 'center', margin: 20, top: "9%"}} key={index}>
+                    <Text style={{fontSize: 30, fontWeight: 'bold', color: 'white'}}>{listing[0]}</Text>
                   </View>
                 ))}
               </Swiper>
@@ -193,21 +89,7 @@ const HomeScreen = () => {
           ))}
         </Swiper>
       </View>
-
-      <View style={styles.bottomBar}>
-        <TouchableOpacity
-          style={styles.HomeButton}
-          onPress={() => navigation.navigate("Home")} // Navigate to the 'Home' screen
-        />
-        <TouchableOpacity
-          style={styles.ListingButton}
-          onPress={() => navigation.navigate()} // Navigate to the 'Listing' screen
-        />
-        <TouchableOpacity
-          style={styles.ProfileButton}
-          onPress={() => navigation.navigate("Profile")} // Navigate to the 'Profile' screen
-        />
-      </View>
+      <BottomBar />            
     </SafeAreaView>
   );
 };
