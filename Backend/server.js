@@ -10,7 +10,7 @@ const app = express();
 const path = require("path");
 
 // doc pages
-app.use("/docs", express.static(path.join(__dirname, "../Docs")))
+app.use("/docs", express.static(path.join(__dirname, "../Docs")));
 
 // Middleware for printing out request information
 app.use(function (req, res, next) {

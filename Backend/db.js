@@ -15,9 +15,9 @@ CREATE TABLE IF NOT EXISTS Accounts (
   Password TEXT,
   Email INTEGER
   );`;
-  
+
 // Listings Table //
-  const listingsTable = `
+const listingsTable = `
   CREATE TABLE IF NOT EXISTS Listings (
     ListingId INTEGER PRIMARY KEY AUTOINCREMENT,
     Price REAL,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS Accounts (
     Description TEXT,
     PostDate TIMESTAMP
   );`;
-  
+
 // Images Table //
 const images = `
 CREATE TABLE IF NOT EXISTS Images (
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS Images (
   ListingId INTEGER, 
   Imagedata BLOB
   );`;
-  
+
 // Rating Table //
 const rating = `
 CREATE TABLE IF NOT EXISTS Ratings (
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS Ratings (
   Rating INTEGER,
   ReviewDescription VARCHAR(255)
   );`;
-  
+
 // Profile Table //
 const profile = `
 CREATE TABLE IF NOT EXISTS Profile (
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS Profile (
   ListingId VARCHAR(255),
   ReviewDescription VARCHAR(255)
   );`;
-  
+
 // Likes Table //
 const likes = `
 CREATE TABLE IF NOT EXISTS Likes (
@@ -62,12 +62,12 @@ CREATE TABLE IF NOT EXISTS Likes (
 
 // Create tables using Promises
 const tables = [
-  { sql: accountsTable, name: 'Accounts' },
-  { sql: listingsTable, name: 'Listings' },
-  { sql: images, name: 'Images' },
-  { sql: rating, name: 'Ratings' },
-  { sql: profile, name: 'Profile' },
-  { sql: likes, name: 'Likes' }
+  { sql: accountsTable, name: "Accounts" },
+  { sql: listingsTable, name: "Listings" },
+  { sql: images, name: "Images" },
+  { sql: rating, name: "Ratings" },
+  { sql: profile, name: "Profile" },
+  { sql: likes, name: "Likes" },
 ];
 
 // Function to create tables
@@ -98,4 +98,3 @@ createTables();
 module.exports = {
   db,
 };
-

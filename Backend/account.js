@@ -63,7 +63,7 @@ router.post("/login", function (req, res) {
       } else {
         return res.status(401).json({ error: "Incorrect password" });
       }
-    }
+    },
   );
 });
 
@@ -124,10 +124,10 @@ router.post("/register", function (req, res) {
               message: "Account created",
               username: username,
             });
-          }
+          },
         );
       }
-    }
+    },
   );
 });
 

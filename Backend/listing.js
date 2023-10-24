@@ -51,12 +51,12 @@ router.post("/createListing", function (req, res) {
               console.error("Error querying the database:", err);
               return res.status(500).json({ error: "Internal Server Error" });
             }
-          }
+          },
         );
       });
 
       return res.status(201).json({ message: "Listing created successfully" });
-    }
+    },
   );
 });
 

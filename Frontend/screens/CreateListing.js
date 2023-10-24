@@ -11,37 +11,38 @@ import {
   Alert,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import {useNavigation} from '@react-navigation/native';
 
 const CreateListing = () => {
+  const navigation = useNavigation();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [photos, setPhotos] = useState([]);
-  const [newListingId, setNewListingId] = useState(null);
 
   const handleCreateListing = async () => {
     try {
       const formData = new FormData();
-    
+
       photos.forEach((image, index) => {
         formData.append(`image_${index}`, image);
       });
-    
+
       formData.append('price', price);
       formData.append('title', title);
       formData.append('description', description);
       formData.append('username', 'test');
-    
-      console.log("FormData:", formData);
+
+      console.log('FormData:', formData);
       const response = await fetch('http://blitzbuyr.lol/api/createListing', {
         method: 'POST',
         body: formData,
       });
-      
+
       if (response.status <= 201) {
         const responseData = await response.json();
         console.log('Listing created successfully:', responseData);
-        setNewListingId(responseData.listingId);
+        navigation.navigate('Home');
       } else {
         console.error('HTTP error! Status: ', response.status);
       }
@@ -49,7 +50,6 @@ const CreateListing = () => {
       console.error('Error creating listing:', error);
     }
   };
-  
 
   const handleUploadPhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -57,11 +57,11 @@ const CreateListing = () => {
       allowsMultipleSelection: true,
       quality: 1,
     });
-  
+
     if (result.cancelled) {
       return;
     }
-  
+
     const selectedImages = result.assets.map(image => {
       let localUri = image.uri;
       let filename = localUri.split('/').pop();
@@ -73,11 +73,10 @@ const CreateListing = () => {
         type, // Adjust the name as needed
       };
     });
-  
+
     // Now, you can set `selectedImages` in your state variable, which appears to be `setPhotos`.
     setPhotos(selectedImages);
   };
-  
 
   const handleDeletePhoto = index => {
     Alert.alert('Delete Photo', 'Are you sure you want to delete this photo?', [
