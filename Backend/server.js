@@ -8,6 +8,16 @@ const express = require("express");
 var favicon = require("serve-favicon");
 const app = express();
 const path = require("path");
+const expressStaticGzip = require("express-static-gzip");
+
+// static pages
+app.use("/docs", express.static(path.join(__dirname, "../Docs")));
+app.use(
+  "/img",
+  expressStaticGzip(path.join(__dirname, "./img"), {
+    enableBrotli: true, // Enable Brotli compression
+  }),
+);
 
 // Middleware for printing out request information
 app.use(function (req, res, next) {
@@ -16,7 +26,7 @@ app.use(function (req, res, next) {
     Endpoint: ${req.url}
     Method: ${req.method}
     Query Parameters: ${JSON.stringify(req.query)}
-    Request Body: ${JSON.stringify(req.body)}`);
+    Request Body: ${req.body}`);
   next();
 });
 
@@ -24,7 +34,6 @@ app.use(function (req, res, next) {
 app
   .use("/api", require("./listing"))
   .use("/api", require("./account"))
-  .use("/docs", express.static(path.join(__dirname, "../Docs")))
   .use(favicon(path.join(__dirname, "../favicon.ico")));
 
 /**

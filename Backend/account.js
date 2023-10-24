@@ -63,7 +63,7 @@ router.post("/login", function (req, res) {
       } else {
         return res.status(401).json({ error: "Incorrect password" });
       }
-    }
+    },
   );
 });
 
@@ -79,7 +79,7 @@ router.post("/login", function (req, res) {
  * // If the username is available, it will create a new account and respond with a success message.
  * // If the username is already taken, it will respond with a 409 Conflict status code.
  */
-router.post("/register", function (req, res) {
+router.post("/register", (req, res) => {
   const { username, password, confirmPassword, email } = req.body;
 
   // Check if password and confirmPassword match
@@ -106,7 +106,7 @@ router.post("/register", function (req, res) {
       if (row) {
         return res.status(409).json({
           error: `${
-            row.username == username ? "Username" : "Email"
+            row.Username == username ? "Username" : "Email"
           } already exists`,
         }); // 409 = Conflict
       } else {
@@ -124,10 +124,10 @@ router.post("/register", function (req, res) {
               message: "Account created",
               username: username,
             });
-          }
+          },
         );
       }
-    }
+    },
   );
 });
 
