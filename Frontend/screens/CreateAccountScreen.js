@@ -27,7 +27,7 @@ const CreateAccountScreen = () => {
       confirmPassword: confirmPassword,
       email: email,
     };
-  
+
     axios
       .post('/register', registrationData)
       .then((response) => {
