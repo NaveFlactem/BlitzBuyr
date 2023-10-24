@@ -60,7 +60,7 @@ const CreateAccountScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.loginContainer}>
         <Image
-          source={require("..../assets/icon_transparent.png")} // Provide the correct path to your logo image
+          source={require("../../assets/icon_transparent.png")} // Provide the correct path to your logo image
           style={styles.logo} // Define a style for your logo
         />
         <TextInput
