@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -17,100 +17,67 @@ const CreateListing = () => {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [photos, setPhotos] = useState([]);
-
-  const convertBlobToBase64 = (blob) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        resolve(reader.result);
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
-      reader.readAsDataURL(blob);
-    });
-  };
+  const [newListingId, setNewListingId] = useState(null);
 
   const handleCreateListing = async () => {
     try {
-      const photoDataPromises = photos.map(async (photo) => {
-        const base64Data = await convertBlobToBase64(photo.blob);
-        return base64Data;
-      });
-
-      const base64Images = await Promise.all(photoDataPromises);
-
-      const requestPayload = {
-        price: price,
-        
-        title: title,
-        description: description,
-        username: 'sampleUser',
-      };
-
       const formData = new FormData();
-      photos.forEach((item, i) => {
-        formData.append("media_files[]", {
-          uri: item.uri,
-          type: "image/jpeg",
-          name: item.filename || `filename${i}.jpg`,
-        });
+    
+      photos.forEach((image, index) => {
+        formData.append(`image_${index}`, image);
       });
-      
-      
-       
-      
-      
-
-      console.log('request Payload:', requestPayload);
-
+    
+      formData.append('price', price);
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('username', 'test');
+    
+      console.log("FormData:", formData);
       const response = await fetch('http://blitzbuyr.lol/api/createListing', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestPayload),
+        body: formData,
       });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log(`Response: ${JSON.stringify(data)}`);
+      
+      if (response.status <= 201) {
+        const responseData = await response.json();
+        console.log('Listing created successfully:', responseData);
+        setNewListingId(responseData.listingId);
       } else {
-        console.error(`API Response Error: ${response.status}`);
+        console.error('HTTP error! Status: ', response.status);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error creating listing:', error);
     }
   };
+  
 
   const handleUploadPhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: true,
+      quality: 1,
     });
-
-    if (!result.cancelled) {
-      const selectedPhotos = result.assets;
-      
-      // Fetch and convert selected photos to blobs
-      // Create an array of promises for fetching and converting the selected photos to blobs
-      const photoDataPromises = selectedPhotos.map(async (photo) => {
-        const response = await fetch(photo.uri);
-        const blob = await response.blob();
-        return blob;
-      });
   
-      // Wait for all fetch and conversion operations to complete
-      const photoData = await Promise.all(photoDataPromises);
-  
-      // Add selected photos and their blobs to the 'photos' array
-      const updatedPhotos = photos.concat(selectedPhotos.map((photo, index) => ({
-        ...photo,
-        blob: photoData[index],
-      })));
-      setPhotos(updatedPhotos);
+    if (result.cancelled) {
+      return;
     }
+  
+    const selectedImages = result.assets.map(image => {
+      let localUri = image.uri;
+      let filename = localUri.split('/').pop();
+      let match = /\.(\w+)$/.exec(filename);
+      let type = match ? `image/${match[1]}` : `image`;
+      return {
+        uri: localUri,
+        name: filename,
+        type, // Adjust the name as needed
+      };
+    });
+  
+    // Now, you can set `selectedImages` in your state variable, which appears to be `setPhotos`.
+    setPhotos(selectedImages);
   };
+  
 
   const handleDeletePhoto = index => {
     Alert.alert('Delete Photo', 'Are you sure you want to delete this photo?', [
@@ -136,14 +103,14 @@ const CreateListing = () => {
         style={styles.input}
         placeholder="Title"
         value={title}
-        onChangeText={(text) => setTitle(text)}
+        onChangeText={text => setTitle(text)}
         returnKeyType="done" // This allows users to close the keyboard
       />
       <TextInput
         style={[styles.input, styles.multilineInput]}
         placeholder="Description"
         value={description}
-        onChangeText={(text) => setDescription(text)}
+        onChangeText={text => setDescription(text)}
         multiline={true}
         textAlignVertical="top" // Allows users to return to a new line
       />
@@ -151,7 +118,7 @@ const CreateListing = () => {
         style={styles.input}
         placeholder="Price"
         value={price}
-        onChangeText={(text) => setPrice(text)}
+        onChangeText={text => setPrice(text)}
         keyboardType="numeric"
         returnKeyType="done" // This allows users to close the numeric keyboard
       />
