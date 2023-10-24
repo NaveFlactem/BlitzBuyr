@@ -3,8 +3,10 @@
  * @module API
  */
 
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+var bodyParser = require("body-parser");
+router.use(bodyParser.urlencoded({ extended: true })).use(bodyParser.json());
 const db = require("./db").db;
 
 /**
@@ -49,12 +51,12 @@ router.post("/createListing", function (req, res) {
               console.error("Error querying the database:", err);
               return res.status(500).json({ error: "Internal Server Error" });
             }
-          }
+          },
         );
       });
 
       return res.status(201).json({ message: "Listing created successfully" });
-    }
+    },
   );
 });
 
@@ -66,7 +68,7 @@ router.post("/createListing", function (req, res) {
  * @param {Object} res - Express.js response object.
  */
 router.get("/listings", function (req, res) {
-  db.all("SELECT * FROM Listings", (err, rows) => {
+  db.all("SELECT * FROM Listings ORDER BY ListingId DESC", (err, rows) => {
     if (err) {
       console.error("Error querying the database:", err);
       return res.status(500).json({ error: "Internal Server Error" });
@@ -74,7 +76,6 @@ router.get("/listings", function (req, res) {
     return res.status(200).json({ Listings: rows });
   });
 });
-
 
 // Export the router
 module.exports = router;

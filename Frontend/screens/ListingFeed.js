@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Dimensions, StyleSheet } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, Dimensions, StyleSheet} from 'react-native';
 import Swiper from 'react-native-swiper';
 
 const screenWidth = Dimensions.get('window').width;
@@ -12,7 +12,7 @@ const Feed = () => {
   return (
     <Swiper style={styles.wrapper} showsPagination={false}>
       {colors.map((color, index) => (
-        <View key={index} style={[styles.slide, { backgroundColor: color }]}>
+        <View key={index} style={[styles.slide, {backgroundColor: color}]}>
           <Text style={styles.colorText}>{color}</Text>
         </View>
       ))}
@@ -37,11 +37,6 @@ const styles = StyleSheet.create({
 
 export default Feed;
 
-
-
-
-
-
 // import React, { useEffect, useRef, useState } from 'react'
 // import { Dimensions, FlatList, View } from 'react-native'
 // import useMaterialNavBarHeight from '../../hooks/useMaterialNavBarHeight'
@@ -54,7 +49,7 @@ export default Feed;
 // const screenHeight = Dimensions.get('window').height;
 
 // const styles = StyleSheet.create({
-//     container: { 
+//     container: {
 //         alignItems: 'center',
 //         justifyContent: 'center',
 //         zIndex: 0,
@@ -66,10 +61,10 @@ export default Feed;
 // })
 
 // /**
-//  * Component that renders a list of posts meant to be 
+//  * Component that renders a list of posts meant to be
 //  * used for the feed screen.
-//  * 
-//  * On start make fetch for posts then use a flatList 
+//  *
+//  * On start make fetch for posts then use a flatList
 //  * to display/control the posts.
 //  */
 // export default function FeedScreen({ route }) {
@@ -85,10 +80,9 @@ export default Feed;
 //         }
 //     }, [])
 
-
 //     /**
 //      * Called any time a new post is shown when a user scrolls
-//      * the FlatList, when this happens we should start playing 
+//      * the FlatList, when this happens we should start playing
 //      * the post that is viewable and stop all the others
 //      */
 //     const onViewableItemsChanged = useRef(({ changed }) => {
@@ -111,10 +105,10 @@ export default Feed;
 //     const feedItemHeight = Dimensions.get('window').height - useMaterialNavBarHeight(profile);
 //     /**
 //      * renders the item shown in the FlatList
-//      * 
-//      * @param {Object} item object of the post 
-//      * @param {Integer} index position of the post in the FlatList 
-//      * @returns 
+//      *
+//      * @param {Object} item object of the post
+//      * @param {Integer} index position of the post in the FlatList
+//      * @returns
 //      */
 //     const renderItem = ({ item, index }) => {
 //         return (
@@ -144,4 +138,3 @@ export default Feed;
 //         </View>
 //     )
 // }
-

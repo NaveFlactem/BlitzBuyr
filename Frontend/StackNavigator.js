@@ -1,23 +1,35 @@
-
-import { createStackNavigator } from '@react-navigation/stack';
-
-import CreateAccountScreen from './screens/CreateAccountScreen';
-import LoginScreen from './screens/LoginScreen';
-import HomeScreen from './screens/HomeScreen';
-import ProfileScreen from './screens/ProfileScreen';
+import React from 'react';
+import {createStackNavigator} from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
 
 const StackNavigator = () => {
-    // const { user } = useAuth();
   return (
-      <Stack.Navigator initialRouteName="Login" screenOptions={{headerShown: false}}>
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-      </Stack.Navigator>
+    <Stack.Navigator
+      initialRouteName="Login"
+      screenOptions={{headerShown: false}}>
+      <Stack.Screen
+        name="Login"
+        component={require('./screens/LoginScreen').default}
+      />
+      <Stack.Screen
+        name="CreateAccount"
+        component={require('./screens/CreateAccountScreen').default}
+      />
+      <Stack.Screen
+        name="CreateListing"
+        component={require('./screens/CreateListing').default}
+      />
+      <Stack.Screen
+        name="Home"
+        component={require('./screens/HomeScreen').default}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={require('./screens/ProfileScreen').default}
+      />
+    </Stack.Navigator>
   );
-}
+};
 
 export default StackNavigator;
