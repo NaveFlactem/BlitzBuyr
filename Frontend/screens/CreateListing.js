@@ -142,11 +142,9 @@ const CreateListing = () => {
         ))}
       </ScrollView>
 
-      <Button
-        title="Create Listing"
-        onPress={handleCreateListing}
-        style={styles.createListingButton}
-      />
+      <TouchableOpacity onPress={handleCreateListing}> 
+            <Text style = {styles.createListingText}>Create Listing</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -207,9 +205,14 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     alignItems: "center",
   },
-  createListingButton: {
-    marginBottom: 10, // Adjust the marginBottom value
-  },
+    createListingText: {
+        alignSelf: "center",
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: 20,
+        backgroundColor: "#F7A859",
+        bottom: "50%",
+    },
 });
 
 export default CreateListing;
