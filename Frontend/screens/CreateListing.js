@@ -124,7 +124,7 @@ const CreateListing = () => {
       />
       <TouchableOpacity style={styles.uploadButton} onPress={handleUploadPhoto}>
         <Image
-          source={require('./assets/ImageIcon.png')}
+          source={require('../assets/ImageIcon.png')}
           style={styles.uploadIcon}
         />
       </TouchableOpacity>
