@@ -12,6 +12,9 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
+import Colors from "../constants/Colors";
+import Icon, { Icons } from "../components/Icons";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 /** 
 * @function
@@ -57,6 +60,11 @@ const CreateListing = () => {
         const responseData = await response.json();
         console.log("Listing created successfully:", responseData);
         navigation.navigate("Home");
+        Alert.alert("Success", "Your listing has been created successfully!", [
+          {
+            text: "OK",
+          },
+        ]);
       } else {
         console.error("HTTP error! Status: ", response.status);
       }
@@ -150,11 +158,13 @@ const CreateListing = () => {
         returnKeyType="done" // This allows users to close the numeric keyboard
       />
       <TouchableOpacity style={styles.uploadButton} onPress={handleUploadPhoto}>
-        <Image
-          source={require("../assets/ImageIcon.png")}
-          style={styles.uploadIcon}
-        />
-      </TouchableOpacity>
+      <MaterialCommunityIcons
+        name="image-plus"
+        size={100} // Set the desired size of the icon
+        color="black" // Set the desired color of the icon
+        style={styles.uploadIcon}
+      />
+    </TouchableOpacity>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {photos.map((photo, index) => (
@@ -184,7 +194,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50, //top of page
     padding: 30, //all around
-    backgroundColor: "#D6447F",
+    backgroundColor: Colors.BB_darkPink,
   },
   title: {
     fontSize: 24,
@@ -194,7 +204,7 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     borderColor: "gray",
-    backgroundColor: "#F7A859",
+    backgroundColor: Colors.BB_orange,
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
@@ -203,7 +213,7 @@ const styles = StyleSheet.create({
     height: 120,
   },
   uploadButton: {
-    backgroundColor: "#F7A859",
+    backgroundColor: Colors.BB_orange,
     width: "100%",
     height: 250,
     alignItems: "center",
