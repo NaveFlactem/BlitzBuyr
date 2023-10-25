@@ -1,3 +1,4 @@
+import { serverIp } from "../../config.js";
 import React, { useState } from "react";
 import {
   View,
@@ -22,7 +23,7 @@ const LoginScreen = ({ navigation }) => {
       password: password, // Get the password from the input field
     };
 
-    const response = await fetch("http://blitzbuyr.lol/api/login", {
+    const response = await fetch(`${serverIp}/api/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
