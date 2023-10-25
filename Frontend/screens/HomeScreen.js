@@ -5,7 +5,7 @@ import Swiper from "react-native-swiper";
 import BottomBar from "../components/BottomBar";
 import TopBar from "../components/TopBar";
 import Colors from "../constants/Colors";
-import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const styles = StyleSheet.create({
   screenfield: {
@@ -70,14 +70,14 @@ const HomeScreen = () => {
         "http://blitzbuyr.lol/api/listings",
         {
           method: "GET",
-        },
+        }
       );
 
       if (listingsResponse.status <= 201) {
         const listingsData = await listingsResponse.json();
         setListings(listingsData.Listings);
         if (swipeIndex == 0)
-        setSwipeIndex(listingsData.Listings[swipeIndex].ListingId);
+          setSwipeIndex(listingsData.Listings[swipeIndex].ListingId);
         //swiperRef.current._reactInternals.memoizedState.index = 0;
       } else {
         console.log("Error fetching listings:", listingsResponse.status);
@@ -96,7 +96,7 @@ const HomeScreen = () => {
         `http://blitzbuyr.lol/api/images?listingId=${index}`,
         {
           method: "GET",
-        },
+        }
       );
 
       if (imagesResponse.status <= 201) {
@@ -139,11 +139,7 @@ const HomeScreen = () => {
             {listings.map((item, listIndex) => {
               return (
                 <View key={item.ListingId} style={styles.card}>
-                  <Swiper
-                    loop={false}
-                    horizontal={true}
-                    showsButtons={false}
-                  >
+                  <Swiper loop={false} horizontal={true} showsButtons={false}>
                     {images.map((image, index) => {
                       // console.log(`Listing ID: ${listIndex}, Image: blitzbuyr.lol/${image.ImageURI}`);
                       return (
@@ -161,11 +157,11 @@ const HomeScreen = () => {
                         </View>
                       );
                     })}
-                    <View style={styles.card}>
-                      <Text>
-                        {item.Description}
-                      </Text>
-                    </View>
+                    {item.Description ? (
+                      <View style={styles.card}>
+                        <Text>{item.Description}</Text>
+                      </View>
+                    ) : null}
                   </Swiper>
                 </View>
               );
