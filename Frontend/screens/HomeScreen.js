@@ -5,7 +5,7 @@ import Swiper from "react-native-swiper";
 import BottomBar from "../components/BottomBar";
 import TopBar from "../components/TopBar";
 import Colors from "../constants/Colors";
-import { SwiperFlatList } from 'react-native-swiper-flatlist';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 const styles = StyleSheet.create({
   screenfield: {
@@ -17,12 +17,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     zIndex: -1,
-    backgroundColor: "#D6447F",
+    backgroundColor: Colors.BB_pink,
     height: "100%",
     width: "100%",
   },
   card: {
-    backgroundColor: Colors.gray,
+    backgroundColor: Colors.BB_darkRedPurple,
     width: "90%",
     height: "80%",
     borderRadius: 20,
@@ -142,7 +142,6 @@ const HomeScreen = () => {
                   <Swiper
                     loop={false}
                     horizontal={true}
-                    showsPagination={false}
                     showsButtons={false}
                   >
                     {images.map((image, index) => {
@@ -162,6 +161,11 @@ const HomeScreen = () => {
                         </View>
                       );
                     })}
+                    <View style={styles.card}>
+                      <Text>
+                        {item.Description}
+                      </Text>
+                    </View>
                   </Swiper>
                 </View>
               );
