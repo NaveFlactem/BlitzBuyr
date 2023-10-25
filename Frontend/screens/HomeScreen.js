@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Image, StyleSheet, SafeAreaView, Text } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 import Swiper from "react-native-swiper";
 import BottomBar from "../components/BottomBar";
 import TopBar from "../components/TopBar";
 import Colors from "../constants/Colors";
+import { SwiperFlatList } from 'react-native-swiper-flatlist';
 
 const styles = StyleSheet.create({
   screenfield: {
@@ -58,6 +60,8 @@ const HomeScreen = () => {
   const [images, setImages] = useState([]);
   const [swipeIndex, setSwipeIndex] = useState(0);
   const didMount = useRef(false);
+  const isFocused = useIsFocused();
+  const swiperRef = useRef(null);
 
   const fetchListings = async () => {
     console.log("Fetching listings...");
@@ -72,7 +76,9 @@ const HomeScreen = () => {
       if (listingsResponse.status <= 201) {
         const listingsData = await listingsResponse.json();
         setListings(listingsData.Listings);
-        setSwipeIndex(listingsData.Listings[0].ListingId);
+        if (swipeIndex == 0)
+        setSwipeIndex(listingsData.Listings[swipeIndex].ListingId);
+        //swiperRef.current._reactInternals.memoizedState.index = 0;
       } else {
         console.log("Error fetching listings:", listingsResponse.status);
       }
@@ -105,8 +111,10 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    fetchListings();
-  }, []);
+    if (isFocused) {
+      fetchListings();
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     if (listings.length > 0) {
@@ -121,6 +129,7 @@ const HomeScreen = () => {
       {listings.length > 0 && (
         <View style={styles.container}>
           <Swiper
+            ref={swiperRef}
             loop={false}
             horizontal={false}
             showsPagination={false}
