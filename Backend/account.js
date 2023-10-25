@@ -131,5 +131,36 @@ router.post("/register", (req, res) => {
   );
 });
 
+/**
+ * Handles deleting of accounts.
+ * @name handleDeleteAccounts
+ * @function
+ * @param {Object} req - Express.js request object.
+ * @param {Object} res - Express.js response object.
+ */
+router.delete("/deleteaccounts", function (req, res) {
+  const username = req.query.username;
+
+  if (username) {
+    db.run("DELETE FROM Accounts WHERE Username = ?", [username], (err) => {
+      if (err) {
+        console.error(`Error deleting account ${username}:`, err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      return res.status(200).json({ message: `${username} account deleted` });
+    });
+  } else {
+    db.run("DELETE FROM Accounts", (err) => {
+      if (err) {
+        console.error("Error deleting all accounts:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      return res.status(200).json({ message: "All accounts deleted" });
+    });
+  }
+});
+
 // Export the router
 module.exports = router;

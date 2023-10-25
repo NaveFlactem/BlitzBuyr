@@ -26,7 +26,6 @@ const CreateListing = () => {
 
       photos.forEach((image, index) => {
         formData.append(`image_${index}`, image);
-        
       });
 
       formData.append("price", price);
@@ -70,7 +69,7 @@ const CreateListing = () => {
       let type = match ? `image/${match[1]}` : `image`;
       let width = { width: image.width };
       let height = { height: image.height };
-      
+
       return {
         uri: localUri,
         name: filename,
@@ -148,8 +147,8 @@ const CreateListing = () => {
         ))}
       </ScrollView>
 
-      <TouchableOpacity onPress={handleCreateListing}> 
-            <Text style = {styles.createListingText}>Create Listing</Text>
+      <TouchableOpacity onPress={handleCreateListing}>
+        <Text style={styles.createListingText}>Create Listing</Text>
       </TouchableOpacity>
     </View>
   );
@@ -211,14 +210,14 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     alignItems: "center",
   },
-    createListingText: {
-        alignSelf: "center",
-        fontSize: 24,
-        fontWeight: "bold",
-        marginBottom: 20,
-        backgroundColor: "#F7A859",
-        bottom: "50%",
-    },
+  createListingText: {
+    alignSelf: "center",
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    backgroundColor: "#F7A859",
+    bottom: "50%",
+  },
 });
 
 export default CreateListing;

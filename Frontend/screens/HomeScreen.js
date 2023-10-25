@@ -66,7 +66,7 @@ const HomeScreen = () => {
         "http://blitzbuyr.lol/api/listings",
         {
           method: "GET",
-        }
+        },
       );
 
       if (listingsResponse.status <= 201) {
@@ -90,7 +90,7 @@ const HomeScreen = () => {
         `http://blitzbuyr.lol/api/images?listingId=${index}`,
         {
           method: "GET",
-        }
+        },
       );
 
       if (imagesResponse.status <= 201) {

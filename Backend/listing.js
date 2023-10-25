@@ -18,7 +18,7 @@ const imageStorage = multer.diskStorage({
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     callback(
       null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname),
     );
   },
 });
@@ -89,7 +89,7 @@ router.post("/createListing", imageUpload, function (req, res) {
                     .json({ error: "Internal Server Error" });
                 }
                 // console.log(`Inserted image ${image.originalname}`);
-              }
+              },
             );
           });
         }
@@ -97,7 +97,7 @@ router.post("/createListing", imageUpload, function (req, res) {
           message: "Listing created successfully",
           listingId: listingId,
         });
-      }
+      },
     );
   } catch (err) {
     return res.status(500).json({ error: err });
@@ -120,8 +120,39 @@ router.get("/listings", function (req, res) {
         return res.status(500).json({ error: "Internal Server Error" });
       }
       return res.status(200).json({ Listings: rows });
-    }
+    },
   );
+});
+
+/**
+ * Handles deleting of accounts.
+ * @name handleDeleteListings
+ * @function
+ * @param {Object} req - Express.js request object.
+ * @param {Object} res - Express.js response object.
+ */
+router.delete("/deletelistings", function (req, res) {
+  const listingId = req.query.listingId;
+
+  if (listingId) {
+    db.run("DELETE FROM Listings WHERE ListingId = ?", [listingId], (err) => {
+      if (err) {
+        console.error(`Error deleting listing ${listingId}:`, err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      return res.status(200).json({ message: `Listing ${listingId} deleted` });
+    });
+  } else {
+    db.run("DELETE FROM Listings", (err) => {
+      if (err) {
+        console.error("Error deleting all listings:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      return res.status(200).json({ message: "All listings deleted" });
+    });
+  }
 });
 
 /**
@@ -145,7 +176,7 @@ router.get("/images", function (req, res) {
           return res.status(500).json({ error: "Internal Server Error" });
         }
         return res.status(200).json({ Images: rows });
-      }
+      },
     );
   } else {
     // If 'listingId' is not provided, retrieve all images.
@@ -155,6 +186,37 @@ router.get("/images", function (req, res) {
         return res.status(500).json({ error: "Internal Server Error" });
       }
       return res.status(200).json({ Images: rows });
+    });
+  }
+});
+
+/**
+ * Handles deleting of accounts.
+ * @name handleDeleteimages
+ * @function
+ * @param {Object} req - Express.js request object.
+ * @param {Object} res - Express.js response object.
+ */
+router.delete("/deleteimages", function (req, res) {
+  const imageId = req.query.imageId;
+
+  if (imageId) {
+    db.run("DELETE FROM Images WHERE ImageId = ?", [imageId], (err) => {
+      if (err) {
+        console.error(`Error deleting image ${imageId}:`, err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      return res.status(200).json({ message: `image ${imageId} deleted` });
+    });
+  } else {
+    db.run("DELETE FROM images", (err) => {
+      if (err) {
+        console.error("Error deleting all images:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      return res.status(200).json({ message: "All images deleted" });
     });
   }
 });
