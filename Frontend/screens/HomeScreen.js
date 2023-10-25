@@ -1,6 +1,6 @@
 import { serverIp } from "../config.js";
 import React, { useEffect, useRef, useState } from "react";
-import { View, Image, StyleSheet, SafeAreaView, Text } from "react-native";
+import { View, Image, StyleSheet, SafeAreaView, Text, ActivityIndicator } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import Swiper from "react-native-swiper";
 import BottomBar from "../components/BottomBar";
@@ -67,44 +67,16 @@ const HomeScreen = () => {
   const fetchListings = async () => {
     console.log("Fetching listings...");
     try {
-      const listingsResponse = await fetch(
-        `${serverIp}/api/listings`,
-        {
-          method: "GET",
-        }
-      );
+      const listingsResponse = await fetch(`${serverIp}/api/listings`, {
+        method: "GET",
+      });
 
       if (listingsResponse.status <= 201) {
         const listingsData = await listingsResponse.json();
-        setListings(listingsData.Listings);
-        if (swipeIndex == 0)
-          setSwipeIndex(listingsData.Listings[swipeIndex].ListingId);
-        //swiperRef.current._reactInternals.memoizedState.index = 0;
+        //console.log(listingsData);
+        setListings(listingsData);
       } else {
         console.log("Error fetching listings:", listingsResponse.status);
-      }
-    } catch (err) {
-      console.log("Error:", err);
-    }
-  };
-
-  const fetchImages = async (index) => {
-    if (index == 0) return;
-    try {
-      //const id = listings[index].ListingId;
-      console.log("Fetching images for ListingID " + index);
-      const imagesResponse = await fetch(
-        `${serverIP}/api/images?listingId=${index}`,
-        {
-          method: "GET",
-        }
-      );
-
-      if (imagesResponse.status <= 201) {
-        const imagesData = await imagesResponse.json();
-        setImages(imagesData.Images);
-      } else {
-        console.log("Error fetching images:", imagesResponse.status);
       }
     } catch (err) {
       console.log("Error:", err);
@@ -117,17 +89,11 @@ const HomeScreen = () => {
     }
   }, [isFocused]);
 
-  useEffect(() => {
-    if (listings.length > 0) {
-      fetchImages(swipeIndex);
-    }
-  }, [swipeIndex, listings]);
-
   return (
     <SafeAreaView style={styles.screenfield}>
       <TopBar />
 
-      {listings.length > 0 && (
+      {listings && listings.length > 0 && (
         <View style={styles.container}>
           <Swiper
             ref={swiperRef}
@@ -135,21 +101,20 @@ const HomeScreen = () => {
             horizontal={false}
             showsPagination={false}
             showsButtons={false}
-            onIndexChanged={(index) => setSwipeIndex(listings[index].ListingId)}
           >
             {listings.map((item, listIndex) => {
               return (
                 <View key={item.ListingId} style={styles.card}>
-                  <Swiper loop={false} horizontal={true} showsButtons={false}>
-                    {images.map((image, index) => {
-                      // console.log(`Listing ID: ${listIndex}, Image: blitzbuyr.lol/${image.ImageURI}`);
+                  <Swiper loop={false} horizontal={true} showsButtons={false} showsPagination={false}>
+                    {item.images.map((imageURI, index) => {
                       return (
                         <View key={index}>
                           <Image
                             style={styles.image}
                             source={{
-                              uri: `${serverIP}/${image.ImageURI}`,
+                              uri: `${serverIp}/img/${imageURI}`,
                             }}
+                            PlaceholderContent={<ActivityIndicator />}
                           />
                           <View style={styles.titleContainer}>
                             <Text style={styles.title}>{item.Title}</Text>
@@ -158,11 +123,6 @@ const HomeScreen = () => {
                         </View>
                       );
                     })}
-                    {item.Description ? (
-                      <View style={styles.card}>
-                        <Text>{item.Description}</Text>
-                      </View>
-                    ) : null}
                   </Swiper>
                 </View>
               );

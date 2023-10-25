@@ -17,7 +17,7 @@ const imageStorage = multer.diskStorage({
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     callback(
       null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname),
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
     );
   },
 });
@@ -50,10 +50,6 @@ router.post("/createListing", imageUpload, function (req, res) {
   const { price, title, description, username } = req.body;
   const images = req.files;
 
-  //console.log(
-  //`price: ${price}\nimages: ${images}\ntitle: ${title}\ndescription: ${description}\nUserName: ${username}`
-  //);
-
   const sqlTimeStamp = new Date().toISOString().slice(0, 19).replace("T", " ");
 
   try {
@@ -77,7 +73,7 @@ router.post("/createListing", imageUpload, function (req, res) {
 
             db.run(
               "INSERT INTO Images (listingId, ImageURI) VALUES (?, ?)",
-              [listingId, imagePath],
+              [listingId, image.filename],
               (err) => {
                 if (err) {
                   console.error("Error querying the database:", err);
@@ -86,7 +82,7 @@ router.post("/createListing", imageUpload, function (req, res) {
                     .json({ error: "Internal Server Error" });
                 }
                 // console.log(`Inserted image ${image.originalname}`);
-              },
+              }
             );
           });
         }
@@ -94,7 +90,7 @@ router.post("/createListing", imageUpload, function (req, res) {
           message: "Listing created successfully",
           listingId: listingId,
         });
-      },
+      }
     );
   } catch (err) {
     return res.status(500).json({ error: err });
@@ -108,17 +104,66 @@ router.post("/createListing", imageUpload, function (req, res) {
  * @param {Object} req - Express.js request object.
  * @param {Object} res - Express.js response object.
  */
-router.get("/listings", function (req, res) {
-  db.all(
-    "SELECT * FROM Listings ORDER BY ListingId DESC",
-    function (err, rows) {
-      if (err) {
-        console.error("Error querying the database:", err);
-        return res.status(500).json({ error: "Internal Server Error" });
+router.get("/listings", async function (req, res) {
+  try {
+    const listingsResult = await new Promise((resolve, reject) => {
+      // First query
+      db.all("SELECT * FROM Listings ORDER BY ListingId DESC", (err, rows) => {
+        if (err) {
+          console.error("Error querying the database (first query):", err);
+          reject(err);
+        }
+        resolve(rows);
+      });
+    });
+    
+    const imagesResult = await new Promise((resolve, reject) => {
+      // Extract the ListingIds from listingsResult
+      const listingIds = listingsResult.map((listing) => listing.ListingId);
+    
+      if (listingIds.length === 0) {
+        // If there are no ListingIds, there's no need to query the Images table.
+        resolve([]);
+      } else {
+        // Generate placeholders for the IN clause based on the number of ListingIds
+        const placeholders = listingIds.map(() => '?').join(', ');
+    
+        // Second query using placeholders for the IN clause
+        db.all(
+          `SELECT * FROM Images i WHERE i.ListingId IN (${placeholders})`,
+          listingIds,
+          (err, rows) => {
+            if (err) {
+              console.error("Error querying the database (second query):", err);
+              reject(err);
+            }
+            resolve(rows);
+          }
+        );
       }
-      return res.status(200).json({ Listings: rows });
-    },
-  );
+    });
+
+    const combinedData = listingsResult.map((listing) => {
+      const matchingImages = imagesResult
+        .filter((image) => image.ListingId === listing.ListingId)
+        .map((image) => image.ImageURI);
+      return {
+        ...listing, // Include all properties from the listing
+        images: matchingImages, // Add the matching images
+      };
+    });
+
+    // Now combinedData contains the desired format where each listing includes its images
+    console.log(combinedData);
+
+    // Now you can use both firstQueryResult and secondQueryResult
+    return res.status(200).json({
+      Listings: firstQueryResult,
+      AnotherTableData: secondQueryResult,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 /**
@@ -173,7 +218,7 @@ router.get("/images", function (req, res) {
           return res.status(500).json({ error: "Internal Server Error" });
         }
         return res.status(200).json({ Images: rows });
-      },
+      }
     );
   } else {
     // If 'listingId' is not provided, retrieve all images.
