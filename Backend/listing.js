@@ -9,7 +9,6 @@ router.use(bodyParser.urlencoded({ extended: true })).use(bodyParser.json());
 const db = require("./db").db;
 const multer = require("multer");
 const path = require("path");
-const { encode } = require("blurhash");
 
 const imageStorage = multer.diskStorage({
   destination: "./img/", // Set the directory where uploaded files will be stored
@@ -50,6 +49,7 @@ const imageUpload = multer({
 router.post("/createListing", imageUpload, function (req, res) {
   const { price, title, description, username } = req.body;
   const images = req.files;
+
   //console.log(
   //`price: ${price}\nimages: ${images}\ntitle: ${title}\ndescription: ${description}\nUserName: ${username}`
   //);
@@ -72,15 +72,12 @@ router.post("/createListing", imageUpload, function (req, res) {
         // Insert images into the Images table
         if (images.length > 0) {
           images.forEach((image) => {
+            // console.log(image);
             const imagePath = "img/" + image.filename;
 
-            ////
-            const blurhash = encode(imagePath, 32, 32);
-            ////
-
             db.run(
-              "INSERT INTO Images (listingId, ImageURI, BlurHash) VALUES (?, ?, ?)",
-              [listingId, imagePath, blurhash],
+              "INSERT INTO Images (listingId, ImageURI) VALUES (?, ?)",
+              [listingId, imagePath],
               (err) => {
                 if (err) {
                   console.error("Error querying the database:", err);

@@ -20,6 +20,7 @@ app.use(
 );
 
 // Middleware for printing out request information
+/*
 app.use(function (req, res, next) {
   console.log(`Received request:
     IP: ${req.ip}
@@ -29,6 +30,7 @@ app.use(function (req, res, next) {
     Request Body: ${req.body}`);
   next();
 });
+*/
 
 // server routes and settings
 app
