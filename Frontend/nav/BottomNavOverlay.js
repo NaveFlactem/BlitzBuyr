@@ -62,7 +62,7 @@ const TabButton = (props) => {
       activeOpacity={1}
       style={styles.container}
     >
-      <Animatable.View ref={viewRef} duration={100} style={styles.container}>
+      <Animatable.View ref={viewRef} duration={500} style={styles.container}>
         <Icon
           type={item.type}
           name={focused ? item.activeIcon : item.inActiveIcon}
