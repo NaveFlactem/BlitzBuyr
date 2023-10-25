@@ -1,3 +1,4 @@
+import { serverIp } from "../../config.js";
 import React, { useState } from "react";
 import {
   View,
@@ -38,7 +39,7 @@ const CreateAccountScreen = ({ navigation }) => {
       email: email,
     };
 
-    const response = await fetch("http://blitzbuyr.lol/api/register", {
+    const response = await fetch(`${serverIp}/api/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
