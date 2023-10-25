@@ -1,6 +1,13 @@
 import { serverIp } from "../config.js";
 import React, { useEffect, useRef, useState } from "react";
-import { View, Image, StyleSheet, SafeAreaView, Text, ActivityIndicator } from "react-native";
+import {
+  View,
+  Image,
+  StyleSheet,
+  SafeAreaView,
+  Text,
+  ActivityIndicator,
+} from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import Swiper from "react-native-swiper";
 import BottomBar from "../components/BottomBar";
@@ -54,6 +61,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "white", // Customize the color
   },
+  description: {
+    fontSize: 10,
+    color: "white", // Customize the color
+  },
 });
 
 const HomeScreen = () => {
@@ -105,7 +116,12 @@ const HomeScreen = () => {
             {listings.map((item, listIndex) => {
               return (
                 <View key={item.ListingId} style={styles.card}>
-                  <Swiper loop={false} horizontal={true} showsButtons={false} showsPagination={false}>
+                  <Swiper
+                    loop={false}
+                    horizontal={true}
+                    showsButtons={false}
+                    showsPagination={true}
+                  >
                     {item.images.map((imageURI, index) => {
                       return (
                         <View key={index}>
@@ -119,6 +135,11 @@ const HomeScreen = () => {
                           <View style={styles.titleContainer}>
                             <Text style={styles.title}>{item.Title}</Text>
                             <Text style={styles.price}>{`$${item.Price}`}</Text>
+                            {item.Description.length > 0 && (
+                              <Text style={styles.description}>
+                                {item.Description}
+                              </Text>
+                            )}
                           </View>
                         </View>
                       );
