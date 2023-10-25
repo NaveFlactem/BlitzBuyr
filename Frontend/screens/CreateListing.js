@@ -161,7 +161,7 @@ const CreateListing = () => {
       <TouchableOpacity style={styles.uploadButton} onPress={handleUploadPhoto}>
       <MaterialCommunityIcons
         name="image-plus"
-        size={100} // Set the desired size of the icon
+        size={100} // Set the desired size of the icon//
         color="black" // Set the desired color of the icon
         style={styles.uploadIcon}
       />
