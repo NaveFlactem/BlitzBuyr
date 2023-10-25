@@ -1,3 +1,4 @@
+import { serverIp } from "../config.js";
 import React, { useEffect, useRef, useState } from "react";
 import { View, Image, StyleSheet, SafeAreaView, Text } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
@@ -67,7 +68,7 @@ const HomeScreen = () => {
     console.log("Fetching listings...");
     try {
       const listingsResponse = await fetch(
-        "http://blitzbuyr.lol/api/listings",
+        `${serverIp}/api/listings`,
         {
           method: "GET",
         }
@@ -93,7 +94,7 @@ const HomeScreen = () => {
       //const id = listings[index].ListingId;
       console.log("Fetching images for ListingID " + index);
       const imagesResponse = await fetch(
-        `http://blitzbuyr.lol/api/images?listingId=${index}`,
+        `${serverIP}/api/images?listingId=${index}`,
         {
           method: "GET",
         }
@@ -147,7 +148,7 @@ const HomeScreen = () => {
                           <Image
                             style={styles.image}
                             source={{
-                              uri: `http://blitzbuyr.lol/${image.ImageURI}`,
+                              uri: `${serverIP}/${image.ImageURI}`,
                             }}
                           />
                           <View style={styles.titleContainer}>

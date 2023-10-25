@@ -1,3 +1,4 @@
+import { serverIp } from "../config.js";
 import React, { useState } from "react";
 import {
   View,
@@ -48,7 +49,7 @@ const CreateListing = () => {
       formData.append("username", "test");
 
       console.log("FormData:", formData);
-      const response = await fetch("http://blitzbuyr.lol/api/createListing", {
+      const response = await fetch(`${serverIp}/api/createListing`, {
         method: "POST",
         body: formData,
       });
