@@ -13,13 +13,27 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 
+/** 
+* @function
+* @CreateListing
+* @param {String} title - title variable, stores what the user inputs
+* @param {String} description - description variable, stores what the user inputs
+* @param {String} price - price variable, stores what the user inputs
+* @param {Array} photos - photo variable, stores what the user inputs as an array
+*/
+
+
 const CreateListing = () => {
   const navigation = useNavigation();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [photos, setPhotos] = useState([]);
-
+  /**
+   * @function
+   * @handleCreateListing - sends user inputted data to server and checks if it ran smoothly
+   * @param {Object} formData - object that is sent to the server with user inputted values
+   */
   const handleCreateListing = async () => {
     try {
       const formData = new FormData();
@@ -50,7 +64,10 @@ const CreateListing = () => {
       console.error("Error creating listing:", error);
     }
   };
-
+  /**
+   * @function
+   * @handleUploadPhoto - Uses ImagePicker to acess users photos and multiple of them. 
+   */
   const handleUploadPhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -61,7 +78,10 @@ const CreateListing = () => {
     if (result.cancelled) {
       return;
     }
-
+  /**
+   * @function
+   * @selectedImages - processes images allowing them to be sent and displayed
+   */
     const selectedImages = result.assets.map((image) => {
       let localUri = image.uri;
       let filename = localUri.split("/").pop();
@@ -82,7 +102,10 @@ const CreateListing = () => {
     // Now, you can set `selectedImages` in your state variable, which appears to be `setPhotos`.
     setPhotos(selectedImages);
   };
-
+  /**
+   * @function
+   * @handleDeletePhoto - deletes photos that the user no longer wants to post
+   */
   const handleDeletePhoto = (index) => {
     Alert.alert("Delete Photo", "Are you sure you want to delete this photo?", [
       {
@@ -161,7 +184,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50, //top of page
     padding: 30, //all around
-    backgroundColor: "#fff",
+    backgroundColor: "#D6447F",
   },
   title: {
     fontSize: 24,
@@ -171,6 +194,7 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     borderColor: "gray",
+    backgroundColor: "#F7A859",
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
@@ -179,7 +203,7 @@ const styles = StyleSheet.create({
     height: 120,
   },
   uploadButton: {
-    backgroundColor: "white",
+    backgroundColor: "#F7A859",
     width: "100%",
     height: 250,
     alignItems: "center",
