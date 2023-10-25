@@ -82,7 +82,7 @@ const HomeScreen = () => {
   };
 
   const fetchImages = async (index) => {
-    if (listings.length == 0) console.log("No listings");
+    if (index == 0) return;
     try {
       //const id = listings[index].ListingId;
       console.log("Fetching images for ListingID " + index);
