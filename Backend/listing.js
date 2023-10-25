@@ -2,7 +2,6 @@
  * Express application for serving static files and handling API requests.
  * @module API
  */
-
 const express = require("express");
 const router = express.Router();
 var bodyParser = require("body-parser");
@@ -10,6 +9,7 @@ router.use(bodyParser.urlencoded({ extended: true })).use(bodyParser.json());
 const db = require("./db").db;
 const multer = require("multer");
 const path = require("path");
+const { encode } = require("blurhash");
 
 const imageStorage = multer.diskStorage({
   destination: "./img/", // Set the directory where uploaded files will be stored
@@ -18,7 +18,7 @@ const imageStorage = multer.diskStorage({
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     callback(
       null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname),
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
     );
   },
 });
@@ -73,9 +73,14 @@ router.post("/createListing", imageUpload, function (req, res) {
         if (images.length > 0) {
           images.forEach((image) => {
             const imagePath = "img/" + image.filename;
+
+            ////
+            const blurhash = encode(imagePath, 32, 32);
+            ////
+
             db.run(
-              "INSERT INTO Images (listingId, ImageURI) VALUES (?, ?)",
-              [listingId, imagePath],
+              "INSERT INTO Images (listingId, ImageURI, BlurHash) VALUES (?, ?, ?)",
+              [listingId, imagePath, blurhash],
               (err) => {
                 if (err) {
                   console.error("Error querying the database:", err);
@@ -84,7 +89,7 @@ router.post("/createListing", imageUpload, function (req, res) {
                     .json({ error: "Internal Server Error" });
                 }
                 // console.log(`Inserted image ${image.originalname}`);
-              },
+              }
             );
           });
         }
@@ -92,7 +97,7 @@ router.post("/createListing", imageUpload, function (req, res) {
           message: "Listing created successfully",
           listingId: listingId,
         });
-      },
+      }
     );
   } catch (err) {
     return res.status(500).json({ error: err });
@@ -115,7 +120,7 @@ router.get("/listings", function (req, res) {
         return res.status(500).json({ error: "Internal Server Error" });
       }
       return res.status(200).json({ Listings: rows });
-    },
+    }
   );
 });
 
@@ -140,7 +145,7 @@ router.get("/images", function (req, res) {
           return res.status(500).json({ error: "Internal Server Error" });
         }
         return res.status(200).json({ Images: rows });
-      },
+      }
     );
   } else {
     // If 'listingId' is not provided, retrieve all images.

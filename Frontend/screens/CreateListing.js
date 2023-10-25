@@ -26,6 +26,7 @@ const CreateListing = () => {
 
       photos.forEach((image, index) => {
         formData.append(`image_${index}`, image);
+        
       });
 
       formData.append("price", price);
@@ -67,10 +68,15 @@ const CreateListing = () => {
       let filename = localUri.split("/").pop();
       let match = /\.(\w+)$/.exec(filename);
       let type = match ? `image/${match[1]}` : `image`;
+      let width = { width: image.width };
+      let height = { height: image.height };
+      
       return {
         uri: localUri,
         name: filename,
         type, // Adjust the name as needed
+        width,
+        height,
       };
     });
 

@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS Images (
   ImageId INTEGER PRIMARY KEY AUTOINCREMENT,
   ListingId INTEGER, 
   ImageURI TEXT
+  BlurHash TEXT
   );`;
 
 // Rating Table //
