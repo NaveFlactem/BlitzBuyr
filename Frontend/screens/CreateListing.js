@@ -36,6 +36,14 @@ const CreateListing = () => {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [photos, setPhotos] = useState([]);
+
+  const clearListing = () => {
+    setTitle("");
+    setDescription("");
+    setPrice("");
+    setPhotos([]);
+  }
+
   /**
    * @function
    * @handleCreateListing - sends user inputted data to server and checks if it ran smoothly
@@ -63,6 +71,7 @@ const CreateListing = () => {
       if (response.status <= 201) {
         const responseData = await response.json();
         console.log("Listing created successfully:", responseData);
+        clearListing();
         navigation.navigate("Home");
       } else {
         console.error("HTTP error! Status: ", response.status);
