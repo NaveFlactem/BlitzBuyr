@@ -8,13 +8,13 @@ const express = require("express");
 var favicon = require("serve-favicon");
 const app = express();
 const path = require("path");
-const expressStaticGzip = require("express-static-gzip");
+//const compressionMiddleware = require('./imageCompression');
 
 // static pages
 app.use("/docs", express.static(path.join(__dirname, "../Docs")));
 app.use(
   "/img",
-  expressStaticGzip(path.join(__dirname, "./img"), {
+  express.static(path.join(__dirname, "./img"), {
     enableBrotli: true, // Enable Brotli compression
   }),
 );

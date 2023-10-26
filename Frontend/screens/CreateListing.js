@@ -15,17 +15,16 @@ import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import Colors from "../constants/Colors";
 import Icon, { Icons } from "../components/Icons";
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-/** 
-* @function
-* @CreateListing
-* @param {String} title - title variable, stores what the user inputs
-* @param {String} description - description variable, stores what the user inputs
-* @param {String} price - price variable, stores what the user inputs
-* @param {Array} photos - photo variable, stores what the user inputs as an array
-*/
-
+/**
+ * @function
+ * @CreateListing
+ * @param {String} title - title variable, stores what the user inputs
+ * @param {String} description - description variable, stores what the user inputs
+ * @param {String} price - price variable, stores what the user inputs
+ * @param {Array} photos - photo variable, stores what the user inputs as an array
+ */
 
 const CreateListing = () => {
   const navigation = useNavigation();
@@ -75,7 +74,7 @@ const CreateListing = () => {
   };
   /**
    * @function
-   * @handleUploadPhoto - Uses ImagePicker to acess users photos and multiple of them. 
+   * @handleUploadPhoto - Uses ImagePicker to acess users photos and multiple of them.
    */
   const handleUploadPhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -87,10 +86,10 @@ const CreateListing = () => {
     if (result.cancelled) {
       return;
     }
-  /**
-   * @function
-   * @selectedImages - processes images allowing them to be sent and displayed
-   */
+    /**
+     * @function
+     * @selectedImages - processes images allowing them to be sent and displayed
+     */
     const selectedImages = result.assets.map((image) => {
       let localUri = image.uri;
       let filename = localUri.split("/").pop();
@@ -159,13 +158,13 @@ const CreateListing = () => {
         returnKeyType="done" // This allows users to close the numeric keyboard
       />
       <TouchableOpacity style={styles.uploadButton} onPress={handleUploadPhoto}>
-      <MaterialCommunityIcons
-        name="image-plus"
-        size={100} // Set the desired size of the icon//
-        color="black" // Set the desired color of the icon
-        style={styles.uploadIcon}
-      />
-    </TouchableOpacity>
+        <MaterialCommunityIcons
+          name="image-plus"
+          size={100} // Set the desired size of the icon//
+          color="black" // Set the desired color of the icon
+          style={styles.uploadIcon}
+        />
+      </TouchableOpacity>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {photos.map((photo, index) => (
