@@ -67,10 +67,16 @@ const LoginScreen = ({ navigation }) => {
             onChangeText={(text) => setPassword(text)}
             secureTextEntry
           />
-          <TouchableOpacity onPress={handleLogin} style={styles.loginTextContainer}>
+          <TouchableOpacity
+            onPress={handleLogin}
+            style={styles.loginTextContainer}
+          >
             <Text style={styles.loginText}>Login</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleCreateAccount} style={styles.createAccountTextContainer}>
+          <TouchableOpacity
+            onPress={handleCreateAccount}
+            style={styles.createAccountTextContainer}
+          >
             <Text style={styles.createAccountText}>Create an account</Text>
           </TouchableOpacity>
         </View>

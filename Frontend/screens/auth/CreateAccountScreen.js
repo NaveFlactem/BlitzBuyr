@@ -22,7 +22,7 @@ const CreateAccountScreen = ({ navigation }) => {
     if (password !== confirmPassword) {
       Alert.alert(
         "Password Mismatch",
-        "Password and Confirm Password do not match.",
+        "Password and Confirm Password do not match."
       );
       return;
     }
@@ -93,10 +93,11 @@ const CreateAccountScreen = ({ navigation }) => {
           value={confirmPassword}
           onChangeText={(text) => setConfirmPassword(text)}
         />
-        <TouchableOpacity onPress={handleCreateAccount} style={styles.createAccountTextContainer}>
-            <Text style={styles.createAccountText}>
-              Create Account
-            </Text>
+        <TouchableOpacity
+          onPress={handleCreateAccount}
+          style={styles.createAccountTextContainer}
+        >
+          <Text style={styles.createAccountText}>Create Account</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.loginTextContainer}>
           <Text style={styles.loginText}>Already have an Account? Login</Text>
