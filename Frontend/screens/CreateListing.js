@@ -10,12 +10,16 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
+  Dimensions,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import Colors from "../constants/Colors";
 import Icon, { Icons } from "../components/Icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import * as ImageManipulator from "expo-image-manipulator";
+
+console.log(Dimensions.get("window"));
 
 /**
  * @function
@@ -60,11 +64,6 @@ const CreateListing = () => {
         const responseData = await response.json();
         console.log("Listing created successfully:", responseData);
         navigation.navigate("Home");
-        Alert.alert("Success", "Your listing has been created successfully!", [
-          {
-            text: "OK",
-          },
-        ]);
       } else {
         console.error("HTTP error! Status: ", response.status);
       }
@@ -83,32 +82,49 @@ const CreateListing = () => {
       quality: 1,
     });
 
-    if (result.cancelled) {
+    if (result.canceled) {
       return;
     }
     /**
      * @function
      * @selectedImages - processes images allowing them to be sent and displayed
      */
-    const selectedImages = result.assets.map((image) => {
-      let localUri = image.uri;
-      let filename = localUri.split("/").pop();
-      let match = /\.(\w+)$/.exec(filename);
-      let type = match ? `image/${match[1]}` : `image`;
-      let width = { width: image.width };
-      let height = { height: image.height };
+    const selectedImages = await Promise.all(
+      result.assets.map(async function (image) {
+        try {
+          const manipulateResult = await ImageManipulator.manipulateAsync(
+            image.uri,
+            [],
+            { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+          );
 
-      return {
-        uri: localUri,
-        name: filename,
-        type, // Adjust the name as needed
-        width,
-        height,
-      };
-    });
+          let localUri = manipulateResult.uri;
+          let filename = localUri.split("/").pop();
+          let match = /\.(\w+)$/.exec(filename);
+          let type = match ? `image/${match[1]}` : `image`;
+          let width = { width: manipulateResult.width };
+          let height = { height: manipulateResult.height };
 
-    // Now, you can set `selectedImages` in your state variable, which appears to be `setPhotos`.
-    setPhotos(selectedImages);
+          return {
+            uri: localUri,
+            name: filename,
+            type,
+            width,
+            height,
+          };
+        } catch (error) {
+          console.error("Image processing error:", error);
+          // Handle the error as needed
+          return null; // or another appropriate value indicating an error
+        }
+      })
+    );
+
+    // Filter out any potential null values (indicating errors)
+    const filteredImages = selectedImages.filter((image) => image !== null);
+
+    // Now, set the filteredImages in your state variable
+    setPhotos(filteredImages);
   };
   /**
    * @function
@@ -194,7 +210,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50, //top of page
     padding: 30, //all around
-    backgroundColor: Colors.BB_darkPink,
+    backgroundColor: "#D6447F",
   },
   title: {
     fontSize: 24,
@@ -204,7 +220,7 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     borderColor: "gray",
-    backgroundColor: Colors.BB_orange,
+    backgroundColor: "#F7A859",
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
@@ -213,7 +229,7 @@ const styles = StyleSheet.create({
     height: 120,
   },
   uploadButton: {
-    backgroundColor: Colors.BB_orange,
+    backgroundColor: "#F7A859",
     width: "100%",
     height: 250,
     alignItems: "center",
