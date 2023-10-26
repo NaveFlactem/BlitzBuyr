@@ -1,12 +1,20 @@
 import { serverIp } from "../config.js";
 import React, { useEffect, useRef, useState } from "react";
-import { View, Image, StyleSheet, SafeAreaView, Text, ActivityIndicator } from "react-native";
+import {
+  View,
+  StyleSheet,
+  SafeAreaView,
+  Text,
+} from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import Swiper from "react-native-swiper";
 import BottomBar from "../components/BottomBar";
 import TopBar from "../components/TopBar";
 import Colors from "../constants/Colors";
-import { LazyLoadImage } from "react-lazy-load-image-component";
+import { Image } from "expo-image";
+
+const blurhash =
+  "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
 const styles = StyleSheet.create({
   screenfield: {
@@ -24,23 +32,30 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: Colors.BB_darkRedPurple,
-    width: "90%",
-    height: "80%",
-    borderRadius: 20,
+    width: "100%",
+    height: "81%",
+    borderRadius: 0,
     alignItems: "center",
     justifyContent: "center",
-    margin: "5%",
     top: "9%",
   },
   image: {
     width: "100%",
     height: "100%",
-    borderRadius: 20,
+    borderRadius: 0,
   },
   titleContainer: {
     position: "absolute",
     bottom: 10, // Adjust the position as needed
     left: 10, // Adjust the position as needed
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    padding: 5,
+    borderRadius: 5,
+  },
+  pageContainer: {
+    position: "absolute",
+    bottom: 10, // Adjust the position as needed
+    left: 380, // Adjust the position as needed
     backgroundColor: "rgba(0, 0, 0, 0.6)",
     padding: 5,
     borderRadius: 5,
@@ -52,6 +67,10 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 14,
+    color: "white", // Customize the color
+  },
+  description: {
+    fontSize: 10,
     color: "white", // Customize the color
   },
 });
@@ -103,9 +122,15 @@ const HomeScreen = () => {
             showsButtons={false}
           >
             {listings.map((item, listIndex) => {
+              Image.prefetch(item.images);
               return (
                 <View key={item.ListingId} style={styles.card}>
-                  <Swiper loop={false} horizontal={true} showsButtons={false} showsPagination={false}>
+                  <Swiper
+                    loop={false}
+                    horizontal={true}
+                    showsButtons={false}
+                    showsPagination={false}
+                  >
                     {item.images.map((imageURI, index) => {
                       return (
                         <View key={index}>
@@ -114,11 +139,21 @@ const HomeScreen = () => {
                             source={{
                               uri: `${serverIp}/img/${imageURI}`,
                             }}
-                            PlaceholderContent={<ActivityIndicator />}
+                            placeholder={blurhash}
+                            contentFit="contain"
+                            transition={200}
                           />
                           <View style={styles.titleContainer}>
                             <Text style={styles.title}>{item.Title}</Text>
                             <Text style={styles.price}>{`$${item.Price}`}</Text>
+                            {item.Description.length > 0 && (
+                              <Text style={styles.description}>
+                                {item.Description}
+                              </Text>
+                            )}
+                          </View>
+                          <View style={styles.pageContainer}>
+                            <Text style={styles.title}>{`${index + 1}/${item.images.length}`}</Text>
                           </View>
                         </View>
                       );

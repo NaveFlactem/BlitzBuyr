@@ -10,19 +10,25 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
+  Dimensions,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
+import Colors from "../constants/Colors";
+import Icon, { Icons } from "../components/Icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import * as ImageManipulator from 'expo-image-manipulator';
 
-/** 
-* @function
-* @CreateListing
-* @param {String} title - title variable, stores what the user inputs
-* @param {String} description - description variable, stores what the user inputs
-* @param {String} price - price variable, stores what the user inputs
-* @param {Array} photos - photo variable, stores what the user inputs as an array
-*/
+console.log(Dimensions.get("window"));
 
+/**
+ * @function
+ * @CreateListing
+ * @param {String} title - title variable, stores what the user inputs
+ * @param {String} description - description variable, stores what the user inputs
+ * @param {String} price - price variable, stores what the user inputs
+ * @param {Array} photos - photo variable, stores what the user inputs as an array
+ */
 
 const CreateListing = () => {
   const navigation = useNavigation();
@@ -67,7 +73,7 @@ const CreateListing = () => {
   };
   /**
    * @function
-   * @handleUploadPhoto - Uses ImagePicker to acess users photos and multiple of them. 
+   * @handleUploadPhoto - Uses ImagePicker to acess users photos and multiple of them.
    */
   const handleUploadPhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -76,32 +82,49 @@ const CreateListing = () => {
       quality: 1,
     });
 
-    if (result.cancelled) {
+    if (result.canceled) {
       return;
     }
-  /**
-   * @function
-   * @selectedImages - processes images allowing them to be sent and displayed
-   */
-    const selectedImages = result.assets.map((image) => {
-      let localUri = image.uri;
-      let filename = localUri.split("/").pop();
-      let match = /\.(\w+)$/.exec(filename);
-      let type = match ? `image/${match[1]}` : `image`;
-      let width = { width: image.width };
-      let height = { height: image.height };
+    /**
+     * @function
+     * @selectedImages - processes images allowing them to be sent and displayed
+     */
+    const selectedImages = await Promise.all(
+      result.assets.map(async function (image) {
+        try {
+          const manipulateResult = await ImageManipulator.manipulateAsync(
+            image.uri,
+            [],
+            { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+          );
 
-      return {
-        uri: localUri,
-        name: filename,
-        type, // Adjust the name as needed
-        width,
-        height,
-      };
-    });
+          let localUri = manipulateResult.uri;
+          let filename = localUri.split("/").pop();
+          let match = /\.(\w+)$/.exec(filename);
+          let type = match ? `image/${match[1]}` : `image`;
+          let width = { width: manipulateResult.width };
+          let height = { height: manipulateResult.height };
 
-    // Now, you can set `selectedImages` in your state variable, which appears to be `setPhotos`.
-    setPhotos(selectedImages);
+          return {
+            uri: localUri,
+            name: filename,
+            type,
+            width,
+            height,
+          };
+        } catch (error) {
+          console.error("Image processing error:", error);
+          // Handle the error as needed
+          return null; // or another appropriate value indicating an error
+        }
+      })
+    );
+
+    // Filter out any potential null values (indicating errors)
+    const filteredImages = selectedImages.filter((image) => image !== null);
+
+    // Now, set the filteredImages in your state variable
+    setPhotos(filteredImages);
   };
   /**
    * @function
@@ -151,8 +174,10 @@ const CreateListing = () => {
         returnKeyType="done" // This allows users to close the numeric keyboard
       />
       <TouchableOpacity style={styles.uploadButton} onPress={handleUploadPhoto}>
-        <Image
-          source={require("../assets/ImageIcon.png")}
+        <MaterialCommunityIcons
+          name="image-plus"
+          size={100} // Set the desired size of the icon//
+          color="black" // Set the desired color of the icon
           style={styles.uploadIcon}
         />
       </TouchableOpacity>
