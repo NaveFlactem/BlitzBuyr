@@ -8,7 +8,9 @@ import {
   StyleSheet,
   Alert,
   Image,
+  TouchableOpacity,
 } from "react-native";
+import Colors from "../../constants/Colors.js";
 
 const CreateAccountScreen = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -91,7 +93,14 @@ const CreateAccountScreen = ({ navigation }) => {
           value={confirmPassword}
           onChangeText={(text) => setConfirmPassword(text)}
         />
-        <Button title="Create Account" onPress={handleCreateAccount} />
+        <TouchableOpacity onPress={handleCreateAccount} style={styles.createAccountTextContainer}>
+            <Text style={styles.createAccountText}>
+              Create Account
+            </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.loginTextContainer}>
+          <Text style={styles.loginText}>Already have an Account? Login</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -101,29 +110,72 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    backgroundColor: "#D6447F",
+    backgroundColor: Colors.BB_darkRedPurple,
     alignItems: "center",
     padding: 16,
   },
   loginContainer: {
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: Colors.BB_darkOrange,
     width: "100%",
-    backgroundColor: "#F7A859",
     padding: 20,
     borderRadius: 10,
-    shadowColor: "rgba(0, 0, 0, 0.3)",
+    shadowColor: "black",
+    shadowOpacity: 1,
     shadowOffset: {
-      width: 0,
-      height: 2,
+      width: 5,
+      height: 5,
     },
-    shadowRadius: 5,
+    shadowRadius: 7,
     elevation: 5,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
+  },
+  createAccountTextContainer: {
+    marginTop: 10,
+    backgroundColor: Colors.BB_rangeYellow,
+    padding: 5,
+    borderWidth: 2,
+    borderColor: Colors.black,
+    borderRadius: 10,
+    color: "black",
+    fontWeight: "bold",
+    shadowColor: "black",
+    shadowOpacity: 1,
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  createAccountText: {
+    fontSize: 16,
+  },
+  loginTextContainer: {
+    marginTop: 10,
+    backgroundColor: Colors.BB_darkRedPurple,
+    padding: 5,
+    borderWidth: 2,
+    borderColor: Colors.black,
+    borderRadius: 10,
+    fontWeight: "bold",
+    shadowColor: "black",
+    shadowOpacity: 1,
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  loginText: {
+    fontSize: 6,
+    color: "white",
   },
   input: {
     width: "100%",
@@ -138,7 +190,13 @@ const styles = StyleSheet.create({
     width: 100, // Adjust the width as needed
     height: 100, // Adjust the height as needed
     marginBottom: 20, // Adjust the spacing
-    // Add other styles as needed
+    shadowRadius: 3,
+    shadowColor: "black",
+    shadowOpacity: 1,
+    shadowOffset: {
+      width: 2,
+      height: 3,
+    },
   },
 });
 

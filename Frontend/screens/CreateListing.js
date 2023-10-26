@@ -191,6 +191,8 @@ const CreateListing = () => {
         />
       </TouchableOpacity>
 
+      {/* {photos.map((photo, index) => (} */}
+
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {photos.map((photo, index) => (
           <View key={index}>
@@ -209,6 +211,7 @@ const CreateListing = () => {
         <Text style={styles.createListingText}>Create Listing</Text>
       </TouchableOpacity>
     </View>
+
   );
 };
 
