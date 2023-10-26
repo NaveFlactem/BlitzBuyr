@@ -7,7 +7,7 @@ const sqlite3 = require("sqlite3").verbose();
  */
 
 /**
- * Initializing database connection
+ * Initializing database connection.
  * @function
  * @name sqlite3.Database
  * @param {string} filename -  This is a required parameter and represents the name of the SQLite database file, including the path if necessary.
