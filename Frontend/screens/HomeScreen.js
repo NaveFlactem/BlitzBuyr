@@ -1,209 +1,158 @@
-import React, {useEffect, useRef} from 'react';
+import { serverIp } from "../config.js";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  SafeAreaView,
   View,
   Image,
   StyleSheet,
-  Dimensions,
-  FlatList,
+  SafeAreaView,
   Text,
-  Button,
-  TouchableOpacity,
-} from 'react-native';
-import Swiper from 'react-native-swiper';
-import Icon from '@mui/material/Icon';
-import StackNavigator from '../StackNavigator';
-import {useNavigation} from '@react-navigation/native';
-
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
+  ActivityIndicator,
+} from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+import Swiper from "react-native-swiper";
+import BottomBar from "../components/BottomBar";
+import TopBar from "../components/TopBar";
+import Colors from "../constants/Colors";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 const styles = StyleSheet.create({
   screenfield: {
-    height: screenHeight,
-    width: screenWidth,
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   container: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     zIndex: -1,
-    backgroundColor: '#D6447F',
-    height: screenHeight,
-    width: screenWidth,
-  },
-  image: {
-    height: 0.08 * screenHeight,
-    width: 0.08 * screenHeight,
-    top: 0.015 * screenHeight,
-  },
-  topBar: {
-    position: 'absolute',
-    top: 0,
-    height: 0.13 * screenHeight,
-    width: screenWidth,
-    backgroundColor: '#58293F',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderBottomWidth: 4,
-    borderBottomColor: '#F7A859',
-  },
-  bottomBar: {
-    position: 'absolute',
-    bottom: 0,
-    height: 0.1 * screenHeight,
-    width: screenWidth,
-    backgroundColor: '#58293F',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderTopWidth: 4,
-    borderTopColor: '#F7A859',
+    backgroundColor: Colors.BB_pink,
+    height: "100%",
+    width: "100%",
   },
   card: {
-    backgroundColor: '#F7A859',
-    width: 0.9 * screenWidth,
-    height: 0.7 * screenHeight,
+    backgroundColor: Colors.BB_darkRedPurple,
+    width: "90%",
+    height: "80%",
     borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: 20,
-    top: 0.09 * screenHeight,
+    alignItems: "center",
+    justifyContent: "center",
+    margin: "5%",
+    top: "9%",
   },
-  leftTapArea: {
-    position: 'absolute',
-    width: 0.3 * screenWidth,
-    height: 0.7 * screenHeight,
-    left: 10,
-    backgroundColor: 'cyan',
-    borderTopLeftRadius: 20,
-    borderBottomLeftRadius: 20,
-  },
-  rightTapArea: {
-    position: 'absolute',
-    width: 0.3 * screenWidth,
-    height: 0.7 * screenHeight,
-    right: 0,
-    backgroundColor: 'cyan',
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
-  },
-  HomeButton: {
-    position: 'absolute',
-    width: 0.3 * screenWidth,
-    height: 0.09 * screenHeight,
-    backgroundColor: 'white',
+  image: {
+    width: "100%",
+    height: "100%",
     borderRadius: 20,
-    bottom: 0,
   },
-  ListingButton: {
-    position: 'absolute',
-    width: 0.3 * screenWidth,
-    height: 0.09 * screenHeight,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    right: 0,
+  titleContainer: {
+    position: "absolute",
+    bottom: 10, // Adjust the position as needed
+    left: 10, // Adjust the position as needed
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    padding: 5,
+    borderRadius: 5,
   },
-  ProfileButton: {
-    position: 'absolute',
-    width: 0.3 * screenWidth,
-    height: 0.09 * screenHeight,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    left: 0,
+  title: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white", // Customize the color
+  },
+  price: {
+    fontSize: 14,
+    color: "white", // Customize the color
+  },
+  description: {
+    fontSize: 10,
+    color: "white", // Customize the color
   },
 });
 
 const HomeScreen = () => {
-  const getListing = listingId => {
-    fetch(`blitzbuyr.lol/api/listing?id=${listingId}`, {
-      method: 'GET',
-    }).then(response => {
-      if (response.status == 200) {
-        // this means we got the listings successfully
-        return response.json(); // returns the listings
+  const [listings, setListings] = useState([]);
+  const [images, setImages] = useState([]);
+  const [swipeIndex, setSwipeIndex] = useState(0);
+  const didMount = useRef(false);
+  const isFocused = useIsFocused();
+  const swiperRef = useRef(null);
+
+  const fetchListings = async () => {
+    console.log("Fetching listings...");
+    try {
+      const listingsResponse = await fetch(`${serverIp}/api/listings`, {
+        method: "GET",
+      });
+
+      if (listingsResponse.status <= 201) {
+        const listingsData = await listingsResponse.json();
+        //console.log(listingsData);
+        setListings(listingsData);
       } else {
-        console.log(response.json()[message]);
+        console.log("Error fetching listings:", listingsResponse.status);
       }
-    });
+    } catch (err) {
+      console.log("Error:", err);
+    }
   };
 
-  const cardDictionary = {
-    0: ['red', 'crimson', 'tomato'],
-    1: ['orange', 'darkorange', 'orangered'],
-    2: ['yellow', 'gold', 'khaki'],
-    3: ['green', 'limegreen', 'forestgreen'],
-    4: ['blue', 'dodgerblue', 'deepskyblue'],
-    5: ['purple', 'darkorchid', 'blueviolet'],
-    6: ['pink', 'deeppink', 'palevioletred'],
-    7: ['brown', 'saddlebrown', 'chocolate'],
-  };
-  const Listings = Object.entries(cardDictionary);
-  const navigation = useNavigation();
+  useEffect(() => {
+    if (isFocused) {
+      fetchListings();
+    }
+  }, [isFocused]);
 
   return (
     <SafeAreaView style={styles.screenfield}>
-      <View style={styles.topBar}>
-        <Image
-          style={styles.image}
-          source={require('../assets/icon_transparent.png')}
-        />
-      </View>
+      <TopBar />
 
-      <View style={styles.container}>
-        <Swiper
-          showsButtons={false}
-          showsPagination={false}
-          vertical={true}
-          horizontal={false}>
-          {Listings.map((listing, page) => (
-            <View style={styles.card} key={listing}>
-              <Swiper
-                horizontal={true}
-                showsButtons={false}
-                showsPagination={false}
-                loop={false}>
-                {Listings[page].map((color, index) => (
-                  <View
-                    style={{
-                      backgroundColor: color,
-                      width: 0.9 * screenWidth,
-                      height: 0.7 * screenHeight,
-                      borderRadius: 20,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      margin: 20,
-                      top: 0.09 * screenHeight,
-                    }}
-                    key={index}>
-                    <Text
-                      style={{
-                        fontSize: 30,
-                        fontWeight: 'bold',
-                        color: 'white',
-                      }}>
-                      {listing[0]}
-                    </Text>
-                  </View>
-                ))}
-              </Swiper>
-            </View>
-          ))}
-        </Swiper>
-      </View>
+      {listings && listings.length > 0 && (
+        <View style={styles.container}>
+          <Swiper
+            ref={swiperRef}
+            loop={false}
+            horizontal={false}
+            showsPagination={false}
+            showsButtons={false}
+          >
+            {listings.map((item, listIndex) => {
+              return (
+                <View key={item.ListingId} style={styles.card}>
+                  <Swiper
+                    loop={false}
+                    horizontal={true}
+                    showsButtons={false}
+                    showsPagination={true}
+                  >
+                    {item.images.map((imageURI, index) => {
+                      return (
+                        <View key={index}>
+                          <Image
+                            style={styles.image}
+                            source={{
+                              uri: `${serverIp}/img/${imageURI}`,
+                            }}
+                            PlaceholderContent={<ActivityIndicator />}
+                          />
+                          <View style={styles.titleContainer}>
+                            <Text style={styles.title}>{item.Title}</Text>
+                            <Text style={styles.price}>{`$${item.Price}`}</Text>
+                            {item.Description.length > 0 && (
+                              <Text style={styles.description}>
+                                {item.Description}
+                              </Text>
+                            )}
+                          </View>
+                        </View>
+                      );
+                    })}
+                  </Swiper>
+                </View>
+              );
+            })}
+          </Swiper>
+        </View>
+      )}
 
-      <View style={styles.bottomBar}>
-        <TouchableOpacity
-          style={styles.HomeButton}
-          onPress={() => navigation.navigate('Home')} // Navigate to the 'Home' screen
-        />
-        <TouchableOpacity
-          style={styles.ListingButton}
-          onPress={() => navigation.navigate()} // Navigate to the 'Listing' screen
-        />
-        <TouchableOpacity
-          style={styles.ProfileButton}
-          onPress={() => navigation.navigate('Profile')} // Navigate to the 'Profile' screen
-        />
-      </View>
+      <BottomBar />
     </SafeAreaView>
   );
 };

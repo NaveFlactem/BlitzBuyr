@@ -79,7 +79,7 @@ router.post("/login", function (req, res) {
  * // If the username is available, it will create a new account and respond with a success message.
  * // If the username is already taken, it will respond with a 409 Conflict status code.
  */
-router.post("/register", function (req, res) {
+router.post("/register", (req, res) => {
   const { username, password, confirmPassword, email } = req.body;
 
   // Check if password and confirmPassword match
@@ -106,7 +106,7 @@ router.post("/register", function (req, res) {
       if (row) {
         return res.status(409).json({
           error: `${
-            row.username == username ? "Username" : "Email"
+            row.Username == username ? "Username" : "Email"
           } already exists`,
         }); // 409 = Conflict
       } else {
@@ -129,6 +129,37 @@ router.post("/register", function (req, res) {
       }
     },
   );
+});
+
+/**
+ * Handles deleting of accounts.
+ * @name handleDeleteAccounts
+ * @function
+ * @param {Object} req - Express.js request object.
+ * @param {Object} res - Express.js response object.
+ */
+router.delete("/deleteaccounts", function (req, res) {
+  const username = req.query.username;
+
+  if (username) {
+    db.run("DELETE FROM Accounts WHERE Username = ?", [username], (err) => {
+      if (err) {
+        console.error(`Error deleting account ${username}:`, err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      return res.status(200).json({ message: `${username} account deleted` });
+    });
+  } else {
+    db.run("DELETE FROM Accounts", (err) => {
+      if (err) {
+        console.error("Error deleting all accounts:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      return res.status(200).json({ message: "All accounts deleted" });
+    });
+  }
 });
 
 // Export the router

@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import { serverIp } from "../config.js";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,17 +10,34 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
-} from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import {useNavigation} from '@react-navigation/native';
+} from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import { useNavigation } from "@react-navigation/native";
+import Colors from "../constants/Colors";
+import Icon, { Icons } from "../components/Icons";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+/** 
+* @function
+* @CreateListing
+* @param {String} title - title variable, stores what the user inputs
+* @param {String} description - description variable, stores what the user inputs
+* @param {String} price - price variable, stores what the user inputs
+* @param {Array} photos - photo variable, stores what the user inputs as an array
+*/
+
 
 const CreateListing = () => {
   const navigation = useNavigation();
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
   const [photos, setPhotos] = useState([]);
-
+  /**
+   * @function
+   * @handleCreateListing - sends user inputted data to server and checks if it ran smoothly
+   * @param {Object} formData - object that is sent to the server with user inputted values
+   */
   const handleCreateListing = async () => {
     try {
       const formData = new FormData();
@@ -28,29 +46,37 @@ const CreateListing = () => {
         formData.append(`image_${index}`, image);
       });
 
-      formData.append('price', price);
-      formData.append('title', title);
-      formData.append('description', description);
-      formData.append('username', 'test');
+      formData.append("price", price);
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("username", "test");
 
-      console.log('FormData:', formData);
-      const response = await fetch('http://blitzbuyr.lol/api/createListing', {
-        method: 'POST',
+      console.log("FormData:", formData);
+      const response = await fetch(`${serverIp}/api/createListing`, {
+        method: "POST",
         body: formData,
       });
 
       if (response.status <= 201) {
         const responseData = await response.json();
-        console.log('Listing created successfully:', responseData);
-        navigation.navigate('Home');
+        console.log("Listing created successfully:", responseData);
+        navigation.navigate("Home");
+        Alert.alert("Success", "Your listing has been created successfully!", [
+          {
+            text: "OK",
+          },
+        ]);
       } else {
-        console.error('HTTP error! Status: ', response.status);
+        console.error("HTTP error! Status: ", response.status);
       }
     } catch (error) {
-      console.error('Error creating listing:', error);
+      console.error("Error creating listing:", error);
     }
   };
-
+  /**
+   * @function
+   * @handleUploadPhoto - Uses ImagePicker to acess users photos and multiple of them. 
+   */
   const handleUploadPhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -61,31 +87,42 @@ const CreateListing = () => {
     if (result.cancelled) {
       return;
     }
-
-    const selectedImages = result.assets.map(image => {
+  /**
+   * @function
+   * @selectedImages - processes images allowing them to be sent and displayed
+   */
+    const selectedImages = result.assets.map((image) => {
       let localUri = image.uri;
-      let filename = localUri.split('/').pop();
+      let filename = localUri.split("/").pop();
       let match = /\.(\w+)$/.exec(filename);
       let type = match ? `image/${match[1]}` : `image`;
+      let width = { width: image.width };
+      let height = { height: image.height };
+
       return {
         uri: localUri,
         name: filename,
         type, // Adjust the name as needed
+        width,
+        height,
       };
     });
 
     // Now, you can set `selectedImages` in your state variable, which appears to be `setPhotos`.
     setPhotos(selectedImages);
   };
-
-  const handleDeletePhoto = index => {
-    Alert.alert('Delete Photo', 'Are you sure you want to delete this photo?', [
+  /**
+   * @function
+   * @handleDeletePhoto - deletes photos that the user no longer wants to post
+   */
+  const handleDeletePhoto = (index) => {
+    Alert.alert("Delete Photo", "Are you sure you want to delete this photo?", [
       {
-        text: 'Cancel',
-        style: 'cancel',
+        text: "Cancel",
+        style: "cancel",
       },
       {
-        text: 'Delete',
+        text: "Delete",
         onPress: () => {
           const updatedPhotos = [...photos];
           updatedPhotos.splice(index, 1);
@@ -102,14 +139,14 @@ const CreateListing = () => {
         style={styles.input}
         placeholder="Title"
         value={title}
-        onChangeText={text => setTitle(text)}
+        onChangeText={(text) => setTitle(text)}
         returnKeyType="done" // This allows users to close the keyboard
       />
       <TextInput
         style={[styles.input, styles.multilineInput]}
         placeholder="Description"
         value={description}
-        onChangeText={text => setDescription(text)}
+        onChangeText={(text) => setDescription(text)}
         multiline={true}
         textAlignVertical="top" // Allows users to return to a new line
       />
@@ -117,35 +154,36 @@ const CreateListing = () => {
         style={styles.input}
         placeholder="Price"
         value={price}
-        onChangeText={text => setPrice(text)}
+        onChangeText={(text) => setPrice(text)}
         keyboardType="numeric"
         returnKeyType="done" // This allows users to close the numeric keyboard
       />
       <TouchableOpacity style={styles.uploadButton} onPress={handleUploadPhoto}>
-        <Image
-          source={require('../assets/ImageIcon.png')}
-          style={styles.uploadIcon}
-        />
-      </TouchableOpacity>
+      <MaterialCommunityIcons
+        name="image-plus"
+        size={100} // Set the desired size of the icon//
+        color="black" // Set the desired color of the icon
+        style={styles.uploadIcon}
+      />
+    </TouchableOpacity>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {photos.map((photo, index) => (
           <View key={index}>
-            <Image source={{uri: photo.uri}} style={styles.uploadedPhoto} />
+            <Image source={{ uri: photo.uri }} style={styles.uploadedPhoto} />
             <TouchableOpacity
               style={styles.deleteButton}
-              onPress={() => handleDeletePhoto(index)}>
+              onPress={() => handleDeletePhoto(index)}
+            >
               <Text style={styles.deleteButtonText}>Delete</Text>
             </TouchableOpacity>
           </View>
         ))}
       </ScrollView>
 
-      <Button
-        title="Create Listing"
-        onPress={handleCreateListing}
-        style={styles.createListingButton}
-      />
+      <TouchableOpacity onPress={handleCreateListing}>
+        <Text style={styles.createListingText}>Create Listing</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -157,16 +195,17 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50, //top of page
     padding: 30, //all around
-    backgroundColor: '#fff',
+    backgroundColor: Colors.BB_darkPink,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
+    backgroundColor: Colors.BB_orange,
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
@@ -175,14 +214,14 @@ const styles = StyleSheet.create({
     height: 120,
   },
   uploadButton: {
-    backgroundColor: 'white',
-    width: '100%',
+    backgroundColor: Colors.BB_orange,
+    width: "100%",
     height: 250,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 20,
     borderWidth: 1, // Add a border
-    borderColor: 'gray', // Border color
+    borderColor: "gray", // Border color
   },
   uploadIcon: {
     width: 100,
@@ -195,19 +234,24 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   photoContainer: {
-    position: 'relative',
+    position: "relative",
   },
   deleteButton: {
-    position: 'absolute',
+    position: "absolute",
     top: 3,
     right: 3,
-    backgroundColor: '#ccc',
+    backgroundColor: "#ccc",
     padding: 3,
     borderRadius: 50,
-    alignItems: 'center',
+    alignItems: "center",
   },
-  createListingButton: {
-    marginBottom: 10, // Adjust the marginBottom value
+  createListingText: {
+    alignSelf: "center",
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    backgroundColor: "#F7A859",
+    bottom: "50%",
   },
 });
 

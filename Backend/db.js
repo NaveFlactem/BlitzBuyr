@@ -1,5 +1,18 @@
+//required modules
 const sqlite3 = require("sqlite3").verbose();
 
+/**
+ * Sqlite3 database for storing and managing data in a localized and embedded manner within a Node.js App.
+ * @module Database
+ */
+
+/**
+ * Initializing database connection.
+ * @function
+ * @name sqlite3.Database
+ * @param {string} filename -  This is a required parameter and represents the name of the SQLite database file, including the path if necessary.
+ * @param {function} callback - This is a callback function that will be executed once the connection to the database is established.
+ */
 const db = new sqlite3.Database("./blitzbuyr.db", (err) => {
   if (err) {
     console.error(err.message);
@@ -32,7 +45,8 @@ const images = `
 CREATE TABLE IF NOT EXISTS Images (
   ImageId INTEGER PRIMARY KEY AUTOINCREMENT,
   ListingId INTEGER, 
-  Imagedata BLOB
+  ImageURI TEXT,
+  BlurHash TEXT
   );`;
 
 // Rating Table //
@@ -70,6 +84,13 @@ const tables = [
   { sql: likes, name: "Likes" },
 ];
 
+/**
+ * Initializes tables in the existing database. Does not populate the database.
+ * @function
+ * @name createTable
+ * @param {String} sql - SQL create statement that's run using the initialized SQlite db object.
+ * @param {String} tableName - Holds the name of the table being created
+ */
 // Function to create tables
 function createTable(sql, tableName) {
   return new Promise((resolve, reject) => {
@@ -85,6 +106,11 @@ function createTable(sql, tableName) {
   });
 }
 
+/**
+ * Loops through globally initialized list that holds all SQL create statements.
+ * @function
+ * @name createTables
+ */
 async function createTables() {
   try {
     for (const table of tables) {
