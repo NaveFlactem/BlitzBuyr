@@ -45,7 +45,8 @@ const images = `
 CREATE TABLE IF NOT EXISTS Images (
   ImageId INTEGER PRIMARY KEY AUTOINCREMENT,
   ListingId INTEGER, 
-  ImageURI TEXT
+  ImageURI TEXT,
+  BlurHash TEXT
   );`;
 
 // Rating Table //
