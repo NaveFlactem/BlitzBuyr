@@ -47,6 +47,8 @@ CREATE TABLE IF NOT EXISTS Images (
   ListingId INTEGER, 
   ImageURI TEXT,
   BlurHash TEXT
+  FOREIGN KEY ListingId REFERENCES Listings,
+  ON DELETE CASCADE
   );`;
 
 // Rating Table //
