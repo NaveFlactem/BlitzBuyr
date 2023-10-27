@@ -103,10 +103,8 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    if (isFocused) {
-      fetchListings();
-    }
-  }, [isFocused]);
+    fetchListings();
+  }, []);
 
   return (
     <SafeAreaView style={styles.screenfield}>
