@@ -20,11 +20,25 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#58293F"
-      }
+        "backgroundColor": "#58293F",
+        "package": "com.blitzbuyrcoders.blitzbuyr"
+      },
+      "package": "com.luke121.BlitzBuyr"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "abebe795-45a5-41c5-b01d-e0d182b58f0d"
+      }
+    },
+    "owner": "luke121",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/abebe795-45a5-41c5-b01d-e0d182b58f0d"
     }
   }
 }
