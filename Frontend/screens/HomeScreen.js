@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const HomeScreen = () => {
+const HomeScreen = ({ route }) => {
   const [listings, setListings] = useState([]);
   const [images, setImages] = useState([]);
   const [swipeIndex, setSwipeIndex] = useState(0);
@@ -85,6 +85,8 @@ const HomeScreen = () => {
 
   const fetchListings = async () => {
     console.log("Fetching listings...");
+    if (route.params?.refresh)
+      route.params.refresh = false;
     try {
       const listingsResponse = await fetch(`${serverIp}/api/listings`, {
         method: "GET",
@@ -102,9 +104,16 @@ const HomeScreen = () => {
     }
   };
 
+  // This will run on mount
   useEffect(() => {
     fetchListings();
   }, []);
+
+  // This will run with refresh = true
+  useEffect(() => {
+    if (route.params?.refresh) 
+      fetchListings();
+  }, [route.params]);
 
   return (
     <SafeAreaView style={styles.screenfield}>

@@ -63,7 +63,8 @@ const CreateListing = () => {
       if (response.status <= 201) {
         const responseData = await response.json();
         console.log("Listing created successfully:", responseData);
-        navigation.navigate("Home");
+        const refresh = true;
+        navigation.navigate("Home", { refresh });
       } else {
         console.error("HTTP error! Status: ", response.status);
       }
