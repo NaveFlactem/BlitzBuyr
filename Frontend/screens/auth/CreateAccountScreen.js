@@ -12,6 +12,7 @@ import {
   Dimensions,
 } from "react-native";
 import Colors from "../../constants/Colors.js";
+import LoginScreen from "./LoginScreen.js";
 
 const CreateAccountScreen = ({ navigation }) => {
   const [name, setName] = useState("");
@@ -100,7 +101,7 @@ const CreateAccountScreen = ({ navigation }) => {
         >
           <Text style={styles.createAccountText}>Create Account</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.loginTextContainer}>
+        <TouchableOpacity style={styles.loginTextContainer} onPress={navigation.navigate("Login")}>
           <Text style={styles.loginText}>Already have an Account? Login</Text>
         </TouchableOpacity>
       </View>

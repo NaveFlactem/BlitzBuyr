@@ -36,9 +36,63 @@ class CreateListing extends Component {
     this.setState({ data: [] });
   }
 
-  componentDidMount() {
-    this.getPermissionAsync();
-  }
+  /**
+   * @function
+   * @handleCreateListing - sends user inputted data to server and checks if it ran smoothly
+   * @param {Object} formData - object that is sent to the server with user inputted values
+   */
+  handleCreateListing = async () => {
+    try {
+      const formData = new FormData();
+
+      data.forEach((image, index) => {
+        formData.append(`image_${index}`, image);
+      });
+
+      formData.append("price", this.price);
+      formData.append("title", this.title);
+      formData.append("description", this.description);
+      formData.append("username", "test");
+
+      console.log("FormData:", formData);
+      const response = await fetch(`${serverIp}/api/createListing`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.status <= 201) {
+        const responseData = await response.json();
+        console.log("Listing created successfully:", responseData);
+        clearListing();
+        navigation.navigate("Home");
+      } else {
+        console.error("HTTP error! Status: ", response.status);
+      }
+    } catch (error) {
+      console.error("Error creating listing:", error);
+    }
+  };
+
+  /**
+   * @function
+   * @handleDeletePhoto - deletes photos that the user no longer wants to post
+   */
+  handleDeletePhoto = (index) => {
+    Alert.alert("Delete Photo", "Are you sure you want to delete this photo?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Delete",
+        onPress: () => {
+          const updatedPhotos = [...photos];
+          updatedPhotos.splice(index, 1);
+          setPhotos(updatedPhotos);
+        },
+      },
+    ]);
+  };
 
   getPermissionAsync = async () => {
     if (Constants.platform.ios) {
@@ -117,13 +171,13 @@ class CreateListing extends Component {
 
         <View style={styles.scrollfield}>
           <ScrollView scrollEnabled={this.state.isScrollEnabled}>
-            <View>
+            <TouchableOpacity onPress={this.handleCreateListing}>
               <Text
                 style={{ color: "white", fontSize: 30, textAlign: "center" }}
               >
                 Create Listing
               </Text>
-            </View>
+            </TouchableOpacity>
 
             <TextInput
               style={styles.input}
