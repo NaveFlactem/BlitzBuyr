@@ -8,6 +8,8 @@ var bodyParser = require("body-parser");
 router.use(bodyParser.urlencoded({ extended: true })).use(bodyParser.json());
 const db = require("./db").db;
 const multer = require("multer");
+const sharp = require("sharp");
+const { encode } = require("blurhash");
 const path = require("path");
 
 const imageStorage = multer.diskStorage({
@@ -17,7 +19,7 @@ const imageStorage = multer.diskStorage({
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     callback(
       null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname),
     );
   },
 });
@@ -64,10 +66,12 @@ router.post("/createListing", imageUpload, function (req, res) {
         }
 
         const listingId = this.lastID;
+        const componentX = req.body.componentX ?? 4;
+        const componentY = req.body.componentY ?? 3;
 
         // Insert images into the Images table
         if (images.length > 0) {
-          images.forEach((image) => {
+          images.forEach(async (image) => {
             // console.log(image);
             const imagePath = "img/" + image.filename;
 
@@ -82,7 +86,7 @@ router.post("/createListing", imageUpload, function (req, res) {
                     .json({ error: "Internal Server Error" });
                 }
                 // console.log(`Inserted image ${image.originalname}`);
-              }
+              },
             );
           });
         }
@@ -90,7 +94,7 @@ router.post("/createListing", imageUpload, function (req, res) {
           message: "Listing created successfully",
           listingId: listingId,
         });
-      }
+      },
     );
   } catch (err) {
     return res.status(500).json({ error: err });
@@ -116,18 +120,18 @@ router.get("/listings", async function (req, res) {
         resolve(rows);
       });
     });
-    
+
     const imagesResult = await new Promise((resolve, reject) => {
       // Extract the ListingIds from listingsResult
       const listingIds = listingsResult.map((listing) => listing.ListingId);
-    
+
       if (listingIds.length === 0) {
         // If there are no ListingIds, there's no need to query the Images table.
         resolve([]);
       } else {
         // Generate placeholders for the IN clause based on the number of ListingIds
-        const placeholders = listingIds.map(() => '?').join(', ');
-    
+        const placeholders = listingIds.map(() => "?").join(", ");
+
         // Second query using placeholders for the IN clause
         db.all(
           `SELECT * FROM Images i WHERE i.ListingId IN (${placeholders})`,
@@ -138,7 +142,7 @@ router.get("/listings", async function (req, res) {
               reject(err);
             }
             resolve(rows);
-          }
+          },
         );
       }
     });
@@ -153,14 +157,8 @@ router.get("/listings", async function (req, res) {
       };
     });
 
-    // Now combinedData contains the desired format where each listing includes its images
-    console.log(combinedData);
-
     // Now you can use both firstQueryResult and secondQueryResult
-    return res.status(200).json({
-      Listings: firstQueryResult,
-      AnotherTableData: secondQueryResult,
-    });
+    return res.status(200).json(combinedData);
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
@@ -218,7 +216,7 @@ router.get("/images", function (req, res) {
           return res.status(500).json({ error: "Internal Server Error" });
         }
         return res.status(200).json({ Images: rows });
-      }
+      },
     );
   } else {
     // If 'listingId' is not provided, retrieve all images.
