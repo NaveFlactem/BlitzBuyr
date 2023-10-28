@@ -175,7 +175,6 @@ class CreateListing extends Component {
                   data={this.state.data}
                   onDragRelease={this.handleDragRelease}
                   onDragStart={this.handleDragStart}
-                  
                 />
               </View>
             </View>

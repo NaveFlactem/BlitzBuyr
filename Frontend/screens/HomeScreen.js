@@ -1,6 +1,12 @@
 import { serverIp } from "../config.js";
 import React, { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, SafeAreaView, Text, RefreshControl } from "react-native";
+import {
+  View,
+  StyleSheet,
+  SafeAreaView,
+  Text,
+  RefreshControl,
+} from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import Swiper from "react-native-swiper";
 import BottomBar from "../components/BottomBar";
@@ -74,7 +80,11 @@ const HomeScreen = ({ route }) => {
             showsPagination={false}
             showsButtons={false}
             refreshControl={
-              <RefreshControl progressViewOffset={100} refreshing={refreshing} onRefresh={onRefresh} />
+              <RefreshControl
+                progressViewOffset={100}
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+              />
             }
           >
             {listings.map((item, listIndex) => {
@@ -138,7 +148,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   refresh: {
-    top : "40%",
+    top: "40%",
   },
   container: {
     alignItems: "center",
