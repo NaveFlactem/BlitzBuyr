@@ -1,28 +1,37 @@
-import React, { Component } from 'react';
-import { View, StyleSheet, Text, Image, TouchableOpacity, ScrollView, Dimensions, TextInput } from 'react-native';
-import DraggableGrid from 'react-native-draggable-grid';
+import React, { Component } from "react";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Dimensions,
+  TextInput,
+} from "react-native";
+import DraggableGrid from "react-native-draggable-grid";
 import * as ImagePicker from "expo-image-picker";
-import Constants from 'expo-constants';
-import { Camera } from 'expo-camera'; // Import Camera from Expo
-import Colors from '../constants/Colors';
-import BottomBar from '../components/BottomBar';
-import TopBar from '../components/TopBar';
+import Constants from "expo-constants";
+import { Camera } from "expo-camera"; // Import Camera from Expo
+import Colors from "../constants/Colors";
+import BottomBar from "../components/BottomBar";
+import TopBar from "../components/TopBar";
 
 class CreateListing extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: '',
-      description: '',
-      price: '',
+      title: "",
+      description: "",
+      price: "",
       data: [], // Initialize with an empty array
     };
   }
 
   destructor() {
-    this.title = '';
-    this.description = '';
-    this.price = '';
+    this.title = "";
+    this.description = "";
+    this.price = "";
     this.setState({ data: [] });
   }
 
@@ -32,9 +41,10 @@ class CreateListing extends Component {
 
   getPermissionAsync = async () => {
     if (Constants.platform.ios) {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to make this work!');
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
       }
     }
   };
@@ -46,14 +56,14 @@ class CreateListing extends Component {
       quality: 1,
       allowsMultipleSelection: true,
     });
-  
+
     if (!result.cancelled) {
       const newImageData = result.assets.map((asset) => ({
-        name: 'New Image', // Customize the name as needed
+        name: "New Image", // Customize the name as needed
         key: String(Date.now()), // Generate a unique key
         uri: asset.uri,
       }));
-  
+
       this.setState((prevState) => ({
         data: [...prevState.data, ...newImageData],
       }));
@@ -65,7 +75,7 @@ class CreateListing extends Component {
       let result = await this.camera.takePictureAsync({ quality: 1 });
       if (result.uri) {
         const newImageData = {
-          name: 'New Image', // Customize the name as needed
+          name: "New Image", // Customize the name as needed
           key: String(Date.now()), // Generate a unique key
           uri: result.uri,
         };
@@ -89,7 +99,6 @@ class CreateListing extends Component {
     );
   }
 
-
   render() {
     return (
       <View style={styles.wrapper}>
@@ -97,76 +106,84 @@ class CreateListing extends Component {
 
         <View style={styles.scrollfield}>
           <ScrollView>
-              <View>
-                <Text style={{ color: 'white', fontSize: 30, textAlign: 'center' }}>
-                  Create Listing
-                </Text>
-              </View>
+            <View>
+              <Text
+                style={{ color: "white", fontSize: 30, textAlign: "center" }}
+              >
+                Create Listing
+              </Text>
+            </View>
 
-              <Text style={styles.title}>Create a Listing</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Title"
-                value= ""
-                onChangeText={(text) => {this.title = text}}
-                returnKeyType="done"
-              />
-              <TextInput
-                style={[styles.input, styles.multilineInput]}
-                placeholder="Description"
-                value= ""
-                onChangeText={(text) => {this.description = text}}
-                multiline={true}
-                textAlignVertical="top" 
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Price"
-                value= ""
-                onChangeText={(text) => {this.price = text}}
-                keyboardType="numeric"
-                returnKeyType="done"
-      />
+            <Text style={styles.title}>Create a Listing</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Title"
+              value=""
+              onChangeText={(text) => {
+                this.title = text;
+              }}
+              returnKeyType="done"
+            />
+            <TextInput
+              style={[styles.input, styles.multilineInput]}
+              placeholder="Description"
+              value=""
+              onChangeText={(text) => {
+                this.description = text;
+              }}
+              multiline={true}
+              textAlignVertical="top"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Price"
+              value=""
+              onChangeText={(text) => {
+                this.price = text;
+              }}
+              keyboardType="numeric"
+              returnKeyType="done"
+            />
 
-              <View style={styles.cameraContainer}>
-                <Camera
-                  style={styles.cameraPreview}
-                  ref={(ref) => (this.camera = ref)}
-                />
-                <TouchableOpacity
-                  style={styles.cameraButton}
-                  onPress={this.handleCameraCapture}
-                >
-                  <Text style={styles.cameraButtonText}>Take a Photo</Text>
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity onPress={this.handleImagePick} style={styles.button}>
-                <Text style={styles.buttonText}>Select Images</Text>
+            <View style={styles.cameraContainer}>
+              <Camera
+                style={styles.cameraPreview}
+                ref={(ref) => (this.camera = ref)}
+              />
+              <TouchableOpacity
+                style={styles.cameraButton}
+                onPress={this.handleCameraCapture}
+              >
+                <Text style={styles.cameraButtonText}>Take a Photo</Text>
               </TouchableOpacity>
-              <View style={styles.imageField}>
-
-                <View style={styles.innerField}>
-                  <DraggableGrid
-                    numColumns={3}
-                    renderItem={this.render_item}
-                    data={this.state.data}
-                    onDragRelease={(data) => {
-                      this.setState({ data });
-                    }}
-                  />
-                </View>
+            </View>
+            <TouchableOpacity
+              onPress={this.handleImagePick}
+              style={styles.button}
+            >
+              <Text style={styles.buttonText}>Select Images</Text>
+            </TouchableOpacity>
+            <View style={styles.imageField}>
+              <View style={styles.innerField}>
+                <DraggableGrid
+                  numColumns={3}
+                  renderItem={this.render_item}
+                  data={this.state.data}
+                  onDragRelease={(data) => {
+                    this.setState({ data });
+                  }}
+                />
               </View>
-              <Text style={styles.spacer}/>
+            </View>
+            <Text style={styles.spacer} />
           </ScrollView>
         </View>
 
         <BottomBar />
-
-    </View>
+      </View>
     );
   }
 }
-
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -175,18 +192,18 @@ const styles = StyleSheet.create({
   button: {
     width: 150,
     height: 50,
-    backgroundColor: 'blue',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "blue",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 20,
   },
   buttonText: {
     fontSize: 18,
-    color: 'white',
+    color: "white",
   },
   wrapper: {
     flex: 1,
-    width: '100%',
+    width: "100%",
     marginTop: 0,
     backgroundColor: Colors.BB_darkOrange,
   },
@@ -195,12 +212,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.BB_darkOrange,
   },
   imageField: {
-    alignSelf: 'center',
-    width: '95%',
+    alignSelf: "center",
+    width: "95%",
     height: 400,
     backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 20,
-    shadowColor: 'black',
+    shadowColor: "black",
     shadowOpacity: 0.5,
     shadowOffset: { width: 2, height: 4 },
     shadowRadius: 3,
@@ -212,8 +229,8 @@ const styles = StyleSheet.create({
   innerField: {
     margin: 10,
     marginTop: 20,
-    width: '95%',
-    height: '95%',
+    width: "95%",
+    height: "95%",
   },
   item: {
     width: 100,
@@ -221,18 +238,18 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderColor: Colors.BB_darkOrange,
     borderWidth: 2,
-    backgroundColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 10,
   },
   item_text: {
     fontSize: 40,
-    color: '#FFFFFF',
+    color: "#FFFFFF",
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     borderRadius: 8,
   },
   container: {
@@ -303,9 +320,6 @@ const styles = StyleSheet.create({
 });
 
 export default CreateListing;
-
-
-
 
 // import { serverIp } from "../config.js";
 // import React, { useState } from "react";
