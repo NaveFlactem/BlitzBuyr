@@ -46,10 +46,9 @@ CREATE TABLE IF NOT EXISTS Images (
   ImageId INTEGER PRIMARY KEY AUTOINCREMENT,
   ListingId INTEGER, 
   ImageURI TEXT,
-  BlurHash TEXT
-  FOREIGN KEY ListingId REFERENCES Listings,
-  ON DELETE CASCADE
-  );`;
+  BlurHash TEXT,
+  FOREIGN KEY (ListingId) REFERENCES Listings(ListingId) ON DELETE CASCADE
+);`;
 
 // Rating Table //
 const rating = `
