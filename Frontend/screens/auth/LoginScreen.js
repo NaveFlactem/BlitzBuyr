@@ -11,7 +11,7 @@ import {
   Image,
 } from "react-native";
 import Colors from "../../constants/Colors";
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -20,8 +20,8 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     const checkStoredCredentials = async () => {
-      const storedUsername = await SecureStore.getItemAsync('username');
-      const storedPassword = await SecureStore.getItemAsync('password');
+      const storedUsername = await SecureStore.getItemAsync("username");
+      const storedPassword = await SecureStore.getItemAsync("password");
 
       if (storedUsername && storedPassword) {
         // Stored credentials exist, use them for login
@@ -71,8 +71,8 @@ const LoginScreen = ({ navigation }) => {
 
     if (response.status <= 201) {
       console.log("Response data:", responseData);
-      await SecureStore.setItemAsync('username', username);
-      await SecureStore.setItemAsync('password', password);
+      await SecureStore.setItemAsync("username", username);
+      await SecureStore.setItemAsync("password", password);
       navigation.navigate("BottomNavOverlay");
     } else {
       Alert.alert(responseData.error);
