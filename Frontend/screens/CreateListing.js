@@ -55,7 +55,7 @@ class CreateListing extends Component {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
       quality: 1,
-      allowsMultipleSelection: true,
+      allowsMultipleSelection: false,
     });
 
     if (!result.cancelled) {
@@ -195,20 +195,6 @@ const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
-  button: {
-    width: 150,
-    height: 50,
-    backgroundColor: "blue",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 20,
-    alignSelf: "center",
-  },
-  buttonText: {
-    fontSize: 18,
-    color: "white",
-    alignSelf: "center",
-  },
   wrapper: {
     flex: 1,
     width: "100%",
@@ -218,6 +204,23 @@ const styles = StyleSheet.create({
   scrollfield: {
     top: 0.15 * screenHeight,
     backgroundColor: Colors.BB_darkOrange,
+  },
+  input: {
+    height: 40,
+    borderColor: Colors.BB_darkPink,
+    borderRadius: 10,
+    backgroundColor: Colors.BB_darkRedPurple,
+    opacity: 0.9,
+    marginBottom: 10,
+    width: "90%",
+    left: "5%",
+    shadowColor: "black",
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 2, height: 4 },
+    shadowRadius: 3,
+  },
+  multilineInput: {
+    height: 120,
   },
   imageField: {
     alignSelf: "center",
@@ -231,8 +234,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 5,
     margin: 0,
-    borderWidth: 3,
-    borderColor: Colors.black,
+    borderColor: Colors.BB_darkPink,
   },
   innerField: {
     margin: 10,
@@ -243,44 +245,18 @@ const styles = StyleSheet.create({
   item: {
     width: 100,
     height: 100,
+    backgroundColor: Colors.BB_darkOrange,
     borderRadius: 8,
     borderColor: Colors.BB_darkOrange,
-    borderWidth: 2,
-    backgroundColor: "red",
+    borderWidth: 3,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
-  },
-  item_text: {
-    fontSize: 40,
-    color: "#FFFFFF",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 8,
-  },
-  container: {
-    flex: 1,
-    paddingTop: 50, //top of page
-    padding: 30, //all around
-    backgroundColor: "#D6447F",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  input: {
-    height: 40,
-    borderColor: "gray",
-    backgroundColor: "#F7A859",
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-  },
-  multilineInput: {
-    height: 120,
+    shadowColor: "black",
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 2, height: 4 },
+    shadowRadius: 3,
+    elevation: 25,
   },
   uploadButton: {
     backgroundColor: "#F7A859",
@@ -292,35 +268,14 @@ const styles = StyleSheet.create({
     borderWidth: 1, // Add a border
     borderColor: "gray", // Border color
   },
-  uploadIcon: {
-    width: 100,
-    height: 100,
-  },
-
-  uploadedPhoto: {
-    width: 100,
-    height: 100,
-    margin: 10,
-  },
-  photoContainer: {
-    position: "relative",
-  },
-  deleteButton: {
-    position: "absolute",
-    top: 3,
-    right: 3,
-    backgroundColor: "#ccc",
-    padding: 3,
-    borderRadius: 50,
+  button: {
+    width: 150,
+    height: 50,
+    backgroundColor: "blue",
+    justifyContent: "center",
     alignItems: "center",
-  },
-  createListingText: {
-    alignSelf: "center",
-    fontSize: 24,
-    fontWeight: "bold",
     marginBottom: 20,
-    backgroundColor: "#F7A859",
-    bottom: "50%",
+    alignSelf: "center",
   },
   spacer: {
     height: 400,
