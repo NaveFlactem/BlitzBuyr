@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Alert,
   Image,
+  Dimensions,
 } from "react-native";
 import Colors from "../../constants/Colors";
 
@@ -85,6 +86,9 @@ const LoginScreen = ({ navigation }) => {
   );
 };
 
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -96,7 +100,7 @@ const styles = StyleSheet.create({
   loginContainer: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.BB_darkOrange,
+    backgroundColor: Colors.BB_pink,
     padding: 20,
     borderRadius: 10,
     shadowColor: "black",
@@ -109,19 +113,26 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   input: {
-    width: 200,
-    height: 40,
+    width: windowWidth * 0.45,
+    height: windowHeight * 0.04,
     borderColor: "gray",
-    borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
-    borderRadius: 5,
+    borderRadius: 7,
+    backgroundColor: "white",
+    shadowColor: "black",
+    shadowRadius: 2,
+    shadowOpacity: 1,
+    shadowOffset: {
+      width: 1,
+      height: 1,
+    },
   },
   loginTextContainer: {
+    width: windowWidth * 0.2,
     backgroundColor: Colors.BB_rangeYellow,
     padding: 5,
     width: "100%",
-    borderWidth: 2,
     borderColor: Colors.black,
     borderRadius: 10,
     fontWeight: "bold",
@@ -135,13 +146,11 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   loginText: {
-    fontSize: 20,
+    fontSize: 15,
   },
   createAccountTextContainer: {
     marginTop: 10,
-    backgroundColor: Colors.BB_darkRedPurple,
     padding: 5,
-    borderWidth: 2,
     borderColor: Colors.black,
     borderRadius: 10,
     color: "black",
@@ -150,9 +159,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowOffset: {
       width: 0,
-      height: 3,
+      height: 1,
     },
-    shadowRadius: 2,
+    shadowRadius: 1,
     elevation: 2,
   },
   createAccountText: {
