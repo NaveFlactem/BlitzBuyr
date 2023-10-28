@@ -16,6 +16,7 @@ class CreateListing extends Component {
       description: '',
       price: '',
       data: [], // Initialize with an empty array
+      isScrollEnabled: true,
     };
   }
 
@@ -89,6 +90,16 @@ class CreateListing extends Component {
     );
   }
 
+  handleDragStart = () => {
+    // When a drag starts, disable scrolling
+    this.setState({ isScrollEnabled: false });
+  };
+
+  handleDragRelease = (data) => {
+    // When the drag is released, enable scrolling
+    this.setState({ data, isScrollEnabled: true });
+  };
+
 
   render() {
     return (
@@ -96,7 +107,9 @@ class CreateListing extends Component {
         <TopBar />
 
         <View style={styles.scrollfield}>
-          <ScrollView>
+          <ScrollView
+            scrollEnabled={this.state.isScrollEnabled}
+          >
               <View>
                 <Text style={{ color: 'white', fontSize: 30, textAlign: 'center' }}>
                   Create Listing
@@ -150,9 +163,8 @@ class CreateListing extends Component {
                     numColumns={3}
                     renderItem={this.render_item}
                     data={this.state.data}
-                    onDragRelease={(data) => {
-                      this.setState({ data });
-                    }}
+                    onDragRelease={this.handleDragRelease}
+                  onDragStart={this.handleDragStart}
                   />
                 </View>
               </View>
@@ -166,6 +178,9 @@ class CreateListing extends Component {
     );
   }
 }
+
+export default CreateListing;
+
 
 
 const screenWidth = Dimensions.get("window").width;
@@ -302,7 +317,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateListing;
 
 
 
