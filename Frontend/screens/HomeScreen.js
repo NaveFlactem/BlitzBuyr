@@ -1,6 +1,6 @@
 import { serverIp } from "../config.js";
 import React, { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, SafeAreaView, Text } from "react-native";
+import { View, StyleSheet, SafeAreaView, Text, RefreshControl } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import Swiper from "react-native-swiper";
 import BottomBar from "../components/BottomBar";
@@ -12,12 +12,19 @@ const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
 const HomeScreen = ({ route }) => {
+  const [refreshing, setRefreshing] = React.useState(false);
   const [listings, setListings] = useState([]);
   const [images, setImages] = useState([]);
   const [swipeIndex, setSwipeIndex] = useState(0);
   const didMount = useRef(false);
   const isFocused = useIsFocused();
   const swiperRef = useRef(null);
+
+  const onRefresh = React.useCallback(() => {
+    console.log("refreshing...");
+    setRefreshing(true);
+    fetchListings();
+  }, []);
 
   const fetchListings = async () => {
     console.log("Fetching listings...");
@@ -44,6 +51,11 @@ const HomeScreen = ({ route }) => {
     fetchListings();
   }, []);
 
+  // stop refreshing animation once we have new listings
+  useEffect(() => {
+    setRefreshing(false);
+  }, [listings]);
+
   // This will run with refresh = true
   useEffect(() => {
     if (route.params?.refresh) fetchListings();
@@ -61,6 +73,9 @@ const HomeScreen = ({ route }) => {
             horizontal={false}
             showsPagination={false}
             showsButtons={false}
+            refreshControl={
+              <RefreshControl progressViewOffset={100} refreshing={refreshing} onRefresh={onRefresh} />
+            }
           >
             {listings.map((item, listIndex) => {
               Image.prefetch(item.images);
@@ -121,6 +136,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  refresh: {
+    top : "40%",
   },
   container: {
     alignItems: "center",
