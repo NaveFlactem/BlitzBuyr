@@ -11,65 +11,6 @@ import { Image } from "expo-image";
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
-const styles = StyleSheet.create({
-  screenfield: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  container: {
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: -1,
-    backgroundColor: Colors.BB_pink,
-    height: "100%",
-    width: "100%",
-  },
-  card: {
-    backgroundColor: Colors.BB_darkRedPurple,
-    width: "100%",
-    height: "81%",
-    borderRadius: 0,
-    alignItems: "center",
-    justifyContent: "center",
-    top: "9%",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 0,
-  },
-  titleContainer: {
-    position: "absolute",
-    bottom: 10, // Adjust the position as needed
-    left: 10, // Adjust the position as needed
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    padding: 5,
-    borderRadius: 5,
-  },
-  pageContainer: {
-    position: "absolute",
-    bottom: 10, // Adjust the position as needed
-    left: 380, // Adjust the position as needed
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    padding: 5,
-    borderRadius: 5,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "white", // Customize the color
-  },
-  price: {
-    fontSize: 14,
-    color: "white", // Customize the color
-  },
-  description: {
-    fontSize: 10,
-    color: "white", // Customize the color
-  },
-});
-
 const HomeScreen = () => {
   const [listings, setListings] = useState([]);
   const [images, setImages] = useState([]);
@@ -169,3 +110,62 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
+
+const styles = StyleSheet.create({
+  screenfield: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  container: {
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: -1,
+    backgroundColor: Colors.BB_pink,
+    height: "100%",
+    width: "100%",
+  },
+  card: {
+    backgroundColor: Colors.BB_darkRedPurple,
+    width: "100%",
+    height: "81%",
+    borderRadius: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    top: "9%",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 0,
+  },
+  titleContainer: {
+    position: "absolute",
+    bottom: 10, // Adjust the position as needed
+    left: 10, // Adjust the position as needed
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    padding: 5,
+    borderRadius: 5,
+  },
+  pageContainer: {
+    position: "absolute",
+    bottom: 10, // Adjust the position as needed
+    left: 380, // Adjust the position as needed
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    padding: 5,
+    borderRadius: 5,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white", // Customize the color
+  },
+  price: {
+    fontSize: 14,
+    color: "white", // Customize the color
+  },
+  description: {
+    fontSize: 10,
+    color: "white", // Customize the color
+  },
+});
