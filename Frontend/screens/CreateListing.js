@@ -125,7 +125,6 @@ class CreateListing extends Component {
               </Text>
             </View>
 
-            <Text style={styles.title}>Create a Listing</Text>
             <TextInput
               style={styles.input}
               placeholder="Title"
@@ -161,12 +160,6 @@ class CreateListing extends Component {
                 style={styles.cameraPreview}
                 ref={(ref) => (this.camera = ref)}
               />
-              <TouchableOpacity
-                style={styles.cameraButton}
-                onPress={this.handleCameraCapture}
-              >
-                <Text style={styles.cameraButtonText}>Take a Photo</Text>
-              </TouchableOpacity>
             </View>
             <TouchableOpacity
               onPress={this.handleImagePick}
@@ -182,6 +175,7 @@ class CreateListing extends Component {
                   data={this.state.data}
                   onDragRelease={this.handleDragRelease}
                   onDragStart={this.handleDragStart}
+                  
                 />
               </View>
             </View>
@@ -208,10 +202,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 20,
+    alignSelf: "center",
   },
   buttonText: {
     fontSize: 18,
     color: "white",
+    alignSelf: "center",
   },
   wrapper: {
     flex: 1,
