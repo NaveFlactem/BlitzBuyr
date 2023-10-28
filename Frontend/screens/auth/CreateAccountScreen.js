@@ -22,7 +22,7 @@ const CreateAccountScreen = ({ navigation }) => {
     if (password !== confirmPassword) {
       Alert.alert(
         "Password Mismatch",
-        "Password and Confirm Password do not match."
+        "Password and Confirm Password do not match.",
       );
       return;
     }
