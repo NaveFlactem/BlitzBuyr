@@ -1,5 +1,5 @@
 import { serverIp } from "../../config.js";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,17 +11,52 @@ import {
   Image,
 } from "react-native";
 import Colors from "../../constants/Colors";
+import * as SecureStore from 'expo-secure-store';
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
 
+  useEffect(() => {
+    const checkStoredCredentials = async () => {
+      const storedUsername = await SecureStore.getItemAsync('username');
+      const storedPassword = await SecureStore.getItemAsync('password');
+
+      if (storedUsername && storedPassword) {
+        // Stored credentials exist, use them for login
+        const loginData = {
+          username: storedUsername,
+          password: storedPassword,
+        };
+
+        const response = await fetch(`${serverIp}/api/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(loginData),
+        });
+
+        let responseData = await response.json();
+
+        if (response.status <= 201) {
+          console.log("Response data:", responseData);
+          navigation.navigate("BottomNavOverlay");
+        } else {
+          Alert.alert(responseData.error);
+        }
+      }
+    };
+
+    checkStoredCredentials();
+  }, []);
+
   const handleLogin = async () => {
-    // You can add your login logic here. For this example, we'll just set loggedIn to true.
+    // Handle manual login process when the "Login" button is pressed
     const loginData = {
-      username: username, // Get the username from the input field
-      password: password, // Get the password from the input field
+      username: username,
+      password: password,
     };
 
     const response = await fetch(`${serverIp}/api/login`, {
@@ -36,6 +71,8 @@ const LoginScreen = ({ navigation }) => {
 
     if (response.status <= 201) {
       console.log("Response data:", responseData);
+      await SecureStore.setItemAsync('username', username);
+      await SecureStore.setItemAsync('password', password);
       navigation.navigate("BottomNavOverlay");
     } else {
       Alert.alert(responseData.error);
