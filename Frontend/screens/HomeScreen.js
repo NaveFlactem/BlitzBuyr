@@ -1,6 +1,12 @@
 import { serverIp } from "../config.js";
 import React, { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, SafeAreaView, Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  SafeAreaView,
+  Text,
+  RefreshControl,
+} from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import Swiper from "react-native-swiper";
 import BottomBar from "../components/BottomBar";
@@ -11,66 +17,8 @@ import { Image } from "expo-image";
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
-const styles = StyleSheet.create({
-  screenfield: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  container: {
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: -1,
-    backgroundColor: Colors.BB_pink,
-    height: "100%",
-    width: "100%",
-  },
-  card: {
-    backgroundColor: Colors.BB_darkRedPurple,
-    width: "100%",
-    height: "81%",
-    borderRadius: 0,
-    alignItems: "center",
-    justifyContent: "center",
-    top: "9%",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 0,
-  },
-  titleContainer: {
-    position: "absolute",
-    bottom: 10, // Adjust the position as needed
-    left: 10, // Adjust the position as needed
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    padding: 5,
-    borderRadius: 5,
-  },
-  pageContainer: {
-    position: "absolute",
-    bottom: 10, // Adjust the position as needed
-    left: 380, // Adjust the position as needed
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    padding: 5,
-    borderRadius: 5,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "white", // Customize the color
-  },
-  price: {
-    fontSize: 14,
-    color: "white", // Customize the color
-  },
-  description: {
-    fontSize: 10,
-    color: "white", // Customize the color
-  },
-});
-
-const HomeScreen = () => {
+const HomeScreen = ({ route }) => {
+  const [refreshing, setRefreshing] = React.useState(false);
   const [listings, setListings] = useState([]);
   const [images, setImages] = useState([]);
   const [swipeIndex, setSwipeIndex] = useState(0);
@@ -78,8 +26,15 @@ const HomeScreen = () => {
   const isFocused = useIsFocused();
   const swiperRef = useRef(null);
 
+  const onRefresh = React.useCallback(() => {
+    console.log("refreshing...");
+    setRefreshing(true);
+    fetchListings();
+  }, []);
+
   const fetchListings = async () => {
     console.log("Fetching listings...");
+    if (route.params?.refresh) route.params.refresh = false;
     try {
       const listingsResponse = await fetch(`${serverIp}/api/listings`, {
         method: "GET",
@@ -97,11 +52,20 @@ const HomeScreen = () => {
     }
   };
 
+  // This will run on mount
   useEffect(() => {
-    if (isFocused) {
-      fetchListings();
-    }
-  }, [isFocused]);
+    fetchListings();
+  }, []);
+
+  // stop refreshing animation once we have new listings
+  useEffect(() => {
+    setRefreshing(false);
+  }, [listings]);
+
+  // This will run with refresh = true
+  useEffect(() => {
+    if (route.params?.refresh) fetchListings();
+  }, [route.params]);
 
   return (
     <SafeAreaView style={styles.screenfield}>
@@ -115,6 +79,13 @@ const HomeScreen = () => {
             horizontal={false}
             showsPagination={false}
             showsButtons={false}
+            refreshControl={
+              <RefreshControl
+                progressViewOffset={100}
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+              />
+            }
           >
             {listings.map((item, listIndex) => {
               Image.prefetch(item.images);
@@ -169,3 +140,65 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
+
+const styles = StyleSheet.create({
+  screenfield: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  refresh: {
+    top: "40%",
+  },
+  container: {
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: -1,
+    backgroundColor: Colors.BB_pink,
+    height: "100%",
+    width: "100%",
+  },
+  card: {
+    backgroundColor: Colors.BB_darkRedPurple,
+    width: "100%",
+    height: "81%",
+    borderRadius: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    top: "9%",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 0,
+  },
+  titleContainer: {
+    position: "absolute",
+    bottom: 10, // Adjust the position as needed
+    left: 10, // Adjust the position as needed
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    padding: 5,
+    borderRadius: 5,
+  },
+  pageContainer: {
+    position: "absolute",
+    bottom: 10, // Adjust the position as needed
+    left: 380, // Adjust the position as needed
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    padding: 5,
+    borderRadius: 5,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "white", // Customize the color
+  },
+  price: {
+    fontSize: 14,
+    color: "white", // Customize the color
+  },
+  description: {
+    fontSize: 10,
+    color: "white", // Customize the color
+  },
+});
