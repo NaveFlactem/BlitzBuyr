@@ -1,12 +1,15 @@
 import { serverIp } from "../config.js";
 import React, { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, SafeAreaView, Text } from "react-native";
+import { View, StyleSheet, SafeAreaView, Text, TouchableOpacity} from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import Swiper from "react-native-swiper";
 import BottomBar from "../components/BottomBar";
 import TopBar from "../components/TopBar";
 import Colors from "../constants/Colors";
 import { Image } from "expo-image";
+import Icon, { Icons } from "../components/Icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
@@ -18,6 +21,8 @@ const HomeScreen = () => {
   const didMount = useRef(false);
   const isFocused = useIsFocused();
   const swiperRef = useRef(null);
+  const [starStates, setStarStates] = useState({});
+
 
   const fetchListings = async () => {
     console.log("Fetching listings...");
@@ -29,6 +34,8 @@ const HomeScreen = () => {
       if (listingsResponse.status <= 201) {
         const listingsData = await listingsResponse.json();
         //console.log(listingsData);
+        const initialStarStates = listingsData.map(() => false);
+        setStarStates(initialStarStates);
         setListings(listingsData);
       } else {
         console.log("Error fetching listings:", listingsResponse.status);
@@ -43,6 +50,24 @@ const HomeScreen = () => {
       fetchListings();
     }
   }, [isFocused]);
+
+  const handleStarPress = (listingId, imageIndex) => {
+    console.log(`Starred image at index ${imageIndex} for listing ID ${listingId}`);
+  
+    // Create a copy of the current star states object
+    const newStarStates = { ...starStates };
+  
+    // Check if the star state object for the current listing exists
+    if (!newStarStates[listingId]) {
+      newStarStates[listingId] = [];
+    }
+  
+    // Toggle the star state for the specified image
+    newStarStates[listingId][imageIndex] = !newStarStates[listingId][imageIndex];
+  
+    // Update the state with the new star states object
+    setStarStates(newStarStates);
+  };
 
   return (
     <SafeAreaView style={styles.screenfield}>
@@ -79,6 +104,19 @@ const HomeScreen = () => {
                             contentFit="contain"
                             transition={200}
                           />
+                          <View style={styles.buttonContainer}>
+                          <TouchableOpacity
+                            style={styles.starButton}
+                            activeOpacity={1} // Disable the opacity change on touch
+                            onPress={() => handleStarPress(item.ListingId, index)}
+                          >
+                            {starStates[item.ListingId] && starStates[item.ListingId][index] ? (
+                              <MaterialCommunityIcons name="heart" size={30} color="red" />
+                            ) : (
+                              <MaterialCommunityIcons name="heart-outline" size={30} color="black" />
+                            )}
+                          </TouchableOpacity>
+                          </View>
                           <View style={styles.titleContainer}>
                             <Text style={styles.title}>{item.Title}</Text>
                             <Text style={styles.price}>{`$${item.Price}`}</Text>
@@ -167,5 +205,26 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 10,
     color: "white", // Customize the color
+  },
+  starContainer: {
+    position: "absolute",
+    top: 10, // Adjust the position as needed
+    right: 10, // Adjust the position as needed
+  },
+  buttonContainer: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  starButton: {
+    // Define the style for your star button here
+    position: "absolute",
+    top: 10, // Adjust the position as needed
+    right: 10, // Adjust the position as needed
+    
   },
 });
