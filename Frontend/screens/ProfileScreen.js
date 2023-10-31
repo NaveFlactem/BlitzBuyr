@@ -1,17 +1,136 @@
-import React from "react";
-import { View, Text, SafeAreaView, StatusBar, Image } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StatusBar,
+  Image,
+  useWindowDimensions,
+  ScrollView,
+} from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native-gesture-handler";
-// import { images } from "../assets";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import { SceneMap, TabBar, TabView } from "react-native-tab-view";
+
+const image_one = require("../screens/assets/images/image_one.jpg");
+const image_two = require("../screens/assets/images/image_two.jpg");
+const image_three = require("../screens/assets/images/image_three.jpg");
+const image_four = require("../screens/assets/images/image_four.jpg");
+const image_five = require("../screens/assets/images/image_five.jpg");
+const image_six = require("../screens/assets/images/image_six.jpg");
+const image_seven = require("../screens/assets/images/image_five.jpg");
+const image_eight = require("../screens/assets/images/image_one.jpg");
+
+const likedPhotos = [
+  image_one,
+  image_two,
+  image_three,
+  image_four,
+  image_five,
+  image_six,
+  image_seven,
+  image_eight,
+]; //Will hold the list of Liked photos of user
+
+const savedListings = [
+  image_one,
+  image_two,
+  image_three,
+  image_four,
+  image_five,
+  image_six,
+  image_seven,
+  image_eight,
+]; //Will hold the list of saved listings of user
+
+const PhotosRoutes = () => (
+  <View style={{ flex: 1 }}>
+    <FlatList
+      data={likedPhotos}
+      numColumns={3}
+      renderItem={({ item, index }) => (
+        <View
+          style={{
+            flex: 1,
+            aspectRatio: 1,
+            margin: 3,
+          }}
+        >
+          <Image
+            key={index}
+            source={item}
+            style={{ width: "100%", height: "100%", borderRadius: 12 }}
+          />
+        </View>
+      )}
+    />
+  </View>
+);
+
+const LikesRoutes = () => (
+  <View style={{ flex: 1 }}>
+    <FlatList
+      data={savedListings}
+      numColumns={3}
+      renderItem={({ item, index }) => (
+        <View
+          style={{
+            flex: 1,
+            aspectRatio: 1,
+            margin: 3,
+          }}
+        >
+          <Image
+            key={index}
+            source={item}
+            style={{ width: "100%", height: "100%", borderRadius: 12 }}
+          />
+        </View>
+      )}
+    />
+  </View>
+);
+
+const renderScene = SceneMap({
+  first: PhotosRoutes,
+  second: LikesRoutes,
+});
 
 export default function ProfileScreen({ navigation }) {
+  const layout = useWindowDimensions();
+  const [index, setIndex] = useState(0);
+
+  const [routes] = useState([
+    { key: "first", title: "Photos" },
+    { key: "second", title: "Likes" },
+  ]);
+
+  const renderTabBar = (props) => (
+    <TabBar
+      {...props}
+      indicatorStyle={{
+        backgroundColor: "gray",
+      }}
+      style={{
+        backgroundColor: "white",
+        height: 44,
+      }}
+      renderLabel={({ focused, route }) => (
+        <Text style={[{ color: focused ? "black" : "gray" }]}>
+          {route.title}
+        </Text>
+      )}
+    />
+  );
+
   return (
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: "gray",
+        backgroundColor: "white",
       }}
     >
+      {/* <ScrollView> */}
       <StatusBar backgroundColor={"gray"} />
 
       {/* //Cover Photo */}
@@ -44,17 +163,7 @@ export default function ProfileScreen({ navigation }) {
             marginVertical: 8,
           }}
         >
-          {" "}
-          Alfonso Luis Del Rosario{" "}
-        </Text>
-
-        <Text
-          style={{
-            color: "black",
-            fontStyle: "normal",
-          }}
-        >
-          Computer Science
+          Alfonso Luis Del Rosario
         </Text>
 
         {/* Location Information */}
@@ -76,14 +185,14 @@ export default function ProfileScreen({ navigation }) {
           </Text>
         </View>
 
-        {/* Followers, Following, Likes */}
+        {/* Rating, Following, Likes */}
         <View
           style={{
             paddingVertical: 8,
             flexDirection: "row",
           }}
         >
-          {/* FOLLOWERS */}
+          {/* RATING */}
           <View
             style={{
               flexDirection: "column",
@@ -97,7 +206,7 @@ export default function ProfileScreen({ navigation }) {
                 color: "black",
               }}
             >
-              122
+              4.5
             </Text>
             <Text
               style={{
@@ -105,11 +214,11 @@ export default function ProfileScreen({ navigation }) {
                 color: "black",
               }}
             >
-              Followers
+              Rating
             </Text>
           </View>
 
-          {/* FOLLOWING */}
+          {/* Items Sold */}
           <View
             style={{
               flexDirection: "column",
@@ -123,7 +232,7 @@ export default function ProfileScreen({ navigation }) {
                 color: "black",
               }}
             >
-              67
+              1254
             </Text>
             <Text
               style={{
@@ -131,7 +240,7 @@ export default function ProfileScreen({ navigation }) {
                 color: "black",
               }}
             >
-              Following
+              Transactions
             </Text>
           </View>
 
@@ -162,24 +271,64 @@ export default function ProfileScreen({ navigation }) {
           </View>
         </View>
         <View style={{ flexDirection: "row" }}>
-        <TouchableOpacity style={{
-          width: 124,
-          height: 36,
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "black",
-          borderRadius: 10,
-          marginHorizontal: 160
-        }}>
+          {/* Edit Profile Button */}
+          <TouchableOpacity
+            style={{
+              width: 124,
+              height: 36,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "blue",
+              borderRadius: 10,
+              marginHorizontal: 10,
+              top: 10,
+            }}
+          >
+            <Text
+              style={{
+                fontStyle: "normal",
+                color: "white",
+              }}
+            >
+              Edit Profile
+            </Text>
+          </TouchableOpacity>
 
-          <Text style={{
-            fontStyle: "normal",
-            color: "white"
-          }}>Edit Profile</Text>
-        </TouchableOpacity>
-      </View>
+          {/* Rate User Button */}
+          <TouchableOpacity
+            style={{
+              width: 124,
+              height: 36,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "blue",
+              borderRadius: 10,
+              marginHorizontal: 10,
+              top: 10,
+            }}
+          >
+            <Text
+              style={{
+                fontStyle: "normal",
+                color: "white",
+              }}
+            >
+              Rate User
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
+      <View style={{ flex: 1, marginHorizontal: 22, marginTop: 20 }}>
+        <TabView
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayoiut={{ width: layout.width }}
+          renderTabBar={renderTabBar}
+        />
+      </View>
+      {/* </ScrollView> */}
     </SafeAreaView>
   );
 }
