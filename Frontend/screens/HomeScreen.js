@@ -1,6 +1,6 @@
 import { serverIp } from "../config.js";
 import React, { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, SafeAreaView, Text, TouchableOpacity} from "react-native";
+import { View, StyleSheet, SafeAreaView, Text, TouchableOpacity, RefreshControl} from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import Swiper from "react-native-swiper";
 import BottomBar from "../components/BottomBar";
@@ -14,7 +14,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
-const HomeScreen = () => {
+const HomeScreen = ({ route }) => {
+  const [refreshing, setRefreshing] = React.useState(false);
   const [listings, setListings] = useState([]);
   const [images, setImages] = useState([]);
   const [swipeIndex, setSwipeIndex] = useState(0);
@@ -24,8 +25,15 @@ const HomeScreen = () => {
   const [starStates, setStarStates] = useState({});
 
 
+  const onRefresh = React.useCallback(() => {
+    console.log("refreshing...");
+    setRefreshing(true);
+    fetchListings();
+  }, []);
+
   const fetchListings = async () => {
     console.log("Fetching listings...");
+    if (route.params?.refresh) route.params.refresh = false;
     try {
       const listingsResponse = await fetch(`${serverIp}/api/listings`, {
         method: "GET",
@@ -45,11 +53,20 @@ const HomeScreen = () => {
     }
   };
 
+  // This will run on mount
   useEffect(() => {
-    if (isFocused) {
-      fetchListings();
-    }
-  }, [isFocused]);
+    fetchListings();
+  }, []);
+
+  // stop refreshing animation once we have new listings
+  useEffect(() => {
+    setRefreshing(false);
+  }, [listings]);
+
+  // This will run with refresh = true
+  useEffect(() => {
+    if (route.params?.refresh) fetchListings();
+  }, [route.params]);
 
   const handleStarPress = (listingId, imageIndex) => {
     console.log(`Starred image at index ${imageIndex} for listing ID ${listingId}`);
@@ -81,6 +98,13 @@ const HomeScreen = () => {
             horizontal={false}
             showsPagination={false}
             showsButtons={false}
+            refreshControl={
+              <RefreshControl
+                progressViewOffset={100}
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+              />
+            }
           >
             {listings.map((item, listIndex) => {
               Image.prefetch(item.images);
@@ -154,6 +178,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+  },
+  refresh: {
+    top: "40%",
   },
   container: {
     alignItems: "center",
