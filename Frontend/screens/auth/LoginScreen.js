@@ -1,5 +1,5 @@
 import { serverIp } from "../../config.js";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,19 +9,55 @@ import {
   TouchableOpacity,
   Alert,
   Image,
+  Dimensions,
 } from "react-native";
 import Colors from "../../constants/Colors";
+import * as SecureStore from "expo-secure-store";
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
 
+  useEffect(() => {
+    const checkStoredCredentials = async () => {
+      const storedUsername = await SecureStore.getItemAsync("username");
+      const storedPassword = await SecureStore.getItemAsync("password");
+
+      if (storedUsername && storedPassword) {
+        // Stored credentials exist, use them for login
+        const loginData = {
+          username: storedUsername,
+          password: storedPassword,
+        };
+
+        const response = await fetch(`${serverIp}/api/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(loginData),
+        });
+
+        let responseData = await response.json();
+
+        if (response.status <= 201) {
+          console.log("Response data:", responseData);
+          navigation.navigate("BottomNavOverlay");
+        } else {
+          Alert.alert(responseData.error);
+        }
+      }
+    };
+
+    checkStoredCredentials();
+  }, []);
+
   const handleLogin = async () => {
-    // You can add your login logic here. For this example, we'll just set loggedIn to true.
+    // Handle manual login process when the "Login" button is pressed
     const loginData = {
-      username: username, // Get the username from the input field
-      password: password, // Get the password from the input field
+      username: username,
+      password: password,
     };
 
     const response = await fetch(`${serverIp}/api/login`, {
@@ -36,6 +72,8 @@ const LoginScreen = ({ navigation }) => {
 
     if (response.status <= 201) {
       console.log("Response data:", responseData);
+      await SecureStore.setItemAsync("username", username);
+      await SecureStore.setItemAsync("password", password);
       navigation.navigate("BottomNavOverlay");
     } else {
       Alert.alert(responseData.error);
@@ -85,6 +123,9 @@ const LoginScreen = ({ navigation }) => {
   );
 };
 
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -96,7 +137,7 @@ const styles = StyleSheet.create({
   loginContainer: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.BB_darkOrange,
+    backgroundColor: Colors.BB_pink,
     padding: 20,
     borderRadius: 10,
     shadowColor: "black",
@@ -109,19 +150,26 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   input: {
-    width: 200,
-    height: 40,
+    width: windowWidth * 0.45,
+    height: windowHeight * 0.04,
     borderColor: "gray",
-    borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
-    borderRadius: 5,
+    borderRadius: 7,
+    backgroundColor: "white",
+    shadowColor: "black",
+    shadowRadius: 2,
+    shadowOpacity: 1,
+    shadowOffset: {
+      width: 1,
+      height: 1,
+    },
   },
   loginTextContainer: {
+    width: windowWidth * 0.2,
     backgroundColor: Colors.BB_rangeYellow,
     padding: 5,
     width: "100%",
-    borderWidth: 2,
     borderColor: Colors.black,
     borderRadius: 10,
     fontWeight: "bold",
@@ -135,13 +183,11 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   loginText: {
-    fontSize: 20,
+    fontSize: 15,
   },
   createAccountTextContainer: {
     marginTop: 10,
-    backgroundColor: Colors.BB_darkRedPurple,
     padding: 5,
-    borderWidth: 2,
     borderColor: Colors.black,
     borderRadius: 10,
     color: "black",
@@ -150,9 +196,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowOffset: {
       width: 0,
-      height: 3,
+      height: 1,
     },
-    shadowRadius: 2,
+    shadowRadius: 1,
     elevation: 2,
   },
   createAccountText: {

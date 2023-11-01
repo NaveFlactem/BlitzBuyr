@@ -5,6 +5,7 @@ import LoginScreen from "../screens/auth/LoginScreen";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import CreateListing from "../screens/CreateListing";
+import Authenticate from "../screens/auth/Authenticate";
 import BottomNavOverlay from "./BottomNavOverlay";
 
 const Stack = createStackNavigator();
@@ -12,9 +13,10 @@ const Stack = createStackNavigator();
 const StackNavigator = () => {
   return (
     <Stack.Navigator
-      initialRouteName="Login"
+      initialRouteName="Authenticate"
       screenOptions={{ headerShown: false }}
     >
+      <Stack.Screen name="Authenticate" component={Authenticate} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
       <Stack.Screen name="Home" component={HomeScreen} />

@@ -9,6 +9,7 @@ import {
   Alert,
   Image,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import Colors from "../../constants/Colors.js";
 
@@ -107,6 +108,9 @@ const CreateAccountScreen = ({ navigation }) => {
   );
 };
 
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -118,7 +122,7 @@ const styles = StyleSheet.create({
   loginContainer: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.BB_darkOrange,
+    backgroundColor: Colors.BB_pink,
     width: "100%",
     padding: 20,
     borderRadius: 10,
@@ -137,13 +141,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   createAccountTextContainer: {
-    marginTop: 10,
+    width: windowWidth * 0.4,
     backgroundColor: Colors.BB_rangeYellow,
     padding: 5,
-    borderWidth: 2,
     borderColor: Colors.black,
     borderRadius: 10,
-    color: "black",
     fontWeight: "bold",
     shadowColor: "black",
     shadowOpacity: 1,
@@ -156,22 +158,23 @@ const styles = StyleSheet.create({
   },
   createAccountText: {
     fontSize: 16,
+    fontStyle: "bold",
+    alignSelf: "center",
   },
   loginTextContainer: {
     marginTop: 10,
-    backgroundColor: Colors.BB_darkRedPurple,
     padding: 5,
-    borderWidth: 2,
     borderColor: Colors.black,
     borderRadius: 10,
+    color: "black",
     fontWeight: "bold",
     shadowColor: "black",
     shadowOpacity: 1,
     shadowOffset: {
       width: 0,
-      height: 3,
+      height: 1,
     },
-    shadowRadius: 2,
+    shadowRadius: 1,
     elevation: 2,
   },
   loginText: {
@@ -179,13 +182,20 @@ const styles = StyleSheet.create({
     color: "white",
   },
   input: {
-    width: "100%",
-    height: 40,
-    borderWidth: 1,
+    width: windowWidth * 0.85,
+    height: windowHeight * 0.05,
     borderColor: "gray",
-    borderRadius: 4,
-    marginBottom: 12,
-    padding: 8,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    borderRadius: 7,
+    backgroundColor: "white",
+    shadowColor: "black",
+    shadowRadius: 2,
+    shadowOpacity: 1,
+    shadowOffset: {
+      width: 1,
+      height: 1,
+    },
   },
   logo: {
     width: 100, // Adjust the width as needed
