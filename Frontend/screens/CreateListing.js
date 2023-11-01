@@ -16,7 +16,7 @@ import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 import { Camera } from "expo-camera"; // Import Camera from Expo
 import Colors from "../constants/Colors";
-import { BottomBar, BottomBarImage} from "../components/BottomBar";
+import BottomBar from "../components/BottomBar";
 import TopBar from "../components/TopBar";
 
 /**
@@ -367,7 +367,6 @@ class CreateListing extends Component {
 
         <BottomBar />
 
-        <BottomBarImage />
       </View>
     );
   }

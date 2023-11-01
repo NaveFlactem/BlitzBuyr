@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { View, StyleSheet, SafeAreaView, Text, TouchableOpacity, RefreshControl} from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import Swiper from "react-native-swiper";
-import {BottomBar, BottomBarImage} from "../components/BottomBar";
+import BottomBar from "../components/BottomBar";
 import TopBar from "../components/TopBar";
 import Colors from "../constants/Colors";
 import { Image } from "expo-image";
@@ -166,8 +166,6 @@ const HomeScreen = ({ route }) => {
       )}
 
       <BottomBar />
-
-      <BottomBarImage />
 
     </SafeAreaView>
   );

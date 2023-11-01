@@ -7,6 +7,12 @@ const screenHeight = Dimensions.get("window").height;
 const styles = StyleSheet.create({
   bottomBar: {
     position: "absolute",
+    height: 0.2 * screenHeight,
+    width: screenWidth,
+    bottom: 0,
+  },
+  bottomBarFiller: {
+    position: "absolute",
     bottom: 0,
     height: 0.08 * screenHeight,
     width: screenWidth,
@@ -18,25 +24,23 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOffset: { width: 0, height: -2 },
   },
-  image : {
+  image: {
+    position: "absolute",
+    alignSelf: "center",
     height: 0.1 * screenHeight,
     width: 0.2 * screenWidth,
-    
-},
+    bottom: 0.005 * screenHeight,  
+  },
 });
 
 const BottomBar = () => {
   return (
-      <View style={styles.bottomBar}></View>
+      <View style={styles.bottomBar}>
+        <View style={styles.bottomBarFiller} />
+
+        <Image style={styles.image} source={require("../assets/icon_background_transparent_upright.png")}/>
+      </View>
       )
 };
 
-const BottomBarImage = () => {
-  return (
-      <View>
-          <Image style={styles.image} source={require("../assets/icon_background_transparent_upright.png")}/>
-      </View>
-  )
-};
-
-export {BottomBar, BottomBarImage};
+export default BottomBar;
