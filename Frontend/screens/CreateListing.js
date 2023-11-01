@@ -360,6 +360,12 @@ class CreateListing extends Component {
               <View style={styles.tagField}>
 
               </View>
+            
+            <TouchableOpacity onPress={this.handleCreateListing}>
+              <View style={[styles.createButton, top = 30, bottom=0]}>
+                <Text style={styles.buttonText}>Create Listing</Text>
+              </View>
+            </TouchableOpacity>
 
             <Text style={styles.spacer} />
           </ScrollView>
