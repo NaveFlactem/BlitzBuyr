@@ -10,20 +10,20 @@ import CreateListing from "../screens/CreateListing";
 
 const TabArr = [
   {
-    route: "CreateListing",
-    label: "Create Listing",
-    type: Icons.MaterialCommunityIcons,
-    activeIcon: "timeline-plus",
-    inActiveIcon: "timeline-plus-outline",
-    component: CreateListing,
-  },
-  {
     route: "Home",
     label: "Home",
     type: Icons.Ionicons,
     activeIcon: "grid",
     inActiveIcon: "grid-outline",
     component: HomeScreen,
+  },
+  {
+    route: "CreateListing",
+    label: "Create Listing",
+    type: Icons.MaterialCommunityIcons,
+    activeIcon: "plus-box-multiple",
+    inActiveIcon: "plus-box-multiple-outline",
+    component: CreateListing,
   },
   {
     route: "Account",

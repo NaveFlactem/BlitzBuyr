@@ -3,11 +3,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { View, StyleSheet, SafeAreaView, Text, TouchableOpacity, RefreshControl} from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import Swiper from "react-native-swiper";
-import BottomBar from "../components/BottomBar";
+import {BottomBar, BottomBarImage} from "../components/BottomBar";
 import TopBar from "../components/TopBar";
 import Colors from "../constants/Colors";
 import { Image } from "expo-image";
-import Icon, { Icons } from "../components/Icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 
@@ -167,6 +166,9 @@ const HomeScreen = ({ route }) => {
       )}
 
       <BottomBar />
+
+      <BottomBarImage />
+
     </SafeAreaView>
   );
 };
@@ -183,12 +185,11 @@ const styles = StyleSheet.create({
     top: "40%",
   },
   container: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     zIndex: -1,
     backgroundColor: Colors.BB_pink,
-    height: "100%",
-    width: "100%",
   },
   card: {
     backgroundColor: Colors.BB_darkRedPurple,
@@ -206,16 +207,16 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     position: "absolute",
-    bottom: 10, // Adjust the position as needed
-    left: 10, // Adjust the position as needed
+    bottom: 10, 
+    left: 10, 
     backgroundColor: "rgba(0, 0, 0, 0.6)",
     padding: 5,
     borderRadius: 5,
   },
   pageContainer: {
     position: "absolute",
-    bottom: 10, // Adjust the position as needed
-    left: 380, // Adjust the position as needed
+    bottom: 10, 
+    left: 380, 
     backgroundColor: "rgba(0, 0, 0, 0.6)",
     padding: 5,
     borderRadius: 5,
@@ -223,20 +224,20 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "white", // Customize the color
+    color: "white", 
   },
   price: {
     fontSize: 14,
-    color: "white", // Customize the color
+    color: "white", 
   },
   description: {
     fontSize: 10,
-    color: "white", // Customize the color
+    color: "white", 
   },
   starContainer: {
     position: "absolute",
-    top: 10, // Adjust the position as needed
-    right: 10, // Adjust the position as needed
+    top: 10, 
+    right: 10, 
   },
   buttonContainer: {
     position: "absolute",
@@ -250,8 +251,8 @@ const styles = StyleSheet.create({
   starButton: {
     // Define the style for your star button here
     position: "absolute",
-    top: 10, // Adjust the position as needed
-    right: 10, // Adjust the position as needed
+    top: 10, 
+    right: 10, 
     
   },
 });
