@@ -97,26 +97,62 @@ class CreateListing extends Component {
       } else {
         this.setState({ isPriceInvalid: false });
       }
-      
+
       if (this.state.data.length == 0) {
         this.setState({ isImageInvalid: true });
         return Alert.alert("Please select at least one image.");
+      }
+      if (this.state.data.length > 9) {
+        this.setState({ isImageInvalid: true });
+        return Alert.alert("You can only select up to 9 images.");
       }
 
       return;
     }
 
     try {
-      const formData = new FormData();
+      if (this.state.data.length == 0) {
+        console.error("No images selected.");
+        return;
+      }
+      if (this.state.data.length > 9) {
+        console.error("Too many images selected.");
+        return;
+      }
+      if (this.state.price < 0) {
+        console.error("Invalid price.");
+        return;
+      }
+      if ((this.state.price = "")) {
+        console.error("Invalid price.");
+        return;
+      }
+      if (this.state.title.length > 25) {
+        console.error("Title too long.");
+        return;
+      }
+      if ((this.state.title = "")) {
+        console.error("Invalid title.");
+        return;
+      }
+      if (this.state.description.length > 500) {
+        console.error("Description too long.");
+        return;
+      }
+      if ((this.state.description = "")) {
+        console.error("Invalid description.");
+        return;
+      }
 
-      this.state.data.forEach((image, index) => {
-        formData.append(`image_${index}`, image);
-      });
+      const formData = new FormData();
 
       formData.append("price", this.price);
       formData.append("title", this.title);
       formData.append("description", this.description);
       formData.append("username", "test");
+      this.state.data.forEach((image, index) => {
+        formData.append(`image_${index}`, image);
+      });
 
       console.log("FormData:", formData);
       const response = await fetch(`${serverIp}/api/createListing`, {
@@ -168,7 +204,7 @@ class CreateListing extends Component {
     if (this.state.data.length >= 9) {
       return Alert.alert("You can only select up to 9 images.");
     }
-    
+
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
@@ -268,6 +304,18 @@ class CreateListing extends Component {
     this.setState({ data, isScrollEnabled: true });
   };
 
+  handlePriceChange = (text) => {
+    const regex = /^(\d{0,6}(\.\d{0,2})?)$/;
+
+    if (regex.test(text) || text === "") {
+      // If text matches the format (4 digits before decimal, 2 after) or is empty
+      this.setState({ isPriceInvalid: false });
+    } else {
+      // If the text doesn't match the format
+      this.setState({ isPriceInvalid: true });
+    }
+  };
+
   render() {
     const { isTitleInvalid, isDescriptionInvalid, isPriceInvalid } = this.state;
 
@@ -282,28 +330,72 @@ class CreateListing extends Component {
                 <Text style={styles.buttonText}>Create Listing</Text>
               </View>
             </TouchableOpacity>
-
-            <Text style={styles.label}>Title{isTitleInvalid ? " *" : ""}</Text>
+            <View style={styles.rowContainer}>
+              <View style={styles.rowContainer}>
+                <Text style={styles.label}>Title</Text>
+                {isTitleInvalid ? (
+                  <View style={styles.rowContainer}>
+                    <Text style={styles.asterisk}> *</Text>
+                    <Text style={styles.errorMessage}>
+                      {this.state.title == ""
+                        ? "Title is required"
+                        : this.state.title.length > 25
+                        ? "Title too long"
+                        : "Must enter a valid title"}
+                    </Text>
+                  </View>
+                ) : (
+                  ""
+                )}
+              </View>
+              <Text style={styles.characterCounter}>
+                {this.state.title.length}/25
+              </Text>
+            </View>
             <TextInput
               ref={this.titleInput}
-              style={[styles.input, this.state.isTitleInvalid ? (borderColor="red", borderWidth=3) : null]}
+              style={[
+                styles.input,
+                this.state.isTitleInvalid
+                  ? ((borderColor = "red"), (borderWidth = 3))
+                  : null,
+              ]}
               value={this.state.title}
               onChangeText={(text) => {
                 this.setState({ title: text, isTitleInvalid: false });
               }}
               returnKeyType="next"
               onSubmitEditing={() => this.descriptionInput.current.focus()}
+              maxLength={25}
             />
-
-            <Text style={styles.label}>
-              Description{isDescriptionInvalid ? " *" : ""}
-            </Text>
+            <View style={styles.rowContainer}>
+              <View style={styles.rowContainer}>
+                <Text style={styles.label}>Description</Text>
+                {isDescriptionInvalid && (
+                  <View style={styles.rowContainer}>
+                    <Text style={styles.asterisk}> *</Text>
+                    <Text style={styles.errorMessage}>
+                      {this.state.description.length > 500
+                        ? "Description too long"
+                        : this.state.description.length === 0
+                        ? "Description is required"
+                        : "Must enter a valid description"}
+                    </Text>
+                  </View>
+                )}
+              </View>
+              <Text style={styles.characterCounter}>
+                {this.state.description.length}/500
+              </Text>
+            </View>
             <TextInput
               ref={this.descriptionInput}
               style={[
                 styles.input,
                 styles.multilineInput,
-                this.state.isDescriptionInvalid ? (borderColor="red", borderWidth=3) : null,
+                this.state.isDescriptionInvalid
+                  ? ((borderColor = "red"), (borderWidth = 3))
+                  : null,
               ]}
               value={this.state.description}
               onChangeText={(text) => {
@@ -316,21 +408,46 @@ class CreateListing extends Component {
               textAlignVertical="top"
               returnKeyType="next"
               onSubmitEditing={() => this.priceInput.current.focus()}
+              maxLength={500}
             />
 
-            <Text style={styles.label}>Price{isPriceInvalid ? " *" : ""}</Text>
+            <View style={styles.rowContainer}>
+              <Text style={styles.label}>Price</Text>
+              {isPriceInvalid ? (
+                <View style={styles.rowContainer}>
+                  <Text style={styles.asterisk}> *</Text>
+                  <Text style={styles.errorMessage}>
+                    {this.state.price == ""
+                      ? "Price is required"
+                      : this.state.price < 0
+                      ? "Invalid price"
+                      : this.state.price.length > 7
+                      ? "Price too long"
+                      : "Must enter a valid price"}
+                  </Text>
+                </View>
+              ) : (
+                ""
+              )}
+            </View>
+
             <TextInput
               ref={this.priceInput}
               style={[
                 styles.input,
-                this.state.isPriceInvalid ? (borderColor="red", borderWidth=3) : null,
+                this.state.isPriceInvalid
+                  ? ((borderColor = "red"), (borderWidth = 3))
+                  : null,
               ]}
               value={this.state.price}
               onChangeText={(text) => {
                 this.setState({ price: text, isPriceInvalid: false });
+                this.handlePriceChange(text);
               }}
               keyboardType="numeric"
               returnKeyType="done"
+              placeholder="$000000.00"
+              maxLength={9}
             />
 
             <View style={styles.cameraContainer}>
@@ -357,12 +474,10 @@ class CreateListing extends Component {
               </View>
             </View>
 
-              <View style={styles.tagField}>
+            <View style={styles.tagField}></View>
 
-              </View>
-            
             <TouchableOpacity onPress={this.handleCreateListing}>
-              <View style={[styles.createButton, top = 30, bottom=0]}>
+              <View style={[styles.createButton, (top = 30), (bottom = 0)]}>
                 <Text style={styles.buttonText}>Create Listing</Text>
               </View>
             </TouchableOpacity>
@@ -372,7 +487,6 @@ class CreateListing extends Component {
         </View>
 
         <BottomBar />
-
       </View>
     );
   }
@@ -466,6 +580,18 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: "white",
   },
+  asterisk: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "red",
+  },
+  errorMessage: {
+    fontSize: 12,
+    color: "red",
+    marginLeft: 10,
+    left: 10,
+  },
   input: {
     height: 40,
     borderColor: Colors.BB_darkPink,
@@ -480,6 +606,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 2, height: 4 },
     shadowRadius: 3,
     textAlign: "center",
+    color: "white",
   },
   multilineInput: {
     height: 120,
@@ -498,10 +625,15 @@ const styles = StyleSheet.create({
     color: "white",
     alignSelf: "center",
   },
-  errorMessage: {
+  rowContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  characterCounter: {
     fontSize: 12,
-    color: "red",
-    marginLeft: 10,
+    color: "white",
+    position: "absolute",
+    right: 0.05 * screenWidth,
   },
   spacer: {
     height: 400,
