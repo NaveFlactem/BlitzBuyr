@@ -1,5 +1,5 @@
 import { serverIp } from "../config.js";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, memo } from "react";
 import { View, StyleSheet, SafeAreaView, Text, TouchableOpacity, RefreshControl} from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import Swiper from "react-native-swiper";
@@ -171,7 +171,7 @@ const HomeScreen = ({ route }) => {
   );
 };
 
-export default HomeScreen;
+export default memo(HomeScreen);
 
 const styles = StyleSheet.create({
   screenfield: {

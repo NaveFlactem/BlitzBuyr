@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Image, Dimensions, StyleSheet } from "react-native";
-import Icons from "./Icons";
+import { memo } from "react";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -28,13 +28,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const TopBar = () => {
+const TopBar = memo(function TopBar() {
   return (
 
     <View style={styles.topBar}>
       <Image style={styles.logo} source={require("../assets/blitzbuyr_name_logo.png")}/>
     </View>
   );
-};
+});
 
 export default TopBar;

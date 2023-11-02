@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import {
   View,
   Text,
@@ -96,7 +96,7 @@ const renderScene = SceneMap({
   second: LikesRoutes,
 });
 
-export default function ProfileScreen({ navigation }) {
+function ProfileScreen({ navigation }) {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
 
@@ -332,3 +332,5 @@ export default function ProfileScreen({ navigation }) {
     </SafeAreaView>
   );
 }
+
+export default memo(ProfileScreen);

@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, View, Image, Dimensions } from "react-native";
+import { memo } from "react";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const BottomBar = () => {
+const BottomBar = memo(function BottomBar() {
   return (
       <View style={styles.bottomBar}>
         <View style={styles.bottomBarFiller} />
@@ -41,6 +42,6 @@ const BottomBar = () => {
         <Image style={styles.image} source={require("../assets/icon_background_transparent_upright.png")}/>
       </View>
       )
-};
+});
 
 export default BottomBar;

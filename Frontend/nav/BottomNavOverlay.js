@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, memo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Icon, { Icons } from "../components/Icons";
 import Colors from "../constants/Colors";
@@ -73,7 +73,7 @@ const TabButton = (props) => {
   );
 };
 
-export default function BottomNavOverlay() {
+function BottomNavOverlay() {
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -104,6 +104,8 @@ export default function BottomNavOverlay() {
     </Tab.Navigator>
   );
 }
+
+export default memo(BottomNavOverlay);
 
 const styles = StyleSheet.create({
   container: {
