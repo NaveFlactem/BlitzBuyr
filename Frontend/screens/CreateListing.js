@@ -18,6 +18,7 @@ import { Camera } from "expo-camera"; // Import Camera from Expo
 import Colors from "../constants/Colors";
 import BottomBar from "../components/BottomBar";
 import TopBar from "../components/TopBar";
+import { Icons } from "../components/Icons.js";
 
 /**
  * @class
@@ -50,6 +51,8 @@ class CreateListing extends Component {
     this.titleInput = React.createRef();
     this.descriptionInput = React.createRef();
     this.priceInput = React.createRef();
+    this.imageInput = React.createRef();
+    this.tagInput = React.createRef();
   }
 
   /**
@@ -88,7 +91,6 @@ class CreateListing extends Component {
       this.priceInput.current.focus();
     }
 
-
     if (!title || !description || !price) {
       if (!title) {
         this.setState({ isTitleInvalid: true });
@@ -113,6 +115,7 @@ class CreateListing extends Component {
 
       if (this.state.data.length == 0) {
         this.setState({ isImageInvalid: true });
+
         return Alert.alert("Please select at least one image.");
       }
       if (this.state.data.length > 9) {
@@ -330,7 +333,66 @@ class CreateListing extends Component {
   };
 
   render() {
-    const { isTitleInvalid, isDescriptionInvalid, isPriceInvalid } = this.state;
+    const { isTitleInvalid, isDescriptionInvalid, isPriceInvalid, isImageInvalid, isTagInvalid } = this.state;
+
+    // const tagsData = [
+    //   {
+    //     name: "Furniture",
+    //     selected: false,
+    //     type: Icons,
+    //     activeIcon: "",
+    //     inActiveIcon: "",
+    //   },
+    //   {
+    //     name: "Electronics",
+    //     selected: false,
+    //     type: Icons,
+    //     activeIcon: "",
+    //     inActiveIcon: "",
+    //   },
+    //   {
+    //     name: "Clothing",
+    //     selected: false,
+    //     type: Icons,
+    //     activeIcon: "",
+    //     inActiveIcon: "",
+    //   },
+    //   {
+    //     name: "Books",
+    //     selected: false,
+    //     type: Icons,
+    //     activeIcon: "",
+    //     inActiveIcon: "",
+    //   },
+    //   {
+    //     name: "Sports",
+    //     selected: false,
+    //     type: Icons,
+    //     activeIcon: "",
+    //     inActiveIcon: "",
+    //   },
+    //   {
+    //     name: "Beauty",
+    //     selected: false,
+    //     type: Icons,
+    //     activeIcon: "",
+    //     inActiveIcon: "",
+    //   },
+    //   {
+    //     name: "Toys",
+    //     selected: false,
+    //     type: Icons,
+    //     activeIcon: "",
+    //     inActiveIcon: "",
+    //   },
+    //   {
+    //     name: "Other",
+    //     selected: false,
+    //     type: Icons,
+    //     activeIcon: "",
+    //     inActiveIcon: "",
+    //   },
+    // ];
 
     return (
       <View style={styles.wrapper}>
@@ -368,10 +430,7 @@ class CreateListing extends Component {
             <TextInput
               ref={this.titleInput}
               style={[
-                styles.input,
-                this.state.isTitleInvalid
-                  ? ((borderColor = "red"), (borderWidth = 3))
-                  : null,
+                styles.input
               ]}
               value={this.state.title}
               onChangeText={(text) => {
@@ -406,9 +465,7 @@ class CreateListing extends Component {
               style={[
                 styles.input,
                 styles.multilineInput,
-                this.state.isDescriptionInvalid
-                  ? ((borderColor = "red"), (borderWidth = 3))
-                  : null,
+                textAlign="left",
               ]}
               value={this.state.description}
               onChangeText={(text) => {
@@ -447,10 +504,7 @@ class CreateListing extends Component {
             <TextInput
               ref={this.priceInput}
               style={[
-                styles.input,
-                this.state.isPriceInvalid
-                  ? ((borderColor = "red"), (borderWidth = 3))
-                  : null,
+                styles.input
               ]}
               value={this.state.price}
               onChangeText={(text) => {
@@ -487,7 +541,14 @@ class CreateListing extends Component {
               </View>
             </View>
 
-            <View style={styles.tagField}></View>
+            <View style={styles.tagField}>
+              {/* {tagsData.map((tag, index) => (
+                <TouchableOpacity key={index} style={styles.tagContainer}>
+                  <Text>{tag.name}</Text>
+                </TouchableOpacity>
+              ))}
+              ; */}
+            </View>
 
             <TouchableOpacity onPress={this.handleCreateListing}>
               <View style={[styles.createButton, (top = 30), (bottom = 0)]}>
