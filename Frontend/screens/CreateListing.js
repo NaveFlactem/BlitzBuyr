@@ -75,6 +75,19 @@ class CreateListing extends Component {
    */
   handleCreateListing = async () => {
     const { title, description, price } = this.state;
+    if (this.state.title == "") {
+      this.setState({ isTitleInvalid: true });
+      this.titleInput.current.focus();
+    }
+    if (this.state.description == "") {
+      this.setState({ isDescriptionInvalid: true });
+      this.descriptionInput.current.focus();
+    }
+    if (this.state.price == "") {
+      this.setState({ isPriceInvalid: true });
+      this.priceInput.current.focus();
+    }
+
 
     if (!title || !description || !price) {
       if (!title) {
