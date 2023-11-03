@@ -18,6 +18,9 @@ import { Camera } from "expo-camera"; // Import Camera from Expo
 import Colors from "../constants/Colors";
 import BottomBar from "../components/BottomBar";
 import TopBar from "../components/TopBar";
+import * as SecureStore from "expo-secure-store";
+import * as ImageManipulator from "expo-image-manipulator";
+import { withNavigation } from 'react-navigation';
 import { Icons } from "../components/Icons.js";
 
 /**
@@ -77,7 +80,7 @@ class CreateListing extends Component {
    * @param {Object} formData - object that is sent to the server with user inputted values
    */
   handleCreateListing = async () => {
-    const { title, description, price } = this.state;
+    const { title, description, price, data } = this.state;
     if (this.state.title == "") {
       this.setState({ isTitleInvalid: true });
       this.titleInput.current.focus();
@@ -162,16 +165,22 @@ class CreateListing extends Component {
 
       const formData = new FormData();
 
-      formData.append("price", this.price);
-      formData.append("title", this.title);
-      formData.append("description", this.description);
-      formData.append("username", "test");
-      this.state.data.forEach((image, index) => {
-        formData.append(`image_${index}`, image);
+      data.forEach((image, index) => {
+        // Append each image as a file
+        formData.append(`image_${index}`, {
+          uri: image.uri,  // The URI of the image file
+          name: `image_${index}.jpg`, // The desired file name
+          type: 'image/jpeg', // The content type of the file
+        });
       });
 
+      formData.append("price", price);
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("username", await SecureStore.getItemAsync("username"));
+
       console.log("FormData:", formData);
-      const response = await fetch(`${serverIp}/api/createListing`, {
+      const response = await fetch(`${serverIp}/api/createlisting`, {
         method: "POST",
         body: formData,
       });
@@ -180,7 +189,7 @@ class CreateListing extends Component {
         const responseData = await response.json();
         console.log("Listing created successfully:", responseData);
         this.destructor();
-        navigation.navigate("Home");
+        this.props.navigation.navigate("Home", {refresh: true});
       } else {
         console.error("HTTP error! Status: ", response.status);
       }
@@ -217,28 +226,49 @@ class CreateListing extends Component {
    * @param {Object} result - object that contains the image(s) that the user selected
    */
   handleImagePick = async () => {
-    if (this.state.data.length >= 9) {
-      return Alert.alert("You can only select up to 9 images.");
-    }
-
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
       quality: 1,
       allowsMultipleSelection: true,
     });
 
-    if (!result.cancelled) {
-      const newImageData = result.assets.map((asset) => ({
-        name: "New Image", // Customize the name as needed
-        key: String(Date.now()), // Generate a unique key
-        uri: asset.uri,
-      }));
-
-      this.setState((prevState) => ({
-        data: [...prevState.data, ...newImageData],
-      }));
+    if (result.canceled) {
+      return;
     }
+    /**
+     * @function
+     * @selectedImages - processes images allowing them to be sent and displayed
+     */
+    const selectedImages = await Promise.all(
+      result.assets.map(async function (image) {
+        try {
+          const manipulateResult = await ImageManipulator.manipulateAsync(
+            image.uri,
+            [],
+            { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+          );
+          let localUri = manipulateResult.uri;
+          let filename = localUri.split("/").pop();
+
+          return {
+            name: filename,
+            key: String(Date.now()),
+            uri: localUri,
+          };
+        } catch (error) {
+          console.error("Image processing error:", error);
+          return null;
+        }
+      })
+    );
+
+    // Filter out any potential null values (indicating errors)
+    const filteredImages = selectedImages.filter((image) => image !== null);
+
+    this.setState((prevState) => ({
+      data: [...prevState.data, ...filteredImages],
+    }));
   };
 
   /**

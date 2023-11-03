@@ -10,17 +10,16 @@ const app = express();
 const path = require("path");
 //const compressionMiddleware = require('./imageCompression');
 
-// static pages
+// Static pages
 app.use("/docs", express.static(path.join(__dirname, "../Docs")));
 app.use(
   "/img",
   express.static(path.join(__dirname, "./img"), {
     enableBrotli: true, // Enable Brotli compression
-  }),
+  })
 );
 
 // Middleware for printing out request information
-/*
 app.use(function (req, res, next) {
   console.log(`Received request:
     IP: ${req.ip}
@@ -30,18 +29,20 @@ app.use(function (req, res, next) {
     Request Body: ${req.body}`);
   next();
 });
-*/
 
-// server routes and settings
+// Server routes and settings
 app
   .use("/api", require("./listing"))
   .use("/api", require("./account"))
+  .use("/api", require("./profile"))
   .use(favicon(path.join(__dirname, "../favicon.ico")));
 
 /**
  * GET request endpoint at the root which will redirect to the docs homepage.
+ *
  * @function
  * @name getRoot
+ *
  * @param {Object} req - Express.js request object.
  * @param {Object} res - Express.js response object.
  */
