@@ -58,8 +58,8 @@ const CreateAccountScreen = ({ navigation }) => {
       return;
     }
 
-    if (name.length < 6) {
-      Alert.alert("Invalid Input", "Name must be at least 6 characters.");
+    if (name.length < 4) {
+      Alert.alert("Invalid Input", "Name must be at least 4 characters.");
       return;
     }
 
@@ -106,13 +106,13 @@ const CreateAccountScreen = ({ navigation }) => {
 
     // Password validation criteria
     const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&.~`]{8,}$/;
 
     const hasCharacterValue = text.length >= 8;
     const hasLowercaseValue = /[a-z]/.test(text);
     const hasUppercaseValue = /[A-Z]/.test(text);
     const hasNumberValue = /\d/.test(text);
-    const hasSpecialCharacterValue = /[@$!%*?&]/.test(text);
+    const hasSpecialCharacterValue = /[@$!%*?&.~`,/-]/.test(text);
 
     hasCharacter.current = hasCharacterValue;
     hasLowercase.current = hasLowercaseValue;

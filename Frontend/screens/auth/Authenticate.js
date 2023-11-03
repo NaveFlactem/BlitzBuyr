@@ -33,7 +33,6 @@ const AuthenticateScreen = ({ navigation }) => {
           navigation.navigate("BottomNavOverlay");
         } else {
           navigation.navigate("Login");
-          Alert.alert(responseData.error);
         }
       } else {
         navigation.navigate("Login");

@@ -66,7 +66,7 @@ const TabButton = (props) => {
         <Icon
           type={item.type}
           name={focused ? item.activeIcon : item.inActiveIcon}
-          color={focused ? Colors.BB_darkOrange : Colors.BB_orange}
+          color={focused ? Colors.white : Colors.gray}
         />
       </Animatable.View>
     </TouchableOpacity>

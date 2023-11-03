@@ -41,7 +41,7 @@ const BottomBar = memo(function BottomBar() {
 
       <Image
         style={styles.image}
-        source={require("../assets/icon_background_transparent_upright.png")}
+        source={require("../assets/icon_transparent_background_filled_upright.png")}
       />
     </View>
   );
