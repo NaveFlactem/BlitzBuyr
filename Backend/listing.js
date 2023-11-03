@@ -172,50 +172,10 @@ router.get("/listings", async function (req, res) {
       );
     });
 
-    const imagesResult = await new Promise((resolve, reject) => {
-      // Extract the ListingIds from listingsResult
-      const listingIds = listingsResult.map((listing) => listing.ListingId);
-
-      if (listingIds.length === 0) {
-        // If there are no ListingIds, there's no need to query the Images table.
-        resolve([]);
-      } else {
-        // Generate placeholders for the IN clause based on the number of ListingIds
-        const placeholders = listingIds.map(() => "?").join(", ");
-
-        // Second query using placeholders for the IN clause
-        db.all(
-          `SELECT * FROM Images i WHERE i.ListingId IN (${placeholders})`,
-          listingIds,
-          (err, rows) => {
-            if (err) {
-              console.error("Error querying the database (third query):", err);
-              reject(err);
-            }
-            resolve(rows);
-          }
-        );
-      }
-    });
-
-    const combinedData = listingsResult.map((listing) => {
-      // Check if the listing's ListingId is in the likedListingsResult
-      const isLiked = likedListingsResult.some(
-        (likedListing) => likedListing.ListingId === listing.ListingId
-      );
-
-      const matchingImages = imagesResult
-        .filter((image) => image.ListingId === listing.ListingId)
-        .map((image) => image.ImageURI);
-      return {
-        ...listing, // Include all properties from the listing
-        images: matchingImages, // Add the matching images
-        liked: isLiked,
-      };
-    });
-
     // Now you can use both firstQueryResult and secondQueryResult
-    return res.status(200).json(combinedData);
+    return res
+      .status(200)
+      .json(await getImagesFromListings(listingsResult, likedListingsResult));
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
@@ -372,5 +332,65 @@ router.delete("/deleteimages", function (req, res) {
   }
 });
 
+/**
+ * Retrieves images associated with listings and combines them with listing data.
+ *
+ * @function
+ * @async
+ * @name getImagesFromListings
+ *
+ * @param {Array} listingsResult - An array of listing objects to retrieve images for.
+ *
+ * @returns {Promise<Array>} A Promise that resolves to an array of combined data objects. Each combined object includes listing information, associated images, and a flag indicating whether the listing is liked.
+ *
+ * @throws {Error} If there's an error during the database query.
+ */
+getImagesFromListings = async (listingsResult, likedListingsResult) => {
+  // WIP: Maybe don't pass likedListings, restructure this
+  const imagesResult = await new Promise((resolve, reject) => {
+    // Extract the ListingIds from listingsResult
+    const listingIds = listingsResult.map((listing) => listing.ListingId);
+
+    if (listingIds.length === 0) {
+      // If there are no ListingIds, there's no need to query the Images table.
+      resolve([]);
+    } else {
+      // Generate placeholders for the IN clause based on the number of ListingIds
+      const placeholders = listingIds.map(() => "?").join(", ");
+
+      // Second query using placeholders for the IN clause
+      db.all(
+        `SELECT * FROM Images i WHERE i.ListingId IN (${placeholders})`,
+        listingIds,
+        (err, rows) => {
+          if (err) {
+            console.error("Error querying the database (third query):", err);
+            reject(err);
+          }
+          resolve(rows);
+        }
+      );
+    }
+  });
+
+  const combinedData = listingsResult.map((listing) => {
+    // Check if the listing's ListingId is in the likedListingsResult
+    const isLiked = likedListingsResult.some(
+      (likedListing) => likedListing.ListingId === listing.ListingId
+    );
+
+    const matchingImages = imagesResult
+      .filter((image) => image.ListingId === listing.ListingId)
+      .map((image) => image.ImageURI);
+    return {
+      ...listing, // Include all properties from the listing
+      images: matchingImages, // Add the matching images
+      liked: isLiked,
+    };
+  });
+
+  return combinedData;
+};
+
 // Export the router
-module.exports = router;
+module.exports = { router, getImagesFromListings };

@@ -32,7 +32,7 @@ app.use(function (req, res, next) {
 
 // Server routes and settings
 app
-  .use("/api", require("./listing"))
+  .use("/api", require("./listing").router)
   .use("/api", require("./account"))
   .use("/api", require("./profile"))
   .use(favicon(path.join(__dirname, "../favicon.ico")));
