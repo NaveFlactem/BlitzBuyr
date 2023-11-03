@@ -8,9 +8,11 @@ const sqlite3 = require("sqlite3").verbose();
 
 /**
  * Initializing database connection.
+ *
  * @function
  * @name sqlite3.Database
- * @param {string} filename -  This is a required parameter and represents the name of the SQLite database file, including the path if necessary.
+ *
+ * @param {string} filename - This is a required parameter and represents the name of the SQLite database file, including the path if necessary.
  * @param {function} callback - This is a callback function that will be executed once the connection to the database is established.
  */
 const db = new sqlite3.Database("./blitzbuyr.db", (err) => {
@@ -31,13 +33,14 @@ CREATE TABLE IF NOT EXISTS Accounts (
 
 // Listings Table //
 const listingsTable = `
-  CREATE TABLE IF NOT EXISTS Listings (
-    ListingId INTEGER PRIMARY KEY AUTOINCREMENT,
-    Price REAL,
-    Title TEXT,
-    Username TEXT,
-    Description TEXT,
-    PostDate TIMESTAMP
+CREATE TABLE IF NOT EXISTS Listings (
+  ListingId INTEGER PRIMARY KEY AUTOINCREMENT,
+  Price REAL,
+  Title TEXT,
+  Username TEXT,
+  Description TEXT,
+  PostDate TIMESTAMP,
+  FOREIGN KEY (Username) REFERENCES Accounts (Username) ON DELETE CASCADE
   );`;
 
 // Images Table //
@@ -47,22 +50,24 @@ CREATE TABLE IF NOT EXISTS Images (
   ListingId INTEGER, 
   ImageURI TEXT,
   BlurHash TEXT,
-  FOREIGN KEY (ListingId) REFERENCES Listings(ListingId) ON DELETE CASCADE
+  FOREIGN KEY (ListingId) REFERENCES Listings (ListingId) ON DELETE CASCADE
 );`;
 
 // Rating Table //
 const rating = `
 CREATE TABLE IF NOT EXISTS Ratings (
-  UserRatedId INTEGER, 
-  UserId INTEGER,
-  Rating INTEGER,
-  ReviewDescription VARCHAR(255)
+  UserRated TEXT, 
+  Username TEXT,
+  Rating REAL,
+  ReviewDescription TEXT,
+  PRIMARY KEY (Username, UserRated),
+  FOREIGN KEY (UserRated) REFERENCES Users (Username) ON DELETE CASCADE
   );`;
 
 // Profile Table //
 const profile = `
-CREATE TABLE IF NOT EXISTS Profile (
-  Username VARCHAR(50), 
+CREATE TABLE IF NOT EXISTS Profiles (
+  Username TEXT,
   ContactInfo VARCHAR(200),
   ListingId VARCHAR(255),
   ReviewDescription VARCHAR(255)
@@ -71,8 +76,11 @@ CREATE TABLE IF NOT EXISTS Profile (
 // Likes Table //
 const likes = `
 CREATE TABLE IF NOT EXISTS Likes (
-  UserId VARCHAR(255),
-  ItemId VARCHAR(255)
+  Username Text,
+  ListingId INTEGER,
+  PRIMARY KEY (Username, ListingId),
+  FOREIGN KEY (Username) REFERENCES Users (Username) ON DELETE CASCADE,
+  FOREIGN KEY (ListingId) REFERENCES Listings (ListingId) ON DELETE CASCADE
   );`;
 
 // Create tables using Promises
@@ -81,14 +89,16 @@ const tables = [
   { sql: listingsTable, name: "Listings" },
   { sql: images, name: "Images" },
   { sql: rating, name: "Ratings" },
-  { sql: profile, name: "Profile" },
+  { sql: profile, name: "Profiles" },
   { sql: likes, name: "Likes" },
 ];
 
 /**
  * Initializes tables in the existing database. Does not populate the database.
+ *
  * @function
  * @name createTable
+ *
  * @param {String} sql - SQL create statement that's run using the initialized SQlite db object.
  * @param {String} tableName - Holds the name of the table being created
  */
@@ -109,6 +119,7 @@ function createTable(sql, tableName) {
 
 /**
  * Loops through globally initialized list that holds all SQL create statements.
+ *
  * @function
  * @name createTables
  */
