@@ -30,18 +30,21 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     height: 0.1 * screenHeight,
     width: 0.2 * screenWidth,
-    bottom: 0.005 * screenHeight,  
+    bottom: 0.005 * screenHeight,
   },
 });
 
 const BottomBar = memo(function BottomBar() {
   return (
-      <View style={styles.bottomBar}>
-        <View style={styles.bottomBarFiller} />
+    <View style={styles.bottomBar}>
+      <View style={styles.bottomBarFiller} />
 
-        <Image style={styles.image} source={require("../assets/icon_background_transparent_upright.png")}/>
-      </View>
-      )
+      <Image
+        style={styles.image}
+        source={require("../assets/icon_background_transparent_upright.png")}
+      />
+    </View>
+  );
 });
 
 export default BottomBar;

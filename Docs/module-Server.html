@@ -1,293 +1,135 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
     <title>JSDoc: Module: Server</title>
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
-</head>
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="styles/prettify-tomorrow.css"
+    />
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css" />
+  </head>
 
-<body>
+  <body>
+    <div id="main">
+      <h1 class="page-title">Module: Server</h1>
 
-<div id="main">
+      <section>
+        <header></header>
 
-    <h1 class="page-title">Module: Server</h1>
+        <article>
+          <div class="container-overview">
+            <div class="description">
+              Express application for serving static files and handling API
+              requests.
+            </div>
 
-    
+            <dl class="details">
+              <dt class="tag-source">Source:</dt>
+              <dd class="tag-source">
+                <ul class="dummy">
+                  <li>
+                    <a href="server.js.html">server.js</a>,
+                    <a href="server.js.html#line1">line 1</a>
+                  </li>
+                </ul>
+              </dd>
+            </dl>
+          </div>
 
+          <h3 class="subsection-title">Methods</h3>
 
+          <h4 class="name" id="~getRoot">
+            <span class="type-signature">(inner) </span>getRoot<span
+              class="signature"
+              >(req, res)</span
+            ><span class="type-signature"></span>
+          </h4>
 
+          <div class="description">
+            GET request endpoint at the root which will redirect to the docs
+            homepage.
+          </div>
 
-<section>
+          <h5>Parameters:</h5>
 
-<header>
-    
-</header>
+          <table class="params">
+            <thead>
+              <tr>
+                <th>Name</th>
 
-<article>
-    <div class="container-overview">
-    
-        
-            <div class="description">Express application for serving static files and handling API requests.</div>
-        
+                <th>Type</th>
 
-        
+                <th class="last">Description</th>
+              </tr>
+            </thead>
 
+            <tbody>
+              <tr>
+                <td class="name"><code>req</code></td>
 
-<dl class="details">
+                <td class="type">
+                  <span class="param-type">Object</span>
+                </td>
 
-    
+                <td class="description last">Express.js request object.</td>
+              </tr>
 
-    
+              <tr>
+                <td class="name"><code>res</code></td>
 
-    
+                <td class="type">
+                  <span class="param-type">Object</span>
+                </td>
 
-    
+                <td class="description last">Express.js response object.</td>
+              </tr>
+            </tbody>
+          </table>
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="server.js.html">server.js</a>, <a href="server.js.html#line1">line 1</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-        
-    
+          <dl class="details">
+            <dt class="tag-source">Source:</dt>
+            <dd class="tag-source">
+              <ul class="dummy">
+                <li>
+                  <a href="server.js.html">server.js</a>,
+                  <a href="server.js.html#line41">line 41</a>
+                </li>
+              </ul>
+            </dd>
+          </dl>
+        </article>
+      </section>
     </div>
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="~getRoot"><span class="type-signature">(inner) </span>getRoot<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    GET request endpoint at the root which will redirect to the docs homepage.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>req</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Express.js request object.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>res</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Express.js response object.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="server.js.html">server.js</a>, <a href="server.js.html#line41">line 41</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-    
-
-    
-
-    
-</article>
-
-</section>
-
-
-
-
-</div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-API.html">API</a></li><li><a href="module-Database.html">Database</a></li><li><a href="module-Server.html">Server</a></li></ul>
-</nav>
-
-<br class="clear">
-
-<footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat Oct 28 2023 01:38:39 GMT-0700 (Pacific Daylight Time)
-</footer>
-
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
-</body>
+    <nav>
+      <h2><a href="index.html">Home</a></h2>
+      <h3>Modules</h3>
+      <ul>
+        <li><a href="module-API.html">API</a></li>
+        <li><a href="module-Database.html">Database</a></li>
+        <li><a href="module-Server.html">Server</a></li>
+      </ul>
+    </nav>
+
+    <br class="clear" />
+
+    <footer>
+      Documentation generated by
+      <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat Oct 28
+      2023 01:38:39 GMT-0700 (Pacific Daylight Time)
+    </footer>
+
+    <script>
+      prettyPrint();
+    </script>
+    <script src="scripts/linenumber.js"></script>
+  </body>
 </html>

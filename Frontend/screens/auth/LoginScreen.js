@@ -53,6 +53,11 @@ const LoginScreen = ({ navigation }) => {
     checkStoredCredentials();
   }, []);
 
+  clearFields = () => {
+    setUsername("");
+    setPassword("");
+  };
+
   const handleLogin = async () => {
     // Handle manual login process when the "Login" button is pressed
     const loginData = {
@@ -74,6 +79,7 @@ const LoginScreen = ({ navigation }) => {
       console.log("Response data:", responseData);
       await SecureStore.setItemAsync("username", username);
       await SecureStore.setItemAsync("password", password);
+      clearFields();
       navigation.navigate("BottomNavOverlay");
     } else {
       Alert.alert(responseData.error);

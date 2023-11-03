@@ -333,7 +333,13 @@ class CreateListing extends Component {
   };
 
   render() {
-    const { isTitleInvalid, isDescriptionInvalid, isPriceInvalid, isImageInvalid, isTagInvalid } = this.state;
+    const {
+      isTitleInvalid,
+      isDescriptionInvalid,
+      isPriceInvalid,
+      isImageInvalid,
+      isTagInvalid,
+    } = this.state;
 
     // const tagsData = [
     //   {
@@ -429,9 +435,7 @@ class CreateListing extends Component {
             </View>
             <TextInput
               ref={this.titleInput}
-              style={[
-                styles.input
-              ]}
+              style={[styles.input]}
               value={this.state.title}
               onChangeText={(text) => {
                 this.setState({ title: text, isTitleInvalid: false });
@@ -465,7 +469,7 @@ class CreateListing extends Component {
               style={[
                 styles.input,
                 styles.multilineInput,
-                textAlign="left",
+                (textAlign = "left"),
               ]}
               value={this.state.description}
               onChangeText={(text) => {
@@ -503,9 +507,7 @@ class CreateListing extends Component {
 
             <TextInput
               ref={this.priceInput}
-              style={[
-                styles.input
-              ]}
+              style={[styles.input]}
               value={this.state.price}
               onChangeText={(text) => {
                 this.setState({ price: text, isPriceInvalid: false });
@@ -568,6 +570,7 @@ class CreateListing extends Component {
 
 export default CreateListing;
 
+//////////////////////////////////////////////////////////////////////////////////////////
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
@@ -607,6 +610,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 2, height: 4 },
     shadowRadius: 3,
     top: 30,
+    marginBottom: 30,
   },
   innerField: {
     margin: 10,
@@ -641,12 +645,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#D6447F",
   },
   createButton: {
-    fontSize: 16,
-    fontWeight: "bold",
     alignSelf: "center",
-    backgroundColor: Colors.BB_yellow,
-    borderRadius: 20,
+    width: screenWidth * 0.4,
+    backgroundColor: Colors.BB_rangeYellow,
+    padding: 5,
+    borderColor: Colors.black,
+    borderRadius: 10,
+    fontWeight: "bold",
     shadowColor: "black",
+    shadowOpacity: 1,
+    shadowOffset: {
+      width: 1,
+      height: 1,
+    },
+    shadowRadius: 2,
   },
   label: {
     fontSize: 18,

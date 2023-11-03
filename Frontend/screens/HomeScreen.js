@@ -1,6 +1,13 @@
 import { serverIp } from "../config.js";
 import React, { useEffect, useRef, useState, memo } from "react";
-import { View, StyleSheet, SafeAreaView, Text, TouchableOpacity, RefreshControl} from "react-native";
+import {
+  View,
+  StyleSheet,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  RefreshControl,
+} from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import Swiper from "react-native-swiper";
 import BottomBar from "../components/BottomBar";
@@ -8,7 +15,6 @@ import TopBar from "../components/TopBar";
 import Colors from "../constants/Colors";
 import { Image } from "expo-image";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
 
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
@@ -22,7 +28,6 @@ const HomeScreen = ({ route }) => {
   const isFocused = useIsFocused();
   const swiperRef = useRef(null);
   const [starStates, setStarStates] = useState({});
-
 
   const onRefresh = React.useCallback(() => {
     console.log("refreshing...");
@@ -68,19 +73,22 @@ const HomeScreen = ({ route }) => {
   }, [route.params]);
 
   const handleStarPress = (listingId, imageIndex) => {
-    console.log(`Starred image at index ${imageIndex} for listing ID ${listingId}`);
-  
+    console.log(
+      `Starred image at index ${imageIndex} for listing ID ${listingId}`,
+    );
+
     // Create a copy of the current star states object
     const newStarStates = { ...starStates };
-  
+
     // Check if the star state object for the current listing exists
     if (!newStarStates[listingId]) {
       newStarStates[listingId] = [];
     }
-  
+
     // Toggle the star state for the specified image
-    newStarStates[listingId][imageIndex] = !newStarStates[listingId][imageIndex];
-  
+    newStarStates[listingId][imageIndex] =
+      !newStarStates[listingId][imageIndex];
+
     // Update the state with the new star states object
     setStarStates(newStarStates);
   };
@@ -128,17 +136,28 @@ const HomeScreen = ({ route }) => {
                             transition={200}
                           />
                           <View style={styles.buttonContainer}>
-                          <TouchableOpacity
-                            style={styles.starButton}
-                            activeOpacity={1} // Disable the opacity change on touch
-                            onPress={() => handleStarPress(item.ListingId, index)}
-                          >
-                            {starStates[item.ListingId] && starStates[item.ListingId][index] ? (
-                              <MaterialCommunityIcons name="heart" size={30} color="red" />
-                            ) : (
-                              <MaterialCommunityIcons name="heart-outline" size={30} color="black" />
-                            )}
-                          </TouchableOpacity>
+                            <TouchableOpacity
+                              style={styles.starButton}
+                              activeOpacity={1} // Disable the opacity change on touch
+                              onPress={() =>
+                                handleStarPress(item.ListingId, index)
+                              }
+                            >
+                              {starStates[item.ListingId] &&
+                              starStates[item.ListingId][index] ? (
+                                <MaterialCommunityIcons
+                                  name="heart"
+                                  size={30}
+                                  color="red"
+                                />
+                              ) : (
+                                <MaterialCommunityIcons
+                                  name="heart-outline"
+                                  size={30}
+                                  color="black"
+                                />
+                              )}
+                            </TouchableOpacity>
                           </View>
                           <View style={styles.titleContainer}>
                             <Text style={styles.title}>{item.Title}</Text>
@@ -166,13 +185,13 @@ const HomeScreen = ({ route }) => {
       )}
 
       <BottomBar />
-
     </SafeAreaView>
   );
 };
 
 export default memo(HomeScreen);
 
+//////////////////////////////////////////////////////////////////////////////////////
 const styles = StyleSheet.create({
   screenfield: {
     flex: 1,
@@ -205,16 +224,16 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     position: "absolute",
-    bottom: 10, 
-    left: 10, 
+    bottom: 10,
+    left: 10,
     backgroundColor: "rgba(0, 0, 0, 0.6)",
     padding: 5,
     borderRadius: 5,
   },
   pageContainer: {
     position: "absolute",
-    bottom: 10, 
-    left: 380, 
+    bottom: 10,
+    left: 380,
     backgroundColor: "rgba(0, 0, 0, 0.6)",
     padding: 5,
     borderRadius: 5,
@@ -222,20 +241,20 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "white", 
+    color: "white",
   },
   price: {
     fontSize: 14,
-    color: "white", 
+    color: "white",
   },
   description: {
     fontSize: 10,
-    color: "white", 
+    color: "white",
   },
   starContainer: {
     position: "absolute",
-    top: 10, 
-    right: 10, 
+    top: 10,
+    right: 10,
   },
   buttonContainer: {
     position: "absolute",
@@ -249,8 +268,7 @@ const styles = StyleSheet.create({
   starButton: {
     // Define the style for your star button here
     position: "absolute",
-    top: 10, 
-    right: 10, 
-    
+    top: 10,
+    right: 10,
   },
 });

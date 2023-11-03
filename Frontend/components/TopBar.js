@@ -6,7 +6,7 @@ const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
-  logo : {
+  logo: {
     height: 0.04 * screenHeight,
     width: 0.5 * screenWidth,
     top: 0.02 * screenHeight,
@@ -30,9 +30,11 @@ const styles = StyleSheet.create({
 
 const TopBar = memo(function TopBar() {
   return (
-
     <View style={styles.topBar}>
-      <Image style={styles.logo} source={require("../assets/blitzbuyr_name_logo.png")}/>
+      <Image
+        style={styles.logo}
+        source={require("../assets/blitzbuyr_name_logo.png")}
+      />
     </View>
   );
 });

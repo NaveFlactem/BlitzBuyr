@@ -7,10 +7,12 @@ import {
   Image,
   useWindowDimensions,
   ScrollView,
+  StyleSheet,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
+import * as SecureStore from "expo-secure-store";
 
 const image_one = require("../screens/assets/images/image_one.jpg");
 const image_two = require("../screens/assets/images/image_two.jpg");
@@ -123,6 +125,21 @@ function ProfileScreen({ navigation }) {
     />
   );
 
+  async function clearCredentials() {
+    try {
+      await SecureStore.deleteItemAsync("username");
+      await SecureStore.deleteItemAsync("password");
+      console.log("Stored credentials cleared.");
+    } catch (error) {
+      console.error("Error clearing stored credentials:", error);
+    }
+  }
+
+  const handleLogout = () => {
+    clearCredentials();
+    navigation.navigate("Login");
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -130,7 +147,6 @@ function ProfileScreen({ navigation }) {
         backgroundColor: "white",
       }}
     >
-      {/* <ScrollView> */}
       <StatusBar backgroundColor={"gray"} />
 
       {/* //Cover Photo */}
@@ -271,8 +287,13 @@ function ProfileScreen({ navigation }) {
           </View>
         </View>
         <View style={{ flexDirection: "row" }}>
+          {/* Logout Button */}
+          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+            <Text style={styles.logoutButtonText}>Logout</Text>
+          </TouchableOpacity>
           {/* Edit Profile Button */}
           <TouchableOpacity
+            onPress={() => navigation.navigate("EditProfile")}
             style={{
               width: 124,
               height: 36,
@@ -328,9 +349,26 @@ function ProfileScreen({ navigation }) {
           renderTabBar={renderTabBar}
         />
       </View>
-      {/* </ScrollView> */}
     </SafeAreaView>
   );
 }
 
 export default memo(ProfileScreen);
+
+const styles = StyleSheet.create({
+  logoutButton: {
+    backgroundColor: "red",
+    width: 150,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    marginTop: 20,
+    alignSelf: "center",
+  },
+  logoutButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+});
