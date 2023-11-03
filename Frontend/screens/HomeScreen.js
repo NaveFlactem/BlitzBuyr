@@ -14,6 +14,7 @@ import BottomBar from "../components/BottomBar";
 import TopBar from "../components/TopBar";
 import Colors from "../constants/Colors";
 import { Image } from "expo-image";
+import * as SecureStore from "expo-secure-store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const blurhash =
@@ -39,16 +40,25 @@ const HomeScreen = ({ route }) => {
     console.log("Fetching listings...");
     if (route.params?.refresh) route.params.refresh = false;
     try {
-      const listingsResponse = await fetch(`${serverIp}/api/listings`, {
-        method: "GET",
-      });
+      const listingsResponse = await fetch(
+        `${serverIp}/api/listings?username=${encodeURIComponent(
+          await SecureStore.getItemAsync("username")
+        )}`,
+        {
+          method: "GET",
+        }
+      );
 
       if (listingsResponse.status <= 201) {
         const listingsData = await listingsResponse.json();
         //console.log(listingsData);
-        const initialStarStates = listingsData.map(() => false);
+        const initialStarStates = Object.fromEntries(
+          listingsData.map((listing) => [listing.ListingId, listing.liked])
+        );
+        
         setStarStates(initialStarStates);
         setListings(listingsData);
+        console.log("Listings fetched successfully");
       } else {
         console.log("Error fetching listings:", listingsResponse.status);
       }
@@ -69,29 +79,41 @@ const HomeScreen = ({ route }) => {
 
   // This will run with refresh = true
   useEffect(() => {
-    if (route.params?.refresh) fetchListings();
+    if (route.params?.refresh) {
+      setRefreshing(true);
+      fetchListings();
+    }
   }, [route.params]);
 
-  const handleStarPress = (listingId, imageIndex) => {
-    console.log(
-      `Starred image at index ${imageIndex} for listing ID ${listingId}`,
-    );
-
-    // Create a copy of the current star states object
-    const newStarStates = { ...starStates };
-
-    // Check if the star state object for the current listing exists
-    if (!newStarStates[listingId]) {
-      newStarStates[listingId] = [];
+  const handleStarPress = async (listingId) => {
+    // toggle the like
+    const newStarStates = { ...starStates }; // Create a copy of the current starStates
+    newStarStates[listingId] = !newStarStates[listingId]; // Update the liked status
+  
+    const likeData = {
+      username: await SecureStore.getItemAsync("username"),
+      listingId: listingId,
+    };
+  
+    // Update the backend
+    const likedResponse = await fetch(`${serverIp}/api/like`, {
+      method: newStarStates[listingId] ? "POST" : "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(likeData),
+    });
+  
+    if (likedResponse.status > 201) {
+      console.log("Error Liking listing:", listingId, likedResponse.status);
     }
-
-    // Toggle the star state for the specified image
-    newStarStates[listingId][imageIndex] =
-      !newStarStates[listingId][imageIndex];
-
+  
     // Update the state with the new star states object
     setStarStates(newStarStates);
+  
+    console.log(`${newStarStates[listingId] ? "Starred" : "Unstarred"} listing ID ${listingId}`);
   };
+  
 
   return (
     <SafeAreaView style={styles.screenfield}>
@@ -139,12 +161,9 @@ const HomeScreen = ({ route }) => {
                             <TouchableOpacity
                               style={styles.starButton}
                               activeOpacity={1} // Disable the opacity change on touch
-                              onPress={() =>
-                                handleStarPress(item.ListingId, index)
-                              }
+                              onPress={() => handleStarPress(item.ListingId)}
                             >
-                              {starStates[item.ListingId] &&
-                              starStates[item.ListingId][index] ? (
+                              {starStates[item.ListingId] ? (
                                 <MaterialCommunityIcons
                                   name="heart"
                                   size={30}

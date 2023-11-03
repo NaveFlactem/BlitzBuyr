@@ -1,29 +1,32 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
+<head>
+    <meta charset="utf-8">
     <title>JSDoc: Source: account.js</title>
 
-    <script src="scripts/prettify/prettify.js"></script>
-    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link
-      type="text/css"
-      rel="stylesheet"
-      href="styles/prettify-tomorrow.css"
-    />
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css" />
-  </head>
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
 
-  <body>
-    <div id="main">
-      <h1 class="page-title">Source: account.js</h1>
+<body>
 
-      <section>
+<div id="main">
+
+    <h1 class="page-title">Source: account.js</h1>
+
+    
+
+
+
+    
+    <section>
         <article>
-          <pre class="prettyprint source linenums"><code>/**
+            <pre class="prettyprint source linenums"><code>/**
  * Express application for serving static files and handling API requests.
  * @module API
  */
@@ -37,10 +40,26 @@ const validator = require("validator");
 
 /**
  * GET request endpoint at /api/accounts for retrieving a list of accounts.
+ *
  * @function
  * @name getAccounts
+ *
  * @param {Object} req - Express.js request object.
  * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP GET request to '/api/accounts'
+ * const accountsResponse = await fetch(`${serverIp}/api/accounts`, {
+ *     method: "GET",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *   });
+ *
+ * if (accountsResponse.status === 200) {
+ *     const accountsData = await accountsResponse.json();
+ *     console.log("List of Accounts:", accountsData.Accounts);
+ * }
  */
 router.get("/accounts", function (req, res) {
   // Query the database for a list of accounts
@@ -57,15 +76,32 @@ router.get("/accounts", function (req, res) {
 
 /**
  * Handles login requests and performs authentication.
- * @name handleLoginRequest
+ *
  * @function
+ * @name handleLoginRequest
+ *
  * @param {Object} req - Express.js request object with a JSON body containing 'username' and 'password'.
  * @param {Object} res - Express.js response object.
+ *
  * @example
  * // Sample HTTP POST request to '/api/login'
- * // Request body should contain a JSON object with 'username' and 'password' fields.
- * // If authentication is successful, it will respond with a success message.
- * // If authentication fails (username not found or incorrect password), it will respond with an error message.
+ * const loginData = {
+ *     username: "testuser",
+ *     password: "password123",
+ *   };
+ * const loginResponse = await fetch(`${serverIp}/api/login`, {
+ *     method: "POST",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *     body: JSON.stringify(loginData),
+ *   });
+ *
+ * if (loginResponse.status === 200) {
+ *     console.log("Login successful");
+ * } else if (loginResponse.status === 401) {
+ *     console.log("Authentication failed");
+ * }
  */
 router.post("/login", function (req, res) {
   const { username, password } = req.body;
@@ -88,21 +124,40 @@ router.post("/login", function (req, res) {
       } else {
         return res.status(401).json({ error: "Incorrect password" });
       }
-    },
+    }
   );
 });
 
 /**
  * Handles user registration requests and account creation.
- * @name handleRegistrationRequest
+ *
  * @function
+ * @name handleRegistrationRequest
+ *
  * @param {Object} req - Express.js request object with a JSON body containing 'username', 'password', 'confirmPassword', and 'email'.
  * @param {Object} res - Express.js response object.
+ *
  * @example
  * // Sample HTTP POST request to '/api/register'
- * // Request body should contain a JSON object with 'username', 'password', 'confirmPassword', and 'email' fields.
- * // If the username is available, it will create a new account and respond with a success message.
- * // If the username is already taken, it will respond with a 409 Conflict status code.
+ * const registrationData = {
+ *     username: "newuser",
+ *     password: "password123",
+ *     confirmPassword: "password123",
+ *     email: "newuser@example.com",
+ *   };
+ * const registrationResponse = await fetch(`${serverIp}/api/register`, {
+ *     method: "POST",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *     body: JSON.stringify(registrationData),
+ *   });
+ *
+ * if (registrationResponse.status === 201) {
+ *     console.log("Account created");
+ * } else if (registrationResponse.status === 409) {
+ *     console.log("Username or email already exists");
+ * }
  */
 router.post("/register", (req, res) => {
   const { username, password, confirmPassword, email } = req.body;
@@ -149,19 +204,39 @@ router.post("/register", (req, res) => {
               message: "Account created",
               username: username,
             });
-          },
+          }
         );
       }
-    },
+    }
   );
 });
 
 /**
  * Handles deleting of accounts.
- * @name handleDeleteAccounts
+ *
  * @function
+ * @name handleDeleteAccounts
+ *
  * @param {Object} req - Express.js request object.
  * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP DELETE request to '/api/deleteaccounts?username=testuser'
+ * // Delete a specific user account by providing the 'username' query parameter.
+ * // If successful, it will respond with a success message.
+ * // If the username doesn't exist, it will respond with an error message.
+ * const deleteResponse = await fetch(`${serverIp}/api/deleteaccounts?username=testuser`, {
+ *     method: "DELETE",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *   });
+ *
+ * if (deleteResponse.status === 200) {
+ *     console.log("Account deleted successfully");
+ * } else if (deleteResponse.status === 500) {
+ *     console.log("Error deleting account");
+ * }
  */
 router.delete("/deleteaccounts", function (req, res) {
   const username = req.query.username;
@@ -191,30 +266,24 @@ router.delete("/deleteaccounts", function (req, res) {
 module.exports = router;
 </code></pre>
         </article>
-      </section>
-    </div>
+    </section>
 
-    <nav>
-      <h2><a href="index.html">Home</a></h2>
-      <h3>Modules</h3>
-      <ul>
-        <li><a href="module-API.html">API</a></li>
-        <li><a href="module-Database.html">Database</a></li>
-        <li><a href="module-Server.html">Server</a></li>
-      </ul>
-    </nav>
 
-    <br class="clear" />
 
-    <footer>
-      Documentation generated by
-      <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat Oct 28
-      2023 01:38:39 GMT-0700 (Pacific Daylight Time)
-    </footer>
 
-    <script>
-      prettyPrint();
-    </script>
-    <script src="scripts/linenumber.js"></script>
-  </body>
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-API.html">API</a></li><li><a href="module-Database.html">Database</a></li><li><a href="module-Server.html">Server</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Nov 03 2023 00:47:51 GMT-0700 (Pacific Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
 </html>
