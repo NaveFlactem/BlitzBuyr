@@ -104,6 +104,7 @@ function ProfileScreen({ navigation }) {
   const [index, setIndex] = useState(0);
   const [likedListings, setLikedListings] = useState([]);
   const [userListings, setUserListings] = useState([]);
+  const [userRatings, setUserRatings] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -113,6 +114,12 @@ function ProfileScreen({ navigation }) {
   
     fetchData(); // Call the async function
   }, []);
+
+  useEffect(() => {
+    console.log("User's Listings:", userListings);
+    console.log("User's Liked Listings:", likedListings);
+    console.log("User's Ratings:", userRatings);
+  }, [userRatings]);
   
   getProfileInfo = async function (username) {
     try {
@@ -125,10 +132,11 @@ function ProfileScreen({ navigation }) {
   
       if (profileResponse.status <= 201) {
         const profileData = await profileResponse.json();
-        console.log(profileData);
+        //console.log(profileData);
   
         setLikedListings(profileData.likedListings);
         setUserListings(profileData.userListings);
+        setUserRatings(profileData.ratings);
   
         console.log("Profile fetched successfully");
       } else {
