@@ -19,39 +19,10 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
 
-  useEffect(() => {
-    const checkStoredCredentials = async () => {
-      const storedUsername = await SecureStore.getItemAsync("username");
-      const storedPassword = await SecureStore.getItemAsync("password");
-
-      if (storedUsername && storedPassword) {
-        // Stored credentials exist, use them for login
-        const loginData = {
-          username: storedUsername,
-          password: storedPassword,
-        };
-
-        const response = await fetch(`${serverIp}/api/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(loginData),
-        });
-
-        let responseData = await response.json();
-
-        if (response.status <= 201) {
-          console.log("Response data:", responseData);
-          navigation.navigate("BottomNavOverlay");
-        } else {
-          Alert.alert(responseData.error);
-        }
-      }
-    };
-
-    checkStoredCredentials();
-  }, []);
+  clearFields = () => {
+    setUsername("");
+    setPassword("");
+  };
 
   const handleLogin = async () => {
     // Handle manual login process when the "Login" button is pressed
@@ -74,6 +45,7 @@ const LoginScreen = ({ navigation }) => {
       console.log("Response data:", responseData);
       await SecureStore.setItemAsync("username", username);
       await SecureStore.setItemAsync("password", password);
+      clearFields();
       navigation.navigate("BottomNavOverlay");
     } else {
       Alert.alert(responseData.error);

@@ -2,6 +2,7 @@
  * Express application for serving static files and handling API requests.
  * @module API
  */
+
 const express = require("express");
 const router = express.Router();
 var bodyParser = require("body-parser");
@@ -19,7 +20,7 @@ const imageStorage = multer.diskStorage({
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     callback(
       null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname),
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
     );
   },
 });
@@ -33,13 +34,15 @@ const imageUpload = multer({
 
 /**
  * POST request endpoint for creating a new listing.
+ *
  * @function
  * @name createListing
+ *
  * @param {Object} req - Express.js request object with a JSON body containing 'price', 'images', 'title', 'description', and 'userName'.
  * @param {Object} res - Express.js response object.
+ *
  * @example
  * // Sample HTTP POST request to '/api/createListing'
- * // Request body should contain a JSON object with the required fields.
  * const requestPayload = {
  *   "price": 100.0,
  *   "images": [image1_in_binary, image2_in_binary],
@@ -47,6 +50,20 @@ const imageUpload = multer({
  *   "description": "This is a sample listing.",
  *   "userName": "sampleUser"
  * };
+ * const createListingResponse = await fetch(`${serverIp}/api/createListing`, {
+ *     method: "POST",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *     body: JSON.stringify(requestPayload),
+ *   });
+ *
+ * if (createListingResponse.status === 201) {
+ *     const responsePayload = await createListingResponse.json();
+ *     console.log("Listing created successfully with ID:", responsePayload.listingId);
+ * } else {
+ *     console.log("Error creating listing");
+ * }
  */
 router.post("/createListing", imageUpload, function (req, res) {
   const { price, title, description, username } = req.body;
@@ -86,7 +103,7 @@ router.post("/createListing", imageUpload, function (req, res) {
                     .json({ error: "Internal Server Error" });
                 }
                 // console.log(`Inserted image ${image.originalname}`);
-              },
+              }
             );
           });
         }
@@ -94,7 +111,7 @@ router.post("/createListing", imageUpload, function (req, res) {
           message: "Listing created successfully",
           listingId: listingId,
         });
-      },
+      }
     );
   } catch (err) {
     return res.status(500).json({ error: err });
@@ -103,10 +120,28 @@ router.post("/createListing", imageUpload, function (req, res) {
 
 /**
  * GET request endpoint at /api/listings for retrieving a list of all listings.
+ *
  * @function
  * @name getListings
+ *
  * @param {Object} req - Express.js request object.
  * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP GET request to '/api/listings'
+ * const listingsResponse = await fetch(`${serverIp}/api/listings`, {
+ *     method: "GET",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *   });
+ *
+ * if (listingsResponse.status === 200) {
+ *     const listingsData = await listingsResponse.json();
+ *     console.log("List of Listings:", listingsData);
+ * } else {
+ *     console.log("Error retrieving listings");
+ * }
  */
 router.get("/listings", async function (req, res) {
   try {
@@ -121,44 +156,26 @@ router.get("/listings", async function (req, res) {
       });
     });
 
-    const imagesResult = await new Promise((resolve, reject) => {
-      // Extract the ListingIds from listingsResult
-      const listingIds = listingsResult.map((listing) => listing.ListingId);
-
-      if (listingIds.length === 0) {
-        // If there are no ListingIds, there's no need to query the Images table.
-        resolve([]);
-      } else {
-        // Generate placeholders for the IN clause based on the number of ListingIds
-        const placeholders = listingIds.map(() => "?").join(", ");
-
-        // Second query using placeholders for the IN clause
-        db.all(
-          `SELECT * FROM Images i WHERE i.ListingId IN (${placeholders})`,
-          listingIds,
-          (err, rows) => {
-            if (err) {
-              console.error("Error querying the database (second query):", err);
-              reject(err);
-            }
-            resolve(rows);
-          },
-        );
-      }
-    });
-
-    const combinedData = listingsResult.map((listing) => {
-      const matchingImages = imagesResult
-        .filter((image) => image.ListingId === listing.ListingId)
-        .map((image) => image.ImageURI);
-      return {
-        ...listing, // Include all properties from the listing
-        images: matchingImages, // Add the matching images
-      };
+    const username = req.query.username;
+    const likedListingsResult = await new Promise((resolve, reject) => {
+      // First query
+      db.all(
+        "SELECT ListingId FROM Likes WHERE Username = ? ORDER BY ListingId DESC",
+        [username],
+        (err, rows) => {
+          if (err) {
+            console.error("Error querying the database (second query):", err);
+            reject(err);
+          }
+          resolve(rows);
+        }
+      );
     });
 
     // Now you can use both firstQueryResult and secondQueryResult
-    return res.status(200).json(combinedData);
+    return res
+      .status(200)
+      .json(await getImagesFromListings(listingsResult, likedListingsResult));
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
@@ -166,10 +183,28 @@ router.get("/listings", async function (req, res) {
 
 /**
  * Handles deleting of accounts.
- * @name handleDeleteListings
+ *
  * @function
+ * @name handleDeleteListings
+ *
  * @param {Object} req - Express.js request object.
  * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP DELETE request to '/api/deletelistings'
+ * const deleteListingsResponse = await fetch(`${serverIp}/api/deletelistings`, {
+ *     method: "DELETE",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *   });
+ *
+ * if (deleteListingsResponse.status === 200) {
+ *     const deleteListingsData = await deleteListingsResponse.json();
+ *     console.log("Listings deleted:", deleteListingsData.message);
+ * } else {
+ *     console.log("Error deleting listings");
+ * }
  */
 router.delete("/deletelistings", function (req, res) {
   const listingId = req.query.listingId;
@@ -197,10 +232,28 @@ router.delete("/deletelistings", function (req, res) {
 
 /**
  * GET request endpoint at /api/images for retrieving a list of all images or a list of images belonging to a specific listing using the 'listingId' query parameter.
+ *
  * @function
  * @name getImages
+ *
  * @param {Object} req - Express.js request object.
  * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP GET request to '/api/images?listingId=123'
+ * const getImagesResponse = await fetch(`${serverIp}/api/images?listingId=123`, {
+ *     method: "GET",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *   });
+ *
+ * if (getImagesResponse.status === 200) {
+ *     const imagesData = await getImagesResponse.json();
+ *     console.log("Images:", imagesData.Images);
+ * } else {
+ *     console.log("Error retrieving images");
+ * }
  */
 router.get("/images", function (req, res) {
   const listingId = req.query.listingId;
@@ -216,7 +269,7 @@ router.get("/images", function (req, res) {
           return res.status(500).json({ error: "Internal Server Error" });
         }
         return res.status(200).json({ Images: rows });
-      },
+      }
     );
   } else {
     // If 'listingId' is not provided, retrieve all images.
@@ -232,10 +285,28 @@ router.get("/images", function (req, res) {
 
 /**
  * Handles deleting of accounts.
- * @name handleDeleteimages
+ *
  * @function
+ * @name handleDeleteImages
+ *
  * @param {Object} req - Express.js request object.
  * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP DELETE request to '/api/deleteimages'
+ * const deleteImagesResponse = await fetch(`${serverIp}/api/deleteimages`, {
+ *     method: "DELETE",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *   });
+ *
+ * if (deleteImagesResponse.status === 200) {
+ *     const deleteImagesData = await deleteImagesResponse.json();
+ *     console.log("Images deleted:", deleteImagesData.message);
+ * } else {
+ *     console.log("Error deleting images");
+ * }
  */
 router.delete("/deleteimages", function (req, res) {
   const imageId = req.query.imageId;
@@ -261,5 +332,65 @@ router.delete("/deleteimages", function (req, res) {
   }
 });
 
+/**
+ * Retrieves images associated with listings and combines them with listing data.
+ *
+ * @function
+ * @async
+ * @name getImagesFromListings
+ *
+ * @param {Array} listingsResult - An array of listing objects to retrieve images for.
+ *
+ * @returns {Promise<Array>} A Promise that resolves to an array of combined data objects. Each combined object includes listing information, associated images, and a flag indicating whether the listing is liked.
+ *
+ * @throws {Error} If there's an error during the database query.
+ */
+getImagesFromListings = async (listingsResult, likedListingsResult) => {
+  // WIP: Maybe don't pass likedListings, restructure this
+  const imagesResult = await new Promise((resolve, reject) => {
+    // Extract the ListingIds from listingsResult
+    const listingIds = listingsResult.map((listing) => listing.ListingId);
+
+    if (listingIds.length === 0) {
+      // If there are no ListingIds, there's no need to query the Images table.
+      resolve([]);
+    } else {
+      // Generate placeholders for the IN clause based on the number of ListingIds
+      const placeholders = listingIds.map(() => "?").join(", ");
+
+      // Second query using placeholders for the IN clause
+      db.all(
+        `SELECT * FROM Images i WHERE i.ListingId IN (${placeholders})`,
+        listingIds,
+        (err, rows) => {
+          if (err) {
+            console.error("Error querying the database (third query):", err);
+            reject(err);
+          }
+          resolve(rows);
+        }
+      );
+    }
+  });
+
+  const combinedData = listingsResult.map((listing) => {
+    // Check if the listing's ListingId is in the likedListingsResult
+    const isLiked = likedListingsResult.some(
+      (likedListing) => likedListing.ListingId === listing.ListingId
+    );
+
+    const matchingImages = imagesResult
+      .filter((image) => image.ListingId === listing.ListingId)
+      .map((image) => image.ImageURI);
+    return {
+      ...listing, // Include all properties from the listing
+      images: matchingImages, // Add the matching images
+      liked: isLiked,
+    };
+  });
+
+  return combinedData;
+};
+
 // Export the router
-module.exports = router;
+module.exports = { router, getImagesFromListings };

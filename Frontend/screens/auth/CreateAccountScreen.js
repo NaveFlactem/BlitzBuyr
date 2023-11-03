@@ -1,5 +1,5 @@
 import { serverIp } from "../../config.js";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -12,12 +12,20 @@ import {
   Dimensions,
 } from "react-native";
 import Colors from "../../constants/Colors.js";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 
 const CreateAccountScreen = ({ navigation }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const isValidPassword = useRef(false);
+  const hasCharacter = useRef(false);
+  const hasLowercase = useRef(false);
+  const hasUppercase = useRef(false);
+  const hasNumber = useRef(false);
+  const hasSpecialCharacter = useRef(false);
 
   const handleCreateAccount = async () => {
     if (password !== confirmPassword) {
@@ -32,6 +40,39 @@ const CreateAccountScreen = ({ navigation }) => {
     const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
     if (!emailPattern.test(email)) {
       Alert.alert("Invalid Email", "Please enter a valid email address.");
+      return;
+    }
+
+    if (
+      name === "" ||
+      password === "" ||
+      confirmPassword === "" ||
+      email === ""
+    ) {
+      Alert.alert("Invalid Input", "Please fill out all fields.");
+      return;
+    }
+
+    if (name.length > 20) {
+      Alert.alert("Invalid Input", "Name must be less than 20 characters.");
+      return;
+    }
+
+    if (name.length < 4) {
+      Alert.alert("Invalid Input", "Name must be at least 4 characters.");
+      return;
+    }
+
+    if (password.length < 8) {
+      Alert.alert("Invalid Input", "Password must be at least 8 characters.");
+      return;
+    }
+
+    if (isValidPassword.current === false) {
+      Alert.alert(
+        "Invalid Input",
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
+      );
       return;
     }
 
@@ -60,6 +101,34 @@ const CreateAccountScreen = ({ navigation }) => {
     }
   };
 
+  const handlePasswordChange = (text) => {
+    setPassword(text);
+
+    // Password validation criteria
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&.~`]{8,}$/;
+
+    const hasCharacterValue = text.length >= 8;
+    const hasLowercaseValue = /[a-z]/.test(text);
+    const hasUppercaseValue = /[A-Z]/.test(text);
+    const hasNumberValue = /\d/.test(text);
+    const hasSpecialCharacterValue = /[@$!%*?&.~`,/-]/.test(text);
+
+    hasCharacter.current = hasCharacterValue;
+    hasLowercase.current = hasLowercaseValue;
+    hasUppercase.current = hasUppercaseValue;
+    hasNumber.current = hasNumberValue;
+    hasSpecialCharacter.current = hasSpecialCharacterValue;
+
+    // Check if the password meets all criteria
+    isValidPassword.current =
+      hasCharacterValue &&
+      hasLowercaseValue &&
+      hasUppercaseValue &&
+      hasNumberValue &&
+      hasSpecialCharacterValue;
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.loginContainer}>
@@ -85,7 +154,10 @@ const CreateAccountScreen = ({ navigation }) => {
           placeholder="Password"
           secureTextEntry={true}
           value={password}
-          onChangeText={(text) => setPassword(text)}
+          onChangeText={(text) => {
+            setPassword(text);
+            handlePasswordChange(text);
+          }}
         />
         <TextInput
           style={styles.input}
@@ -94,13 +166,60 @@ const CreateAccountScreen = ({ navigation }) => {
           value={confirmPassword}
           onChangeText={(text) => setConfirmPassword(text)}
         />
+
+        <View style={styles.passwordRequirements}>
+          <Text style={styles.passwordRequirement}>
+            {hasCharacter.current ? (
+              <MaterialIcons name="check" size={16} color="green" />
+            ) : (
+              <Entypo name="cross" size={16} color="red" />
+            )}{" "}
+            Has at least 8 Characters
+          </Text>
+          <Text style={styles.passwordRequirement}>
+            {hasLowercase.current ? (
+              <MaterialIcons name="check" size={16} color="green" />
+            ) : (
+              <Entypo name="cross" size={16} color="red" />
+            )}{" "}
+            Has Lowercase Letter
+          </Text>
+          <Text style={styles.passwordRequirement}>
+            {hasUppercase.current ? (
+              <MaterialIcons name="check" size={16} color="green" />
+            ) : (
+              <Entypo name="cross" size={16} color="red" />
+            )}{" "}
+            Uppercase
+          </Text>
+          <Text style={styles.passwordRequirement}>
+            {hasNumber.current ? (
+              <MaterialIcons name="check" size={16} color="green" />
+            ) : (
+              <Entypo name="cross" size={16} color="red" />
+            )}{" "}
+            Number
+          </Text>
+          <Text style={styles.passwordRequirement}>
+            {hasSpecialCharacter.current ? (
+              <MaterialIcons name="check" size={16} color="green" />
+            ) : (
+              <Entypo name="cross" size={16} color="red" />
+            )}{" "}
+            Special Character
+          </Text>
+        </View>
+
         <TouchableOpacity
           onPress={handleCreateAccount}
           style={styles.createAccountTextContainer}
         >
           <Text style={styles.createAccountText}>Create Account</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.loginTextContainer}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Login")}
+          style={styles.loginTextContainer}
+        >
           <Text style={styles.loginText}>Already have an Account? Login</Text>
         </TouchableOpacity>
       </View>
@@ -123,7 +242,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.BB_pink,
-    width: "100%",
+    width: windowWidth * 0.8,
+    height: windowHeight * 0.5,
     padding: 20,
     borderRadius: 10,
     shadowColor: "black",
@@ -133,7 +253,6 @@ const styles = StyleSheet.create({
       height: 5,
     },
     shadowRadius: 7,
-    elevation: 5,
   },
   title: {
     fontSize: 24,
@@ -150,15 +269,14 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     shadowOpacity: 1,
     shadowOffset: {
-      width: 0,
-      height: 3,
+      width: 1,
+      height: 1,
     },
     shadowRadius: 2,
-    elevation: 2,
   },
   createAccountText: {
     fontSize: 16,
-    fontStyle: "bold",
+    fontWeight: "bold",
     alignSelf: "center",
   },
   loginTextContainer: {
@@ -168,46 +286,37 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     color: "black",
     fontWeight: "bold",
-    shadowColor: "black",
-    shadowOpacity: 1,
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowRadius: 1,
-    elevation: 2,
   },
   loginText: {
-    fontSize: 6,
+    fontSize: 10,
     color: "white",
   },
   input: {
-    width: windowWidth * 0.85,
-    height: windowHeight * 0.05,
+    width: windowWidth * 0.75,
+    height: windowHeight * 0.03,
     borderColor: "gray",
     marginBottom: 10,
     paddingHorizontal: 10,
     borderRadius: 7,
     backgroundColor: "white",
-    shadowColor: "black",
-    shadowRadius: 2,
-    shadowOpacity: 1,
-    shadowOffset: {
-      width: 1,
-      height: 1,
-    },
   },
   logo: {
-    width: 100, // Adjust the width as needed
-    height: 100, // Adjust the height as needed
-    marginBottom: 20, // Adjust the spacing
-    shadowRadius: 3,
-    shadowColor: "black",
-    shadowOpacity: 1,
-    shadowOffset: {
-      width: 2,
-      height: 3,
-    },
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+  },
+  passwordRequirements: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    width: windowWidth * 0.4,
+    height: windowHeight * 0.1,
+    marginBottom: 15,
+  },
+  passwordRequirement: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    fontSize: 12,
+    color: "white",
   },
 });
 

@@ -232,7 +232,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line34">line 34</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line35">line 35</a>
     </li></ul></dd>
     
 
@@ -263,15 +263,172 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/createListing'
-// Request body should contain a JSON object with the required fields.
-const requestPayload = {
-  "price": 100.0,
-  "images": [image1_in_binary, image2_in_binary],
-  "title": "Sample Listing",
-  "description": "This is a sample listing.",
-  "userName": "sampleUser"
-};</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/createListing'const requestPayload = {  "price": 100.0,  "images": [image1_in_binary, image2_in_binary],  "title": "Sample Listing",  "description": "This is a sample listing.",  "userName": "sampleUser"};const createListingResponse = await fetch(`${serverIp}/api/createListing`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(requestPayload),  });if (createListingResponse.status === 201) {    const responsePayload = await createListingResponse.json();    console.log("Listing created successfully with ID:", responsePayload.listingId);} else {    console.log("Error creating listing");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~deleteAllLikes"><span class="type-signature">(inner) </span>deleteAllLikes<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    DELETE request endpoint at /api/likes for deleting all likes.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line140">line 140</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/likes'const deleteLikesResponse = await fetch(`${serverIp}/api/likes`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteLikesResponse.status === 200) {    const result = await deleteLikesResponse.json();    console.log("All likes deleted. Message:", result.message);}</code></pre>
 
 
 
@@ -434,6 +591,11 @@ const requestPayload = {
 
 
 
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/accounts'const accountsResponse = await fetch(`${serverIp}/api/accounts`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (accountsResponse.status === 200) {    const accountsData = await accountsResponse.json();    console.log("List of Accounts:", accountsData.Accounts);}</code></pre>
+
+
 
         
             
@@ -565,7 +727,7 @@ const requestPayload = {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line198">line 198</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line273">line 273</a>
     </li></ul></dd>
     
 
@@ -592,6 +754,176 @@ const requestPayload = {
 
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/images?listingId=123'const getImagesResponse = await fetch(`${serverIp}/api/images?listingId=123`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (getImagesResponse.status === 200) {    const imagesData = await getImagesResponse.json();    console.log("Images:", imagesData.Images);} else {    console.log("Error retrieving images");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getLikes"><span class="type-signature">(inner) </span>getLikes<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    GET request endpoint at /api/likes for retrieving a list of likes.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line104">line 104</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/likes'const likesResponse = await fetch(`${serverIp}/api/likes`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (likesResponse.status === 200) {    const likesData = await likesResponse.json();    console.log("List of Likes:", likesData.Likes);}</code></pre>
 
 
 
@@ -725,7 +1057,7 @@ const requestPayload = {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line104">line 104</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line121">line 121</a>
     </li></ul></dd>
     
 
@@ -752,6 +1084,11 @@ const requestPayload = {
 
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/listings'const listingsResponse = await fetch(`${serverIp}/api/listings`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (listingsResponse.status === 200) {    const listingsData = await listingsResponse.json();    console.log("List of Listings:", listingsData);} else {    console.log("Error retrieving listings");}</code></pre>
 
 
 
@@ -885,7 +1222,7 @@ const requestPayload = {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="account.js.html">account.js</a>, <a href="account.js.html#line134">line 134</a>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line186">line 186</a>
     </li></ul></dd>
     
 
@@ -912,6 +1249,176 @@ const requestPayload = {
 
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteaccounts?username=testuser'// Delete a specific user account by providing the 'username' query parameter.// If successful, it will respond with a success message.// If the username doesn't exist, it will respond with an error message.const deleteResponse = await fetch(`${serverIp}/api/deleteaccounts?username=testuser`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteResponse.status === 200) {    console.log("Account deleted successfully");} else if (deleteResponse.status === 500) {    console.log("Error deleting account");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~handleDeleteImages"><span class="type-signature">(inner) </span>handleDeleteImages<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles deleting of accounts.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line326">line 326</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteimages'const deleteImagesResponse = await fetch(`${serverIp}/api/deleteimages`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteImagesResponse.status === 200) {    const deleteImagesData = await deleteImagesResponse.json();    console.log("Images deleted:", deleteImagesData.message);} else {    console.log("Error deleting images");}</code></pre>
 
 
 
@@ -1045,7 +1552,7 @@ const requestPayload = {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line167">line 167</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line224">line 224</a>
     </li></ul></dd>
     
 
@@ -1074,6 +1581,11 @@ const requestPayload = {
 
 
 
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deletelistings'const deleteListingsResponse = await fetch(`${serverIp}/api/deletelistings`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteListingsResponse.status === 200) {    const deleteListingsData = await deleteListingsResponse.json();    console.log("Listings deleted:", deleteListingsData.message);} else {    console.log("Error deleting listings");}</code></pre>
+
+
 
         
             
@@ -1081,7 +1593,7 @@ const requestPayload = {
     
 
     
-    <h4 class="name" id="~handleDeleteimages"><span class="type-signature">(inner) </span>handleDeleteimages<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~handleLike"><span class="type-signature">(inner) </span>handleLike<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1089,7 +1601,7 @@ const requestPayload = {
 
 
 <div class="description">
-    Handles deleting of accounts.
+    Handles a user liking a listing.
 </div>
 
 
@@ -1131,7 +1643,7 @@ const requestPayload = {
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">object</span>
 
 
             
@@ -1141,7 +1653,7 @@ const requestPayload = {
 
             
 
-            <td class="description last">Express.js request object.</td>
+            <td class="description last">The HTTP request object.</td>
         </tr>
 
     
@@ -1154,7 +1666,7 @@ const requestPayload = {
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">object</span>
 
 
             
@@ -1164,7 +1676,7 @@ const requestPayload = {
 
             
 
-            <td class="description last">Express.js response object.</td>
+            <td class="description last">The HTTP response object.</td>
         </tr>
 
     
@@ -1205,7 +1717,7 @@ const requestPayload = {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line233">line 233</a>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line12">line 12</a>
     </li></ul></dd>
     
 
@@ -1232,6 +1744,11 @@ const requestPayload = {
 
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/like'const likeData = {    username: "testuser",    listingId: 1,  };const likedResponse = await fetch(`${serverIp}/api/like`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(likeData),  });if (likedResponse.status > 201) {    console.log("Error Liking listing:", 1, likedResponse.status);}</code></pre>
 
 
 
@@ -1365,7 +1882,7 @@ const requestPayload = {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="account.js.html">account.js</a>, <a href="account.js.html#line33">line 33</a>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line49">line 49</a>
     </li></ul></dd>
     
 
@@ -1396,10 +1913,7 @@ const requestPayload = {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/login'
-// Request body should contain a JSON object with 'username' and 'password' fields.
-// If authentication is successful, it will respond with a success message.
-// If authentication fails (username not found or incorrect password), it will respond with an error message.</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/login'const loginData = {    username: "testuser",    password: "password123",  };const loginResponse = await fetch(`${serverIp}/api/login`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(loginData),  });if (loginResponse.status === 200) {    console.log("Login successful");} else if (loginResponse.status === 401) {    console.log("Authentication failed");}</code></pre>
 
 
 
@@ -1533,7 +2047,7 @@ const requestPayload = {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="account.js.html">account.js</a>, <a href="account.js.html#line70">line 70</a>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line103">line 103</a>
     </li></ul></dd>
     
 
@@ -1564,10 +2078,172 @@ const requestPayload = {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/register'
-// Request body should contain a JSON object with 'username', 'password', 'confirmPassword', and 'email' fields.
-// If the username is available, it will create a new account and respond with a success message.
-// If the username is already taken, it will respond with a 409 Conflict status code.</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/register'const registrationData = {    username: "newuser",    password: "password123",    confirmPassword: "password123",    email: "newuser@example.com",  };const registrationResponse = await fetch(`${serverIp}/api/register`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(registrationData),  });if (registrationResponse.status === 201) {    console.log("Account created");} else if (registrationResponse.status === 409) {    console.log("Username or email already exists");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~handleUnlike"><span class="type-signature">(inner) </span>handleUnlike<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles a user unliking a listing.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line58">line 58</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/like'const unlikeData = {    username: "testuser",    listingId: 1,  };const unlikedResponse = await fetch(`${serverIp}/api/like`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(unlikeData),  });if (unlikedResponse.status > 201) {    console.log("Error Unliking listing:", 1, unlikedResponse.status);}</code></pre>
 
 
 
@@ -1795,7 +2471,7 @@ const requestPayload = {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line34">line 34</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line35">line 35</a>
     </li></ul></dd>
     
 
@@ -1826,15 +2502,172 @@ const requestPayload = {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/createListing'
-// Request body should contain a JSON object with the required fields.
-const requestPayload = {
-  "price": 100.0,
-  "images": [image1_in_binary, image2_in_binary],
-  "title": "Sample Listing",
-  "description": "This is a sample listing.",
-  "userName": "sampleUser"
-};</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/createListing'const requestPayload = {  "price": 100.0,  "images": [image1_in_binary, image2_in_binary],  "title": "Sample Listing",  "description": "This is a sample listing.",  "userName": "sampleUser"};const createListingResponse = await fetch(`${serverIp}/api/createListing`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(requestPayload),  });if (createListingResponse.status === 201) {    const responsePayload = await createListingResponse.json();    console.log("Listing created successfully with ID:", responsePayload.listingId);} else {    console.log("Error creating listing");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~deleteAllLikes"><span class="type-signature">(inner) </span>deleteAllLikes<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    DELETE request endpoint at /api/likes for deleting all likes.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line140">line 140</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/likes'const deleteLikesResponse = await fetch(`${serverIp}/api/likes`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteLikesResponse.status === 200) {    const result = await deleteLikesResponse.json();    console.log("All likes deleted. Message:", result.message);}</code></pre>
 
 
 
@@ -1997,6 +2830,11 @@ const requestPayload = {
 
 
 
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/accounts'const accountsResponse = await fetch(`${serverIp}/api/accounts`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (accountsResponse.status === 200) {    const accountsData = await accountsResponse.json();    console.log("List of Accounts:", accountsData.Accounts);}</code></pre>
+
+
 
         
             
@@ -2128,7 +2966,7 @@ const requestPayload = {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line198">line 198</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line273">line 273</a>
     </li></ul></dd>
     
 
@@ -2155,6 +2993,176 @@ const requestPayload = {
 
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/images?listingId=123'const getImagesResponse = await fetch(`${serverIp}/api/images?listingId=123`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (getImagesResponse.status === 200) {    const imagesData = await getImagesResponse.json();    console.log("Images:", imagesData.Images);} else {    console.log("Error retrieving images");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getLikes"><span class="type-signature">(inner) </span>getLikes<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    GET request endpoint at /api/likes for retrieving a list of likes.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line104">line 104</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/likes'const likesResponse = await fetch(`${serverIp}/api/likes`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (likesResponse.status === 200) {    const likesData = await likesResponse.json();    console.log("List of Likes:", likesData.Likes);}</code></pre>
 
 
 
@@ -2288,7 +3296,7 @@ const requestPayload = {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line104">line 104</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line121">line 121</a>
     </li></ul></dd>
     
 
@@ -2315,6 +3323,11 @@ const requestPayload = {
 
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/listings'const listingsResponse = await fetch(`${serverIp}/api/listings`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (listingsResponse.status === 200) {    const listingsData = await listingsResponse.json();    console.log("List of Listings:", listingsData);} else {    console.log("Error retrieving listings");}</code></pre>
 
 
 
@@ -2448,7 +3461,7 @@ const requestPayload = {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="account.js.html">account.js</a>, <a href="account.js.html#line134">line 134</a>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line186">line 186</a>
     </li></ul></dd>
     
 
@@ -2475,6 +3488,176 @@ const requestPayload = {
 
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteaccounts?username=testuser'// Delete a specific user account by providing the 'username' query parameter.// If successful, it will respond with a success message.// If the username doesn't exist, it will respond with an error message.const deleteResponse = await fetch(`${serverIp}/api/deleteaccounts?username=testuser`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteResponse.status === 200) {    console.log("Account deleted successfully");} else if (deleteResponse.status === 500) {    console.log("Error deleting account");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~handleDeleteImages"><span class="type-signature">(inner) </span>handleDeleteImages<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles deleting of accounts.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line326">line 326</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteimages'const deleteImagesResponse = await fetch(`${serverIp}/api/deleteimages`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteImagesResponse.status === 200) {    const deleteImagesData = await deleteImagesResponse.json();    console.log("Images deleted:", deleteImagesData.message);} else {    console.log("Error deleting images");}</code></pre>
 
 
 
@@ -2608,7 +3791,7 @@ const requestPayload = {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line167">line 167</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line224">line 224</a>
     </li></ul></dd>
     
 
@@ -2637,6 +3820,11 @@ const requestPayload = {
 
 
 
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deletelistings'const deleteListingsResponse = await fetch(`${serverIp}/api/deletelistings`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteListingsResponse.status === 200) {    const deleteListingsData = await deleteListingsResponse.json();    console.log("Listings deleted:", deleteListingsData.message);} else {    console.log("Error deleting listings");}</code></pre>
+
+
 
         
             
@@ -2644,7 +3832,7 @@ const requestPayload = {
     
 
     
-    <h4 class="name" id="~handleDeleteimages"><span class="type-signature">(inner) </span>handleDeleteimages<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~handleLike"><span class="type-signature">(inner) </span>handleLike<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
     
 
     
@@ -2652,7 +3840,7 @@ const requestPayload = {
 
 
 <div class="description">
-    Handles deleting of accounts.
+    Handles a user liking a listing.
 </div>
 
 
@@ -2694,7 +3882,7 @@ const requestPayload = {
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">object</span>
 
 
             
@@ -2704,7 +3892,7 @@ const requestPayload = {
 
             
 
-            <td class="description last">Express.js request object.</td>
+            <td class="description last">The HTTP request object.</td>
         </tr>
 
     
@@ -2717,7 +3905,7 @@ const requestPayload = {
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">object</span>
 
 
             
@@ -2727,7 +3915,7 @@ const requestPayload = {
 
             
 
-            <td class="description last">Express.js response object.</td>
+            <td class="description last">The HTTP response object.</td>
         </tr>
 
     
@@ -2768,7 +3956,7 @@ const requestPayload = {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line233">line 233</a>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line12">line 12</a>
     </li></ul></dd>
     
 
@@ -2795,6 +3983,11 @@ const requestPayload = {
 
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/like'const likeData = {    username: "testuser",    listingId: 1,  };const likedResponse = await fetch(`${serverIp}/api/like`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(likeData),  });if (likedResponse.status > 201) {    console.log("Error Liking listing:", 1, likedResponse.status);}</code></pre>
 
 
 
@@ -2928,7 +4121,7 @@ const requestPayload = {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="account.js.html">account.js</a>, <a href="account.js.html#line33">line 33</a>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line49">line 49</a>
     </li></ul></dd>
     
 
@@ -2959,10 +4152,7 @@ const requestPayload = {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/login'
-// Request body should contain a JSON object with 'username' and 'password' fields.
-// If authentication is successful, it will respond with a success message.
-// If authentication fails (username not found or incorrect password), it will respond with an error message.</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/login'const loginData = {    username: "testuser",    password: "password123",  };const loginResponse = await fetch(`${serverIp}/api/login`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(loginData),  });if (loginResponse.status === 200) {    console.log("Login successful");} else if (loginResponse.status === 401) {    console.log("Authentication failed");}</code></pre>
 
 
 
@@ -3096,7 +4286,7 @@ const requestPayload = {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="account.js.html">account.js</a>, <a href="account.js.html#line70">line 70</a>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line103">line 103</a>
     </li></ul></dd>
     
 
@@ -3127,10 +4317,2411 @@ const requestPayload = {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/register'
-// Request body should contain a JSON object with 'username', 'password', 'confirmPassword', and 'email' fields.
-// If the username is available, it will create a new account and respond with a success message.
-// If the username is already taken, it will respond with a 409 Conflict status code.</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/register'const registrationData = {    username: "newuser",    password: "password123",    confirmPassword: "password123",    email: "newuser@example.com",  };const registrationResponse = await fetch(`${serverIp}/api/register`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(registrationData),  });if (registrationResponse.status === 201) {    console.log("Account created");} else if (registrationResponse.status === 409) {    console.log("Username or email already exists");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~handleUnlike"><span class="type-signature">(inner) </span>handleUnlike<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles a user unliking a listing.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line58">line 58</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/like'const unlikeData = {    username: "testuser",    listingId: 1,  };const unlikedResponse = await fetch(`${serverIp}/api/like`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(unlikeData),  });if (unlikedResponse.status > 201) {    console.log("Error Unliking listing:", 1, unlikedResponse.status);}</code></pre>
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Express application for serving static files and handling API requests.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~createListing"><span class="type-signature">(inner) </span>createListing<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    POST request endpoint for creating a new listing.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with a JSON body containing 'price', 'images', 'title', 'description', and 'userName'.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line35">line 35</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/createListing'const requestPayload = {  "price": 100.0,  "images": [image1_in_binary, image2_in_binary],  "title": "Sample Listing",  "description": "This is a sample listing.",  "userName": "sampleUser"};const createListingResponse = await fetch(`${serverIp}/api/createListing`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(requestPayload),  });if (createListingResponse.status === 201) {    const responsePayload = await createListingResponse.json();    console.log("Listing created successfully with ID:", responsePayload.listingId);} else {    console.log("Error creating listing");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~deleteAllLikes"><span class="type-signature">(inner) </span>deleteAllLikes<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    DELETE request endpoint at /api/likes for deleting all likes.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line140">line 140</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/likes'const deleteLikesResponse = await fetch(`${serverIp}/api/likes`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteLikesResponse.status === 200) {    const result = await deleteLikesResponse.json();    console.log("All likes deleted. Message:", result.message);}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getAccounts"><span class="type-signature">(inner) </span>getAccounts<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    GET request endpoint at /api/accounts for retrieving a list of accounts.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line13">line 13</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/accounts'const accountsResponse = await fetch(`${serverIp}/api/accounts`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (accountsResponse.status === 200) {    const accountsData = await accountsResponse.json();    console.log("List of Accounts:", accountsData.Accounts);}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getImages"><span class="type-signature">(inner) </span>getImages<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    GET request endpoint at /api/images for retrieving a list of all images or a list of images belonging to a specific listing using the 'listingId' query parameter.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line273">line 273</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/images?listingId=123'const getImagesResponse = await fetch(`${serverIp}/api/images?listingId=123`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (getImagesResponse.status === 200) {    const imagesData = await getImagesResponse.json();    console.log("Images:", imagesData.Images);} else {    console.log("Error retrieving images");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getLikes"><span class="type-signature">(inner) </span>getLikes<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    GET request endpoint at /api/likes for retrieving a list of likes.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line104">line 104</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/likes'const likesResponse = await fetch(`${serverIp}/api/likes`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (likesResponse.status === 200) {    const likesData = await likesResponse.json();    console.log("List of Likes:", likesData.Likes);}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getListings"><span class="type-signature">(inner) </span>getListings<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    GET request endpoint at /api/listings for retrieving a list of all listings.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line121">line 121</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/listings'const listingsResponse = await fetch(`${serverIp}/api/listings`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (listingsResponse.status === 200) {    const listingsData = await listingsResponse.json();    console.log("List of Listings:", listingsData);} else {    console.log("Error retrieving listings");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~handleDeleteAccounts"><span class="type-signature">(inner) </span>handleDeleteAccounts<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles deleting of accounts.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line186">line 186</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteaccounts?username=testuser'// Delete a specific user account by providing the 'username' query parameter.// If successful, it will respond with a success message.// If the username doesn't exist, it will respond with an error message.const deleteResponse = await fetch(`${serverIp}/api/deleteaccounts?username=testuser`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteResponse.status === 200) {    console.log("Account deleted successfully");} else if (deleteResponse.status === 500) {    console.log("Error deleting account");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~handleDeleteImages"><span class="type-signature">(inner) </span>handleDeleteImages<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles deleting of accounts.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line326">line 326</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteimages'const deleteImagesResponse = await fetch(`${serverIp}/api/deleteimages`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteImagesResponse.status === 200) {    const deleteImagesData = await deleteImagesResponse.json();    console.log("Images deleted:", deleteImagesData.message);} else {    console.log("Error deleting images");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~handleDeleteListings"><span class="type-signature">(inner) </span>handleDeleteListings<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles deleting of accounts.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line224">line 224</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deletelistings'const deleteListingsResponse = await fetch(`${serverIp}/api/deletelistings`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteListingsResponse.status === 200) {    const deleteListingsData = await deleteListingsResponse.json();    console.log("Listings deleted:", deleteListingsData.message);} else {    console.log("Error deleting listings");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~handleLike"><span class="type-signature">(inner) </span>handleLike<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles a user liking a listing.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line12">line 12</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/like'const likeData = {    username: "testuser",    listingId: 1,  };const likedResponse = await fetch(`${serverIp}/api/like`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(likeData),  });if (likedResponse.status > 201) {    console.log("Error Liking listing:", 1, likedResponse.status);}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~handleLoginRequest"><span class="type-signature">(inner) </span>handleLoginRequest<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles login requests and performs authentication.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with a JSON body containing 'username' and 'password'.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line49">line 49</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/login'const loginData = {    username: "testuser",    password: "password123",  };const loginResponse = await fetch(`${serverIp}/api/login`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(loginData),  });if (loginResponse.status === 200) {    console.log("Login successful");} else if (loginResponse.status === 401) {    console.log("Authentication failed");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~handleRegistrationRequest"><span class="type-signature">(inner) </span>handleRegistrationRequest<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles user registration requests and account creation.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with a JSON body containing 'username', 'password', 'confirmPassword', and 'email'.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line103">line 103</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/register'const registrationData = {    username: "newuser",    password: "password123",    confirmPassword: "password123",    email: "newuser@example.com",  };const registrationResponse = await fetch(`${serverIp}/api/register`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(registrationData),  });if (registrationResponse.status === 201) {    console.log("Account created");} else if (registrationResponse.status === 409) {    console.log("Username or email already exists");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~handleUnlike"><span class="type-signature">(inner) </span>handleUnlike<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles a user unliking a listing.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The HTTP response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line58">line 58</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/like'const unlikeData = {    username: "testuser",    listingId: 1,  };const unlikedResponse = await fetch(`${serverIp}/api/like`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(unlikeData),  });if (unlikedResponse.status > 201) {    console.log("Error Unliking listing:", 1, unlikedResponse.status);}</code></pre>
 
 
 
@@ -3156,7 +6747,7 @@ const requestPayload = {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat Oct 28 2023 01:38:39 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Nov 03 2023 01:41:41 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

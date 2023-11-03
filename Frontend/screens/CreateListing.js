@@ -1,3 +1,4 @@
+import { serverIp } from "../config.js";
 import React, { Component } from "react";
 import {
   View,
@@ -8,6 +9,7 @@ import {
   ScrollView,
   Dimensions,
   TextInput,
+  Alert,
 } from "react-native";
 import DraggableGrid from "react-native-draggable-grid";
 import * as ImagePicker from "expo-image-picker";
@@ -16,30 +18,198 @@ import { Camera } from "expo-camera"; // Import Camera from Expo
 import Colors from "../constants/Colors";
 import BottomBar from "../components/BottomBar";
 import TopBar from "../components/TopBar";
+import * as SecureStore from "expo-secure-store";
+import * as ImageManipulator from "expo-image-manipulator";
+import { withNavigation } from "react-navigation";
+import { Icons } from "../components/Icons.js";
 
+/**
+ * @class
+ * @classdesc - CreateListing is a screen that allows users to create a listing
+ * @extends Component
+ * @returns Returns a CreateListing screen
+ */
 class CreateListing extends Component {
+  /**
+   * @param {*} props
+   * @constructor
+   * @description - CreateListing constructor
+   * @initialize state variables
+   * @initialize refs
+   */
   constructor(props) {
     super(props);
     this.state = {
       title: "",
       description: "",
       price: "",
-      data: [], // Initialize with an empty array
+      data: [],
       isScrollEnabled: true,
+      isTitleInvalid: false,
+      isDescriptionInvalid: false,
+      isPriceInvalid: false,
+      isImageInvalid: false,
+      isTagInvalid: false,
     };
+    this.titleInput = React.createRef();
+    this.descriptionInput = React.createRef();
+    this.priceInput = React.createRef();
+    this.imageInput = React.createRef();
+    this.tagInput = React.createRef();
   }
 
+  /**
+   * @function
+   * @destructor - resets state variables
+   */
   destructor() {
-    this.title = "";
-    this.description = "";
-    this.price = "";
-    this.setState({ data: [] });
+    this.setState({
+      title: "",
+      description: "",
+      price: "",
+      data: [],
+      isTitleInvalid: false,
+      isDescriptionInvalid: false,
+      isPriceInvalid: false,
+    });
   }
 
+  /**
+   * @function
+   * @handleCreateListing - sends user inputted data to server and checks if it ran smoothly
+   * @param {Object} formData - object that is sent to the server with user inputted values
+   */
+  handleCreateListing = async () => {
+    const { title, description, price, data } = this.state;
+    if (this.state.title == "") {
+      this.setState({ isTitleInvalid: true });
+      this.titleInput.current.focus();
+    }
+    if (this.state.description == "") {
+      this.setState({ isDescriptionInvalid: true });
+      this.descriptionInput.current.focus();
+    }
+    if (this.state.price == "") {
+      this.setState({ isPriceInvalid: true });
+      this.priceInput.current.focus();
+    }
+
+    if (!title || !description || !price) {
+      if (!title) {
+        this.setState({ isTitleInvalid: true });
+        this.titleInput.current.focus();
+      } else {
+        this.setState({ isTitleInvalid: false });
+      }
+
+      if (!description) {
+        this.setState({ isDescriptionInvalid: true });
+        this.descriptionInput.current.focus();
+      } else {
+        this.setState({ isDescriptionInvalid: false });
+      }
+
+      if (!price) {
+        this.setState({ isPriceInvalid: true });
+        this.priceInput.current.focus();
+      } else {
+        this.setState({ isPriceInvalid: false });
+      }
+
+      if (this.state.data.length == 0) {
+        this.setState({ isImageInvalid: true });
+
+        return Alert.alert("Please select at least one image.");
+      }
+      if (this.state.data.length > 9) {
+        this.setState({ isImageInvalid: true });
+        return Alert.alert("You can only select up to 9 images.");
+      }
+
+      return;
+    }
+
+    try {
+      if (this.state.data.length == 0) {
+        console.error("No images selected.");
+        return;
+      }
+      if (this.state.data.length > 9) {
+        console.error("Too many images selected.");
+        return;
+      }
+      if (this.state.price < 0) {
+        console.error("Invalid price.");
+        return;
+      }
+      if ((this.state.price = "")) {
+        console.error("Invalid price.");
+        return;
+      }
+      if (this.state.title.length > 25) {
+        console.error("Title too long.");
+        return;
+      }
+      if ((this.state.title = "")) {
+        console.error("Invalid title.");
+        return;
+      }
+      if (this.state.description.length > 500) {
+        console.error("Description too long.");
+        return;
+      }
+      if ((this.state.description = "")) {
+        console.error("Invalid description.");
+        return;
+      }
+
+      const formData = new FormData();
+
+      data.forEach((image, index) => {
+        // Append each image as a file
+        formData.append(`image_${index}`, {
+          uri: image.uri, // The URI of the image file
+          name: `image_${index}.jpg`, // The desired file name
+          type: "image/jpeg", // The content type of the file
+        });
+      });
+
+      formData.append("price", price);
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("username", await SecureStore.getItemAsync("username"));
+
+      console.log("FormData:", formData);
+      const response = await fetch(`${serverIp}/api/createlisting`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.status <= 201) {
+        const responseData = await response.json();
+        console.log("Listing created successfully:", responseData);
+        this.destructor();
+        this.props.navigation.navigate("Home", { refresh: true });
+      } else {
+        console.error("HTTP error! Status: ", response.status);
+      }
+    } catch (error) {
+      console.error("Error creating listing:", error);
+    }
+  };
+
+  /**
+   * @function
+   * @componentDidMount - calls getPermissionAsync() when component mounts
+   */
   componentDidMount() {
     this.getPermissionAsync();
   }
 
+  /**
+   * @function
+   * @getPermissionAsync - asks for permission to access camera roll
+   */
   getPermissionAsync = async () => {
     if (Constants.platform.ios) {
       const { status } =
@@ -50,27 +220,61 @@ class CreateListing extends Component {
     }
   };
 
+  /**
+   * @function
+   * @handleImagePick - allows user to select images from their camera roll
+   * @param {Object} result - object that contains the image(s) that the user selected
+   */
   handleImagePick = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
       quality: 1,
-      allowsMultipleSelection: false,
+      allowsMultipleSelection: true,
     });
 
-    if (!result.cancelled) {
-      const newImageData = result.assets.map((asset) => ({
-        name: "New Image", // Customize the name as needed
-        key: String(Date.now()), // Generate a unique key
-        uri: asset.uri,
-      }));
-
-      this.setState((prevState) => ({
-        data: [...prevState.data, ...newImageData],
-      }));
+    if (result.canceled) {
+      return;
     }
+    /**
+     * @function
+     * @selectedImages - processes images allowing them to be sent and displayed
+     */
+    const selectedImages = await Promise.all(
+      result.assets.map(async function (image) {
+        try {
+          const manipulateResult = await ImageManipulator.manipulateAsync(
+            image.uri,
+            [],
+            { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
+          );
+          let localUri = manipulateResult.uri;
+          let filename = localUri.split("/").pop();
+
+          return {
+            name: filename,
+            key: String(Date.now()),
+            uri: localUri,
+          };
+        } catch (error) {
+          console.error("Image processing error:", error);
+          return null;
+        }
+      }),
+    );
+
+    // Filter out any potential null values (indicating errors)
+    const filteredImages = selectedImages.filter((image) => image !== null);
+
+    this.setState((prevState) => ({
+      data: [...prevState.data, ...filteredImages],
+    }));
   };
 
+  /**
+   * @function
+   * @handleCameraCapture - allows user to take a picture with their camera
+   */
   handleCameraCapture = async () => {
     if (this.camera) {
       let result = await this.camera.takePictureAsync({ quality: 1 });
@@ -88,6 +292,34 @@ class CreateListing extends Component {
     }
   };
 
+  /**
+   * @function
+   * @handleDeletePhoto - deletes photos that the user no longer wants to post
+   * @param {Number} index - index of the photo that the user wants to delete
+   */
+  handleDeletePhoto = (index) => {
+    Alert.alert("Delete Photo", "Are you sure you want to delete this photo?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Delete",
+        onPress: () => {
+          const updatedPhotos = [...photos];
+          updatedPhotos.splice(index, 1);
+          setPhotos(updatedPhotos);
+        },
+      },
+    ]);
+  };
+
+  /**
+   *
+   * @param {*} item
+   * @description - renders the images that the user selected
+   * @returns Returns the images that the user selected
+   */
   render_item(item) {
     return (
       <View style={styles.item} key={item.key}>
@@ -100,59 +332,221 @@ class CreateListing extends Component {
     );
   }
 
+  /**
+   * @function
+   * @handleDragStart - disables scrolling when the user is dragging an image
+   */
   handleDragStart = () => {
     // When a drag starts, disable scrolling
     this.setState({ isScrollEnabled: false });
   };
 
+  /**
+   * @function
+   * @handleDragRelease - enables scrolling when the user is done dragging an image
+   */
   handleDragRelease = (data) => {
     // When the drag is released, enable scrolling
     this.setState({ data, isScrollEnabled: true });
   };
 
+  handlePriceChange = (text) => {
+    const regex = /^(\d{0,6}(\.\d{0,2})?)$/;
+
+    if (regex.test(text) || text === "") {
+      // If text matches the format (4 digits before decimal, 2 after) or is empty
+      this.setState({ isPriceInvalid: false });
+    } else {
+      // If the text doesn't match the format
+      this.setState({ isPriceInvalid: true });
+    }
+  };
+
   render() {
+    const {
+      isTitleInvalid,
+      isDescriptionInvalid,
+      isPriceInvalid,
+      isImageInvalid,
+      isTagInvalid,
+    } = this.state;
+
+    // const tagsData = [
+    //   {
+    //     name: "Furniture",
+    //     selected: false,
+    //     type: Icons,
+    //     activeIcon: "",
+    //     inActiveIcon: "",
+    //   },
+    //   {
+    //     name: "Electronics",
+    //     selected: false,
+    //     type: Icons,
+    //     activeIcon: "",
+    //     inActiveIcon: "",
+    //   },
+    //   {
+    //     name: "Clothing",
+    //     selected: false,
+    //     type: Icons,
+    //     activeIcon: "",
+    //     inActiveIcon: "",
+    //   },
+    //   {
+    //     name: "Books",
+    //     selected: false,
+    //     type: Icons,
+    //     activeIcon: "",
+    //     inActiveIcon: "",
+    //   },
+    //   {
+    //     name: "Sports",
+    //     selected: false,
+    //     type: Icons,
+    //     activeIcon: "",
+    //     inActiveIcon: "",
+    //   },
+    //   {
+    //     name: "Beauty",
+    //     selected: false,
+    //     type: Icons,
+    //     activeIcon: "",
+    //     inActiveIcon: "",
+    //   },
+    //   {
+    //     name: "Toys",
+    //     selected: false,
+    //     type: Icons,
+    //     activeIcon: "",
+    //     inActiveIcon: "",
+    //   },
+    //   {
+    //     name: "Other",
+    //     selected: false,
+    //     type: Icons,
+    //     activeIcon: "",
+    //     inActiveIcon: "",
+    //   },
+    // ];
+
     return (
       <View style={styles.wrapper}>
         <TopBar />
 
         <View style={styles.scrollfield}>
           <ScrollView scrollEnabled={this.state.isScrollEnabled}>
-            <View>
-              <Text
-                style={{ color: "white", fontSize: 30, textAlign: "center" }}
-              >
-                Create Listing
+            <TouchableOpacity onPress={this.handleCreateListing}>
+              <View style={styles.createButton}>
+                <Text style={styles.buttonText}>Create Listing</Text>
+              </View>
+            </TouchableOpacity>
+            <View style={styles.rowContainer}>
+              <View style={styles.rowContainer}>
+                <Text style={styles.label}>Title</Text>
+                {isTitleInvalid ? (
+                  <View style={styles.rowContainer}>
+                    <Text style={styles.asterisk}> *</Text>
+                    <Text style={styles.errorMessage}>
+                      {this.state.title == ""
+                        ? "Title is required"
+                        : this.state.title.length > 25
+                        ? "Title too long"
+                        : "Must enter a valid title"}
+                    </Text>
+                  </View>
+                ) : (
+                  ""
+                )}
+              </View>
+              <Text style={styles.characterCounter}>
+                {this.state.title.length}/25
               </Text>
             </View>
-
             <TextInput
-              style={styles.input}
-              placeholder="Title"
-              value=""
+              ref={this.titleInput}
+              style={[styles.input]}
+              value={this.state.title}
               onChangeText={(text) => {
-                this.title = text;
+                this.setState({ title: text, isTitleInvalid: false });
               }}
-              returnKeyType="done"
+              returnKeyType="next"
+              onSubmitEditing={() => this.descriptionInput.current.focus()}
+              maxLength={25}
             />
+            <View style={styles.rowContainer}>
+              <View style={styles.rowContainer}>
+                <Text style={styles.label}>Description</Text>
+                {isDescriptionInvalid && (
+                  <View style={styles.rowContainer}>
+                    <Text style={styles.asterisk}> *</Text>
+                    <Text style={styles.errorMessage}>
+                      {this.state.description.length > 500
+                        ? "Description too long"
+                        : this.state.description.length === 0
+                        ? "Description is required"
+                        : "Must enter a valid description"}
+                    </Text>
+                  </View>
+                )}
+              </View>
+              <Text style={styles.characterCounter}>
+                {this.state.description.length}/500
+              </Text>
+            </View>
             <TextInput
-              style={[styles.input, styles.multilineInput]}
-              placeholder="Description"
-              value=""
+              ref={this.descriptionInput}
+              style={[
+                styles.input,
+                styles.multilineInput,
+                (textAlign = "left"),
+              ]}
+              value={this.state.description}
               onChangeText={(text) => {
-                this.description = text;
+                this.setState({
+                  description: text,
+                  isDescriptionInvalid: false,
+                });
               }}
               multiline={true}
               textAlignVertical="top"
+              returnKeyType="next"
+              onSubmitEditing={() => this.priceInput.current.focus()}
+              maxLength={500}
             />
+
+            <View style={styles.rowContainer}>
+              <Text style={styles.label}>Price</Text>
+              {isPriceInvalid ? (
+                <View style={styles.rowContainer}>
+                  <Text style={styles.asterisk}> *</Text>
+                  <Text style={styles.errorMessage}>
+                    {this.state.price == ""
+                      ? "Price is required"
+                      : this.state.price < 0
+                      ? "Invalid price"
+                      : this.state.price.length > 7
+                      ? "Price too long"
+                      : "Must enter a valid price"}
+                  </Text>
+                </View>
+              ) : (
+                ""
+              )}
+            </View>
+
             <TextInput
-              style={styles.input}
-              placeholder="Price"
-              value=""
+              ref={this.priceInput}
+              style={[styles.input]}
+              value={this.state.price}
               onChangeText={(text) => {
-                this.price = text;
+                this.setState({ price: text, isPriceInvalid: false });
+                this.handlePriceChange(text);
               }}
               keyboardType="numeric"
               returnKeyType="done"
+              placeholder="$000000.00"
+              maxLength={9}
             />
 
             <View style={styles.cameraContainer}>
@@ -178,6 +572,22 @@ class CreateListing extends Component {
                 />
               </View>
             </View>
+
+            <View style={styles.tagField}>
+              {/* {tagsData.map((tag, index) => (
+                <TouchableOpacity key={index} style={styles.tagContainer}>
+                  <Text>{tag.name}</Text>
+                </TouchableOpacity>
+              ))}
+              ; */}
+            </View>
+
+            <TouchableOpacity onPress={this.handleCreateListing}>
+              <View style={[styles.createButton, (top = 30), (bottom = 0)]}>
+                <Text style={styles.buttonText}>Create Listing</Text>
+              </View>
+            </TouchableOpacity>
+
             <Text style={styles.spacer} />
           </ScrollView>
         </View>
@@ -190,6 +600,7 @@ class CreateListing extends Component {
 
 export default CreateListing;
 
+//////////////////////////////////////////////////////////////////////////////////////////
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
@@ -201,8 +612,101 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.BB_darkOrange,
   },
   scrollfield: {
-    top: 0.15 * screenHeight,
+    top: 0.1 * screenHeight,
+    height: "auto",
     backgroundColor: Colors.BB_darkOrange,
+  },
+  imageField: {
+    alignSelf: "center",
+    width: "95%",
+    height: 400,
+    backgroundColor: Colors.BB_darkRedPurple,
+    borderRadius: 20,
+    shadowColor: "black",
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 2, height: 4 },
+    shadowRadius: 3,
+    elevation: 5,
+    margin: 0,
+  },
+  tagField: {
+    alignSelf: "center",
+    width: "95%",
+    height: 600,
+    backgroundColor: Colors.BB_darkRedPurple,
+    borderRadius: 20,
+    shadowColor: "black",
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 2, height: 4 },
+    shadowRadius: 3,
+    top: 30,
+    marginBottom: 30,
+  },
+  innerField: {
+    margin: 10,
+    marginTop: 20,
+    width: "95%",
+    height: "95%",
+  },
+  item: {
+    width: 100,
+    height: 100,
+    borderRadius: 8,
+    borderColor: Colors.BB_darkOrange,
+    borderWidth: 2,
+    backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  item_text: {
+    fontSize: 40,
+    color: "#FFFFFF",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 8,
+  },
+  container: {
+    flex: 1,
+    paddingTop: 50, //top of page
+    padding: 30, //all around
+    backgroundColor: "#D6447F",
+  },
+  createButton: {
+    alignSelf: "center",
+    width: screenWidth * 0.4,
+    backgroundColor: Colors.BB_rangeYellow,
+    padding: 5,
+    borderColor: Colors.black,
+    borderRadius: 10,
+    fontWeight: "bold",
+    shadowColor: "black",
+    shadowOpacity: 1,
+    shadowOffset: {
+      width: 1,
+      height: 1,
+    },
+    shadowRadius: 2,
+  },
+  label: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "white",
+  },
+  asterisk: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+    color: "red",
+  },
+  errorMessage: {
+    fontSize: 12,
+    color: "red",
+    marginLeft: 10,
+    left: 10,
   },
   input: {
     height: 40,
@@ -217,55 +721,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowOffset: { width: 2, height: 4 },
     shadowRadius: 3,
+    textAlign: "center",
+    color: "white",
   },
   multilineInput: {
     height: 120,
-  },
-  imageField: {
-    alignSelf: "center",
-    width: "95%",
-    height: 400,
-    backgroundColor: Colors.BB_darkRedPurple,
-    borderRadius: 20,
-    shadowColor: "black",
-    shadowOpacity: 0.5,
-    shadowOffset: { width: 2, height: 4 },
-    shadowRadius: 3,
-    elevation: 5,
-    margin: 0,
-    borderColor: Colors.BB_darkPink,
-  },
-  innerField: {
-    margin: 10,
-    marginTop: 20,
-    width: "95%",
-    height: "95%",
-  },
-  item: {
-    width: 100,
-    height: 100,
-    backgroundColor: Colors.BB_darkOrange,
-    borderRadius: 8,
-    borderColor: Colors.BB_darkOrange,
-    borderWidth: 3,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-    shadowColor: "black",
-    shadowOpacity: 0.5,
-    shadowOffset: { width: 2, height: 4 },
-    shadowRadius: 3,
-    elevation: 25,
-  },
-  uploadButton: {
-    backgroundColor: "#F7A859",
-    width: "100%",
-    height: 250,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 20,
-    borderWidth: 1, // Add a border
-    borderColor: "gray", // Border color
   },
   button: {
     width: 150,
@@ -276,293 +736,22 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignSelf: "center",
   },
+  buttonText: {
+    fontSize: 18,
+    color: "white",
+    alignSelf: "center",
+  },
+  rowContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  characterCounter: {
+    fontSize: 12,
+    color: "white",
+    position: "absolute",
+    right: 0.05 * screenWidth,
+  },
   spacer: {
     height: 400,
   },
 });
-
-// import { serverIp } from "../config.js";
-// import React, { useState } from "react";
-// import {
-//   View,
-//   Text,
-//   TextInput,
-//   Button,
-//   TouchableOpacity,
-//   Image,
-//   ScrollView,
-//   StyleSheet,
-//   Alert,
-//   Dimensions,
-// } from "react-native";
-// import * as ImagePicker from "expo-image-picker";
-// import { useNavigation } from "@react-navigation/native";
-// import Colors from "../constants/Colors";
-// import Icon, { Icons } from "../components/Icons";
-// import { MaterialCommunityIcons } from "@expo/vector-icons";
-// import * as ImageManipulator from "expo-image-manipulator";
-
-// console.log(Dimensions.get("window"));
-
-// /**
-//  * @function
-//  * @CreateListing
-//  * @param {String} title - title variable, stores what the user inputs
-//  * @param {String} description - description variable, stores what the user inputs
-//  * @param {String} price - price variable, stores what the user inputs
-//  * @param {Array} photos - photo variable, stores what the user inputs as an array
-//  */
-
-// const CreateListing = () => {
-//   const navigation = useNavigation();
-//   const [title, setTitle] = useState("");
-//   const [description, setDescription] = useState("");
-//   const [price, setPrice] = useState("");
-//   const [photos, setPhotos] = useState([]);
-
-//   const clearListing = () => {
-//     setTitle("");
-//     setDescription("");
-//     setPrice("");
-//     setPhotos([]);
-//   }
-
-//   /**
-//    * @function
-//    * @handleCreateListing - sends user inputted data to server and checks if it ran smoothly
-//    * @param {Object} formData - object that is sent to the server with user inputted values
-//    */
-//   const handleCreateListing = async () => {
-//     try {
-//       const formData = new FormData();
-
-//       photos.forEach((image, index) => {
-//         formData.append(`image_${index}`, image);
-//       });
-
-//       formData.append("price", price);
-//       formData.append("title", title);
-//       formData.append("description", description);
-//       formData.append("username", "test");
-
-//       console.log("FormData:", formData);
-//       const response = await fetch(`${serverIp}/api/createListing`, {
-//         method: "POST",
-//         body: formData,
-//       });
-
-//       if (response.status <= 201) {
-//         const responseData = await response.json();
-//         console.log("Listing created successfully:", responseData);
-//         clearListing();
-//         navigation.navigate("Home");
-//       } else {
-//         console.error("HTTP error! Status: ", response.status);
-//       }
-//     } catch (error) {
-//       console.error("Error creating listing:", error);
-//     }
-//   };
-//   /**
-//    * @function
-//    * @handleUploadPhoto - Uses ImagePicker to acess users photos and multiple of them.
-//    */
-//   const handleUploadPhoto = async () => {
-//     const result = await ImagePicker.launchImageLibraryAsync({
-//       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-//       allowsMultipleSelection: true,
-//       quality: 1,
-//     });
-
-//     if (result.canceled) {
-//       return;
-//     }
-//     /**
-//      * @function
-//      * @selectedImages - processes images allowing them to be sent and displayed
-//      */
-//     const selectedImages = await Promise.all(
-//       result.assets.map(async function (image) {
-//         try {
-//           const manipulateResult = await ImageManipulator.manipulateAsync(
-//             image.uri,
-//             [],
-//             { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
-//           );
-
-//           let localUri = manipulateResult.uri;
-//           let filename = localUri.split("/").pop();
-//           let match = /\.(\w+)$/.exec(filename);
-//           let type = match ? `image/${match[1]}` : `image`;
-//           let width = { width: manipulateResult.width };
-//           let height = { height: manipulateResult.height };
-
-//           return {
-//             uri: localUri,
-//             name: filename,
-//             type,
-//             width,
-//             height,
-//           };
-//         } catch (error) {
-//           console.error("Image processing error:", error);
-//           // Handle the error as needed
-//           return null; // or another appropriate value indicating an error
-//         }
-//       })
-//     );
-
-//     // Filter out any potential null values (indicating errors)
-//     const filteredImages = selectedImages.filter((image) => image !== null);
-
-//     // Now, set the filteredImages in your state variable
-//     setPhotos(filteredImages);
-//   };
-//   /**
-//    * @function
-//    * @handleDeletePhoto - deletes photos that the user no longer wants to post
-//    */
-//   const handleDeletePhoto = (index) => {
-//     Alert.alert("Delete Photo", "Are you sure you want to delete this photo?", [
-//       {
-//         text: "Cancel",
-//         style: "cancel",
-//       },
-//       {
-//         text: "Delete",
-//         onPress: () => {
-//           const updatedPhotos = [...photos];
-//           updatedPhotos.splice(index, 1);
-//           setPhotos(updatedPhotos);
-//         },
-//       },
-//     ]);
-//   };
-
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.title}>Create a Listing</Text>
-//       <TextInput
-//         style={styles.input}
-//         placeholder="Title"
-//         value={title}
-//         onChangeText={(text) => setTitle(text)}
-//         returnKeyType="done" // This allows users to close the keyboard
-//       />
-//       <TextInput
-//         style={[styles.input, styles.multilineInput]}
-//         placeholder="Description"
-//         value={description}
-//         onChangeText={(text) => setDescription(text)}
-//         multiline={true}
-//         textAlignVertical="top" // Allows users to return to a new line
-//       />
-//       <TextInput
-//         style={styles.input}
-//         placeholder="Price"
-//         value={price}
-//         onChangeText={(text) => setPrice(text)}
-//         keyboardType="numeric"
-//         returnKeyType="done" // This allows users to close the numeric keyboard
-//       />
-//       <TouchableOpacity style={styles.uploadButton} onPress={handleUploadPhoto}>
-//         <MaterialCommunityIcons
-//           name="image-plus"
-//           size={100} // Set the desired size of the icon//
-//           color="black" // Set the desired color of the icon
-//           style={styles.uploadIcon}
-//         />
-//       </TouchableOpacity>
-
-//       {/* {photos.map((photo, index) => (} */}
-
-//       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-//         {photos.map((photo, index) => (
-//           <View key={index}>
-//             <Image source={{ uri: photo.uri }} style={styles.uploadedPhoto} />
-//             <TouchableOpacity
-//               style={styles.deleteButton}
-//               onPress={() => handleDeletePhoto(index)}
-//             >
-//               <Text style={styles.deleteButtonText}>Delete</Text>
-//             </TouchableOpacity>
-//           </View>
-//         ))}
-//       </ScrollView>
-
-//       <TouchableOpacity onPress={handleCreateListing}>
-//         <Text style={styles.createListingText}>Create Listing</Text>
-//       </TouchableOpacity>
-//     </View>
-
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   // Your existing styles here'
-
-//   container: {
-//     flex: 1,
-//     paddingTop: 50, //top of page
-//     padding: 30, //all around
-//     backgroundColor: "#D6447F",
-//   },
-//   title: {
-//     fontSize: 24,
-//     fontWeight: "bold",
-//     marginBottom: 20,
-//   },
-//   input: {
-//     height: 40,
-//     borderColor: "gray",
-//     backgroundColor: "#F7A859",
-//     borderWidth: 1,
-//     marginBottom: 10,
-//     paddingHorizontal: 10,
-//   },
-//   multilineInput: {
-//     height: 120,
-//   },
-//   uploadButton: {
-//     backgroundColor: "#F7A859",
-//     width: "100%",
-//     height: 250,
-//     alignItems: "center",
-//     justifyContent: "center",
-//     marginBottom: 20,
-//     borderWidth: 1, // Add a border
-//     borderColor: "gray", // Border color
-//   },
-//   uploadIcon: {
-//     width: 100,
-//     height: 100,
-//   },
-
-//   uploadedPhoto: {
-//     width: 100,
-//     height: 100,
-//     margin: 10,
-//   },
-//   photoContainer: {
-//     position: "relative",
-//   },
-//   deleteButton: {
-//     position: "absolute",
-//     top: 3,
-//     right: 3,
-//     backgroundColor: "#ccc",
-//     padding: 3,
-//     borderRadius: 50,
-//     alignItems: "center",
-//   },
-//   createListingText: {
-//     alignSelf: "center",
-//     fontSize: 24,
-//     fontWeight: "bold",
-//     marginBottom: 20,
-//     backgroundColor: "#F7A859",
-//     bottom: "50%",
-//   },
-// });
-
-// export default CreateListing;

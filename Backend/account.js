@@ -12,10 +12,26 @@ const validator = require("validator");
 
 /**
  * GET request endpoint at /api/accounts for retrieving a list of accounts.
+ *
  * @function
  * @name getAccounts
+ *
  * @param {Object} req - Express.js request object.
  * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP GET request to '/api/accounts'
+ * const accountsResponse = await fetch(`${serverIp}/api/accounts`, {
+ *     method: "GET",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *   });
+ *
+ * if (accountsResponse.status === 200) {
+ *     const accountsData = await accountsResponse.json();
+ *     console.log("List of Accounts:", accountsData.Accounts);
+ * }
  */
 router.get("/accounts", function (req, res) {
   // Query the database for a list of accounts
@@ -32,15 +48,32 @@ router.get("/accounts", function (req, res) {
 
 /**
  * Handles login requests and performs authentication.
- * @name handleLoginRequest
+ *
  * @function
+ * @name handleLoginRequest
+ *
  * @param {Object} req - Express.js request object with a JSON body containing 'username' and 'password'.
  * @param {Object} res - Express.js response object.
+ *
  * @example
  * // Sample HTTP POST request to '/api/login'
- * // Request body should contain a JSON object with 'username' and 'password' fields.
- * // If authentication is successful, it will respond with a success message.
- * // If authentication fails (username not found or incorrect password), it will respond with an error message.
+ * const loginData = {
+ *     username: "testuser",
+ *     password: "password123",
+ *   };
+ * const loginResponse = await fetch(`${serverIp}/api/login`, {
+ *     method: "POST",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *     body: JSON.stringify(loginData),
+ *   });
+ *
+ * if (loginResponse.status === 200) {
+ *     console.log("Login successful");
+ * } else if (loginResponse.status === 401) {
+ *     console.log("Authentication failed");
+ * }
  */
 router.post("/login", function (req, res) {
   const { username, password } = req.body;
@@ -63,21 +96,40 @@ router.post("/login", function (req, res) {
       } else {
         return res.status(401).json({ error: "Incorrect password" });
       }
-    },
+    }
   );
 });
 
 /**
  * Handles user registration requests and account creation.
- * @name handleRegistrationRequest
+ *
  * @function
+ * @name handleRegistrationRequest
+ *
  * @param {Object} req - Express.js request object with a JSON body containing 'username', 'password', 'confirmPassword', and 'email'.
  * @param {Object} res - Express.js response object.
+ *
  * @example
  * // Sample HTTP POST request to '/api/register'
- * // Request body should contain a JSON object with 'username', 'password', 'confirmPassword', and 'email' fields.
- * // If the username is available, it will create a new account and respond with a success message.
- * // If the username is already taken, it will respond with a 409 Conflict status code.
+ * const registrationData = {
+ *     username: "newuser",
+ *     password: "password123",
+ *     confirmPassword: "password123",
+ *     email: "newuser@example.com",
+ *   };
+ * const registrationResponse = await fetch(`${serverIp}/api/register`, {
+ *     method: "POST",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *     body: JSON.stringify(registrationData),
+ *   });
+ *
+ * if (registrationResponse.status === 201) {
+ *     console.log("Account created");
+ * } else if (registrationResponse.status === 409) {
+ *     console.log("Username or email already exists");
+ * }
  */
 router.post("/register", (req, res) => {
   const { username, password, confirmPassword, email } = req.body;
@@ -124,19 +176,39 @@ router.post("/register", (req, res) => {
               message: "Account created",
               username: username,
             });
-          },
+          }
         );
       }
-    },
+    }
   );
 });
 
 /**
  * Handles deleting of accounts.
- * @name handleDeleteAccounts
+ *
  * @function
+ * @name handleDeleteAccounts
+ *
  * @param {Object} req - Express.js request object.
  * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP DELETE request to '/api/deleteaccounts?username=testuser'
+ * // Delete a specific user account by providing the 'username' query parameter.
+ * // If successful, it will respond with a success message.
+ * // If the username doesn't exist, it will respond with an error message.
+ * const deleteResponse = await fetch(`${serverIp}/api/deleteaccounts?username=testuser`, {
+ *     method: "DELETE",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *   });
+ *
+ * if (deleteResponse.status === 200) {
+ *     console.log("Account deleted successfully");
+ * } else if (deleteResponse.status === 500) {
+ *     console.log("Error deleting account");
+ * }
  */
 router.delete("/deleteaccounts", function (req, res) {
   const username = req.query.username;
