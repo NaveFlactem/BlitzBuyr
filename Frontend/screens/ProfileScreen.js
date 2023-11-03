@@ -11,6 +11,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 import * as SecureStore from "expo-secure-store";
@@ -101,26 +102,31 @@ const renderScene = SceneMap({
 
 function ProfileScreen({ navigation }) {
   const layout = useWindowDimensions();
+  const isFocused = useIsFocused();
   const [index, setIndex] = useState(0);
   const [likedListings, setLikedListings] = useState([]);
   const [userListings, setUserListings] = useState([]);
   const [userRatings, setUserRatings] = useState({});
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      const username = await SecureStore.getItemAsync("username");
-      getProfileInfo(username);
-    };
-  
-    fetchData(); // Call the async function
-  }, []);
+    if (isFocused) {
+      const fetchData = async () => {
+        const username = await SecureStore.getItemAsync("username");
+        setUsername(username);
+        getProfileInfo(username);
+      };
+
+      fetchData(); // Call the async function
+    }
+  }, [isFocused]);
 
   useEffect(() => {
     console.log("User's Listings:", userListings);
     console.log("User's Liked Listings:", likedListings);
     console.log("User's Ratings:", userRatings);
   }, [userRatings]);
-  
+
   getProfileInfo = async function (username) {
     try {
       const profileResponse = await fetch(
@@ -129,15 +135,20 @@ function ProfileScreen({ navigation }) {
           method: "GET",
         }
       );
-  
+
       if (profileResponse.status <= 201) {
         const profileData = await profileResponse.json();
         //console.log(profileData);
-  
+
         setLikedListings(profileData.likedListings);
         setUserListings(profileData.userListings);
-        setUserRatings(profileData.ratings);
-  
+        setUserRatings(
+          profileData.ratings.reduce(
+            (acc, rating) => ({ ...acc, ...rating }),
+            {}
+          )
+        );
+
         console.log("Profile fetched successfully");
       } else {
         console.log("Error fetching profile:", profileResponse.status);
@@ -224,7 +235,7 @@ function ProfileScreen({ navigation }) {
             marginVertical: 8,
           }}
         >
-          Alfonso Luis Del Rosario
+          {username}
         </Text>
 
         {/* Location Information */}
@@ -267,7 +278,7 @@ function ProfileScreen({ navigation }) {
                 color: "black",
               }}
             >
-              4.5
+              {userRatings.AverageRating ? userRatings.AverageRating : ""}
             </Text>
             <Text
               style={{
@@ -275,7 +286,7 @@ function ProfileScreen({ navigation }) {
                 color: "black",
               }}
             >
-              Rating
+              {userRatings.AverageRating ? "Rating" : ""}
             </Text>
           </View>
 
@@ -293,7 +304,7 @@ function ProfileScreen({ navigation }) {
                 color: "black",
               }}
             >
-              1254
+              {userRatings.RatingCount > 0 ? userRatings.RatingCount : ""}
             </Text>
             <Text
               style={{
@@ -301,7 +312,7 @@ function ProfileScreen({ navigation }) {
                 color: "black",
               }}
             >
-              Transactions
+              {userRatings.RatingCount > 1 ? "Ratings" : userRatings.RatingCount > 0 ? "Rating" : ""}
             </Text>
           </View>
 
