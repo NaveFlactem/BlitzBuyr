@@ -593,18 +593,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/accounts'
-const accountsResponse = await fetch(`${serverIp}/api/accounts`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-if (accountsResponse.status === 200) {
-    const accountsData = await accountsResponse.json();
-    console.log("List of Accounts:", accountsData.Accounts);
-}</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/accounts'const accountsResponse = await fetch(`${serverIp}/api/accounts`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (accountsResponse.status === 200) {    const accountsData = await accountsResponse.json();    console.log("List of Accounts:", accountsData.Accounts);}</code></pre>
 
 
 
@@ -1264,22 +1253,7 @@ if (accountsResponse.status === 200) {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteaccounts?username=testuser'
-// Delete a specific user account by providing the 'username' query parameter.
-// If successful, it will respond with a success message.
-// If the username doesn't exist, it will respond with an error message.
-const deleteResponse = await fetch(`${serverIp}/api/deleteaccounts?username=testuser`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-if (deleteResponse.status === 200) {
-    console.log("Account deleted successfully");
-} else if (deleteResponse.status === 500) {
-    console.log("Error deleting account");
-}</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteaccounts?username=testuser'// Delete a specific user account by providing the 'username' query parameter.// If successful, it will respond with a success message.// If the username doesn't exist, it will respond with an error message.const deleteResponse = await fetch(`${serverIp}/api/deleteaccounts?username=testuser`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteResponse.status === 200) {    console.log("Account deleted successfully");} else if (deleteResponse.status === 500) {    console.log("Error deleting account");}</code></pre>
 
 
 
@@ -1939,24 +1913,7 @@ if (deleteResponse.status === 200) {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/login'
-const loginData = {
-    username: "testuser",
-    password: "password123",
-  };
-const loginResponse = await fetch(`${serverIp}/api/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(loginData),
-  });
-
-if (loginResponse.status === 200) {
-    console.log("Login successful");
-} else if (loginResponse.status === 401) {
-    console.log("Authentication failed");
-}</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/login'const loginData = {    username: "testuser",    password: "password123",  };const loginResponse = await fetch(`${serverIp}/api/login`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(loginData),  });if (loginResponse.status === 200) {    console.log("Login successful");} else if (loginResponse.status === 401) {    console.log("Authentication failed");}</code></pre>
 
 
 
@@ -2121,26 +2078,7 @@ if (loginResponse.status === 200) {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/register'
-const registrationData = {
-    username: "newuser",
-    password: "password123",
-    confirmPassword: "password123",
-    email: "newuser@example.com",
-  };
-const registrationResponse = await fetch(`${serverIp}/api/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(registrationData),
-  });
-
-if (registrationResponse.status === 201) {
-    console.log("Account created");
-} else if (registrationResponse.status === 409) {
-    console.log("Username or email already exists");
-}</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/register'const registrationData = {    username: "newuser",    password: "password123",    confirmPassword: "password123",    email: "newuser@example.com",  };const registrationResponse = await fetch(`${serverIp}/api/register`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(registrationData),  });if (registrationResponse.status === 201) {    console.log("Account created");} else if (registrationResponse.status === 409) {    console.log("Username or email already exists");}</code></pre>
 
 
 
@@ -2894,18 +2832,7 @@ if (registrationResponse.status === 201) {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/accounts'
-const accountsResponse = await fetch(`${serverIp}/api/accounts`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-if (accountsResponse.status === 200) {
-    const accountsData = await accountsResponse.json();
-    console.log("List of Accounts:", accountsData.Accounts);
-}</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/accounts'const accountsResponse = await fetch(`${serverIp}/api/accounts`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (accountsResponse.status === 200) {    const accountsData = await accountsResponse.json();    console.log("List of Accounts:", accountsData.Accounts);}</code></pre>
 
 
 
@@ -3565,22 +3492,7 @@ if (accountsResponse.status === 200) {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteaccounts?username=testuser'
-// Delete a specific user account by providing the 'username' query parameter.
-// If successful, it will respond with a success message.
-// If the username doesn't exist, it will respond with an error message.
-const deleteResponse = await fetch(`${serverIp}/api/deleteaccounts?username=testuser`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-if (deleteResponse.status === 200) {
-    console.log("Account deleted successfully");
-} else if (deleteResponse.status === 500) {
-    console.log("Error deleting account");
-}</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteaccounts?username=testuser'// Delete a specific user account by providing the 'username' query parameter.// If successful, it will respond with a success message.// If the username doesn't exist, it will respond with an error message.const deleteResponse = await fetch(`${serverIp}/api/deleteaccounts?username=testuser`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteResponse.status === 200) {    console.log("Account deleted successfully");} else if (deleteResponse.status === 500) {    console.log("Error deleting account");}</code></pre>
 
 
 
@@ -4240,24 +4152,7 @@ if (deleteResponse.status === 200) {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/login'
-const loginData = {
-    username: "testuser",
-    password: "password123",
-  };
-const loginResponse = await fetch(`${serverIp}/api/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(loginData),
-  });
-
-if (loginResponse.status === 200) {
-    console.log("Login successful");
-} else if (loginResponse.status === 401) {
-    console.log("Authentication failed");
-}</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/login'const loginData = {    username: "testuser",    password: "password123",  };const loginResponse = await fetch(`${serverIp}/api/login`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(loginData),  });if (loginResponse.status === 200) {    console.log("Login successful");} else if (loginResponse.status === 401) {    console.log("Authentication failed");}</code></pre>
 
 
 
@@ -4422,26 +4317,7 @@ if (loginResponse.status === 200) {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/register'
-const registrationData = {
-    username: "newuser",
-    password: "password123",
-    confirmPassword: "password123",
-    email: "newuser@example.com",
-  };
-const registrationResponse = await fetch(`${serverIp}/api/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(registrationData),
-  });
-
-if (registrationResponse.status === 201) {
-    console.log("Account created");
-} else if (registrationResponse.status === 409) {
-    console.log("Username or email already exists");
-}</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/register'const registrationData = {    username: "newuser",    password: "password123",    confirmPassword: "password123",    email: "newuser@example.com",  };const registrationResponse = await fetch(`${serverIp}/api/register`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(registrationData),  });if (registrationResponse.status === 201) {    console.log("Account created");} else if (registrationResponse.status === 409) {    console.log("Username or email already exists");}</code></pre>
 
 
 
@@ -5195,18 +5071,7 @@ if (registrationResponse.status === 201) {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/accounts'
-const accountsResponse = await fetch(`${serverIp}/api/accounts`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-if (accountsResponse.status === 200) {
-    const accountsData = await accountsResponse.json();
-    console.log("List of Accounts:", accountsData.Accounts);
-}</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/accounts'const accountsResponse = await fetch(`${serverIp}/api/accounts`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (accountsResponse.status === 200) {    const accountsData = await accountsResponse.json();    console.log("List of Accounts:", accountsData.Accounts);}</code></pre>
 
 
 
@@ -5866,22 +5731,7 @@ if (accountsResponse.status === 200) {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteaccounts?username=testuser'
-// Delete a specific user account by providing the 'username' query parameter.
-// If successful, it will respond with a success message.
-// If the username doesn't exist, it will respond with an error message.
-const deleteResponse = await fetch(`${serverIp}/api/deleteaccounts?username=testuser`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-if (deleteResponse.status === 200) {
-    console.log("Account deleted successfully");
-} else if (deleteResponse.status === 500) {
-    console.log("Error deleting account");
-}</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteaccounts?username=testuser'// Delete a specific user account by providing the 'username' query parameter.// If successful, it will respond with a success message.// If the username doesn't exist, it will respond with an error message.const deleteResponse = await fetch(`${serverIp}/api/deleteaccounts?username=testuser`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteResponse.status === 200) {    console.log("Account deleted successfully");} else if (deleteResponse.status === 500) {    console.log("Error deleting account");}</code></pre>
 
 
 
@@ -6541,24 +6391,7 @@ if (deleteResponse.status === 200) {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/login'
-const loginData = {
-    username: "testuser",
-    password: "password123",
-  };
-const loginResponse = await fetch(`${serverIp}/api/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(loginData),
-  });
-
-if (loginResponse.status === 200) {
-    console.log("Login successful");
-} else if (loginResponse.status === 401) {
-    console.log("Authentication failed");
-}</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/login'const loginData = {    username: "testuser",    password: "password123",  };const loginResponse = await fetch(`${serverIp}/api/login`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(loginData),  });if (loginResponse.status === 200) {    console.log("Login successful");} else if (loginResponse.status === 401) {    console.log("Authentication failed");}</code></pre>
 
 
 
@@ -6723,26 +6556,7 @@ if (loginResponse.status === 200) {
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/register'
-const registrationData = {
-    username: "newuser",
-    password: "password123",
-    confirmPassword: "password123",
-    email: "newuser@example.com",
-  };
-const registrationResponse = await fetch(`${serverIp}/api/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(registrationData),
-  });
-
-if (registrationResponse.status === 201) {
-    console.log("Account created");
-} else if (registrationResponse.status === 409) {
-    console.log("Username or email already exists");
-}</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/register'const registrationData = {    username: "newuser",    password: "password123",    confirmPassword: "password123",    email: "newuser@example.com",  };const registrationResponse = await fetch(`${serverIp}/api/register`, {    method: "POST",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(registrationData),  });if (registrationResponse.status === 201) {    console.log("Account created");} else if (registrationResponse.status === 409) {    console.log("Username or email already exists");}</code></pre>
 
 
 
@@ -6933,7 +6747,7 @@ if (registrationResponse.status === 201) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Nov 03 2023 00:47:51 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Nov 03 2023 01:41:41 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

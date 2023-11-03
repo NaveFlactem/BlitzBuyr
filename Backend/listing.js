@@ -157,7 +157,7 @@ router.get("/listings", async function (req, res) {
     });
 
     const username = req.query.username;
-    const likedListingsResult = await aPromise(() => {
+    const likedListingsResult = await new Promise((resolve, reject) => {
       // First query
       db.all(
         "SELECT ListingId FROM Likes WHERE Username = ? ORDER BY ListingId DESC",
