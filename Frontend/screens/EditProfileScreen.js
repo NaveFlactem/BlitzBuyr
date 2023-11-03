@@ -14,7 +14,7 @@ const screenHeight = Dimensions.get("window").height;
 
 const EditProfileScreen = ({ navigation }) => {
   const goBack = () => {
-    navigation.navigate("Profile");
+    navigation.navigate("BottomNavOverlay");
   };
   return (
     <View style={styles.container}>
