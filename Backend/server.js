@@ -34,6 +34,7 @@ app.use(function (req, res, next) {
 app
   .use("/api", require("./listing"))
   .use("/api", require("./account"))
+  .use("/api", require("./profile"))
   .use(favicon(path.join(__dirname, "../favicon.ico")));
 
 /**
