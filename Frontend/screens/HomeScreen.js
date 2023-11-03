@@ -69,7 +69,10 @@ const HomeScreen = ({ route }) => {
 
   // This will run with refresh = true
   useEffect(() => {
-    if (route.params?.refresh) fetchListings();
+    if (route.params?.refresh) {
+      setRefreshing(true);
+      fetchListings();
+    }
   }, [route.params]);
 
   const handleStarPress = (listingId, imageIndex) => {
