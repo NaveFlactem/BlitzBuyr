@@ -754,5 +754,4 @@ const styles = StyleSheet.create({
   spacer: {
     height: 400,
   },
-  
 });

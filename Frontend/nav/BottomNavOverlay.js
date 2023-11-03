@@ -75,10 +75,12 @@ const TabButton = (props) => {
   useEffect(() => {
     // Load and cache the assets when the component mounts
     async function loadAssetsAsync() {
-      const assetPromises = assetsToPreload.map((asset) => Asset.fromModule(asset).downloadAsync());
+      const assetPromises = assetsToPreload.map((asset) =>
+        Asset.fromModule(asset).downloadAsync(),
+      );
       await Promise.all(assetPromises);
     }
-    
+
     loadAssetsAsync();
   }, []);
 
