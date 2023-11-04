@@ -14,14 +14,13 @@ import {
 import DraggableGrid from "react-native-draggable-grid";
 import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
-import { Camera } from "expo-camera"; // Import Camera from Expo
+import { Camera } from "expo-camera";
 import Colors from "../constants/Colors";
 import BottomBar from "../components/BottomBar";
 import TopBar from "../components/TopBar";
 import * as SecureStore from "expo-secure-store";
 import * as ImageManipulator from "expo-image-manipulator";
 import { withNavigation } from "react-navigation";
-import { Icons } from "../components/Icons.js";
 
 /**
  * @class
@@ -168,9 +167,9 @@ class CreateListing extends Component {
       data.forEach((image, index) => {
         // Append each image as a file
         formData.append(`image_${index}`, {
-          uri: image.uri, // The URI of the image file
-          name: `image_${index}.jpg`, // The desired file name
-          type: "image/jpeg", // The content type of the file
+          uri: image.uri,
+          name: `image_${index}.jpg`,
+          type: "image/jpeg",
         });
       });
 
@@ -241,12 +240,15 @@ class CreateListing extends Component {
      * @selectedImages - processes images allowing them to be sent and displayed
      */
     const selectedImages = await Promise.all(
-      result.assets.map(async function (image) {
+      result.assets.map(async (image) => {
         try {
           const manipulateResult = await ImageManipulator.manipulateAsync(
             image.uri,
             [],
-            { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
+            {
+              compress: 0.4,
+              format: ImageManipulator.SaveFormat.JPEG,
+            },
           );
           let localUri = manipulateResult.uri;
           let filename = localUri.split("/").pop();

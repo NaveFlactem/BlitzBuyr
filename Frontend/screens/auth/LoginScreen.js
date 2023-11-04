@@ -1,10 +1,9 @@
 import { serverIp } from "../../config.js";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
   TouchableOpacity,
   Alert,
@@ -19,7 +18,8 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
 
-  clearFields = () => {
+  // Clear input fields
+  const clearFields = () => {
     setUsername("");
     setPassword("");
   };
@@ -31,24 +31,27 @@ const LoginScreen = ({ navigation }) => {
       password: password,
     };
 
-    const response = await fetch(`${serverIp}/api/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(loginData),
-    });
-
-    let responseData = await response.json();
-
-    if (response.status <= 201) {
-      console.log("Response data:", responseData);
-      await SecureStore.setItemAsync("username", username);
-      await SecureStore.setItemAsync("password", password);
-      clearFields();
-      navigation.navigate("BottomNavOverlay");
-    } else {
-      Alert.alert(responseData.error);
+    try {
+      const response = await fetch(`${serverIp}/api/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+      });
+      let responseData = await response.json();
+      if (response.status <= 201) {
+        console.log("Response data:", responseData);
+        await SecureStore.setItemAsync("username", username);
+        await SecureStore.setItemAsync("password", password);
+        clearFields();
+        navigation.navigate("BottomNavOverlay");
+      } else {
+        Alert.alert(responseData.error);
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert("An error occurred during login.");
     }
   };
 
