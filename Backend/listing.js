@@ -20,7 +20,7 @@ const imageStorage = multer.diskStorage({
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     callback(
       null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname),
     );
   },
 });
@@ -103,7 +103,7 @@ router.post("/createListing", imageUpload, function (req, res) {
                     .json({ error: "Internal Server Error" });
                 }
                 // console.log(`Inserted image ${image.originalname}`);
-              }
+              },
             );
           });
         }
@@ -111,7 +111,7 @@ router.post("/createListing", imageUpload, function (req, res) {
           message: "Listing created successfully",
           listingId: listingId,
         });
-      }
+      },
     );
   } catch (err) {
     return res.status(500).json({ error: err });
@@ -168,7 +168,7 @@ router.get("/listings", async function (req, res) {
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     });
 
@@ -269,7 +269,7 @@ router.get("/images", function (req, res) {
           return res.status(500).json({ error: "Internal Server Error" });
         }
         return res.status(200).json({ Images: rows });
-      }
+      },
     );
   } else {
     // If 'listingId' is not provided, retrieve all images.
@@ -368,7 +368,7 @@ getImagesFromListings = async (listingsResult, likedListingsResult) => {
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     }
   });
@@ -376,7 +376,7 @@ getImagesFromListings = async (listingsResult, likedListingsResult) => {
   const combinedData = listingsResult.map((listing) => {
     // Check if the listing's ListingId is in the likedListingsResult
     const isLiked = likedListingsResult.some(
-      (likedListing) => likedListing.ListingId === listing.ListingId
+      (likedListing) => likedListing.ListingId === listing.ListingId,
     );
 
     const matchingImages = imagesResult

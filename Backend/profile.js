@@ -52,7 +52,7 @@ router.post("/like", function (req, res) {
       return res.status(200).json({
         message: `${username} successfully liked listing ${listingId}`,
       });
-    }
+    },
   );
 });
 
@@ -98,7 +98,7 @@ router.delete("/like", function (req, res) {
       return res.status(200).json({
         message: `${username} successfully unliked listing ${listingId}`,
       });
-    }
+    },
   );
 });
 
@@ -204,7 +204,7 @@ router.post("/rate", async function (req, res) {
           reject(err);
         }
         resolve(row);
-      }
+      },
     );
   });
 
@@ -221,7 +221,7 @@ router.post("/rate", async function (req, res) {
         return res.status(200).json({
           message: `${username} updated the rating for ${userRated} to ${rating}`,
         });
-      }
+      },
     );
   } else {
     // User has not rated, insert a new rating
@@ -236,7 +236,7 @@ router.post("/rate", async function (req, res) {
         return res.status(200).json({
           message: `${username} successfully rated ${userRated} with ${rating}`,
         });
-      }
+      },
     );
   }
 });
@@ -273,7 +273,7 @@ router.delete("/rate", function (req, res) {
       return res.status(200).json({
         message: `${username} successfully removed their rating of ${userRated}`,
       });
-    }
+    },
   );
 });
 
@@ -347,7 +347,7 @@ router.get("/profile", async function (req, res) {
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     });
     if (!userResult)
@@ -364,7 +364,7 @@ router.get("/profile", async function (req, res) {
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     });
 
@@ -379,7 +379,7 @@ router.get("/profile", async function (req, res) {
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     });
 
@@ -394,18 +394,18 @@ router.get("/profile", async function (req, res) {
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     });
 
     // append the images to both
     const likedListings = await getImagesFromListings(
       likedListingsResult,
-      likedListingsResult
+      likedListingsResult,
     );
     const userListings = await getImagesFromListings(
       userListingsResult,
-      likedListingsResult
+      likedListingsResult,
     );
 
     return res.status(200).json({

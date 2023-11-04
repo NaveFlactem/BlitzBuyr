@@ -1,40 +1,50 @@
 import { serverIp } from "../../config.js";
 import { useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
-import { StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import Colors from "../../constants/Colors";
-import { View, Image } from "react-native";
 
 const AuthenticateScreen = ({ navigation }) => {
   useEffect(() => {
     const checkStoredCredentials = async () => {
-      const storedUsername = await SecureStore.getItemAsync("username");
-      const storedPassword = await SecureStore.getItemAsync("password");
+      try {
+        // Get stored username and password from SecureStore
+        const [storedUsername, storedPassword] = await Promise.all([
+          SecureStore.getItemAsync("username"),
+          SecureStore.getItemAsync("password"),
+        ]);
 
-      if (storedUsername && storedPassword) {
-        // Stored credentials exist, use them for login
-        const loginData = {
-          username: storedUsername,
-          password: storedPassword,
-        };
+        if (storedUsername && storedPassword) {
+          // If both username and password are stored, attempt login
+          const loginData = {
+            username: storedUsername,
+            password: storedPassword,
+          };
 
-        const response = await fetch(`${serverIp}/api/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(loginData),
-        });
+          const response = await fetch(`${serverIp}/api/login`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(loginData),
+          });
 
-        let responseData = await response.json();
-
-        if (response.status <= 201) {
-          console.log("Response data:", responseData);
-          navigation.navigate("BottomNavOverlay");
+          if (response.status <= 201) {
+            // If login successful, navigate to the main screen
+            const responseData = await response.json();
+            console.log("Response data:", responseData);
+            navigation.navigate("BottomNavOverlay");
+          } else {
+            // If login failed, navigate back to the login screen
+            navigation.navigate("Login");
+          }
         } else {
+          // If no stored credentials, navigate back to the login screen
           navigation.navigate("Login");
         }
-      } else {
+      } catch (error) {
+        console.error("Error:", error);
+        // If an error occurs, navigate back to the login screen
         navigation.navigate("Login");
       }
     };
