@@ -7,7 +7,6 @@ import {
   StatusBar,
   Image,
   useWindowDimensions,
-  ScrollView,
   StyleSheet,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -24,7 +23,7 @@ const image_six = require("../screens/assets/images/image_six.jpg");
 const image_seven = require("../screens/assets/images/image_five.jpg");
 const image_eight = require("../screens/assets/images/image_one.jpg");
 
-const likedPhotos = [
+const userListings = [
   image_one,
   image_two,
   image_three,
@@ -46,10 +45,10 @@ const savedListings = [
   image_eight,
 ]; //Will hold the list of saved listings of user
 
-const PhotosRoutes = () => (
+const userListingsRoutes = () => (
   <View style={{ flex: 1 }}>
     <FlatList
-      data={likedPhotos}
+      data={userListings}
       numColumns={3}
       renderItem={({ item, index }) => (
         <View
@@ -70,7 +69,7 @@ const PhotosRoutes = () => (
   </View>
 );
 
-const LikesRoutes = () => (
+const savedListingsRoutes = () => (
   <View style={{ flex: 1 }}>
     <FlatList
       data={savedListings}
@@ -95,8 +94,8 @@ const LikesRoutes = () => (
 );
 
 const renderScene = SceneMap({
-  first: PhotosRoutes,
-  second: LikesRoutes,
+  first: userListingsRoutes,
+  second: savedListingsRoutes,
 });
 
 function ProfileScreen({ navigation }) {
@@ -125,6 +124,7 @@ function ProfileScreen({ navigation }) {
   
       if (profileResponse.status <= 201) {
         const profileData = await profileResponse.json();
+        console.log(username);
         console.log(profileData);
   
         setLikedListings(profileData.likedListings);
@@ -140,8 +140,8 @@ function ProfileScreen({ navigation }) {
   };
 
   const [routes] = useState([
-    { key: "first", title: "Photos" },
-    { key: "second", title: "Likes" },
+    { key: "first", title: "My Listings" },
+    { key: "second", title: "Liked Listings" },
   ]);
 
   const renderTabBar = (props) => (
@@ -191,7 +191,7 @@ function ProfileScreen({ navigation }) {
         <Image
           source={require("../screens/assets/images/cover.jpg")}
           resizeMode="cover"
-          style={{ width: "100%", height: 228 }}
+          style={{ width: "100%", height: 180 }}
         />
       </View>
 
@@ -201,8 +201,8 @@ function ProfileScreen({ navigation }) {
           source={require("../screens/assets/images/profile.png")}
           resizeMode="contain"
           style={{
-            height: 155,
-            width: 155,
+            height: 145,
+            width: 145,
             borderRadius: 999,
             borderColor: "black",
             borderWidth: 2,
@@ -211,12 +211,14 @@ function ProfileScreen({ navigation }) {
         />
         <Text
           style={{
+            marginTop: 5,
             fontStyle: "normal",
+            fontWeight: "bold",
+            fontSize: 20,
             color: "black",
-            marginVertical: 8,
           }}
         >
-          Alfonso Luis Del Rosario
+          My Username
         </Text>
 
         {/* Location Information */}
@@ -241,11 +243,12 @@ function ProfileScreen({ navigation }) {
         {/* Rating, Following, Likes */}
         <View
           style={{
-            paddingVertical: 8,
+            paddingVertical: 2,
             flexDirection: "row",
           }}
         >
-          {/* RATING */}
+
+          {/* Posts */}
           <View
             style={{
               flexDirection: "column",
@@ -256,6 +259,36 @@ function ProfileScreen({ navigation }) {
             <Text
               style={{
                 fontStyle: "normal",
+                fontWeight: "bold",
+                fontSize: 20,
+                color: "black",
+              }}
+            >
+              115
+            </Text>
+            <Text
+              style={{
+                fontStyle: "normal",
+                color: "black",
+              }}
+            >
+              Posts
+            </Text>
+          </View>
+
+          {/* RATING */}
+          <View
+            style={{
+              flexDirection: "column",
+              alignItems: "center",
+              marginHorizontal: 20,
+            }}
+          >
+            <Text
+              style={{
+                fontStyle: "normal",
+                fontWeight: "bold",
+                fontSize: 20,
                 color: "black",
               }}
             >
@@ -271,7 +304,7 @@ function ProfileScreen({ navigation }) {
             </Text>
           </View>
 
-          {/* Items Sold */}
+          {/* LIKED */}
           <View
             style={{
               flexDirection: "column",
@@ -282,32 +315,8 @@ function ProfileScreen({ navigation }) {
             <Text
               style={{
                 fontStyle: "normal",
-                color: "black",
-              }}
-            >
-              1254
-            </Text>
-            <Text
-              style={{
-                fontStyle: "normal",
-                color: "black",
-              }}
-            >
-              Transactions
-            </Text>
-          </View>
-
-          {/* LIKES */}
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems: "center",
-              marginHorizontal: 4,
-            }}
-          >
-            <Text
-              style={{
-                fontStyle: "normal",
+                fontWeight: "bold",
+                fontSize: 20,
                 color: "black",
               }}
             >
@@ -319,26 +328,28 @@ function ProfileScreen({ navigation }) {
                 color: "black",
               }}
             >
-              Likes
+              Liked
             </Text>
           </View>
         </View>
+
         <View style={{ flexDirection: "row" }}>
           {/* Logout Button */}
           <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
             <Text style={styles.logoutButtonText}>Logout</Text>
           </TouchableOpacity>
+          
           {/* Edit Profile Button */}
           <TouchableOpacity
             onPress={() => navigation.navigate("EditProfile")}
             style={{
-              width: 124,
+              width: 110,
               height: 36,
               alignItems: "center",
               justifyContent: "center",
               backgroundColor: "blue",
               borderRadius: 10,
-              marginHorizontal: 10,
+              marginHorizontal: 0,
               top: 10,
             }}
           >
@@ -355,7 +366,7 @@ function ProfileScreen({ navigation }) {
           {/* Rate User Button */}
           <TouchableOpacity
             style={{
-              width: 124,
+              width: 110,
               height: 36,
               alignItems: "center",
               justifyContent: "center",
@@ -377,7 +388,7 @@ function ProfileScreen({ navigation }) {
         </View>
       </View>
 
-      <View style={{ flex: 1, marginHorizontal: 22, marginTop: 20 }}>
+      <View style={{ flex: 1, marginHorizontal: 22, marginTop: -120 }}>
         <TabView
           navigationState={{ index, routes }}
           renderScene={renderScene}
@@ -390,22 +401,22 @@ function ProfileScreen({ navigation }) {
   );
 }
 
-export default memo(ProfileScreen);
-
 const styles = StyleSheet.create({
   logoutButton: {
-    backgroundColor: "red",
-    width: 150,
-    height: 40,
-    justifyContent: "center",
+    width: 110,
+    height: 36,
     alignItems: "center",
-    borderRadius: 20,
-    marginTop: 20,
-    alignSelf: "center",
+    justifyContent: "center",
+    backgroundColor: "blue",
+    borderRadius: 10,
+    marginHorizontal: 10,
+    top: 10,
   },
   logoutButtonText: {
+    fontStyle: "normal",
     color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
   },
 });
+
+
+export default memo(ProfileScreen);
