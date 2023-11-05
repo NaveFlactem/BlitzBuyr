@@ -88,6 +88,7 @@ function ProfileScreen({ navigation, route }) {
   const [loading, setLoading] = useState(true);
   const [profileName, setProfileName] = useState("");
   const [loggedUser, setLoggedUser] = useState(""); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
+  const [routes, setRoutes] = useState([]);
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -96,12 +97,12 @@ function ProfileScreen({ navigation, route }) {
       if (route.params?.username) {
         console.log(`Setting username to passed username ${profileName}`);
         // we navigated with a username passed as param (i.e. clicking someone's profile)
-        //setProfileName(route.params.username);
+        setProfileName(route.params.username);
       } else {
         console.log(`Setting username to cached logged in user`);
-        //setProfileName(username);
+        setProfileName(username);
       }
-      setProfileName("Alfonso")
+      //setProfileName("Alfonso");
     };
 
     fetchUsername();
@@ -121,6 +122,15 @@ function ProfileScreen({ navigation, route }) {
     console.log("User's Ratings:", profileInfo.userRatings);
     console.log("Profile Picture URL:", profileInfo.profilePicture);
     console.log("Cover Picture URL:", profileInfo.coverPicture);
+
+    if (profileName === loggedUser) {
+      setRoutes([
+        { key: "first", title: "My Listings" },
+        { key: "second", title: "Liked Listings" },
+      ]);
+    } else {
+      setRoutes([{ key: "first", title: `${profileName}'s listings` }]);
+    }
   }, [profileInfo]);
 
   getProfileInfo = async function (username) {
@@ -158,11 +168,6 @@ function ProfileScreen({ navigation, route }) {
       console.log("Error:", err);
     }
   };
-
-  const [routes] = useState([
-    { key: "first", title: "My Listings" },
-    { key: "second", title: "Liked Listings" },
-  ]);
 
   const renderTabBar = (props) => (
     <TabBar
@@ -320,32 +325,34 @@ function ProfileScreen({ navigation, route }) {
           </View>
 
           {/* LIKED */}
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems: "center",
-              marginHorizontal: 4,
-            }}
-          >
-            <Text
+          {profileName === loggedUser && (
+            <View
               style={{
-                fontStyle: "normal",
-                fontWeight: "bold",
-                fontSize: 20,
-                color: "black",
+                flexDirection: "column",
+                alignItems: "center",
+                marginHorizontal: 4,
               }}
             >
-              {profileInfo.likedListings.length}
-            </Text>
-            <Text
-              style={{
-                fontStyle: "normal",
-                color: "black",
-              }}
-            >
-              Liked
-            </Text>
-          </View>
+              <Text
+                style={{
+                  fontStyle: "normal",
+                  fontWeight: "bold",
+                  fontSize: 20,
+                  color: "black",
+                }}
+              >
+                {profileInfo.likedListings.length}
+              </Text>
+              <Text
+                style={{
+                  fontStyle: "normal",
+                  color: "black",
+                }}
+              >
+                Liked
+              </Text>
+            </View>
+          )}
         </View>
 
         <View style={{ flexDirection: "row", marginTop: 5 }}>
@@ -416,18 +423,9 @@ function ProfileScreen({ navigation, route }) {
           renderScene={({ route }) => {
             switch (route.key) {
               case "first":
-                if (profileName !== loggedUser) {
-                  route.title = `${profileName}'s listings`;
-                } else {
-                  route.title = `My listings`;
-                }
                 return <UserListingsRoute profileInfo={profileInfo} />;
               case "second":
-                if (profileName !== loggedUser) {
-                  return null; // Hide the LikedListingsRoute when on another's profile
-                } else {
-                  return <LikedListingsRoute profileInfo={profileInfo} />;
-                }
+                return <LikedListingsRoute profileInfo={profileInfo} />;
               default:
                 return null;
             }
