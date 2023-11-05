@@ -46,58 +46,67 @@ const savedListings = [
   image_eight,
 ]; //Will hold the list of saved listings of user
 
-const PhotosRoutes = () => (
+const UserListingsRoute = ({ profileInfo }) => (
   <View style={{ flex: 1 }}>
-    <FlatList
-      data={likedPhotos}
-      numColumns={3}
-      renderItem={({ item, index }) => (
-        <View
-          style={{
-            flex: 1,
-            aspectRatio: 1,
-            margin: 3,
-          }}
-        >
-          <Image
-            key={index}
-            source={item}
-            style={{ width: "100%", height: "100%", borderRadius: 12 }}
-          />
-        </View>
-      )}
-    />
+    {profileInfo.userListings.length > 0 ? (
+      <FlatList
+        data={profileInfo.userListings}
+        numColumns={3}
+        renderItem={({ item }) => (
+          <View
+            style={{
+              flex: 1,
+              aspectRatio: 1,
+              margin: 3,
+            }}
+          >
+            {item.images.length > 0 && (
+              <Image
+                source={{
+                  uri: `${serverIp}/img/${item.images[0]}`, // load the listing's first image
+                }}
+                style={{ width: "100%", height: "100%", borderRadius: 12 }}
+              />
+            )}
+          </View>
+        )}
+      />
+    ) : (
+      <Text style={styles.noListingsText}>No user listings found.</Text>
+    )}
   </View>
 );
 
-const LikesRoutes = () => (
+const LikedListingsRoute = ({ profileInfo }) => (
   <View style={{ flex: 1 }}>
-    <FlatList
-      data={savedListings}
-      numColumns={3}
-      renderItem={({ item, index }) => (
-        <View
-          style={{
-            flex: 1,
-            aspectRatio: 1,
-            margin: 3,
-          }}
-        >
-          <Image
-            key={index}
-            source={item}
-            style={{ width: "100%", height: "100%", borderRadius: 12 }}
-          />
-        </View>
-      )}
-    />
+    {profileInfo.likedListings.length > 0 ? (
+      <FlatList
+        data={profileInfo.likedListings}
+        numColumns={3}
+        renderItem={({ item }) => (
+          <View
+            style={{
+              flex: 1,
+              aspectRatio: 1,
+              margin: 3,
+            }}
+          >
+            {item.images.length > 0 && (
+              <Image
+                source={{
+                  uri: `${serverIp}/img/${item.images[0]}`, // load the listing's first image
+                }}
+                style={{ width: "100%", height: "100%", borderRadius: 12 }}
+              />
+            )}
+          </View>
+        )}
+      />
+    ) : (
+      <Text style={styles.noListingsText}>No liked listings found.</Text>
+    )}
   </View>
 );
-
-const renderScene = SceneMap({
-  first: PhotosRoutes,
-  second: LikesRoutes,
-});
 
 function ProfileScreen({ navigation, route }) {
   const layout = useWindowDimensions();
@@ -108,7 +117,7 @@ function ProfileScreen({ navigation, route }) {
     userRatings: {},
   });
   const [loading, setLoading] = useState(true);
-  const [profilename, setProfileName] = useState("");
+  const [profileName, setProfileName] = useState("");
   const [loggedUser, setLoggedUser] = useState(""); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
 
   useEffect(() => {
@@ -116,7 +125,7 @@ function ProfileScreen({ navigation, route }) {
       const username = await SecureStore.getItemAsync("username");
       setLoggedUser(username);
       if (route.params?.username) {
-        console.log(`Setting username to passed username ${profilename}`);
+        console.log(`Setting username to passed username ${profileName}`);
         // we navigated with a username passed as param (i.e. clicking someone's profile)
         setProfileName(route.params.username);
       } else {
@@ -130,8 +139,9 @@ function ProfileScreen({ navigation, route }) {
 
   // get user's profile when the username changes
   useEffect(() => {
-    if (profilename !== "") getProfileInfo(profilename);
-  }, [profilename]);
+    setLoading(true);
+    if (profileName !== "") getProfileInfo(profileName);
+  }, [profileName]);
 
   // this is just to print out a profile's information for now
   useEffect(() => {
@@ -178,8 +188,8 @@ function ProfileScreen({ navigation, route }) {
   };
 
   const [routes] = useState([
-    { key: "first", title: "Photos" },
-    { key: "second", title: "Likes" },
+    { key: "first", title: "My Listings" },
+    { key: "second", title: "Liked Listings" },
   ]);
 
   const renderTabBar = (props) => (
@@ -263,7 +273,7 @@ function ProfileScreen({ navigation, route }) {
             marginVertical: 8,
           }}
         >
-          {profilename}
+          {profileName}
         </Text>
 
         {/* Location Information */}
@@ -374,7 +384,7 @@ function ProfileScreen({ navigation, route }) {
         </View>
         <View style={{ flexDirection: "row" }}>
           {/* Logout and Edit Profile Buttons */}
-          {profilename === loggedUser && (
+          {profileName === loggedUser && (
             <>
               <TouchableOpacity
                 onPress={handleLogout}
@@ -408,7 +418,7 @@ function ProfileScreen({ navigation, route }) {
           )}
 
           {/* Rate User Button */}
-          {profilename !== loggedUser && (
+          {profileName !== loggedUser && (
             <TouchableOpacity
               style={{
                 width: 124,
@@ -437,9 +447,27 @@ function ProfileScreen({ navigation, route }) {
       <View style={{ flex: 1, marginHorizontal: 22, marginTop: 20 }}>
         <TabView
           navigationState={{ index, routes }}
-          renderScene={renderScene}
+          renderScene={({ route }) => {
+            switch (route.key) {
+              case "first":
+                if (profileName !== loggedUser) {
+                  route.title = `${profileName}'s listings`;
+                } else {
+                  route.title = `My listings`;
+                }
+                return <UserListingsRoute profileInfo={profileInfo} />;
+              case "second":
+                if (profileName !== loggedUser) {
+                  return null; // Hide the LikedListingsRoute when on another's profile
+                } else {
+                  return <LikedListingsRoute profileInfo={profileInfo} />;
+                }
+              default:
+                return null;
+            }
+          }}
           onIndexChange={setIndex}
-          initialLayoiut={{ width: layout.width }}
+          initialLayout={{ width: layout.width }}
           renderTabBar={renderTabBar}
         />
       </View>
