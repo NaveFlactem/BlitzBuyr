@@ -98,22 +98,38 @@ const renderScene = SceneMap({
   second: savedListingsRoutes,
 });
 
-function ProfileScreen({ navigation }) {
+function ProfileScreen({ navigation, route }) {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
   const [likedListings, setLikedListings] = useState([]);
   const [userListings, setUserListings] = useState([]);
+  const [profilename, setProfileName] = useState("");
+  const [loggedUser, setLoggedUser] = useState(""); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUsername = async () => {
       const username = await SecureStore.getItemAsync("username");
-      getProfileInfo(username);
+      setLoggedUser(username);
+      if (route.params?.username) {
+        console.log(`Setting username to passed username ${profilename}`);
+        // we navigated with a username passed as param (i.e. clicking someone's profile)
+        setProfileName(route.params.username);
+      } else {
+        console.log(`Setting username to cached logged in user`);
+        setProfileName(username);
+      }
     };
-  
-    fetchData(); // Call the async function
-  }, []);
-  
+
+    fetchUsername();
+  }, [navigation, route.params?.username]); // called when navigation is updated (clicking the page, or when username is changed)
+
+  // get user's profile when the username changes
+  useEffect(() => {
+    if (profilename !== "") getProfileInfo(profilename);
+  }, [profilename]);
+
   getProfileInfo = async function (username) {
+    console.log(`Fetching profile info for ${username}`);
     try {
       const profileResponse = await fetch(
         `${serverIp}/api/profile?username=${encodeURIComponent(username)}`,
@@ -121,18 +137,21 @@ function ProfileScreen({ navigation }) {
           method: "GET",
         }
       );
-  
+      const profileData = await profileResponse.json();
+
       if (profileResponse.status <= 201) {
-        const profileData = await profileResponse.json();
-        console.log(username);
         console.log(profileData);
-  
+
         setLikedListings(profileData.likedListings);
         setUserListings(profileData.userListings);
-  
-        console.log("Profile fetched successfully");
+
+        console.log(`Profile for ${username} fetched successfully`);
       } else {
-        console.log("Error fetching profile:", profileResponse.status);
+        console.log(
+          "Error fetching profile:",
+          profileResponse.status,
+          profileData
+        );
       }
     } catch (err) {
       console.log("Error:", err);
