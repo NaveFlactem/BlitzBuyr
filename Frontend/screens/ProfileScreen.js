@@ -7,8 +7,8 @@ import {
   StatusBar,
   Image,
   useWindowDimensions,
-  ScrollView,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
@@ -102,8 +102,12 @@ const renderScene = SceneMap({
 function ProfileScreen({ navigation, route }) {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
-  const [likedListings, setLikedListings] = useState([]);
-  const [userListings, setUserListings] = useState([]);
+  const [profileInfo, setProfileInfo] = useState({
+    likedListings: [],
+    userListings: [],
+    userRatings: {},
+  });
+  const [loading, setLoading] = useState(true);
   const [profilename, setProfileName] = useState("");
   const [loggedUser, setLoggedUser] = useState(""); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
 
@@ -129,6 +133,14 @@ function ProfileScreen({ navigation, route }) {
     if (profilename !== "") getProfileInfo(profilename);
   }, [profilename]);
 
+  // this is just to print out a profile's information for now
+  useEffect(() => {
+    setLoading(false);
+    console.log("User's Listings:", profileInfo.userListings);
+    console.log("User's Liked Listings:", profileInfo.likedListings);
+    console.log("User's Ratings:", profileInfo.userRatings);
+  }, [profileInfo]);
+
   getProfileInfo = async function (username) {
     console.log(`Fetching profile info for ${username}`);
     try {
@@ -141,10 +153,16 @@ function ProfileScreen({ navigation, route }) {
       const profileData = await profileResponse.json();
 
       if (profileResponse.status <= 201) {
-        console.log(profileData);
+        //console.log(profileData);
 
-        setLikedListings(profileData.likedListings);
-        setUserListings(profileData.userListings);
+        setProfileInfo({
+          likedListings: profileData.likedListings,
+          userListings: profileData.userListings,
+          userRatings: profileData.ratings.reduce(
+            (acc, rating) => ({ ...acc, ...rating }),
+            {}
+          ),
+        });
 
         console.log(`Profile for ${username} fetched successfully`);
       } else {
@@ -196,6 +214,15 @@ function ProfileScreen({ navigation, route }) {
     clearCredentials();
     navigation.navigate("Login");
   };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator size="large" color="blue" />
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView
@@ -279,7 +306,9 @@ function ProfileScreen({ navigation, route }) {
                 color: "black",
               }}
             >
-              4.5
+              {profileInfo.userRatings.AverageRating
+                ? profileInfo.userRatings.AverageRating
+                : "N/A"}
             </Text>
             <Text
               style={{
