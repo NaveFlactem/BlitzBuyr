@@ -12,39 +12,8 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
-import { SceneMap, TabBar, TabView } from "react-native-tab-view";
+import { TabBar, TabView } from "react-native-tab-view";
 import * as SecureStore from "expo-secure-store";
-
-const image_one = require("../screens/assets/images/image_one.jpg");
-const image_two = require("../screens/assets/images/image_two.jpg");
-const image_three = require("../screens/assets/images/image_three.jpg");
-const image_four = require("../screens/assets/images/image_four.jpg");
-const image_five = require("../screens/assets/images/image_five.jpg");
-const image_six = require("../screens/assets/images/image_six.jpg");
-const image_seven = require("../screens/assets/images/image_five.jpg");
-const image_eight = require("../screens/assets/images/image_one.jpg");
-
-const likedPhotos = [
-  image_one,
-  image_two,
-  image_three,
-  image_four,
-  image_five,
-  image_six,
-  image_seven,
-  image_eight,
-]; //Will hold the list of Liked photos of user
-
-const savedListings = [
-  image_one,
-  image_two,
-  image_three,
-  image_four,
-  image_five,
-  image_six,
-  image_seven,
-  image_eight,
-]; //Will hold the list of saved listings of user
 
 const UserListingsRoute = ({ profileInfo }) => (
   <View style={{ flex: 1 }}>
@@ -149,6 +118,8 @@ function ProfileScreen({ navigation, route }) {
     console.log("User's Listings:", profileInfo.userListings);
     console.log("User's Liked Listings:", profileInfo.likedListings);
     console.log("User's Ratings:", profileInfo.userRatings);
+    console.log("Profile Picture URL:", profileInfo.profilePicture);
+    console.log("Cover Picture URL:", profileInfo.coverPicture);
   }, [profileInfo]);
 
   getProfileInfo = async function (username) {
@@ -163,7 +134,7 @@ function ProfileScreen({ navigation, route }) {
       const profileData = await profileResponse.json();
 
       if (profileResponse.status <= 201) {
-        //console.log(profileData);
+        console.log(profileData);
 
         setProfileInfo({
           likedListings: profileData.likedListings,
@@ -172,6 +143,8 @@ function ProfileScreen({ navigation, route }) {
             (acc, rating) => ({ ...acc, ...rating }),
             {}
           ),
+          profilePicture: profileData.profilePicture,
+          coverPicture: profileData.coverPicture,
         });
 
         console.log(`Profile for ${username} fetched successfully`);
@@ -246,7 +219,9 @@ function ProfileScreen({ navigation, route }) {
       {/* //Cover Photo */}
       <View style={{ width: "100%" }}>
         <Image
-          source={require("../screens/assets/images/cover.jpg")}
+          source={{
+            uri: profileInfo.coverPicture,
+          }}
           resizeMode="cover"
           style={{ width: "100%", height: 228 }}
         />
@@ -255,7 +230,9 @@ function ProfileScreen({ navigation, route }) {
       {/* //Profile Picture */}
       <View style={{ flex: 1, alignItems: "center" }}>
         <Image
-          source={require("../screens/assets/images/profile.png")}
+          source={{
+            uri: profileInfo.profilePicture,
+          }}
           resizeMode="contain"
           style={{
             height: 155,

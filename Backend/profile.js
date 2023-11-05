@@ -368,6 +368,38 @@ router.get("/profile", async function (req, res) {
       );
     });
 
+    // Get the profile and cover pictures
+    const profilePictureResult = await new Promise((resolve, reject) => {
+      db.all(
+        "SELECT ProfilePicture, CoverPicture FROM Profiles WHERE Username = ?",
+        [username],
+        (err, rows) => {
+          if (err) {
+            console.error("Error querying the database (fourth query):", err);
+            reject(err);
+          }
+          resolve(rows);
+        }
+      );
+    });
+
+    if (!profilePictureResult || profilePictureResult.length === 0) {
+      // Create a profile in the database
+      profilePictureResult = await new Promise((resolve, reject) => {
+        db.run(
+          "INSERT INTO Profiles (Username) VALUES (?)",
+          [username],
+          (err) => {
+            if (err) {
+              console.error("Error creating a new profile:", err);
+              reject(err);
+            }
+            resolve();
+          }
+        );
+      });
+    }
+
     // get the user's posted listings
     const userListingsResult = await new Promise((resolve, reject) => {
       db.all(
@@ -412,6 +444,8 @@ router.get("/profile", async function (req, res) {
       likedListings: likedListings,
       userListings: userListings,
       ratings: ratingsResult,
+      profilePicture: profilePictureResult[0].ProfilePicture,
+      coverPicture: profilePictureResult[0].CoverPicture,
     });
   } catch (error) {
     console.error(error);
