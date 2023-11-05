@@ -263,7 +263,7 @@ function ProfileScreen({ navigation, route }) {
             marginVertical: 8,
           }}
         >
-          Alfonso Luis Del Rosario
+          {profilename}
         </Text>
 
         {/* Location Information */}
@@ -360,7 +360,7 @@ function ProfileScreen({ navigation, route }) {
                 color: "black",
               }}
             >
-              24
+              {profileInfo.likedListings.length}
             </Text>
             <Text
               style={{
@@ -402,27 +402,29 @@ function ProfileScreen({ navigation, route }) {
           </TouchableOpacity>
 
           {/* Rate User Button */}
-          <TouchableOpacity
-            style={{
-              width: 124,
-              height: 36,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "blue",
-              borderRadius: 10,
-              marginHorizontal: 10,
-              top: 10,
-            }}
-          >
-            <Text
+          {profilename !== loggedUser && (
+            <TouchableOpacity
               style={{
-                fontStyle: "normal",
-                color: "white",
+                width: 124,
+                height: 36,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "blue",
+                borderRadius: 10,
+                marginHorizontal: 10,
+                top: 10,
               }}
             >
-              Rate User
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  fontStyle: "normal",
+                  color: "white",
+                }}
+              >
+                Rate User
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 
