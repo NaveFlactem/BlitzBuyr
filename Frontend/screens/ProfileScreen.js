@@ -96,11 +96,12 @@ function ProfileScreen({ navigation, route }) {
       if (route.params?.username) {
         console.log(`Setting username to passed username ${profileName}`);
         // we navigated with a username passed as param (i.e. clicking someone's profile)
-        setProfileName(route.params.username);
+        //setProfileName(route.params.username);
       } else {
         console.log(`Setting username to cached logged in user`);
-        setProfileName(username);
+        //setProfileName(username);
       }
+      setProfileName("Alfonso")
     };
 
     fetchUsername();
@@ -134,8 +135,6 @@ function ProfileScreen({ navigation, route }) {
       const profileData = await profileResponse.json();
 
       if (profileResponse.status <= 201) {
-        console.log(profileData);
-
         setProfileInfo({
           likedListings: profileData.likedListings,
           userListings: profileData.userListings,
@@ -176,7 +175,7 @@ function ProfileScreen({ navigation, route }) {
         height: 44,
       }}
       renderLabel={({ focused, route }) => (
-        <Text style={[{ color: focused ? "black" : "gray" }]}>
+        <Text style={[{ color: "black", fontWeight: "bold", fontSize: 14 }]}>
           {route.title}
         </Text>
       )}
@@ -223,7 +222,7 @@ function ProfileScreen({ navigation, route }) {
             uri: profileInfo.coverPicture,
           }}
           resizeMode="cover"
-          style={{ width: "100%", height: 228 }}
+          style={{ width: "100%", height: 180 }}
         />
       </View>
 
@@ -235,8 +234,8 @@ function ProfileScreen({ navigation, route }) {
           }}
           resizeMode="contain"
           style={{
-            height: 155,
-            width: 155,
+            height: 145,
+            width: 145,
             borderRadius: 999,
             borderColor: "black",
             borderWidth: 2,
@@ -245,79 +244,36 @@ function ProfileScreen({ navigation, route }) {
         />
         <Text
           style={{
+            marginTop: 10,
+            marginBottom: 5,
             fontStyle: "normal",
+            fontWeight: "bold",
+            fontSize: 25,
             color: "black",
-            marginVertical: 8,
           }}
         >
           {profileName}
         </Text>
 
-        {/* Location Information */}
-        <View
-          style={{
-            flexDirection: "row",
-            marginVertical: 6,
-            alignItems: "center",
-          }}
-        >
-          <MaterialIcons name="location-on" size={24} color="black" />
-          <Text
-            style={{
-              fontStyle: "normal",
-              marginLeft: 4,
-            }}
-          >
-            Santa Cruz, California
-          </Text>
-        </View>
-
         {/* Rating, Following, Likes */}
         <View
           style={{
-            paddingVertical: 8,
+            paddingVertical: 2,
             flexDirection: "row",
           }}
         >
-          {/* RATING */}
+          {/* Listings */}
           <View
             style={{
               flexDirection: "column",
               alignItems: "center",
-              marginHorizontal: 4,
             }}
           >
             <Text
               style={{
                 fontStyle: "normal",
-                color: "black",
-              }}
-            >
-              {profileInfo.userRatings.AverageRating
-                ? profileInfo.userRatings.AverageRating
-                : "N/A"}
-            </Text>
-            <Text
-              style={{
-                fontStyle: "normal",
-                color: "black",
-              }}
-            >
-              Rating
-            </Text>
-          </View>
-
-          {/* Items Sold */}
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems: "center",
-              marginHorizontal: 4,
-            }}
-          >
-            <Text
-              style={{
-                fontStyle: "normal",
+                fontWeight: "bold",
+                fontSize: 20,
                 color: "black",
               }}
             >
@@ -332,8 +288,38 @@ function ProfileScreen({ navigation, route }) {
               Listings
             </Text>
           </View>
+          {/* Rating */}
+          <View
+            style={{
+              flexDirection: "column",
+              alignItems: "center",
+              marginHorizontal: 25,
+            }}
+          >
+            <Text
+              style={{
+                fontStyle: "normal",
+                fontWeight: "bold",
+                fontSize: 20,
+                color: "black",
+              }}
+            >
+              {profileInfo.userRatings.AverageRating
+                ? profileInfo.userRatings.AverageRating
+                : "N/A"}
+            </Text>
+            <Text
+              style={{
+                alignContent: "center",
+                fontStyle: "normal",
+                color: "black",
+              }}
+            >
+              Rating ({profileInfo.userRatings.RatingCount})
+            </Text>
+          </View>
 
-          {/* LIKES */}
+          {/* LIKED */}
           <View
             style={{
               flexDirection: "column",
@@ -344,6 +330,8 @@ function ProfileScreen({ navigation, route }) {
             <Text
               style={{
                 fontStyle: "normal",
+                fontWeight: "bold",
+                fontSize: 20,
                 color: "black",
               }}
             >
@@ -355,11 +343,12 @@ function ProfileScreen({ navigation, route }) {
                 color: "black",
               }}
             >
-              Likes
+              Liked
             </Text>
           </View>
         </View>
-        <View style={{ flexDirection: "row" }}>
+
+        <View style={{ flexDirection: "row", marginTop: 5 }}>
           {/* Logout and Edit Profile Buttons */}
           {profileName === loggedUser && (
             <>
@@ -421,7 +410,7 @@ function ProfileScreen({ navigation, route }) {
         </View>
       </View>
 
-      <View style={{ flex: 1, marginHorizontal: 22, marginTop: 20 }}>
+      <View style={{ flex: 1, marginHorizontal: 22, marginTop: -150 }}>
         <TabView
           navigationState={{ index, routes }}
           renderScene={({ route }) => {
@@ -452,22 +441,29 @@ function ProfileScreen({ navigation, route }) {
   );
 }
 
-export default memo(ProfileScreen);
-
 const styles = StyleSheet.create({
+  noListingsText: {
+    textAlign: "center",
+    marginTop: 110,
+    fontStyle: "normal",
+    fontWeight: "bold",
+    fontSize: 20,
+    color: "black",
+  },
   logoutButton: {
-    backgroundColor: "red",
-    width: 150,
-    height: 40,
-    justifyContent: "center",
+    width: 110,
+    height: 36,
     alignItems: "center",
-    borderRadius: 20,
-    marginTop: 20,
-    alignSelf: "center",
+    justifyContent: "center",
+    backgroundColor: "blue",
+    borderRadius: 10,
+    marginHorizontal: 10,
+    top: 10,
   },
   logoutButtonText: {
+    fontStyle: "normal",
     color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
   },
 });
+
+export default memo(ProfileScreen);

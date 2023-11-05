@@ -369,7 +369,7 @@ router.get("/profile", async function (req, res) {
     });
 
     // Get the profile and cover pictures
-    const profilePictureResult = await new Promise((resolve, reject) => {
+    let profilePictureResult = await new Promise((resolve, reject) => {
       db.all(
         "SELECT ProfilePicture, CoverPicture FROM Profiles WHERE Username = ?",
         [username],
