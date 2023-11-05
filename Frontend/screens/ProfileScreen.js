@@ -132,7 +132,6 @@ function ProfileScreen({ navigation, route }) {
       const profileData = await profileResponse.json();
 
       if (profileResponse.status <= 201) {
-
         setProfileInfo({
           likedListings: profileData.likedListings,
           userListings: profileData.userListings,
@@ -236,10 +235,11 @@ function ProfileScreen({ navigation, route }) {
         />
         <Text
           style={{
-            marginTop: 5,
+            marginTop: 10,
+            marginBottom: 5,
             fontStyle: "normal",
             fontWeight: "bold",
-            fontSize: 20,
+            fontSize: 25,
             color: "black",
           }}
         >
@@ -279,8 +279,8 @@ function ProfileScreen({ navigation, route }) {
               Listings
             </Text>
           </View>
-         {/* Rating */}
-         <View
+          {/* Rating */}
+          <View
             style={{
               flexDirection: "column",
               alignItems: "center",
@@ -297,7 +297,7 @@ function ProfileScreen({ navigation, route }) {
             >
               {profileInfo.userRatings.AverageRating
                 ? profileInfo.userRatings.AverageRating
-                : "N/A"} 
+                : "N/A"}
             </Text>
             <Text
               style={{
@@ -309,7 +309,7 @@ function ProfileScreen({ navigation, route }) {
               Rating ({profileInfo.userRatings.RatingCount})
             </Text>
           </View>
-          
+
           {/* LIKED */}
           <View
             style={{
@@ -401,7 +401,7 @@ function ProfileScreen({ navigation, route }) {
         </View>
       </View>
 
-      <View style={{ flex: 1, marginHorizontal: 22, marginTop: -180}}>
+      <View style={{ flex: 1, marginHorizontal: 22, marginTop: -150 }}>
         <TabView
           navigationState={{ index, routes }}
           renderScene={({ route }) => {
@@ -433,16 +433,14 @@ function ProfileScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  noListingsText: 
-    {
-      textAlign: "center",
-      marginTop: 110,
-      fontStyle: "normal",
-      fontWeight: "bold",
-      fontSize: 20,
-      color: "black",
-    }
-,
+  noListingsText: {
+    textAlign: "center",
+    marginTop: 110,
+    fontStyle: "normal",
+    fontWeight: "bold",
+    fontSize: 20,
+    color: "black",
+  },
   logoutButton: {
     width: 110,
     height: 36,
