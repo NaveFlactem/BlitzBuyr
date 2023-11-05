@@ -8,6 +8,7 @@ import {
   Image,
   useWindowDimensions,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
@@ -45,65 +46,78 @@ const savedListings = [
   image_eight,
 ]; //Will hold the list of saved listings of user
 
-const userListingsRoutes = () => (
+const UserListingsRoute = ({ profileInfo }) => (
   <View style={{ flex: 1 }}>
-    <FlatList
-      data={userListings}
-      numColumns={3}
-      renderItem={({ item, index }) => (
-        <View
-          style={{
-            flex: 1,
-            aspectRatio: 1,
-            margin: 3,
-          }}
-        >
-          <Image
-            key={index}
-            source={item}
-            style={{ width: "100%", height: "100%", borderRadius: 12 }}
-          />
-        </View>
-      )}
-    />
+    {profileInfo.userListings.length > 0 ? (
+      <FlatList
+        data={profileInfo.userListings}
+        numColumns={3}
+        renderItem={({ item }) => (
+          <View
+            style={{
+              flex: 1,
+              aspectRatio: 1,
+              margin: 3,
+            }}
+          >
+            {item.images.length > 0 && (
+              <Image
+                source={{
+                  uri: `${serverIp}/img/${item.images[0]}`, // load the listing's first image
+                }}
+                style={{ width: "100%", height: "100%", borderRadius: 12 }}
+              />
+            )}
+          </View>
+        )}
+      />
+    ) : (
+      <Text style={styles.noListingsText}>No user listings found.</Text>
+    )}
   </View>
 );
 
-const savedListingsRoutes = () => (
+const LikedListingsRoute = ({ profileInfo }) => (
   <View style={{ flex: 1 }}>
-    <FlatList
-      data={savedListings}
-      numColumns={3}
-      renderItem={({ item, index }) => (
-        <View
-          style={{
-            flex: 1,
-            aspectRatio: 1,
-            margin: 3,
-          }}
-        >
-          <Image
-            key={index}
-            source={item}
-            style={{ width: "100%", height: "100%", borderRadius: 12 }}
-          />
-        </View>
-      )}
-    />
+    {profileInfo.likedListings.length > 0 ? (
+      <FlatList
+        data={profileInfo.likedListings}
+        numColumns={3}
+        renderItem={({ item }) => (
+          <View
+            style={{
+              flex: 1,
+              aspectRatio: 1,
+              margin: 3,
+            }}
+          >
+            {item.images.length > 0 && (
+              <Image
+                source={{
+                  uri: `${serverIp}/img/${item.images[0]}`, // load the listing's first image
+                }}
+                style={{ width: "100%", height: "100%", borderRadius: 12 }}
+              />
+            )}
+          </View>
+        )}
+      />
+    ) : (
+      <Text style={styles.noListingsText}>No liked listings found.</Text>
+    )}
   </View>
 );
-
-const renderScene = SceneMap({
-  first: userListingsRoutes,
-  second: savedListingsRoutes,
-});
 
 function ProfileScreen({ navigation, route }) {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
-  const [likedListings, setLikedListings] = useState([]);
-  const [userListings, setUserListings] = useState([]);
-  const [profilename, setProfileName] = useState("");
+  const [profileInfo, setProfileInfo] = useState({
+    likedListings: [],
+    userListings: [],
+    userRatings: {},
+  });
+  const [loading, setLoading] = useState(true);
+  const [profileName, setProfileName] = useState("");
   const [loggedUser, setLoggedUser] = useState(""); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
 
   useEffect(() => {
@@ -111,7 +125,7 @@ function ProfileScreen({ navigation, route }) {
       const username = await SecureStore.getItemAsync("username");
       setLoggedUser(username);
       if (route.params?.username) {
-        console.log(`Setting username to passed username ${profilename}`);
+        console.log(`Setting username to passed username ${profileName}`);
         // we navigated with a username passed as param (i.e. clicking someone's profile)
         setProfileName(route.params.username);
       } else {
@@ -125,8 +139,17 @@ function ProfileScreen({ navigation, route }) {
 
   // get user's profile when the username changes
   useEffect(() => {
-    if (profilename !== "") getProfileInfo(profilename);
-  }, [profilename]);
+    setLoading(true);
+    if (profileName !== "") getProfileInfo(profileName);
+  }, [profileName]);
+
+  // this is just to print out a profile's information for now
+  useEffect(() => {
+    setLoading(false);
+    console.log("User's Listings:", profileInfo.userListings);
+    console.log("User's Liked Listings:", profileInfo.likedListings);
+    console.log("User's Ratings:", profileInfo.userRatings);
+  }, [profileInfo]);
 
   getProfileInfo = async function (username) {
     console.log(`Fetching profile info for ${username}`);
@@ -140,10 +163,16 @@ function ProfileScreen({ navigation, route }) {
       const profileData = await profileResponse.json();
 
       if (profileResponse.status <= 201) {
-        console.log(profileData);
+        //console.log(profileData);
 
-        setLikedListings(profileData.likedListings);
-        setUserListings(profileData.userListings);
+        setProfileInfo({
+          likedListings: profileData.likedListings,
+          userListings: profileData.userListings,
+          userRatings: profileData.ratings.reduce(
+            (acc, rating) => ({ ...acc, ...rating }),
+            {}
+          ),
+        });
 
         console.log(`Profile for ${username} fetched successfully`);
       } else {
@@ -159,6 +188,8 @@ function ProfileScreen({ navigation, route }) {
   };
 
   const [routes] = useState([
+    { key: "first", title: "My Listings" },
+    { key: "second", title: "Liked Listings" },
     { key: "first", title: "My Listings" },
     { key: "second", title: "Liked Listings" },
   ]);
@@ -195,6 +226,15 @@ function ProfileScreen({ navigation, route }) {
     clearCredentials();
     navigation.navigate("Login");
   };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <ActivityIndicator size="large" color="blue" />
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView
@@ -237,7 +277,7 @@ function ProfileScreen({ navigation, route }) {
             color: "black",
           }}
         >
-          My Username
+          {profileName}
         </Text>
 
         {/* Location Information */}
@@ -283,7 +323,9 @@ function ProfileScreen({ navigation, route }) {
                 color: "black",
               }}
             >
-              115
+              {profileInfo.userRatings.AverageRating
+                ? profileInfo.userRatings.AverageRating
+                : "N/A"}
             </Text>
             <Text
               style={{
@@ -311,7 +353,7 @@ function ProfileScreen({ navigation, route }) {
                 color: "black",
               }}
             >
-              4.5
+              {profileInfo.userListings.length}
             </Text>
             <Text
               style={{
@@ -319,7 +361,7 @@ function ProfileScreen({ navigation, route }) {
                 color: "black",
               }}
             >
-              Rating
+              Listings
             </Text>
           </View>
 
@@ -339,7 +381,7 @@ function ProfileScreen({ navigation, route }) {
                 color: "black",
               }}
             >
-              24
+              {profileInfo.likedListings.length}
             </Text>
             <Text
               style={{
@@ -353,66 +395,91 @@ function ProfileScreen({ navigation, route }) {
         </View>
 
         <View style={{ flexDirection: "row" }}>
-          {/* Logout Button */}
-          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-            <Text style={styles.logoutButtonText}>Logout</Text>
-          </TouchableOpacity>
-          
-          {/* Edit Profile Button */}
-          <TouchableOpacity
-            onPress={() => navigation.navigate("EditProfile")}
-            style={{
-              width: 110,
-              height: 36,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "blue",
-              borderRadius: 10,
-              marginHorizontal: 0,
-              top: 10,
-            }}
-          >
-            <Text
-              style={{
-                fontStyle: "normal",
-                color: "white",
-              }}
-            >
-              Edit Profile
-            </Text>
-          </TouchableOpacity>
+          {/* Logout and Edit Profile Buttons */}
+          {profileName === loggedUser && (
+            <>
+              <TouchableOpacity
+                onPress={handleLogout}
+                style={styles.logoutButton}
+              >
+                <Text style={styles.logoutButtonText}>Logout</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("EditProfile")}
+                style={{
+                  width: 124,
+                  height: 36,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: "blue",
+                  borderRadius: 10,
+                  marginHorizontal: 10,
+                  top: 10,
+                }}
+              >
+                <Text
+                  style={{
+                    fontStyle: "normal",
+                    color: "white",
+                  }}
+                >
+                  Edit Profile
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
 
           {/* Rate User Button */}
-          <TouchableOpacity
-            style={{
-              width: 110,
-              height: 36,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "blue",
-              borderRadius: 10,
-              marginHorizontal: 10,
-              top: 10,
-            }}
-          >
-            <Text
+          {profileName !== loggedUser && (
+            <TouchableOpacity
               style={{
-                fontStyle: "normal",
-                color: "white",
+                width: 124,
+                height: 36,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "blue",
+                borderRadius: 10,
+                marginHorizontal: 10,
+                top: 10,
               }}
             >
-              Rate User
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  fontStyle: "normal",
+                  color: "white",
+                }}
+              >
+                Rate User
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 
       <View style={{ flex: 1, marginHorizontal: 22, marginTop: -120 }}>
         <TabView
           navigationState={{ index, routes }}
-          renderScene={renderScene}
+          renderScene={({ route }) => {
+            switch (route.key) {
+              case "first":
+                if (profileName !== loggedUser) {
+                  route.title = `${profileName}'s listings`;
+                } else {
+                  route.title = `My listings`;
+                }
+                return <UserListingsRoute profileInfo={profileInfo} />;
+              case "second":
+                if (profileName !== loggedUser) {
+                  return null; // Hide the LikedListingsRoute when on another's profile
+                } else {
+                  return <LikedListingsRoute profileInfo={profileInfo} />;
+                }
+              default:
+                return null;
+            }
+          }}
           onIndexChange={setIndex}
-          initialLayoiut={{ width: layout.width }}
+          initialLayout={{ width: layout.width }}
           renderTabBar={renderTabBar}
         />
       </View>
