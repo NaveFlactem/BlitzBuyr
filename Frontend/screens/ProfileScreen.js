@@ -373,33 +373,39 @@ function ProfileScreen({ navigation, route }) {
           </View>
         </View>
         <View style={{ flexDirection: "row" }}>
-          {/* Logout Button */}
-          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-            <Text style={styles.logoutButtonText}>Logout</Text>
-          </TouchableOpacity>
-          {/* Edit Profile Button */}
-          <TouchableOpacity
-            onPress={() => navigation.navigate("EditProfile")}
-            style={{
-              width: 124,
-              height: 36,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "blue",
-              borderRadius: 10,
-              marginHorizontal: 10,
-              top: 10,
-            }}
-          >
-            <Text
-              style={{
-                fontStyle: "normal",
-                color: "white",
-              }}
-            >
-              Edit Profile
-            </Text>
-          </TouchableOpacity>
+          {/* Logout and Edit Profile Buttons */}
+          {profilename === loggedUser && (
+            <>
+              <TouchableOpacity
+                onPress={handleLogout}
+                style={styles.logoutButton}
+              >
+                <Text style={styles.logoutButtonText}>Logout</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("EditProfile")}
+                style={{
+                  width: 124,
+                  height: 36,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: "blue",
+                  borderRadius: 10,
+                  marginHorizontal: 10,
+                  top: 10,
+                }}
+              >
+                <Text
+                  style={{
+                    fontStyle: "normal",
+                    color: "white",
+                  }}
+                >
+                  Edit Profile
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
 
           {/* Rate User Button */}
           {profilename !== loggedUser && (
