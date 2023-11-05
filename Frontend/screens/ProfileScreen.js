@@ -344,7 +344,7 @@ function ProfileScreen({ navigation, route }) {
                 color: "black",
               }}
             >
-              1254
+              {profileInfo.userListings.length}
             </Text>
             <Text
               style={{
@@ -352,7 +352,7 @@ function ProfileScreen({ navigation, route }) {
                 color: "black",
               }}
             >
-              Transactions
+              Listings
             </Text>
           </View>
 
