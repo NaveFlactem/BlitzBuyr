@@ -15,37 +15,6 @@ import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 import * as SecureStore from "expo-secure-store";
 
-const image_one = require("../screens/assets/images/image_one.jpg");
-const image_two = require("../screens/assets/images/image_two.jpg");
-const image_three = require("../screens/assets/images/image_three.jpg");
-const image_four = require("../screens/assets/images/image_four.jpg");
-const image_five = require("../screens/assets/images/image_five.jpg");
-const image_six = require("../screens/assets/images/image_six.jpg");
-const image_seven = require("../screens/assets/images/image_five.jpg");
-const image_eight = require("../screens/assets/images/image_one.jpg");
-
-const userListings = [
-  image_one,
-  image_two,
-  image_three,
-  image_four,
-  image_five,
-  image_six,
-  image_seven,
-  image_eight,
-]; //Will hold the list of Liked photos of user
-
-const savedListings = [
-  image_one,
-  image_two,
-  image_three,
-  image_four,
-  image_five,
-  image_six,
-  image_seven,
-  image_eight,
-]; //Will hold the list of saved listings of user
-
 const UserListingsRoute = ({ profileInfo }) => (
   <View style={{ flex: 1 }}>
     {profileInfo.userListings.length > 0 ? (
@@ -163,7 +132,6 @@ function ProfileScreen({ navigation, route }) {
       const profileData = await profileResponse.json();
 
       if (profileResponse.status <= 201) {
-        //console.log(profileData);
 
         setProfileInfo({
           likedListings: profileData.likedListings,
@@ -190,8 +158,6 @@ function ProfileScreen({ navigation, route }) {
   const [routes] = useState([
     { key: "first", title: "My Listings" },
     { key: "second", title: "Liked Listings" },
-    { key: "first", title: "My Listings" },
-    { key: "second", title: "Liked Listings" },
   ]);
 
   const renderTabBar = (props) => (
@@ -205,7 +171,7 @@ function ProfileScreen({ navigation, route }) {
         height: 44,
       }}
       renderLabel={({ focused, route }) => (
-        <Text style={[{ color: focused ? "black" : "gray" }]}>
+        <Text style={[{ color: "black", fontWeight: "bold", fontSize: 14 }]}>
           {route.title}
         </Text>
       )}
@@ -280,25 +246,6 @@ function ProfileScreen({ navigation, route }) {
           {profileName}
         </Text>
 
-        {/* Location Information */}
-        <View
-          style={{
-            flexDirection: "row",
-            marginVertical: 6,
-            alignItems: "center",
-          }}
-        >
-          <MaterialIcons name="location-on" size={24} color="black" />
-          <Text
-            style={{
-              fontStyle: "normal",
-              marginLeft: 4,
-            }}
-          >
-            Santa Cruz, California
-          </Text>
-        </View>
-
         {/* Rating, Following, Likes */}
         <View
           style={{
@@ -306,43 +253,11 @@ function ProfileScreen({ navigation, route }) {
             flexDirection: "row",
           }}
         >
-
-          {/* Posts */}
+          {/* Listings */}
           <View
             style={{
               flexDirection: "column",
               alignItems: "center",
-              marginHorizontal: 4,
-            }}
-          >
-            <Text
-              style={{
-                fontStyle: "normal",
-                fontWeight: "bold",
-                fontSize: 20,
-                color: "black",
-              }}
-            >
-              {profileInfo.userRatings.AverageRating
-                ? profileInfo.userRatings.AverageRating
-                : "N/A"}
-            </Text>
-            <Text
-              style={{
-                fontStyle: "normal",
-                color: "black",
-              }}
-            >
-              Posts
-            </Text>
-          </View>
-
-          {/* RATING */}
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems: "center",
-              marginHorizontal: 20,
             }}
           >
             <Text
@@ -364,7 +279,37 @@ function ProfileScreen({ navigation, route }) {
               Listings
             </Text>
           </View>
-
+         {/* Rating */}
+         <View
+            style={{
+              flexDirection: "column",
+              alignItems: "center",
+              marginHorizontal: 25,
+            }}
+          >
+            <Text
+              style={{
+                fontStyle: "normal",
+                fontWeight: "bold",
+                fontSize: 20,
+                color: "black",
+              }}
+            >
+              {profileInfo.userRatings.AverageRating
+                ? profileInfo.userRatings.AverageRating
+                : "N/A"} 
+            </Text>
+            <Text
+              style={{
+                alignContent: "center",
+                fontStyle: "normal",
+                color: "black",
+              }}
+            >
+              Rating ({profileInfo.userRatings.RatingCount})
+            </Text>
+          </View>
+          
           {/* LIKED */}
           <View
             style={{
@@ -394,7 +339,7 @@ function ProfileScreen({ navigation, route }) {
           </View>
         </View>
 
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row", marginTop: 5 }}>
           {/* Logout and Edit Profile Buttons */}
           {profileName === loggedUser && (
             <>
@@ -456,7 +401,7 @@ function ProfileScreen({ navigation, route }) {
         </View>
       </View>
 
-      <View style={{ flex: 1, marginHorizontal: 22, marginTop: -120 }}>
+      <View style={{ flex: 1, marginHorizontal: 22, marginTop: -180}}>
         <TabView
           navigationState={{ index, routes }}
           renderScene={({ route }) => {
@@ -488,6 +433,16 @@ function ProfileScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
+  noListingsText: 
+    {
+      textAlign: "center",
+      marginTop: 110,
+      fontStyle: "normal",
+      fontWeight: "bold",
+      fontSize: 20,
+      color: "black",
+    }
+,
   logoutButton: {
     width: 110,
     height: 36,
@@ -503,6 +458,5 @@ const styles = StyleSheet.create({
     color: "white",
   },
 });
-
 
 export default memo(ProfileScreen);
