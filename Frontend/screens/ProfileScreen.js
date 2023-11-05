@@ -104,18 +104,20 @@ function ProfileScreen({ navigation, route }) {
   const [index, setIndex] = useState(0);
   const [likedListings, setLikedListings] = useState([]);
   const [userListings, setUserListings] = useState([]);
-  const [username, setUsername] = useState("");
+  const [profilename, setProfileName] = useState("");
+  const [loggedUser, setLoggedUser] = useState(""); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
 
   useEffect(() => {
     const fetchUsername = async () => {
+      const username = await SecureStore.getItemAsync("username");
+      setLoggedUser(username);
       if (route.params?.username) {
-        console.log(`Setting username to passed username ${username}`);
+        console.log(`Setting username to passed username ${profilename}`);
         // we navigated with a username passed as param (i.e. clicking someone's profile)
-        setUsername(route.params.username);
+        setProfileName(route.params.username);
       } else {
         console.log(`Setting username to cached logged in user`);
-        const username = await SecureStore.getItemAsync("username");
-        setUsername(username);
+        setProfileName(username);
       }
     };
 
@@ -124,8 +126,8 @@ function ProfileScreen({ navigation, route }) {
 
   // get user's profile when the username changes
   useEffect(() => {
-    if (username !== "") getProfileInfo(username);
-  }, [username]);
+    if (profilename !== "") getProfileInfo(profilename);
+  }, [profilename]);
 
   getProfileInfo = async function (username) {
     console.log(`Fetching profile info for ${username}`);
