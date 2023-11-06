@@ -11,6 +11,7 @@ const styles = StyleSheet.create({
     height: 0.2 * screenHeight,
     width: screenWidth,
     bottom: 0,
+    zIndex: 10,
   },
   bottomBarFiller: {
     position: "absolute",
