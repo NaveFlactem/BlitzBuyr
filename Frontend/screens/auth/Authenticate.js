@@ -5,11 +5,24 @@ import { StyleSheet } from "react-native";
 import Colors from "../../constants/Colors";
 import { View, Image } from "react-native";
 
+let storedUsername;
+let storedPassword;
+
+const getStoredUsername = () => storedUsername;
+const getStoredPassword = () => storedPassword;
+
+const setStoredCredentials = async (username, password) => {
+  storedUsername = username;
+  storedPassword = password;
+  await SecureStore.setItemAsync("username", username);
+  await SecureStore.setItemAsync("password", password);
+};
+
 const AuthenticateScreen = ({ navigation }) => {
   useEffect(() => {
     const checkStoredCredentials = async () => {
-      const storedUsername = await SecureStore.getItemAsync("username");
-      const storedPassword = await SecureStore.getItemAsync("password");
+      storedUsername = await SecureStore.getItemAsync("username");
+      storedPassword = await SecureStore.getItemAsync("password");
 
       if (storedUsername && storedPassword) {
         // Stored credentials exist, use them for login
@@ -54,4 +67,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export { getStoredUsername, getStoredPassword, setStoredCredentials };
 export default AuthenticateScreen;

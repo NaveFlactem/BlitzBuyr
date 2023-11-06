@@ -1,9 +1,19 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Button } from 'react-native'; // Import the Button component
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Button,
+} from "react-native"; // Import the Button component
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { getStoredUsername } from "./auth/Authenticate.js";
+import { serverIp } from "../config.js";
 
-const StarRating = ({ navigation }) => {
+const RatingScreen = ({ navigation, route }) => {
   const [selectedRating, setSelectedRating] = useState(0);
+  console.log(route.params);
 
   const handleRating = (value) => {
     setSelectedRating(value);
@@ -12,6 +22,31 @@ const StarRating = ({ navigation }) => {
   const handleSubmitRating = () => {
     // Add logic to submit the rating to your backend or perform any other action.
     // You can use the selectedRating state to get the user's selected rating.
+    const ratingPayload = {
+      username: getStoredUsername(),
+      userRated: route.params.username,
+      rating: selectedRating,
+    };
+
+    // Make a POST request to your backend API to submit the rating
+    fetch(`${serverIp}/api/rate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(ratingPayload),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data); // Handle the response from the backend
+        // show some indicator that the rating was successful
+
+        // then we go back
+        navigation.goBack();
+      })
+      .catch((error) => {
+        console.error("Error submitting rating:", error);
+      });
   };
 
   const renderStars = () => {
@@ -24,11 +59,7 @@ const StarRating = ({ navigation }) => {
           onPress={() => handleRating(i)}
         >
           {i <= selectedRating ? (
-            <MaterialCommunityIcons
-              name="star"
-              size={60}
-              color="black"
-            />
+            <MaterialCommunityIcons name="star" size={60} color="black" />
           ) : (
             <MaterialCommunityIcons
               name="star-outline"
@@ -50,9 +81,9 @@ const StarRating = ({ navigation }) => {
       >
         <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
       </TouchableOpacity>
-      <Text style={styles.title}>Rate This User</Text>
+      <Text style={styles.title}>Rate User {route.params.username}</Text>
       <Image
-        source={require("../screens/assets/images/profile.png")}
+        source={{ uri: route.params.profileInfo.profilePicture }}
         style={styles.profilePic}
       />
       <View style={styles.ratingContainer}>{renderStars()}</View>
@@ -64,36 +95,36 @@ const StarRating = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontSize: 24,
-    marginBottom: '5%',
+    marginBottom: "5%",
   },
   profilePic: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    marginBottom: '5%',
+    marginBottom: "5%",
   },
   ratingContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 20, // Add margin to move the button down
   },
   starButton: {
     width: 60,
     height: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   starMargin: {
     marginRight: 4,
   },
   backButton: {
-    position: 'absolute',
-    top: '7%',
-    left: '7%',
+    position: "absolute",
+    top: "7%",
+    left: "7%",
   },
   starIcon: {
     width: 60,
@@ -101,4 +132,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StarRating;
+export default RatingScreen;

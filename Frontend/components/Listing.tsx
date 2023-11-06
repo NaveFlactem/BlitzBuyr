@@ -1,4 +1,5 @@
 import { serverIp } from "../config.js";
+import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,6 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Animated as AnimatedRN,
+  TouchableWithoutFeedback,
 } from "react-native";
 import Animated, {
   interpolate,
@@ -21,6 +23,7 @@ import FlipCard from "react-native-flip-card";
 import Entypo from "react-native-vector-icons/Entypo";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { PinchGestureHandler } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/native";
 
 const BlurView = Animated.createAnimatedComponent(_BlurView);
 
@@ -35,6 +38,11 @@ interface ListingProps {
     Title: string;
     Price: number;
     Description: string;
+    Username: string;
+    ratings: {
+      averageRating: number;
+      ratingCount: number;
+    };
   };
   starStates: {
     [listingId: string]: boolean;
@@ -44,6 +52,8 @@ interface ListingProps {
 }
 
 function Listing(props: ListingProps) {
+  const navigation = useNavigation();
+  
   const arrayOfURIs = props.item.images.map((imageURI, index) => {
     const modifiedURI = `${serverIp}/img/${imageURI}`;
     return modifiedURI;
@@ -102,7 +112,7 @@ function Listing(props: ListingProps) {
               parallaxScrollingScale: 1,
               parallaxAdjacentItemScale: 0.5,
               parallaxScrollingOffset: 10,
-            },
+            }
           )}
         />
       </View>
@@ -148,11 +158,21 @@ function Listing(props: ListingProps) {
               },
             ]}
           >
-            <Image
-              source={require("../screens/assets/images/profile.png")}
-              style={styles.sellerPic}
-            />
-            <Text style={styles.sellerName}>Alfonso Luis Del Rosario</Text>
+            <TouchableWithoutFeedback
+              onPress={() =>
+                navigation.navigate("Profile", {
+                  username: props.item.Username,
+                })
+              }
+            >
+              <Image
+                source={{
+                  uri: `${serverIp}/api/pfp?username=${props.item.Username}`,
+                }}
+                style={styles.sellerPic}
+              />
+            </TouchableWithoutFeedback>
+            <Text style={styles.sellerName}> {props.item.Username}</Text>
           </View>
 
           <View
@@ -172,7 +192,10 @@ function Listing(props: ListingProps) {
               style={styles.ratingStar}
             />
 
-            <Text style={styles.rating}>4.5</Text>
+            <Text style={styles.rating}>
+              {props.item.ratings.averageRating ? props.item.ratings.averageRating : "N/A"} (
+              {props.item.ratings.ratingCount ? props.item.ratings.ratingCount : "0"})
+            </Text>
           </View>
         </View>
 
@@ -229,7 +252,7 @@ const CustomItem = ({ source, index, animationValue, numItems }) => {
         },
       },
     ],
-    { useNativeDriver: true },
+    { useNativeDriver: true }
   );
 
   const onZoomStateChange = (event) => {
