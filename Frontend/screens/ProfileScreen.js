@@ -110,26 +110,26 @@ function ProfileScreen({ navigation }) {
       const username = await SecureStore.getItemAsync("username");
       getProfileInfo(username);
     };
-  
+
     fetchData(); // Call the async function
   }, []);
-  
+
   getProfileInfo = async function (username) {
     try {
       const profileResponse = await fetch(
         `${serverIp}/api/profile?username=${encodeURIComponent(username)}`,
         {
           method: "GET",
-        }
+        },
       );
-  
+
       if (profileResponse.status <= 201) {
         const profileData = await profileResponse.json();
         console.log(profileData);
-  
+
         setLikedListings(profileData.likedListings);
         setUserListings(profileData.userListings);
-  
+
         console.log("Profile fetched successfully");
       } else {
         console.log("Error fetching profile:", profileResponse.status);

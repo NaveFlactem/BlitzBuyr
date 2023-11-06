@@ -2,34 +2,34 @@ import { Extrapolate, interpolate } from "react-native-reanimated";
 import type { IComputedDirectionTypes } from "react-native-reanimated-carousel";
 
 interface TBaseConfig {
-  size: number
-  vertical: boolean
+  size: number;
+  vertical: boolean;
 }
 
 export interface ILayoutConfig {
   /**
-     * control prev/next item offset.
-     * @default 100
-     */
-  parallaxScrollingOffset?: number
+   * control prev/next item offset.
+   * @default 100
+   */
+  parallaxScrollingOffset?: number;
   /**
-     * control prev/current/next item offset.
-     * @default 0.8
-     */
-  parallaxScrollingScale?: number
+   * control prev/current/next item offset.
+   * @default 0.8
+   */
+  parallaxScrollingScale?: number;
   /**
-     * control prev/next item offset.
-     * @default Math.pow(parallaxScrollingScale, 2)
-     */
-  parallaxAdjacentItemScale?: number
+   * control prev/next item offset.
+   * @default Math.pow(parallaxScrollingScale, 2)
+   */
+  parallaxAdjacentItemScale?: number;
 }
 
 export type TParallaxModeProps = IComputedDirectionTypes<{
   /**
-     * Carousel Animated transitions.
-     */
-  mode?: "parallax"
-  modeConfig?: ILayoutConfig
+   * Carousel Animated transitions.
+   */
+  mode?: "parallax";
+  modeConfig?: ILayoutConfig;
 }>;
 
 export function parallaxLayout(
@@ -73,11 +73,11 @@ export function parallaxLayout(
       transform: [
         vertical
           ? {
-            translateY: translate,
-          }
+              translateY: translate,
+            }
           : {
-            translateX: translate,
-          },
+              translateX: translate,
+            },
         {
           scale,
         },

@@ -51,17 +51,17 @@ const HomeScreen = ({ route }) => {
     try {
       const listingsResponse = await fetch(
         `${serverIp}/api/listings?username=${encodeURIComponent(
-          await SecureStore.getItemAsync("username")
+          await SecureStore.getItemAsync("username"),
         )}`,
         {
           method: "GET",
-        }
+        },
       );
 
       if (listingsResponse.status <= 201) {
         const listingsData = await listingsResponse.json();
         const initialStarStates = Object.fromEntries(
-          listingsData.map((listing) => [listing.ListingId, listing.liked])
+          listingsData.map((listing) => [listing.ListingId, listing.liked]),
         );
 
         setStarStates(initialStarStates);
@@ -120,7 +120,7 @@ const HomeScreen = ({ route }) => {
     console.log(
       `${
         newStarStates[listingId] ? "Starred" : "Unstarred"
-      } listing ID ${listingId}`
+      } listing ID ${listingId}`,
     );
   };
 
@@ -162,18 +162,17 @@ const HomeScreen = ({ route }) => {
               horizontal={false}
               showsPagination={false}
               showsButtons={false}
-              
             >
               {listings.map((item, listIndex) => {
                 Image.prefetch(item.images);
                 return (
-                    <Listing
-                      key={item.ListingId}
-                      item={item}
-                      starStates={starStates}
-                      handleStarPress={handleStarPress}
-                      numItems={item.images.length}
-                    />
+                  <Listing
+                    key={item.ListingId}
+                    item={item}
+                    starStates={starStates}
+                    handleStarPress={handleStarPress}
+                    numItems={item.images.length}
+                  />
                 );
               })}
             </Swiper>
@@ -212,5 +211,4 @@ const styles = StyleSheet.create({
     height: 0.05 * screenHeight,
     zIndex: 3,
   },
-  
 });

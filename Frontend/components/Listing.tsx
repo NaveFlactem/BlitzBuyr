@@ -102,7 +102,7 @@ function Listing(props: ListingProps) {
               parallaxScrollingScale: 1,
               parallaxAdjacentItemScale: 0.5,
               parallaxScrollingOffset: 10,
-            }
+            },
           )}
         />
       </View>
@@ -229,7 +229,7 @@ const CustomItem = ({ source, index, animationValue, numItems }) => {
         },
       },
     ],
-    { useNativeDriver: true }
+    { useNativeDriver: true },
   );
 
   const onZoomStateChange = (event) => {
@@ -257,7 +257,7 @@ const CustomItem = ({ source, index, animationValue, numItems }) => {
             onGestureEvent={onZoomEvent}
             onHandlerStateChange={onZoomStateChange}
           >
-            <AnimatedRN.View style={[{transform:[{scale: scale}]}]}>
+            <AnimatedRN.View style={[{ transform: [{ scale: scale }] }]}>
               <Image
                 source={{ uri: source }}
                 style={styles.image}
