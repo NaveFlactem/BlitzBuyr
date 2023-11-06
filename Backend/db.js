@@ -68,9 +68,10 @@ CREATE TABLE IF NOT EXISTS Ratings (
 const profile = `
 CREATE TABLE IF NOT EXISTS Profiles (
   Username TEXT,
-  ContactInfo VARCHAR(200),
-  ListingId VARCHAR(255),
-  ReviewDescription VARCHAR(255)
+  ContactInfo TEXT,
+  ProfilePicture TEXT DEFAULT "http://blitzbuyr.lol/img/profile_default.png",
+  CoverPicture TEXT DEFAULT "http://blitzbuyr.lol/img/cover_default.jpg",
+  PRIMARY KEY (Username)
   );`;
 
 // Likes Table //
