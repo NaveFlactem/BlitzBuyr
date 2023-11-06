@@ -9,12 +9,19 @@ import {
   useWindowDimensions,
   StyleSheet,
   ActivityIndicator,
+  useFocusEffect,
 } from "react-native";
-
 import { MaterialIcons } from "@expo/vector-icons";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { TabBar, TabView } from "react-native-tab-view";
 import * as SecureStore from "expo-secure-store";
+import {
+  getStoredUsername,
+  getStoredPassword,
+  setStoredCredentials,
+} from "./auth/Authenticate.js";
+import { useIsFocused } from "@react-navigation/native";
+import { Entypo } from "@expo/vector-icons";
 
 const UserListingsRoute = ({ profileInfo }) => (
   <View style={{ flex: 1 }}>
@@ -86,6 +93,7 @@ function ProfileScreen({ navigation, route }) {
     userListings: [],
     userRatings: {},
   });
+  const isFocused = useIsFocused();
   const [loading, setLoading] = useState(true);
   const [profileName, setProfileName] = useState("");
   const [loggedUser, setLoggedUser] = useState(""); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
@@ -93,10 +101,12 @@ function ProfileScreen({ navigation, route }) {
 
   useEffect(() => {
     const fetchUsername = async () => {
-      const username = await SecureStore.getItemAsync("username");
+      const username = getStoredUsername();
       setLoggedUser(username);
       if (route.params?.username) {
-        console.log(`Setting username to passed username ${profileName}`);
+        console.log(
+          `Setting username to passed username ${route.params.username}`
+        );
         // we navigated with a username passed as param (i.e. clicking someone's profile)
         setProfileName(route.params.username);
       } else {
@@ -109,20 +119,24 @@ function ProfileScreen({ navigation, route }) {
     fetchUsername();
   }, [navigation, route.params?.username]); // called when navigation is updated (clicking the page, or when username is changed)
 
-  // get user's profile when the username changes
+  // get user's profile when the username changes or when we open the page
   useEffect(() => {
     setLoading(true);
-    if (profileName !== "") getProfileInfo(profileName);
-  }, [profileName]);
+    if (isFocused) {
+      if (profileName !== "") getProfileInfo(profileName);
+    }
+  }, [isFocused, profileName]);
 
   // this is just to print out a profile's information for now
   useEffect(() => {
     setLoading(false);
+    /*
     console.log("User's Listings:", profileInfo.userListings);
     console.log("User's Liked Listings:", profileInfo.likedListings);
     console.log("User's Ratings:", profileInfo.userRatings);
     console.log("Profile Picture URL:", profileInfo.profilePicture);
     console.log("Cover Picture URL:", profileInfo.coverPicture);
+    */
 
     if (profileName === loggedUser) {
       setRoutes([
@@ -200,6 +214,7 @@ function ProfileScreen({ navigation, route }) {
 
   const handleLogout = () => {
     clearCredentials();
+    setLoading(true);
     navigation.navigate("Login");
   };
 
@@ -313,6 +328,14 @@ function ProfileScreen({ navigation, route }) {
               {profileInfo.userRatings.AverageRating
                 ? profileInfo.userRatings.AverageRating
                 : "N/A"}
+              {profileInfo.userRatings.AverageRating && (
+                <Entypo
+                  name="star"
+                  size={25}
+                  color="gold"
+                  style={styles.ratingStar}
+                />
+              )}
             </Text>
             <Text
               style={{
@@ -367,7 +390,10 @@ function ProfileScreen({ navigation, route }) {
                 <Text style={styles.logoutButtonText}>Logout</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.navigate("EditProfile")}
+                onPress={() => {
+                  setLoading(true);
+                  navigation.navigate("EditProfile");
+                }}
                 style={{
                   width: 124,
                   height: 36,
@@ -392,10 +418,15 @@ function ProfileScreen({ navigation, route }) {
           )}
 
           {/* Rate User Button */}
-
           {profileName !== loggedUser && (
             <TouchableOpacity
-
+              onPress={() => {
+                setLoading(true);
+                navigation.navigate("RatingScreen", {
+                  profileInfo: profileInfo,
+                  username: profileName,
+                });
+              }}
               style={{
                 width: 124,
                 height: 36,
@@ -464,6 +495,20 @@ const styles = StyleSheet.create({
   logoutButtonText: {
     fontStyle: "normal",
     color: "white",
+  },
+  ratingStar: {
+    alignSelf: "center",
+    position: "absolute",
+    width: "30%",
+    height: "60%",
+    borderRadius: 20,
+    shadowColor: "black",
+    shadowOpacity: 0.8,
+    shadowRadius: 5,
+    shadowOffset: {
+      height: 2,
+      width: 2,
+    },
   },
 });
 

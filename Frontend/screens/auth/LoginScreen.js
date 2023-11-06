@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import Colors from "../../constants/Colors";
 import * as SecureStore from "expo-secure-store";
+import { getStoredUsername, getStoredPassword, setStoredCredentials } from "./Authenticate.js";
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -43,8 +44,7 @@ const LoginScreen = ({ navigation }) => {
 
     if (response.status <= 201) {
       console.log("Response data:", responseData);
-      await SecureStore.setItemAsync("username", username);
-      await SecureStore.setItemAsync("password", password);
+      await setStoredCredentials(username, password);
       clearFields();
       navigation.navigate("BottomNavOverlay");
     } else {

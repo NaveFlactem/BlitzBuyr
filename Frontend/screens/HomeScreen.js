@@ -23,6 +23,7 @@ import noWifi from "../components/noWifi";
 import noListings from "../components/noListings";
 import Listing from "../components/Listing.tsx";
 import { PanGestureHandlerProps } from "react-native-gesture-handler";
+import { getStoredUsername, getStoredPassword, setStoredCredentials } from "./auth/Authenticate.js";
 
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -203,6 +204,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.BB_pink,
+    top: 50,
   },
   topTap: {
     position: "absolute",
