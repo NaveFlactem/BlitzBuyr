@@ -355,7 +355,7 @@ function ProfileScreen({ navigation }) {
 
           {/* Rate User Button */}
           <TouchableOpacity
-          onPress={() => navigation.navigate("RatingScreen")}
+            onPress={() => navigation.navigate("RatingScreen")}
             style={{
               width: 124,
               height: 36,

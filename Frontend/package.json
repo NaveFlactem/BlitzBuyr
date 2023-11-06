@@ -49,6 +49,6 @@
     "react-navigation": "^4.4.4",
     "react-navigation-stack": "^2.10.4",
     "swiper": "^11.0.3",
-    "typescript": "^5.2.2"
+    "typescript": "^5.1.3"
   }
 }
