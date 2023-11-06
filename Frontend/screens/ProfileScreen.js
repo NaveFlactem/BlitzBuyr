@@ -1,4 +1,5 @@
-import React, { useState, memo } from "react";
+import React, { useEffect, useState, memo } from "react";
+import { serverIp } from "../config.js";
 import {
   View,
   Text,
@@ -102,6 +103,42 @@ const renderScene = SceneMap({
 function ProfileScreen({ navigation }) {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
+  const [likedListings, setLikedListings] = useState([]);
+  const [userListings, setUserListings] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const username = await SecureStore.getItemAsync("username");
+      getProfileInfo(username);
+    };
+
+    fetchData(); // Call the async function
+  }, []);
+
+  getProfileInfo = async function (username) {
+    try {
+      const profileResponse = await fetch(
+        `${serverIp}/api/profile?username=${encodeURIComponent(username)}`,
+        {
+          method: "GET",
+        },
+      );
+
+      if (profileResponse.status <= 201) {
+        const profileData = await profileResponse.json();
+        console.log(profileData);
+
+        setLikedListings(profileData.likedListings);
+        setUserListings(profileData.userListings);
+
+        console.log("Profile fetched successfully");
+      } else {
+        console.log("Error fetching profile:", profileResponse.status);
+      }
+    } catch (err) {
+      console.log("Error:", err);
+    }
+  };
 
   const [routes] = useState([
     { key: "first", title: "Photos" },
