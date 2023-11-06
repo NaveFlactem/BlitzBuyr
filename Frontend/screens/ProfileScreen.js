@@ -10,6 +10,7 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from "react-native";
+
 import { MaterialIcons } from "@expo/vector-icons";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { TabBar, TabView } from "react-native-tab-view";
@@ -391,8 +392,10 @@ function ProfileScreen({ navigation, route }) {
           )}
 
           {/* Rate User Button */}
+
           {profileName !== loggedUser && (
             <TouchableOpacity
+
               style={{
                 width: 124,
                 height: 36,
