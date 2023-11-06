@@ -8,6 +8,7 @@ import CreateListing from "../screens/CreateListing";
 import Authenticate from "../screens/auth/Authenticate";
 import BottomNavOverlay from "./BottomNavOverlay";
 import EditProfile from "../screens/EditProfileScreen";
+import RatingScreen from "../screens/RatingScreen";
 
 const Stack = createStackNavigator();
 
@@ -25,6 +26,7 @@ const StackNavigator = () => {
       <Stack.Screen name="CreateListing" component={CreateListing} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen name="RatingScreen" component={RatingScreen} />
     </Stack.Navigator>
   );
 };

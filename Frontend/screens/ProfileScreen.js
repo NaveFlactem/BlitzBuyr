@@ -10,6 +10,7 @@ import {
   ScrollView,
   StyleSheet,
 } from "react-native";
+
 import { MaterialIcons } from "@expo/vector-icons";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
@@ -354,6 +355,7 @@ function ProfileScreen({ navigation }) {
 
           {/* Rate User Button */}
           <TouchableOpacity
+          onPress={() => navigation.navigate("RatingScreen")}
             style={{
               width: 124,
               height: 36,
