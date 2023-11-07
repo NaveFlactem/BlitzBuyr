@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.BB_pink,
-    top: 50,
+    top: "0%",
   },
   topTap: {
     position: "absolute",

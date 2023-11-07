@@ -1,5 +1,5 @@
 import { serverIp } from "../config.js";
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -53,7 +53,7 @@ interface ListingProps {
 
 function Listing(props: ListingProps) {
   const navigation = useNavigation();
-  
+
   const arrayOfURIs = props.item.images.map((imageURI, index) => {
     const modifiedURI = `${serverIp}/img/${imageURI}`;
     return modifiedURI;
@@ -68,19 +68,20 @@ function Listing(props: ListingProps) {
       flip={false}
       clickable={true}
     >
-      <View>
+      <View style={[styles.frontOfCard, {alignSelf: "center", justifyContent: "center",  top:"0%"}]}>
         <View style={styles.priceContainer}>
           <Text style={styles.price}>{`$${props.item.Price}`}</Text>
         </View>
+
         <TouchableOpacity
-          style={[styles.likeButton, { top: "7%", right: "10%" }]}
+          style={[styles.likeButton, { top: "76%", right: "10%"}]}
           activeOpacity={1} // Disable the opacity change on touch
           onPress={() => props.handleStarPress(props.item.ListingId)}
         >
           {props.starStates[props.item.ListingId] ? (
-            <MaterialCommunityIcons name="heart" size={30} color="red" />
+            <MaterialCommunityIcons name="heart" size={50} color="red" />
           ) : (
-            <MaterialCommunityIcons name="heart" size={30} color="black" />
+            <MaterialCommunityIcons name="heart" size={50} color="black" />
           )}
         </TouchableOpacity>
         <Carousel
@@ -193,8 +194,14 @@ function Listing(props: ListingProps) {
             />
 
             <Text style={styles.rating}>
-              {props.item.ratings.averageRating ? props.item.ratings.averageRating : "N/A"} (
-              {props.item.ratings.ratingCount ? props.item.ratings.ratingCount : "0"})
+              {props.item.ratings.averageRating
+                ? props.item.ratings.averageRating
+                : "N/A"}{" "}
+              (
+              {props.item.ratings.ratingCount
+                ? props.item.ratings.ratingCount
+                : "0"}
+              )
             </Text>
           </View>
         </View>
@@ -211,14 +218,14 @@ function Listing(props: ListingProps) {
           <Text style={[styles.price]}>{`$${props.item.Price}`}</Text>
         </View>
         <TouchableOpacity
-          style={styles.likeButton}
+          style={[styles.likeButton, {top: "90%", right: "5%"}]}
           activeOpacity={1} // Disable the opacity change on touch
           onPress={() => props.handleStarPress(props.item.ListingId)}
         >
           {props.starStates[props.item.ListingId] ? (
-            <MaterialCommunityIcons name="heart" size={30} color="red" />
+            <MaterialCommunityIcons name="heart" size={50} color="red" />
           ) : (
-            <MaterialCommunityIcons name="heart" size={30} color="black" />
+            <MaterialCommunityIcons name="heart" size={50} color="black" />
           )}
         </TouchableOpacity>
       </View>
@@ -321,9 +328,9 @@ const styles = StyleSheet.create({
     zIndex: -10,
     shadowColor: "black",
     shadowOpacity: 0.8,
-    shadowRadius: 3,
+    shadowRadius: 2,
     shadowOffset: {
-      height: 4,
+      height: 2,
       width: 3,
     },
   },
@@ -346,13 +353,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.BB_darkPink,
     opacity: 0.2,
     transform: [{ rotate: "45deg" }],
-    shadowColor: "black",
-    shadowOpacity: 0.8,
-    shadowRadius: 3,
-    shadowOffset: {
-      height: 5,
-      width: 4,
-    },
   },
   mid_rhombus: {
     alignSelf: "center",
@@ -363,13 +363,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.BB_darkPink,
     opacity: 0.1,
     transform: [{ rotate: "45deg" }],
-    shadowColor: "black",
-    shadowOpacity: 0.8,
-    shadowRadius: 3,
-    shadowOffset: {
-      height: 5,
-      width: 4,
-    },
   },
   bottom_rhombus: {
     alignSelf: "center",
@@ -380,13 +373,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.BB_darkPink,
     opacity: 0.2,
     transform: [{ rotate: "45deg" }],
-    shadowColor: "black",
-    shadowOpacity: 0.8,
-    shadowRadius: 3,
-    shadowOffset: {
-      height: 5,
-      width: 4,
-    },
   },
   topR_circle: {
     width: 0.1 * screenWidth,
@@ -524,13 +510,6 @@ const styles = StyleSheet.create({
     width: "90%",
     height: "70%",
     borderRadius: 20,
-    shadowColor: "black",
-    shadowOpacity: 0.8,
-    shadowRadius: 5,
-    shadowOffset: {
-      height: 2,
-      width: 2,
-    },
     marginBottom: "2%",
   },
   sellerName: {
@@ -549,13 +528,6 @@ const styles = StyleSheet.create({
     width: "40%",
     height: "60%",
     borderRadius: 20,
-    shadowColor: "black",
-    shadowOpacity: 0.8,
-    shadowRadius: 5,
-    shadowOffset: {
-      height: 2,
-      width: 2,
-    },
   },
   city: {
     alignSelf: "center",
@@ -578,13 +550,6 @@ const styles = StyleSheet.create({
     width: "30%",
     height: "60%",
     borderRadius: 20,
-    shadowColor: "black",
-    shadowOpacity: 0.8,
-    shadowRadius: 5,
-    shadowOffset: {
-      height: 2,
-      width: 2,
-    },
   },
   rating: {
     alignSelf: "center",
@@ -615,8 +580,8 @@ const styles = StyleSheet.create({
   },
   likeButton: {
     position: "absolute",
-    height: "5%",
-    width: "10%",
+    height: "10%",
+    width: "15%",
     top: "2%",
     right: "8%",
     zIndex: 50,
