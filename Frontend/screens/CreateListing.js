@@ -23,6 +23,7 @@ import * as ImageManipulator from "expo-image-manipulator";
 import { withNavigation } from "react-navigation";
 import { Icons } from "../components/Icons.js";
 
+
 /**
  * @class
  * @classdesc - CreateListing is a screen that allows users to create a listing
@@ -436,11 +437,9 @@ class CreateListing extends Component {
 
         <View style={styles.scrollfield}>
           <ScrollView scrollEnabled={this.state.isScrollEnabled}>
-            <TouchableOpacity onPress={this.handleCreateListing}>
-              <View style={styles.createButton}>
-                <Text style={styles.buttonText}>Create Listing</Text>
-              </View>
-            </TouchableOpacity>
+              
+                <Text style={styles.buttonText2}>Create Listing</Text>
+              
             <View style={styles.rowContainer}>
               <View style={styles.rowContainer}>
                 <Text style={styles.label}>Title</Text>
@@ -558,6 +557,7 @@ class CreateListing extends Component {
             <TouchableOpacity
               onPress={this.handleImagePick}
               style={styles.button}
+              
             >
               <Text style={styles.buttonText}>Select Images</Text>
             </TouchableOpacity>
@@ -609,38 +609,53 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     marginTop: 0,
-    backgroundColor: Colors.BB_darkOrange,
+    backgroundColor: Colors.BB_bone,
   },
   scrollfield: {
     top: 0.1 * screenHeight,
     height: "auto",
-    backgroundColor: Colors.BB_darkOrange,
+    backgroundColor: Colors.BB_bone,
+  },
+  buttonText2: {
+    marginTop: 10,
+    color: Colors.black,
+    fontSize: 22,
+    alignSelf: "center",
+    fontWeight: "bold",
+
   },
   imageField: {
     alignSelf: "center",
     width: "95%",
     height: 400,
-    backgroundColor: Colors.BB_darkRedPurple,
+    backgroundColor: Colors.white,
     borderRadius: 20,
-    shadowColor: "black",
-    shadowOpacity: 0.5,
-    shadowOffset: { width: 2, height: 4 },
-    shadowRadius: 3,
-    elevation: 5,
-    margin: 0,
+    borderColor: Colors.black,
+    borderWidth: 1,
+    //shadowColor: "black",
+    //shadowOpacity: 0.5,
+    //shadowOffset: { width: 2, height: 4 },
+    //shadowRadius: 3,
+    //elevation: 5,
+    //margin: 0,
   },
   tagField: {
     alignSelf: "center",
     width: "95%",
     height: 600,
-    backgroundColor: Colors.BB_darkRedPurple,
+    backgroundColor: Colors.white,
     borderRadius: 20,
-    shadowColor: "black",
-    shadowOpacity: 0.5,
-    shadowOffset: { width: 2, height: 4 },
-    shadowRadius: 3,
+    borderWidth: 1,
+    bordercolor: Colors.black,
+
+  
+    //borderRadius: 20,
+    //shadowColor: "black",
+    //shadowOpacity: 0.5,
+    //shadowOffset: { width: 2, height: 4 },
+    //shadowRadius: 3,
     top: 30,
-    marginBottom: 30,
+    marginBottom: 50,
   },
   innerField: {
     margin: 10,
@@ -649,6 +664,7 @@ const styles = StyleSheet.create({
     height: "95%",
   },
   item: {
+    marginTop: 10,
     width: 100,
     height: 100,
     borderRadius: 8,
@@ -675,26 +691,30 @@ const styles = StyleSheet.create({
     backgroundColor: "#D6447F",
   },
   createButton: {
+    marginTop: 20,
     alignSelf: "center",
     width: screenWidth * 0.4,
-    backgroundColor: Colors.BB_rangeYellow,
+    backgroundColor: Colors.BB_orange,
     padding: 5,
     borderColor: Colors.black,
     borderRadius: 10,
     fontWeight: "bold",
-    shadowColor: "black",
-    shadowOpacity: 1,
-    shadowOffset: {
-      width: 1,
-      height: 1,
-    },
-    shadowRadius: 2,
+    borderWidth: 1,
+    height: 36,
+    width: 150,
+    //shadowColor: "black",
+    //shadowOpacity: 1,
+    //shadowOffset: {
+    //  width: 1,
+    //  height: 1,
+    //},
+    //shadowRadius: 2,
   },
   label: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "white",
+    color: "BB_black",
   },
   asterisk: {
     fontSize: 18,
@@ -710,17 +730,18 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: Colors.BB_darkPink,
+    borderColor: Colors.BB_black,
+    borderWidth: 1,
     borderRadius: 10,
-    backgroundColor: Colors.BB_darkRedPurple,
+    backgroundColor: "white",
     opacity: 0.9,
     marginBottom: 10,
     width: "90%",
     left: "5%",
-    shadowColor: "black",
-    shadowOpacity: 0.5,
-    shadowOffset: { width: 2, height: 4 },
-    shadowRadius: 3,
+    //shadowColor: "blue",
+    //shadowOpacity: 0.9,
+    //shadowOffset: { width: 2, height: 4 },
+    //shadowRadius: 3,
     textAlign: "center",
     color: "white",
   },
@@ -729,12 +750,22 @@ const styles = StyleSheet.create({
   },
   button: {
     width: 150,
-    height: 50,
-    backgroundColor: "blue",
+    height: 36,
+    boarderWidth: 1,
+    boarderColor: "black",
+    backgroundColor: Colors.BB_orange,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 30,
     alignSelf: "center",
+    borderRadius: 10,
+    marginTop: 20,
+    borderWidth: 1,
+    borderColor: Colors.black,
+    //shadowColor: "black",
+    //shadowOpacity: 0.5,
+    //shadowOffset: { width: 2, height: 4 },
+    //shadowRadius: 3,
   },
   buttonText: {
     fontSize: 18,
