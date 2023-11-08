@@ -65,7 +65,7 @@ const EditProfileScreen = ({ navigation, route }) => {
   useEffect(() => {
     setPassword("temp_password");
   }, ["temp_password"]);
-  
+
   useEffect(() => {
     setSelectedImage(profileInfo.profilePicture);
   }, [profileInfo.profilePicture]);
