@@ -113,7 +113,7 @@ function ProfileScreen({ navigation, route }) {
         console.log(`Setting username to cached logged in user`);
         setProfileName(username);
       }
-      //setProfileName("Alfonso");
+      // setProfileName("thomas");
     };
 
     fetchUsername();
@@ -326,7 +326,7 @@ function ProfileScreen({ navigation, route }) {
               }}
             >
               {profileInfo.userRatings.AverageRating
-                ? profileInfo.userRatings.AverageRating
+                ? profileInfo.userRatings.AverageRating.toFixed(1)
                 : "N/A"}
               {profileInfo.userRatings.AverageRating && (
                 <Entypo
