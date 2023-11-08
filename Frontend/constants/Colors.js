@@ -29,4 +29,5 @@ export default {
   BB_rangeYellow: "#f8b254",
   BB_yellow: "#f9c34a",
   BB_darkRedPurple: "#58293F",
+  BB_bone: "#F5F5F5",
 };
