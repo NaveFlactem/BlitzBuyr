@@ -16,12 +16,16 @@ const RatingScreen = ({ navigation, route }) => {
   console.log(route.params);
 
   const handleRating = (value) => {
-    setSelectedRating(value);
+    
+    if (selectedRating === value) {
+      setSelectedRating(selectedRating - 0.5);
+    } else {
+      setSelectedRating(value);
+    }
   };
 
   const handleSubmitRating = () => {
-    // Add logic to submit the rating to your backend or perform any other action.
-    // You can use the selectedRating state to get the user's selected rating.
+    
     const ratingPayload = {
       username: getStoredUsername(),
       userRated: route.params.username,
@@ -61,11 +65,11 @@ const RatingScreen = ({ navigation, route }) => {
           {i <= selectedRating ? (
             <MaterialCommunityIcons name="star" size={60} color="black" />
           ) : (
-            <MaterialCommunityIcons
-              name="star-outline"
-              size={60}
-              color="black"
-            />
+            i - 0.5 === selectedRating ? (
+              <MaterialCommunityIcons name="star-half-full" size={60} color="black" />
+            ) : (
+              <MaterialCommunityIcons name="star-outline" size={60} color="black" />
+            )
           )}
         </TouchableOpacity>
       );
@@ -125,10 +129,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: "7%",
     left: "7%",
-  },
-  starIcon: {
-    width: 60,
-    height: 60,
   },
 });
 
