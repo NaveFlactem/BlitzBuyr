@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
   useFocusEffect,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import Colors from "../constants/Colors";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { TabBar, TabView } from "react-native-tab-view";
 import * as SecureStore from "expo-secure-store";
@@ -113,7 +113,7 @@ function ProfileScreen({ navigation, route }) {
         console.log(`Setting username to cached logged in user`);
         setProfileName(username);
       }
-      //setProfileName("Alfonso");
+      // setProfileName("thomas");
     };
 
     fetchUsername();
@@ -188,14 +188,14 @@ function ProfileScreen({ navigation, route }) {
     <TabBar
       {...props}
       indicatorStyle={{
-        backgroundColor: "gray",
+        backgroundColor: Colors.BB_darkRedPurple,
       }}
       style={{
-        backgroundColor: "white",
+        backgroundColor: Colors.bone,
         height: 44,
       }}
       renderLabel={({ focused, route }) => (
-        <Text style={[{ color: "black", fontWeight: "bold", fontSize: 14 }]}>
+        <Text style={[{ color: Colors.BB_darkRedPurple, fontWeight: "bold", fontSize: 14 }]}>
           {route.title}
         </Text>
       )}
@@ -231,10 +231,10 @@ function ProfileScreen({ navigation, route }) {
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: "white",
+        backgroundColor: Colors.bone,
       }}
     >
-      <StatusBar backgroundColor={"gray"} />
+      <StatusBar backgroundColor={"black"} />
 
       {/* //Cover Photo */}
       <View style={{ width: "100%" }}>
@@ -243,7 +243,7 @@ function ProfileScreen({ navigation, route }) {
             uri: profileInfo.coverPicture,
           }}
           resizeMode="cover"
-          style={{ width: "100%", height: 180 }}
+          style={{ width: "100%", height: 180 , borderWidth: 1, borderColor: Colors.BB_darkRedPurple}}
         />
       </View>
 
@@ -258,7 +258,7 @@ function ProfileScreen({ navigation, route }) {
             height: 145,
             width: 145,
             borderRadius: 999,
-            borderColor: "black",
+            borderColor: Colors.BB_darkRedPurple,
             borderWidth: 2,
             marginTop: -90,
           }}
@@ -270,7 +270,7 @@ function ProfileScreen({ navigation, route }) {
             fontStyle: "normal",
             fontWeight: "bold",
             fontSize: 25,
-            color: "black",
+            color: Colors.BB_darkRedPurple,
           }}
         >
           {profileName}
@@ -295,7 +295,7 @@ function ProfileScreen({ navigation, route }) {
                 fontStyle: "normal",
                 fontWeight: "bold",
                 fontSize: 20,
-                color: "black",
+                color: Colors.BB_darkRedPurple,
               }}
             >
               {profileInfo.userListings.length}
@@ -303,7 +303,7 @@ function ProfileScreen({ navigation, route }) {
             <Text
               style={{
                 fontStyle: "normal",
-                color: "black",
+                color: Colors.BB_darkRedPurple,
               }}
             >
               Listings
@@ -322,11 +322,11 @@ function ProfileScreen({ navigation, route }) {
                 fontStyle: "normal",
                 fontWeight: "bold",
                 fontSize: 20,
-                color: "black",
+                color: Colors.BB_darkRedPurple,
               }}
             >
               {profileInfo.userRatings.AverageRating
-                ? profileInfo.userRatings.AverageRating
+                ? profileInfo.userRatings.AverageRating.toFixed(1)
                 : "N/A"}
               {profileInfo.userRatings.AverageRating && (
                 <Entypo
@@ -341,7 +341,7 @@ function ProfileScreen({ navigation, route }) {
               style={{
                 alignContent: "center",
                 fontStyle: "normal",
-                color: "black",
+                color: Colors.BB_darkRedPurple,
               }}
             >
               Rating ({profileInfo.userRatings.RatingCount})
@@ -362,7 +362,7 @@ function ProfileScreen({ navigation, route }) {
                   fontStyle: "normal",
                   fontWeight: "bold",
                   fontSize: 20,
-                  color: "black",
+                  color: Colors.BB_darkRedPurple,
                 }}
               >
                 {profileInfo.likedListings.length}
@@ -370,7 +370,7 @@ function ProfileScreen({ navigation, route }) {
               <Text
                 style={{
                   fontStyle: "normal",
-                  color: "black",
+                  color: Colors.BB_darkRedPurple,
                 }}
               >
                 Liked
@@ -399,16 +399,20 @@ function ProfileScreen({ navigation, route }) {
                   height: 36,
                   alignItems: "center",
                   justifyContent: "center",
-                  backgroundColor: "blue",
+                  backgroundColor: Colors.BB_orange,
                   borderRadius: 10,
                   marginHorizontal: 10,
                   top: 10,
+                  borderWidth: 1,
+                  borderColor: "black"
                 }}
               >
                 <Text
                   style={{
                     fontStyle: "normal",
-                    color: "white",
+                    color: Colors.BB_darkRedPurple,
+                    fontWeight: "500",
+                    fontSize: 15                         
                   }}
                 >
                   Edit Profile
@@ -480,21 +484,25 @@ const styles = StyleSheet.create({
     fontStyle: "normal",
     fontWeight: "bold",
     fontSize: 20,
-    color: "black",
+    color: Colors.BB_darkRedPurple,
   },
   logoutButton: {
     width: 110,
     height: 36,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "blue",
+    backgroundColor: Colors.BB_orange,
     borderRadius: 10,
     marginHorizontal: 10,
-    top: 10,
+    top: 10, 
+    borderWidth: 1,
+    borderColor: "black"
   },
   logoutButtonText: {
     fontStyle: "normal",
-    color: "white",
+    fontWeight: "500",
+    fontSize: 15,
+    color: Colors.BB_darkRedPurple,
   },
   ratingStar: {
     alignSelf: "center",
