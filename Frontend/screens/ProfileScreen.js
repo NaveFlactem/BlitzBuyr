@@ -243,7 +243,7 @@ function ProfileScreen({ navigation, route }) {
             uri: profileInfo.coverPicture,
           }}
           resizeMode="cover"
-          style={{ width: "100%", height: 180 , borderWidth: 1, borderColor: "black"}}
+          style={{ width: "100%", height: 180 , borderWidth: 1, borderColor: Colors.BB_darkRedPurple}}
         />
       </View>
 
@@ -258,7 +258,7 @@ function ProfileScreen({ navigation, route }) {
             height: 145,
             width: 145,
             borderRadius: 999,
-            borderColor: "black",
+            borderColor: Colors.BB_darkRedPurple,
             borderWidth: 2,
             marginTop: -90,
           }}

@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   useFocusEffect,
 } from "react-native";
+import Colors from "../constants/Colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
   FlatList,
@@ -26,6 +27,7 @@ import {
 } from "./auth/Authenticate.js";
 import { useIsFocused } from "@react-navigation/native";
 import { Entypo } from "@expo/vector-icons";
+import { Feather } from '@expo/vector-icons'; 
 import * as ImagePicker from "expo-image-picker";
 
 const screenWidth = Dimensions.get("window").width;
@@ -47,13 +49,14 @@ const EditProfileScreen = ({ navigation, route }) => {
   const [email, setEmail] = useState("temporary@temp.com");
   const [password, setPassword] = useState("temp_password");
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
-  const [selectedImage, setSelectedImage] = useState("");
+  const [selectedProfileImage, setSelectedProfileImage] = useState("");
+  const [selectedCoverImage, setSelectedCoverImage] = useState("");
 
   const togglePasswordVisibility = () => {
     setIsPasswordHidden(!isPasswordHidden);
   };
 
-  //Sets text field data = current profile data
+  //Sets text field data = current profile data / default data
   useEffect(() => {
     setName(profileName);
   }, [profileName]);
@@ -67,10 +70,16 @@ const EditProfileScreen = ({ navigation, route }) => {
   }, ["temp_password"]);
 
   useEffect(() => {
-    setSelectedImage(profileInfo.profilePicture);
+    setSelectedProfileImage(profileInfo.profilePicture);
   }, [profileInfo.profilePicture]);
 
-  const handleImageSelection = async () => {
+  useEffect(() => {
+    setSelectedCoverImage(profileInfo.coverPicture);
+  }, [profileInfo.profilePicture]);
+
+  //Functions for touchable opacity prompts for changing profile/cover photo
+
+  const handleProfileImageSelection = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -80,12 +89,50 @@ const EditProfileScreen = ({ navigation, route }) => {
 
     if (!result.canceled) {
       console.log("Profile Picture was successfully changed.");
-      console.log(result.assets[0].uri);
-      setSelectedImage(result.assets[0].uri);
+      setSelectedProfileImage(result.assets[0].uri);
     } else {
       console.log("Profile Picture change function was canceled.");
     }
   };
+
+  const handleCoverImageSelection = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      console.log("Cover Photo was successfully changed.");
+      console.log(result.assets[0].uri);
+      setSelectedCoverImage(result.assets[0].uri);
+    } else {
+      console.log("Cover Picture change function was canceled.");
+    }
+  };
+
+  //Function for handling save changes press
+  const saveChanges = async () => {
+    // Notes: 
+    // - Data needed to be fetched: email and password
+    // Data to be overwritten
+    /* 
+       username = (varname: name)
+       email = (varname: email)
+       password = (varname: password)
+       profile picture = (varname: selectedProfileImage)
+       cover photo = (varname: selectedCoverImage)
+    */  
+    //On press this function should overwrite all db data for each of them.
+
+    console.log("Saving Changes");
+    
+    // Should also call goback to main page: uncomment bottom
+    // navigation.navigate("BottomNavOverlay"); 
+  }
+
+  // Fetching data
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -199,12 +246,16 @@ const EditProfileScreen = ({ navigation, route }) => {
             navigation.navigate("BottomNavOverlay");
           }}
         >
-          <MaterialIcons name="keyboard-arrow-left" size={24} color={"black"} />
+          <MaterialIcons
+            name="keyboard-arrow-left"
+            size={24}
+            color={Colors.BB_darkRedPurple}
+          />
         </TouchableOpacity>
 
         <Text
           style={{
-            color: "black",
+            color: Colors.BB_darkRedPurple,
             fontSize: 22,
             fontWeight: "bold",
             left: screenWidth / 4,
@@ -214,47 +265,83 @@ const EditProfileScreen = ({ navigation, route }) => {
         </Text>
       </View>
       <ScrollView>
-        {/* Edit Profile Picture */}
-        <View
-          style={{
-            alignItems: "center",
-            marginVertical: 22,
-          }}
-        >
-          <TouchableOpacity onPress={handleImageSelection}>
+
+        {/* Edit Cover Photo */}
+        <View style={{ marginTop: 15, width: "100%", position: "relative" }}>
+          <TouchableOpacity onPress={handleCoverImageSelection}>
             <Image
-              source={{ uri: selectedImage }}
+              source={{
+                uri: selectedCoverImage,
+              }}
+              resizeMode="cover"
               style={{
-                height: 170,
-                width: 170,
-                borderRadius: 85,
-                borderWidth: 2,
-                borderColor: "black",
+                width: "100%",
+                height: 180,
+                borderWidth: 1,
+                borderColor: Colors.BB_darkRedPurple,
               }}
             />
-
             <View
               style={{
                 position: "absolute",
-                bottom: 0,
+                bottom: 10,
                 right: 10,
                 zIndex: 9999,
               }}
             >
-              <MaterialIcons name="photo-camera" size={35} color={"black"} />
+              <Feather name="edit" size={24} color="black" />
             </View>
           </TouchableOpacity>
+
+          {/* Edit Profile Picture */}
+          <View
+            style={{
+              position: "absolute",
+              top: 90,
+              left: screenWidth / 4,
+            }}
+          >
+            <TouchableOpacity onPress={handleProfileImageSelection}>
+              <Image
+                source={{ uri: selectedProfileImage }}
+                resizeMode="contain"
+                style={{
+                  height: 145,
+                  width: 145,
+                  borderRadius: 85,
+                  borderWidth: 2,
+                  borderColor: Colors.BB_darkRedPurple,
+                }}
+              />
+
+              <View
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  right: 12,
+                  zIndex: 9999,
+                }}
+              >
+                <MaterialIcons
+                  name="photo-camera"
+                  size={30}
+                  color={Colors.black}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
         <View
           style={{
             flexDirection: "column",
             marginBottom: 6,
+            marginTop: 60,
           }}
         >
           {/* Username */}
           <Text
             style={{
-              color: "black",
+              color: Colors.BB_darkRedPurple,
               fontWeight: "bold",
               fontSize: 16,
               paddingBottom: 10,
@@ -266,7 +353,7 @@ const EditProfileScreen = ({ navigation, route }) => {
             style={{
               height: 44,
               width: "100%",
-              borderColor: "gray",
+              borderColor: Colors.BB_darkRedPurple,
               borderWidth: 1,
               borderRadius: 6,
               justifyContent: "center",
@@ -283,7 +370,7 @@ const EditProfileScreen = ({ navigation, route }) => {
           {/* Email */}
           <Text
             style={{
-              color: "black",
+              color: Colors.BB_darkRedPurple,
               fontWeight: "bold",
               fontSize: 16,
               paddingBottom: 10,
@@ -296,7 +383,7 @@ const EditProfileScreen = ({ navigation, route }) => {
             style={{
               height: 44,
               width: "100%",
-              borderColor: "gray",
+              borderColor: Colors.BB_darkRedPurple,
               borderWidth: 1,
               borderRadius: 6,
               justifyContent: "center",
@@ -314,7 +401,7 @@ const EditProfileScreen = ({ navigation, route }) => {
 
           <Text
             style={{
-              color: "black",
+              color: Colors.BB_darkRedPurple,
               fontWeight: "bold",
               fontSize: 16,
               paddingBottom: 10,
@@ -328,7 +415,7 @@ const EditProfileScreen = ({ navigation, route }) => {
               flexDirection: "row",
               height: 44,
               width: "100%",
-              borderColor: "gray",
+              borderColor: Colors.BB_darkRedPurple,
               borderWidth: 1,
               borderRadius: 6,
               justifyContent: "center",
@@ -350,7 +437,11 @@ const EditProfileScreen = ({ navigation, route }) => {
               }}
               onPress={togglePasswordVisibility}
             >
-              <MaterialIcons name="visibility" size={20} color={"black"} />
+              <MaterialIcons
+                name="visibility"
+                size={20}
+                color={Colors.BB_darkRedPurple}
+              />
             </TouchableOpacity>
           </View>
 
@@ -362,18 +453,22 @@ const EditProfileScreen = ({ navigation, route }) => {
             }}
           >
             <View style={{ flex: 1, top: 15 }}>
-              <TouchableOpacity
+              <TouchableOpacity onPress={saveChanges}
                 style={{
                   width: 150,
                   height: 50,
                   alignItems: "center",
                   justifyContent: "center",
-                  backgroundColor: "blue",
+                  backgroundColor: Colors.BB_orange,
                   borderRadius: 10,
+                  borderWidth: 1,
+                  borderColor: Colors.BB_darkRedPurple,
                   marginVertical: 20,
                 }}
               >
-                <Text style={{ color: "white" }}>Save Changes</Text>
+                <Text style={{ color: Colors.BB_darkRedPurple }}>
+                  Save Changes
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
