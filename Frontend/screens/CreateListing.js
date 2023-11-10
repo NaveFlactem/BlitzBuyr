@@ -87,13 +87,14 @@ class CreateListing extends Component {
 
   /**
    * @function
-   * @handleCreateListing - sends user inputted data to server and checks if it ran smoothly
-   * @param {Object} formData - object that is sent to the server with user inputted values
+   * @checkValidListing - checks if the listing is valid
+   * @returns Returns 0 if the listing is valid, 1 if no images are selected, 2 if too many images are selected, and -1 if the listing is invalid
    */
-  handleCreateListing = async () => {
-    this.setState({ isLoading: true });
-
+  checkValidListing = () => {
+    let returnCode = 0;
+    
     const { title, description, price, data } = this.state;
+
     if (this.state.title == "") {
       this.setState({ isTitleInvalid: true });
       this.titleInput.current.focus();
@@ -131,50 +132,76 @@ class CreateListing extends Component {
 
       if (this.state.data.length == 0) {
         this.setState({ isImageInvalid: true });
-
-        return Alert.alert("Please select at least one image.");
+        returnCode = -1;
       }
       if (this.state.data.length > 9) {
         this.setState({ isImageInvalid: true });
-        return Alert.alert("You can only select up to 9 images.");
-      }
-
-      return;
-    }
-
-    try {
-      if (this.state.data.length == 0) {
-        console.error("No images selected.");
-        return;
-      }
-      if (this.state.data.length > 9) {
-        console.error("Too many images selected.");
-        return;
+        returnCode = -1;
       }
       if (this.state.price < 0) {
-        console.error("Invalid price.");
-        return;
+        returnCode = -1;
       }
       if ((this.state.price = "")) {
-        console.error("Invalid price.");
-        return;
+        returnCode = -1;
+        
       }
       if (this.state.title.length > 25) {
-        console.error("Title too long.");
-        return;
+        returnCode = -1;
+        
       }
       if ((this.state.title = "")) {
-        console.error("Invalid title.");
-        return;
+        returnCode = -1;
+        
       }
       if (this.state.description.length > 500) {
-        console.error("Description too long.");
-        return;
+        returnCode = -1;
+        
       }
       if ((this.state.description = "")) {
-        console.error("Invalid description.");
+        returnCode = -1;
+        
+      }
+      
+      if(this.state.isPriceInvalid || this.state.isTitleInvalid || this.state.isDescriptionInvalid || this.state.isImageInvalid || this.state.isTagInvalid){
+        returnCode = -1;
+      }
+      
+    }
+    
+    if (this.state.data.length == 0) {
+      returnCode = 1;
+    }
+    if (this.state.data.length > 9) {
+      returnCode = 2;
+    }
+    
+    return returnCode;
+    
+  };
+
+  /**
+   * @function
+   * @handleCreateListing - sends user inputted data to server and checks if it ran smoothly
+   * @param {Object} formData - object that is sent to the server with user inputted values
+   */
+  handleCreateListing = async () => {
+    this.setState({ isLoading: true });
+
+    const { title, description, price, data } = this.state;
+    
+
+    try {
+      const returnCode = this.checkValidListing();
+      if (returnCode == -1) {
         return;
       }
+      else if (returnCode == 1) {
+        Alert.alert("No images selected.");
+      }
+      else if (returnCode == 2) {
+        Alert.alert("Too many images selected.");
+      }
+      else if (returnCode == 0) {
 
       const formData = new FormData();
 
@@ -206,6 +233,7 @@ class CreateListing extends Component {
       } else {
         console.error("HTTP error! Status: ", response.status);
       }
+    }
     } catch (error) {
       console.error("Error creating listing:", error);
     }
@@ -413,6 +441,7 @@ class CreateListing extends Component {
         {this.state.isLoading && (
           <View style={styles.loading}>
             <ActivityIndicator size="large" color={Colors.BB_darkRedPurple} />
+            <Text>Loading...</Text>
           </View>
         )}
         <TopBar />
@@ -715,19 +744,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "BB_black",
+    color: "black",
+    marginTop: 20,
+    left: 0.05 * screenWidth,
   },
   asterisk: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 10,
     color: "red",
+    left: 0.05 * screenWidth,
   },
   errorMessage: {
     fontSize: 12,
     color: "red",
     marginLeft: 10,
-    left: 10,
+    top: 0.008 * screenHeight,
+    left: 0.05 * screenWidth,
   },
   input: {
     height: 40,
@@ -775,12 +807,15 @@ const styles = StyleSheet.create({
   },
   characterCounter: {
     fontSize: 12,
-    color: "white",
+    color: "black",
     position: "absolute",
     right: 0.05 * screenWidth,
   },
   loading: {
-    flex: 1,
+    height: screenHeight,
+    width: screenWidth,
+    position: "absolute",
+    backgroundColor: "rgba(0,0,0,0.2)",
     alignItems: "center",
     justifyContent: "center",
     zIndex: 1,

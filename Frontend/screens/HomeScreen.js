@@ -211,4 +211,10 @@ const styles = StyleSheet.create({
     height: 0.05 * screenHeight,
     zIndex: 3,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 100,
+  },
 });
