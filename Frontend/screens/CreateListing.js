@@ -567,7 +567,7 @@ class CreateListing extends Component {
                   ]}
                   onPress={() => this.handleTagPress(index)}
                 >
-                  <Text>{tag.name}</Text>
+                  <Text style={styles.tagText}>{tag.name}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -638,8 +638,27 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   tagContainer: {
-    height: 40,
-    width: 100,
+    backgroundColor: Colors.BB_darkRedPurple,
+    marginBottom: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 10,
+    borderRadius: 20,
+    alignContent: "center",
+    justifyContent: "center",
+    textAlign: "center",
+    height: 0.1 * screenHeight,
+    width: 0.3 * screenWidth,
+    shadowColor: "gray",
+    shadowOpacity: 0.9,
+    shadowOffset: { width: 1, height: 1 },
+    shadowRadius: 3,
+  },
+  tagText: {
+    color: Colors.white,
+    fontSize: 18,
+    alignSelf: "center",
+    fontWeight: "bold",
   },
   innerField: {
     margin: 10,
