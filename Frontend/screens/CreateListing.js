@@ -4,17 +4,18 @@ import {
   View,
   StyleSheet,
   Text,
-  Image,
   TouchableOpacity,
   ScrollView,
   Dimensions,
   TextInput,
   Alert,
+  ActivityIndicator
 } from "react-native";
 import DraggableGrid from "react-native-draggable-grid";
 import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
 import { Camera } from "expo-camera"; // Import Camera from Expo
+import { Image } from "expo-image";
 import Colors from "../constants/Colors";
 import BottomBar from "../components/BottomBar";
 import TopBar from "../components/TopBar";
@@ -23,6 +24,7 @@ import * as ImageManipulator from "expo-image-manipulator";
 import { withNavigation } from "react-navigation";
 import { Icons } from "../components/Icons.js";
 
+const blurhash = "L5H2EC=PM+yV0g-mq.wG9c010J}I";
 
 /**
  * @class
@@ -51,6 +53,7 @@ class CreateListing extends Component {
       isPriceInvalid: false,
       isImageInvalid: false,
       isTagInvalid: false,
+      isLoading: false,
     };
     this.titleInput = React.createRef();
     this.descriptionInput = React.createRef();
@@ -251,7 +254,7 @@ class CreateListing extends Component {
           );
           let localUri = manipulateResult.uri;
           let filename = localUri.split("/").pop();
-
+          
           return {
             name: filename,
             key: String(Date.now()),
@@ -265,7 +268,9 @@ class CreateListing extends Component {
     );
 
     // Filter out any potential null values (indicating errors)
+    this.setState({ isLoading: true });
     const filteredImages = selectedImages.filter((image) => image !== null);
+    this.setState({ isLoading: false });
 
     this.setState((prevState) => ({
       data: [...prevState.data, ...filteredImages],
@@ -325,7 +330,7 @@ class CreateListing extends Component {
     return (
       <View style={styles.item} key={item.key}>
         {item.uri ? (
-          <Image source={{ uri: item.uri }} style={styles.image} />
+          <Image source={{ uri: item.uri }} style={styles.image} placeholder={blurhash} transition={200} />
         ) : (
           <Text style={styles.item_text}>{item.name}</Text>
         )}
@@ -370,6 +375,7 @@ class CreateListing extends Component {
       isPriceInvalid,
       isImageInvalid,
       isTagInvalid,
+      isLoading,
     } = this.state;
 
     // const tagsData = [
@@ -433,8 +439,19 @@ class CreateListing extends Component {
 
     return (
       <View style={styles.wrapper}>
+
         <TopBar />
 
+        {isLoading ? (
+
+          <ActivityIndicator
+            style={styles.loading}
+            size="large"
+            color={Colors.BB_darkRedPurple}
+          />
+
+        ) : null
+        }
         <View style={styles.scrollfield}>
           <ScrollView scrollEnabled={this.state.isScrollEnabled}>
               
@@ -753,7 +770,7 @@ const styles = StyleSheet.create({
     height: 36,
     boarderWidth: 1,
     boarderColor: "black",
-    backgroundColor: Colors.BB_orange,
+    backgroundColor: Colors.BB_darkRedPurple,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 30,
@@ -781,6 +798,11 @@ const styles = StyleSheet.create({
     color: "white",
     position: "absolute",
     right: 0.05 * screenWidth,
+  },
+  loading: {
+    position: "absolute",
+    alignSelf: "center",
+    top: 0.5 * screenHeight,
   },
   spacer: {
     height: 400,
