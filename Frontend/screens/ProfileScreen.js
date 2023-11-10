@@ -113,19 +113,14 @@ function ProfileScreen({ navigation, route }) {
         console.log(`Setting username to cached logged in user`);
         setProfileName(username);
       }
-      // setProfileName("thomas");
+      getProfileInfo(route.params?.username ? route.params.username : username);
     };
 
-    fetchUsername();
-  }, [navigation, route.params?.username]); // called when navigation is updated (clicking the page, or when username is changed)
-
-  // get user's profile when the username changes or when we open the page
-  useEffect(() => {
     setLoading(true);
     if (isFocused) {
-      if (profileName !== "") getProfileInfo(profileName);
+      fetchUsername();
     }
-  }, [isFocused, profileName]);
+  }, [isFocused]); // called when navigation is updated (clicking the page, or when username is changed)
 
   // this is just to print out a profile's information for now
   useEffect(() => {
@@ -148,7 +143,7 @@ function ProfileScreen({ navigation, route }) {
     }
   }, [profileInfo]);
 
-  getProfileInfo = async function (username) {
+  const getProfileInfo = async function (username) {
     console.log(`Fetching profile info for ${username}`);
     try {
       const profileResponse = await fetch(
@@ -195,7 +190,15 @@ function ProfileScreen({ navigation, route }) {
         height: 44,
       }}
       renderLabel={({ focused, route }) => (
-        <Text style={[{ color: Colors.BB_darkRedPurple, fontWeight: "bold", fontSize: 14 }]}>
+        <Text
+          style={[
+            {
+              color: Colors.BB_darkRedPurple,
+              fontWeight: "bold",
+              fontSize: 14,
+            },
+          ]}
+        >
           {route.title}
         </Text>
       )}
@@ -243,7 +246,12 @@ function ProfileScreen({ navigation, route }) {
             uri: profileInfo.coverPicture,
           }}
           resizeMode="cover"
-          style={{ width: "100%", height: 180 , borderWidth: 1, borderColor: Colors.BB_darkRedPurple}}
+          style={{
+            width: "100%",
+            height: 180,
+            borderWidth: 1,
+            borderColor: Colors.BB_darkRedPurple,
+          }}
         />
       </View>
 
@@ -392,7 +400,11 @@ function ProfileScreen({ navigation, route }) {
               <TouchableOpacity
                 onPress={() => {
                   setLoading(true);
-                  navigation.navigate("EditProfile");
+                  navigation.navigate("EditProfile", {
+                    profileName: profileName,
+                    profilePicture: profileInfo.profilePicture,
+                    coverPicture: profileInfo.coverPicture,
+                  });
                 }}
                 style={{
                   width: 124,
@@ -404,7 +416,7 @@ function ProfileScreen({ navigation, route }) {
                   marginHorizontal: 10,
                   top: 10,
                   borderWidth: 1,
-                  borderColor: "black"
+                  borderColor: "black",
                 }}
               >
                 <Text
@@ -412,7 +424,7 @@ function ProfileScreen({ navigation, route }) {
                     fontStyle: "normal",
                     color: Colors.BB_darkRedPurple,
                     fontWeight: "500",
-                    fontSize: 15                         
+                    fontSize: 15,
                   }}
                 >
                   Edit Profile
@@ -494,9 +506,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.BB_orange,
     borderRadius: 10,
     marginHorizontal: 10,
-    top: 10, 
+    top: 10,
     borderWidth: 1,
-    borderColor: "black"
+    borderColor: "black",
   },
   logoutButtonText: {
     fontStyle: "normal",
