@@ -285,13 +285,13 @@ class CreateListing extends Component {
           key: String(Date.now()), // Generate a unique key
           uri: result.uri,
         };
-
         this.setState((prevState) => ({
           data: [...prevState.data, newImageData],
         }));
       }
     }
   };
+
 
   /**
    * @function
@@ -743,7 +743,7 @@ const styles = StyleSheet.create({
     //shadowOffset: { width: 2, height: 4 },
     //shadowRadius: 3,
     textAlign: "center",
-    color: "white",
+    color: "black",
   },
   multilineInput: {
     height: 120,
