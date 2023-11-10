@@ -136,6 +136,7 @@ function BottomNavOverlay() {
 const styles = StyleSheet.create({
   tabButtonContainer: {
     flex: 1,
+    height: "100%",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.BB_darkRedPurple,
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
   tabButton: {
     justifyContent: "center",
     alignItems: "center",
-    height: 60,
+    height: "100%",
     width: "100%",
   },
 });
