@@ -14,15 +14,11 @@ import {
 import DraggableGrid from "react-native-draggable-grid";
 import * as ImagePicker from "expo-image-picker";
 import Constants from "expo-constants";
-import { Camera } from "expo-camera"; // Import Camera from Expo
 import { Image } from "expo-image";
 import Colors from "../constants/Colors";
-import BottomBar from "../components/BottomBar";
 import TopBar from "../components/TopBar";
 import * as SecureStore from "expo-secure-store";
 import * as ImageManipulator from "expo-image-manipulator";
-import { withNavigation } from "react-navigation";
-import { Icons } from "../components/Icons.js";
 
 const blurhash = "L5H2EC=PM+yV0g-mq.wG9c010J}I";
 
@@ -37,6 +33,7 @@ const tagsData = [
   { name: "Tools", selected: false },
   { name: "Vehicles", selected: false },
   { name: "Service", selected: false},
+
   { name: "Other", selected: false },
 ];
 
@@ -322,26 +319,6 @@ class CreateListing extends Component {
 
   /**
    * @function
-   * @handleCameraCapture - allows user to take a picture with their camera
-   */
-  handleCameraCapture = async () => {
-    if (this.camera) {
-      let result = await this.camera.takePictureAsync({ quality: 1 });
-      if (result.uri) {
-        const newImageData = {
-          name: "New Image", // Customize the name as needed
-          key: String(Date.now()), // Generate a unique key
-          uri: result.uri,
-        };
-        this.setState((prevState) => ({
-          data: [...prevState.data, newImageData],
-        }));
-      }
-    }
-  };
-
-  /**
-   * @function
    * @handleDeletePhoto - deletes photos that the user no longer wants to post
    * @param {Number} index - index of the photo that the user wants to delete
    */
@@ -426,6 +403,7 @@ class CreateListing extends Component {
         .filter((tag) => tag.selected)
         .map((tag) => tag.name);
 
+      console.log("Selected tags:", newSelectedTags);
       return { selectedTags: newSelectedTags };
     });
   };
@@ -490,7 +468,7 @@ class CreateListing extends Component {
             </View>
             <TextInput
               ref={this.titleInput}
-              style={[styles.input]}
+              style={[styles.input, isTitleInvalid ? { borderColor: "red", borderWidth: 1 } : null]}
               value={this.state.title}
               onChangeText={(text) => {
                 this.setState({ title: text, isTitleInvalid: false });
@@ -525,6 +503,7 @@ class CreateListing extends Component {
                 styles.input,
                 styles.multilineInput,
                 (textAlign = "left"),
+                isDescriptionInvalid ? { borderColor: "red", borderWidth: 1 } : null,
               ]}
               value={this.state.description}
               onChangeText={(text) => {
@@ -562,7 +541,7 @@ class CreateListing extends Component {
 
             <TextInput
               ref={this.priceInput}
-              style={[styles.input]}
+              style={[styles.input, isPriceInvalid ? { borderColor: "red", borderWidth: 1 } : null]}
               value={this.state.price}
               onChangeText={(text) => {
                 this.setState({ price: text, isPriceInvalid: false });
@@ -574,19 +553,13 @@ class CreateListing extends Component {
               maxLength={9}
             />
 
-            <View style={styles.cameraContainer}>
-              <Camera
-                style={styles.cameraPreview}
-                ref={(ref) => (this.camera = ref)}
-              />
-            </View>
             <TouchableOpacity
               onPress={this.handleImagePick}
               style={styles.button}
             >
               <Text style={styles.buttonText}>Select Images</Text>
             </TouchableOpacity>
-            <View style={styles.imageField}>
+            <View style={[styles.imageField, isImageInvalid ? { borderColor: "red", borderWidth: 1 } : null]}>
               <View style={styles.innerField}>
                 <DraggableGrid
                   numColumns={3}
@@ -597,8 +570,8 @@ class CreateListing extends Component {
                 />
               </View>
             </View>
-
-            <View style={styles.tagField}>
+            <ScrollView style={styles.tagFieldScroll}>
+            <View style={[styles.tagField, isTagInvalid ? { borderColor: "red", borderWidth: 1 } : null]}>
               {rowsOfTags.map((row, rowIndex) => (
                 <View key={rowIndex} style={styles.tagRowContainer}>
                   {row.map((tag, tagIndex) => (
@@ -609,7 +582,7 @@ class CreateListing extends Component {
                         this.handleTagPress(tagIndex + rowIndex * 3)
                       }
                     >
-                      <View style={tag.selected ? styles.tagSelected : null} />
+                      <View style={styles.tagSelected} />
                       <View style={styles.rhombus} />
                       <Text style={styles.tagText}>{tag.name}</Text>
                     </TouchableOpacity>
@@ -617,6 +590,7 @@ class CreateListing extends Component {
                 </View>
               ))}
             </View>
+            </ScrollView>
 
             <TouchableOpacity onPress={this.handleCreateListing}>
               <View style={[styles.createButton, (top = 30), (bottom = 0)]}>
@@ -689,7 +663,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   tagContainer: {
-    backgroundColor: Colors.BB_darkRedPurple,
     marginLeft: 10,
     marginRight: 10,
     borderRadius: 20,
@@ -720,6 +693,11 @@ const styles = StyleSheet.create({
   },
   tagSelected: {
     alignSelf: "center",
+    backgroundColor: Colors.BB_darkRedPurple,
+    borderRadius: 20,
+    height: "100%",
+    width: "100%",
+    position: "absolute",
   },
 
   innerField: {
