@@ -27,7 +27,7 @@ import {
 } from "./auth/Authenticate.js";
 import { useIsFocused } from "@react-navigation/native";
 import { Entypo } from "@expo/vector-icons";
-import { Feather } from '@expo/vector-icons'; 
+import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 
 const screenWidth = Dimensions.get("window").width;
@@ -114,7 +114,7 @@ const EditProfileScreen = ({ navigation, route }) => {
 
   //Function for handling save changes press
   const saveChanges = async () => {
-    // Notes: 
+    // Notes:
     // - Data needed to be fetched: email and password
     // Data to be overwritten
     /* 
@@ -123,14 +123,14 @@ const EditProfileScreen = ({ navigation, route }) => {
        password = (varname: password)
        profile picture = (varname: selectedProfileImage)
        cover photo = (varname: selectedCoverImage)
-    */  
+    */
     //On press this function should overwrite all db data for each of them.
 
     console.log("Saving Changes");
-    
+
     // Should also call goback to main page: uncomment bottom
-    // navigation.navigate("BottomNavOverlay"); 
-  }
+    // navigation.navigate("BottomNavOverlay");
+  };
 
   // Fetching data
 
@@ -265,7 +265,6 @@ const EditProfileScreen = ({ navigation, route }) => {
         </Text>
       </View>
       <ScrollView>
-
         {/* Edit Cover Photo */}
         <View style={{ marginTop: 15, width: "100%", position: "relative" }}>
           <TouchableOpacity onPress={handleCoverImageSelection}>
@@ -453,20 +452,28 @@ const EditProfileScreen = ({ navigation, route }) => {
             }}
           >
             <View style={{ flex: 1, top: 15 }}>
-              <TouchableOpacity onPress={saveChanges}
+              <TouchableOpacity
+                onPress={saveChanges}
                 style={{
                   width: 150,
                   height: 50,
                   alignItems: "center",
                   justifyContent: "center",
-                  backgroundColor: Colors.BB_orange,
+                  backgroundColor: Colors.BB_darkRedPurple,
                   borderRadius: 10,
-                  borderWidth: 1,
-                  borderColor: Colors.BB_darkRedPurple,
+                  borderWidth: 2,
+                  borderColor: Colors.black,
                   marginVertical: 20,
                 }}
               >
-                <Text style={{ color: Colors.BB_darkRedPurple }}>
+                <Text
+                  style={{
+                    fontStyle: "normal",
+                    color: Colors.white,
+                    fontWeight: "500",
+                    fontSize: 15,
+                  }}
+                >
                   Save Changes
                 </Text>
               </TouchableOpacity>
