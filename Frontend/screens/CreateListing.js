@@ -29,6 +29,15 @@ const blurhash = "L5H2EC=PM+yV0g-mq.wG9c010J}I";
 const tagsData = [
   { name: "Furniture", selected: false },
   { name: "Electronics", selected: false },
+  { name: "Clothing", selected: false },
+  { name: "Books", selected: false },
+  { name: "Appliances", selected: false },
+  { name: "Sports", selected: false },
+  { name: "Toys", selected: false },
+  { name: "Tools", selected: false },
+  { name: "Vehicles", selected: false },
+  { name: "Service", selected: false},
+  { name: "Other", selected: false },
 ];
 
 /**
@@ -92,7 +101,7 @@ class CreateListing extends Component {
    */
   checkValidListing = () => {
     let returnCode = 0;
-    
+
     const { title, description, price, data } = this.state;
 
     if (this.state.title == "") {
@@ -143,40 +152,39 @@ class CreateListing extends Component {
       }
       if ((this.state.price = "")) {
         returnCode = -1;
-        
       }
       if (this.state.title.length > 25) {
         returnCode = -1;
-        
       }
       if ((this.state.title = "")) {
         returnCode = -1;
-        
       }
       if (this.state.description.length > 500) {
         returnCode = -1;
-        
       }
       if ((this.state.description = "")) {
         returnCode = -1;
-        
       }
-      
-      if(this.state.isPriceInvalid || this.state.isTitleInvalid || this.state.isDescriptionInvalid || this.state.isImageInvalid || this.state.isTagInvalid){
+
+      if (
+        this.state.isPriceInvalid ||
+        this.state.isTitleInvalid ||
+        this.state.isDescriptionInvalid ||
+        this.state.isImageInvalid ||
+        this.state.isTagInvalid
+      ) {
         returnCode = -1;
       }
-      
     }
-    
+
     if (this.state.data.length == 0) {
       returnCode = 1;
     }
     if (this.state.data.length > 9) {
       returnCode = 2;
     }
-    
+
     return returnCode;
-    
   };
 
   /**
@@ -188,52 +196,47 @@ class CreateListing extends Component {
     this.setState({ isLoading: true });
 
     const { title, description, price, data } = this.state;
-    
 
     try {
       const returnCode = this.checkValidListing();
       if (returnCode == -1) {
         return;
-      }
-      else if (returnCode == 1) {
+      } else if (returnCode == 1) {
         Alert.alert("No images selected.");
-      }
-      else if (returnCode == 2) {
+      } else if (returnCode == 2) {
         Alert.alert("Too many images selected.");
-      }
-      else if (returnCode == 0) {
+      } else if (returnCode == 0) {
+        const formData = new FormData();
 
-      const formData = new FormData();
-
-      data.forEach((image, index) => {
-        // Append each image as a file
-        formData.append(`image_${index}`, {
-          uri: image.uri, // The URI of the image file
-          name: `image_${index}.jpg`, // The desired file name
-          type: "image/jpeg", // The content type of the file
+        data.forEach((image, index) => {
+          // Append each image as a file
+          formData.append(`image_${index}`, {
+            uri: image.uri, // The URI of the image file
+            name: `image_${index}.jpg`, // The desired file name
+            type: "image/jpeg", // The content type of the file
+          });
         });
-      });
 
-      formData.append("price", price);
-      formData.append("title", title);
-      formData.append("description", description);
-      formData.append("username", await SecureStore.getItemAsync("username"));
+        formData.append("price", price);
+        formData.append("title", title);
+        formData.append("description", description);
+        formData.append("username", await SecureStore.getItemAsync("username"));
 
-      console.log("FormData:", formData);
-      const response = await fetch(`${serverIp}/api/createlisting`, {
-        method: "POST",
-        body: formData,
-      });
+        console.log("FormData:", formData);
+        const response = await fetch(`${serverIp}/api/createlisting`, {
+          method: "POST",
+          body: formData,
+        });
 
-      if (response.status <= 201) {
-        const responseData = await response.json();
-        console.log("Listing created successfully:", responseData);
-        this.destructor();
-        this.props.navigation.navigate("Home", { refresh: true });
-      } else {
-        console.error("HTTP error! Status: ", response.status);
+        if (response.status <= 201) {
+          const responseData = await response.json();
+          console.log("Listing created successfully:", responseData);
+          this.destructor();
+          this.props.navigation.navigate("Home", { refresh: true });
+        } else {
+          console.error("HTTP error! Status: ", response.status);
+        }
       }
-    }
     } catch (error) {
       console.error("Error creating listing:", error);
     }
@@ -418,13 +421,21 @@ class CreateListing extends Component {
         if (idx === index) return { ...tag, selected: !tag.selected };
         return tag;
       });
-  
+
       const newSelectedTags = newTagsData
         .filter((tag) => tag.selected)
         .map((tag) => tag.name);
-  
+
       return { selectedTags: newSelectedTags };
     });
+  };
+
+  groupTagsIntoRows = (tags, itemsPerRow) => {
+    return tags.reduce((rows, tag, index) => {
+      if (index % itemsPerRow === 0) rows.push([]);
+      rows[rows.length - 1].push(tag);
+      return rows;
+    }, []);
   };
 
   render() {
@@ -436,6 +447,7 @@ class CreateListing extends Component {
       isTagInvalid,
     } = this.state;
 
+    const rowsOfTags = this.groupTagsIntoRows(tagsData, 3);
     return (
       <View style={styles.wrapper}>
         {this.state.isLoading && (
@@ -587,17 +599,22 @@ class CreateListing extends Component {
             </View>
 
             <View style={styles.tagField}>
-              {tagsData.map((tag, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.tagContainer,
-                    tag.selected ? styles.tagSelected : null,
-                  ]}
-                  onPress={() => this.handleTagPress(index)}
-                >
-                  <Text style={styles.tagText}>{tag.name}</Text>
-                </TouchableOpacity>
+              {rowsOfTags.map((row, rowIndex) => (
+                <View key={rowIndex} style={styles.tagRowContainer}>
+                  {row.map((tag, tagIndex) => (
+                    <TouchableOpacity
+                      key={tagIndex}
+                      style={styles.tagContainer}
+                      onPress={() =>
+                        this.handleTagPress(tagIndex + rowIndex * 3)
+                      }
+                    >
+                      <View style={tag.selected ? styles.tagSelected : null} />
+                      <View style={styles.rhombus} />
+                      <Text style={styles.tagText}>{tag.name}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
               ))}
             </View>
 
@@ -610,8 +627,6 @@ class CreateListing extends Component {
             <Text style={styles.spacer} />
           </ScrollView>
         </View>
-
-
       </View>
     );
   }
@@ -653,6 +668,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 1, height: 1 },
     shadowRadius: 3,
   },
+
   tagField: {
     alignSelf: "center",
     width: "95%",
@@ -666,17 +682,21 @@ const styles = StyleSheet.create({
     top: 30,
     marginBottom: 50,
   },
+  tagRowContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 10,
+    marginTop: 10,
+  },
   tagContainer: {
     backgroundColor: Colors.BB_darkRedPurple,
-    marginBottom: 10,
     marginLeft: 10,
     marginRight: 10,
-    marginTop: 10,
     borderRadius: 20,
     alignContent: "center",
     justifyContent: "center",
     textAlign: "center",
-    height: 0.1 * screenHeight,
+    height: 0.08 * screenHeight,
     width: 0.3 * screenWidth,
     shadowColor: "gray",
     shadowOpacity: 0.9,
@@ -689,6 +709,19 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     fontWeight: "bold",
   },
+  rhombus: {
+    alignSelf: "center",
+    position: "absolute",
+    width: "40%",
+    aspectRatio: 1,
+    backgroundColor: Colors.BB_darkPink,
+    opacity: 0.15,
+    transform: [{ rotate: "45deg" }],
+  },
+  tagSelected: {
+    alignSelf: "center",
+  },
+
   innerField: {
     margin: 10,
     marginTop: 20,
@@ -740,6 +773,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 1, height: 1 },
     shadowRadius: 3,
   },
+
   label: {
     fontSize: 18,
     fontWeight: "bold",
@@ -761,6 +795,7 @@ const styles = StyleSheet.create({
     top: 0.008 * screenHeight,
     left: 0.05 * screenWidth,
   },
+
   input: {
     height: 40,
     borderColor: Colors.BB_black,
@@ -780,6 +815,7 @@ const styles = StyleSheet.create({
   multilineInput: {
     height: 120,
   },
+
   button: {
     width: 150,
     height: 36,
@@ -801,6 +837,7 @@ const styles = StyleSheet.create({
     color: "white",
     alignSelf: "center",
   },
+
   rowContainer: {
     flexDirection: "row",
     alignItems: "center",
