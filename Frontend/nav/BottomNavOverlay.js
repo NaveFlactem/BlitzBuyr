@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React, { useEffect, useRef, memo } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, Vie, Dimensions } from "react-native";
 import Icon, { Icons } from "../components/Icons";
 import Colors from "../constants/Colors";
 import * as Animatable from "react-native-animatable";
@@ -103,16 +103,18 @@ const TabButton = (props) => {
 };
 
 function BottomNavOverlay() {
+  const screenHeight = Dimensions.get("window").height;
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          height: 60,
+          height: screenHeight * 0.08,
           backgroundColor: Colors.BB_pink,
           borderTopWidth: 0,
-          elevation: 0, // Remove shadow on Android
+          elevation: 0
         },
       }}
     >
@@ -136,7 +138,6 @@ function BottomNavOverlay() {
 const styles = StyleSheet.create({
   tabButtonContainer: {
     flex: 1,
-    height: "100%",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.BB_darkRedPurple,
