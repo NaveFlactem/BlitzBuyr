@@ -609,7 +609,7 @@ class CreateListing extends Component {
           </ScrollView>
         </View>
 
-        <BottomBar />
+
       </View>
     );
   }
