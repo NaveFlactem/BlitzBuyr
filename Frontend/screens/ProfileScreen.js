@@ -12,7 +12,11 @@ import {
   useFocusEffect,
 } from "react-native";
 import Colors from "../constants/Colors";
-import { FlatList, TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler";
+import {
+  FlatList,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native-gesture-handler";
 import { TabBar, TabView } from "react-native-tab-view";
 import * as SecureStore from "expo-secure-store";
 import {
@@ -31,24 +35,24 @@ const UserListingsRoute = ({ profileInfo, onPressListing }) => (
         data={profileInfo.userListings}
         numColumns={3}
         renderItem={({ item }) => (
-            <View
-              style={{
-                flex: 1,
-                aspectRatio: 1,
-                margin: 3,
-              }}
-            >
-            <TouchableWithoutFeedback onPress={() => onPressListing(item)}>
-              {item.images.length > 0 && (
+          <View
+            style={{
+              flex: 1,
+              aspectRatio: 1,
+              margin: 3,
+            }}
+          >
+            {item.images.length > 0 && (
+              <TouchableOpacity onPress={() => onPressListing(item)}>
                 <Image
                   source={{
                     uri: `${serverIp}/img/${item.images[0]}`, // load the listing's first image
                   }}
                   style={{ width: "100%", height: "100%", borderRadius: 12 }}
                 />
-              )}
-              </TouchableWithoutFeedback>
-            </View>
+              </TouchableOpacity>
+            )}
+          </View>
         )}
       />
     ) : (
@@ -64,24 +68,24 @@ const LikedListingsRoute = ({ profileInfo, onPressListing }) => (
         data={profileInfo.likedListings}
         numColumns={3}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => onPressListing(item)}>
-            <View
-              style={{
-                flex: 1,
-                aspectRatio: 1,
-                margin: 3,
-              }}
-            >
+          <View
+            style={{
+              flex: 1,
+              aspectRatio: 1,
+              margin: 3,
+            }}
+          >
               {item.images.length > 0 && (
+                <TouchableOpacity onPress={() => onPressListing(item)}>
                 <Image
                   source={{
                     uri: `${serverIp}/img/${item.images[0]}`, // load the listing's first image
                   }}
                   style={{ width: "100%", height: "100%", borderRadius: 12 }}
                 />
+                </TouchableOpacity>
               )}
-            </View>
-          </TouchableOpacity>
+          </View>
         )}
       />
     ) : (
@@ -107,6 +111,7 @@ function ProfileScreen({ navigation, route }) {
   const [starStates, setStarStates] = useState({});
 
   const onPressListing = (listingDetails) => {
+    console.log("hello");
     setSelectedListing(listingDetails);
   };
 
@@ -178,7 +183,9 @@ function ProfileScreen({ navigation, route }) {
         });
 
         const initialStarStates = Object.fromEntries(
-          [...profileData.likedListings, ...profileData.userListings].map((listing) => [listing.ListingId, listing.liked])
+          [...profileData.likedListings, ...profileData.userListings].map(
+            (listing) => [listing.ListingId, listing.liked]
+          )
         );
         setStarStates(initialStarStates);
 
@@ -461,7 +468,7 @@ function ProfileScreen({ navigation, route }) {
                   height: 36,
                   alignItems: "center",
                   justifyContent: "center",
-                  backgroundColor: Colors.BB_orange,
+                  backgroundColor: Colors.BB_darkRedPurple,
                   borderRadius: 10,
                   marginHorizontal: 10,
                   top: 10,
@@ -472,7 +479,7 @@ function ProfileScreen({ navigation, route }) {
                 <Text
                   style={{
                     fontStyle: "normal",
-                    color: Colors.BB_darkRedPurple,
+                    color: Colors.white,
                     fontWeight: "500",
                     fontSize: 15,
                   }}
@@ -591,7 +598,7 @@ const styles = StyleSheet.create({
     height: 36,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.BB_orange,
+    backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 10,
     marginHorizontal: 10,
     top: 10,
@@ -602,7 +609,7 @@ const styles = StyleSheet.create({
     fontStyle: "normal",
     fontWeight: "500",
     fontSize: 15,
-    color: Colors.BB_darkRedPurple,
+    color: Colors.white,
   },
   ratingStar: {
     alignSelf: "center",

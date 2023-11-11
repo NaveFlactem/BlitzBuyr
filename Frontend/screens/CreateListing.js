@@ -4,25 +4,22 @@ import {
   View,
   StyleSheet,
   Text,
-  Image,
   TouchableOpacity,
   ScrollView,
   Dimensions,
   TextInput,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import DraggableGrid from "react-native-draggable-grid";
 import * as ImagePicker from "expo-image-picker";
-import Constants from "expo-constants";
-import { Camera } from "expo-camera"; // Import Camera from Expo
+import { Image } from "expo-image";
 import Colors from "../constants/Colors";
-import BottomBar from "../components/BottomBar";
 import TopBar from "../components/TopBar";
 import * as SecureStore from "expo-secure-store";
 import * as ImageManipulator from "expo-image-manipulator";
-import { withNavigation } from "react-navigation";
-import { Icons } from "../components/Icons.js";
 
+const blurhash = "L5H2EC=PM+yV0g-mq.wG9c010J}I";
 
 /**
  * @class
@@ -45,12 +42,27 @@ class CreateListing extends Component {
       description: "",
       price: "",
       data: [],
+      selectedTags: [],
       isScrollEnabled: true,
       isTitleInvalid: false,
       isDescriptionInvalid: false,
       isPriceInvalid: false,
       isImageInvalid: false,
       isTagInvalid: false,
+      isLoading: false,
+      tagsData: [
+        { name: "Furniture", selected: false },
+        { name: "Electronics", selected: false },
+        { name: "Clothing", selected: false },
+        { name: "Books", selected: false },
+        { name: "Appliances", selected: false },
+        { name: "Sports", selected: false },
+        { name: "Toys", selected: false },
+        { name: "Tools", selected: false },
+        { name: "Vehicles", selected: false },
+        { name: "Service", selected: false },
+        { name: "Other", selected: false },
+      ],
     };
     this.titleInput = React.createRef();
     this.descriptionInput = React.createRef();
@@ -69,19 +81,39 @@ class CreateListing extends Component {
       description: "",
       price: "",
       data: [],
+      selectedTags: [],
+      tagsData: [
+        { name: "Furniture", selected: false },
+        { name: "Electronics", selected: false },
+        { name: "Clothing", selected: false },
+        { name: "Books", selected: false },
+        { name: "Appliances", selected: false },
+        { name: "Sports", selected: false },
+        { name: "Toys", selected: false },
+        { name: "Tools", selected: false },
+        { name: "Vehicles", selected: false },
+        { name: "Service", selected: false },
+        { name: "Other", selected: false },
+      ],
       isTitleInvalid: false,
       isDescriptionInvalid: false,
       isPriceInvalid: false,
+      isImageInvalid: false,
+      isTagInvalid: false,
+      isLoading: false,
     });
   }
 
   /**
    * @function
-   * @handleCreateListing - sends user inputted data to server and checks if it ran smoothly
-   * @param {Object} formData - object that is sent to the server with user inputted values
+   * @checkValidListing - checks if the listing is valid
+   * @returns Returns 0 if the listing is valid, -1 if the listing is invalid and 1 if no images are selected and 2 if too many images are selected and 3 if no tags are selected
    */
-  handleCreateListing = async () => {
+  checkValidListing = () => {
+    let returnCode = 0;
+
     const { title, description, price, data } = this.state;
+
     if (this.state.title == "") {
       this.setState({ isTitleInvalid: true });
       this.titleInput.current.focus();
@@ -117,86 +149,125 @@ class CreateListing extends Component {
         this.setState({ isPriceInvalid: false });
       }
 
-      if (this.state.data.length == 0) {
-        this.setState({ isImageInvalid: true });
-
-        return Alert.alert("Please select at least one image.");
-      }
-      if (this.state.data.length > 9) {
-        this.setState({ isImageInvalid: true });
-        return Alert.alert("You can only select up to 9 images.");
+      if (this.state.selectedTags.length == 0) {
+        this.setState({ isTagInvalid: true });
       }
 
-      return;
-    }
-
-    try {
-      if (this.state.data.length == 0) {
-        console.error("No images selected.");
-        return;
-      }
-      if (this.state.data.length > 9) {
-        console.error("Too many images selected.");
-        return;
-      }
       if (this.state.price < 0) {
-        console.error("Invalid price.");
-        return;
+        returnCode = -1;
       }
       if ((this.state.price = "")) {
-        console.error("Invalid price.");
-        return;
+        returnCode = -1;
       }
       if (this.state.title.length > 25) {
-        console.error("Title too long.");
-        return;
+        returnCode = -1;
       }
       if ((this.state.title = "")) {
-        console.error("Invalid title.");
-        return;
+        returnCode = -1;
       }
       if (this.state.description.length > 500) {
-        console.error("Description too long.");
-        return;
+        returnCode = -1;
       }
       if ((this.state.description = "")) {
-        console.error("Invalid description.");
-        return;
+        returnCode = -1;
       }
 
-      const formData = new FormData();
+      if (
+        this.state.isPriceInvalid ||
+        this.state.isTitleInvalid ||
+        this.state.isDescriptionInvalid ||
+        this.state.isImageInvalid ||
+        this.state.isTagInvalid
+      ) {
+        returnCode = -1;
+      }
+    }
 
-      data.forEach((image, index) => {
-        // Append each image as a file
-        formData.append(`image_${index}`, {
-          uri: image.uri, // The URI of the image file
-          name: `image_${index}.jpg`, // The desired file name
-          type: "image/jpeg", // The content type of the file
+    if (this.state.data.length == 0) {
+        this.setState({ isImageInvalid: true });
+        returnCode = 1;
+      }
+      if (this.state.data.length > 9) {
+        this.setState({ isImageInvalid: true });
+        returnCode = 2;
+      }
+      if (this.state.selectedTags.length == 0) {
+        this.setState({ isTagInvalid: true });
+        returnCode = 3;
+      }
+      if (this.state.selectedTags == []) {
+        this.setState({ isTagInvalid: true });
+        returnCode = 3;
+      }
+
+    return returnCode;
+  };
+
+  /**
+   * @function
+   * @handleCreateListing - sends user inputted data to server and checks if it ran smoothly
+   * @param {Object} formData - object that is sent to the server with user inputted values
+   */
+  handleCreateListing = async () => {
+    this.setState({ isLoading: true });
+
+    const { title, description, price, data } = this.state;
+
+    try {
+      const returnCode = this.checkValidListing();
+      if (returnCode == -1) {
+        this.setState({ isLoading: false });
+        return;
+      } else if (returnCode == 1) {
+        Alert.alert("No images selected.");
+        this.setState({ isLoading: false });
+        return;
+      } else if (returnCode == 2) {
+        Alert.alert("Too many images selected.");
+        this.setState({ isLoading: false });
+        return;
+      } 
+      else if (returnCode == 3) {
+        Alert.alert("No tags selected.");
+        this.setState({ isLoading: false });
+        return;
+      }
+      else if (returnCode == 0) {
+        const formData = new FormData();
+
+        data.forEach((image, index) => {
+          // Append each image as a file
+          formData.append(`image_${index}`, {
+            uri: image.uri, // The URI of the image file
+            name: `image_${index}.jpg`, // The desired file name
+            type: "image/jpeg", // The content type of the file
+          });
         });
-      });
 
-      formData.append("price", price);
-      formData.append("title", title);
-      formData.append("description", description);
-      formData.append("username", await SecureStore.getItemAsync("username"));
+        formData.append("price", price);
+        formData.append("title", title);
+        formData.append("description", description);
+        formData.append("username", await SecureStore.getItemAsync("username"));
 
-      console.log("FormData:", formData);
-      const response = await fetch(`${serverIp}/api/createlisting`, {
-        method: "POST",
-        body: formData,
-      });
+        console.log("FormData:", formData);
+        const response = await fetch(`${serverIp}/api/createlisting`, {
+          method: "POST",
+          body: formData,
+        });
 
-      if (response.status <= 201) {
-        const responseData = await response.json();
-        console.log("Listing created successfully:", responseData);
-        this.destructor();
-        this.props.navigation.navigate("Home", { refresh: true });
-      } else {
-        console.error("HTTP error! Status: ", response.status);
+        if (response.status <= 201) {
+          const responseData = await response.json();
+          console.log("Listing created successfully:", responseData);
+          this.destructor();
+          this.props.navigation.navigate("Home", { refresh: true });
+        } else {
+          console.error("HTTP error! Status: ", response.status);
+        }
       }
     } catch (error) {
       console.error("Error creating listing:", error);
     }
+    this.setState({ isLoading: false });
   };
 
   /**
@@ -212,86 +283,104 @@ class CreateListing extends Component {
    * @getPermissionAsync - asks for permission to access camera roll
    */
   getPermissionAsync = async () => {
-    if (Constants.platform.ios) {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
-      }
+    // Camera roll Permission 
+    const { status: libraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (libraryStatus !== 'granted') {
+      alert('Sorry, we need camera roll permissions to make this work!');
+    }
+
+    // Camera Permission
+    const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
+    if (cameraStatus !== 'granted') {
+      alert('Sorry, we need camera permissions to make this work!');
     }
   };
 
-  /**
-   * @function
-   * @handleImagePick - allows user to select images from their camera roll
-   * @param {Object} result - object that contains the image(s) that the user selected
-   */
-  handleImagePick = async () => {
+  
+  handleImagePick = () => {
+    Alert.alert(
+      "Select Image",
+      "Choose where to select images from:",
+      [
+        {
+          text: "Camera",
+          onPress: () => this.handleCameraPick(),
+        },
+        {
+          text: "Photo Library",
+          onPress: () => this.handleLibraryPick(),
+        },
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  handleCameraPick = async () => {
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: false,
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      this.processImage(result);
+    }
+  };
+
+  handleLibraryPick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
       quality: 1,
       allowsMultipleSelection: true,
+      selectionLimit: 9 - this.state.data.length,
     });
 
-    if (result.canceled) {
-      return;
+    if (!result.cancelled) {
+      this.processSelectedImages(result.assets);
     }
-    /**
-     * @function
-     * @selectedImages - processes images allowing them to be sent and displayed
-     */
-    const selectedImages = await Promise.all(
-      result.assets.map(async function (image) {
-        try {
-          const manipulateResult = await ImageManipulator.manipulateAsync(
-            image.uri,
-            [],
-            { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
-          );
-          let localUri = manipulateResult.uri;
-          let filename = localUri.split("/").pop();
+  };
 
-          return {
-            name: filename,
-            key: String(Date.now()),
-            uri: localUri,
-          };
-        } catch (error) {
-          console.error("Image processing error:", error);
-          return null;
-        }
-      }),
+  processImage = async (image) => {
+    // Process a single image
+    const manipulatedImage = await this.manipulateImage(image.uri);
+    if (manipulatedImage) {
+      this.setState((prevState) => ({
+        data: [...prevState.data, manipulatedImage],
+      }));
+    }
+  };
+
+  processSelectedImages = async (assets) => {
+    // Process multiple images
+    const processedImages = await Promise.all(
+      assets.map(async (asset) => this.manipulateImage(asset.uri))
     );
-
-    // Filter out any potential null values (indicating errors)
-    const filteredImages = selectedImages.filter((image) => image !== null);
-
     this.setState((prevState) => ({
-      data: [...prevState.data, ...filteredImages],
+      data: [...prevState.data, ...processedImages.filter(Boolean)],
     }));
   };
 
-  /**
-   * @function
-   * @handleCameraCapture - allows user to take a picture with their camera
-   */
-  handleCameraCapture = async () => {
-    if (this.camera) {
-      let result = await this.camera.takePictureAsync({ quality: 1 });
-      if (result.uri) {
-        const newImageData = {
-          name: "New Image", // Customize the name as needed
-          key: String(Date.now()), // Generate a unique key
-          uri: result.uri,
-        };
-        this.setState((prevState) => ({
-          data: [...prevState.data, newImageData],
-        }));
-      }
+  manipulateImage = async (uri) => {
+    try {
+      const manipulateResult = await ImageManipulator.manipulateAsync(
+        uri,
+        [],
+        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+      );
+      return {
+        name: manipulateResult.uri.split("/").pop(),
+        key: String(Date.now()),
+        uri: manipulateResult.uri,
+      };
+    } catch (error) {
+      console.error("Image processing error:", error);
+      return null;
     }
   };
-
 
   /**
    * @function
@@ -307,9 +396,9 @@ class CreateListing extends Component {
       {
         text: "Delete",
         onPress: () => {
-          const updatedPhotos = [...photos];
-          updatedPhotos.splice(index, 1);
-          setPhotos(updatedPhotos);
+          this.setState(prevState => ({
+            data: prevState.data.filter((_, i) => i !== index)
+          }));
         },
       },
     ]);
@@ -321,15 +410,28 @@ class CreateListing extends Component {
    * @description - renders the images that the user selected
    * @returns Returns the images that the user selected
    */
-  render_item(item) {
+  render_item(item, index) {
     return (
-      <View style={styles.item} key={item.key}>
-        {item.uri ? (
-          <Image source={{ uri: item.uri }} style={styles.image} />
-        ) : (
-          <Text style={styles.item_text}>{item.name}</Text>
-        )}
-      </View>
+      <View style={styles.itemContainer} key={item.key} >
+      {item.uri ? (
+        <View style={styles.item}>
+          <Image
+            source={{ uri: item.uri }}
+            style={styles.image}
+            placeholder={blurhash}
+            transition={200}
+          />
+          <TouchableOpacity 
+            style={styles.deleteButton}
+            onPress={() => this.handleDeletePhoto(index)}
+          >
+            <Text style={styles.deleteButtonText}>X</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <Text style={styles.item_text}>{item.name}</Text>
+      )}
+    </View>
     );
   }
 
@@ -363,6 +465,50 @@ class CreateListing extends Component {
     }
   };
 
+  handleTagPress = (index) => {
+    this.setState((prevState) => {
+      // Toggle the 'selected' state of the pressed tag
+      const newTagsData = prevState.tagsData.map((tag, idx) => {
+        if (idx === index) {
+          return { ...tag, selected: !tag.selected };
+        }
+        return tag;
+      });
+
+      // Get the name of the tag that was pressed
+      const pressedTagName = newTagsData[index].name;
+
+      // Check if the tag is already in the selectedTags array
+      const isAlreadySelected = prevState.selectedTags.includes(pressedTagName);
+
+      let newSelectedTags;
+      if (isAlreadySelected) {
+        // If already selected, remove it from the array
+        newSelectedTags = prevState.selectedTags.filter(
+          (tagName) => tagName !== pressedTagName
+        );
+      } else {
+        // If not selected, add it to the array
+        newSelectedTags = [...prevState.selectedTags, pressedTagName];
+      }
+
+      console.log("New selected tags:", newSelectedTags);
+
+      return {
+        tagsData: newTagsData, // Update tagsData with the new 'selected' state
+        selectedTags: newSelectedTags, // Update selectedTags array
+      };
+    });
+  };
+
+  groupTagsIntoRows = (tags, itemsPerRow) => {
+    return tags.reduce((rows, tag, index) => {
+      if (index % itemsPerRow === 0) rows.push([]);
+      rows[rows.length - 1].push(tag);
+      return rows;
+    }, []);
+  };
+
   render() {
     const {
       isTitleInvalid,
@@ -372,74 +518,25 @@ class CreateListing extends Component {
       isTagInvalid,
     } = this.state;
 
-    // const tagsData = [
-    //   {
-    //     name: "Furniture",
-    //     selected: false,
-    //     type: Icons,
-    //     activeIcon: "",
-    //     inActiveIcon: "",
-    //   },
-    //   {
-    //     name: "Electronics",
-    //     selected: false,
-    //     type: Icons,
-    //     activeIcon: "",
-    //     inActiveIcon: "",
-    //   },
-    //   {
-    //     name: "Clothing",
-    //     selected: false,
-    //     type: Icons,
-    //     activeIcon: "",
-    //     inActiveIcon: "",
-    //   },
-    //   {
-    //     name: "Books",
-    //     selected: false,
-    //     type: Icons,
-    //     activeIcon: "",
-    //     inActiveIcon: "",
-    //   },
-    //   {
-    //     name: "Sports",
-    //     selected: false,
-    //     type: Icons,
-    //     activeIcon: "",
-    //     inActiveIcon: "",
-    //   },
-    //   {
-    //     name: "Beauty",
-    //     selected: false,
-    //     type: Icons,
-    //     activeIcon: "",
-    //     inActiveIcon: "",
-    //   },
-    //   {
-    //     name: "Toys",
-    //     selected: false,
-    //     type: Icons,
-    //     activeIcon: "",
-    //     inActiveIcon: "",
-    //   },
-    //   {
-    //     name: "Other",
-    //     selected: false,
-    //     type: Icons,
-    //     activeIcon: "",
-    //     inActiveIcon: "",
-    //   },
-    // ];
-
+    const rowsOfTags = this.groupTagsIntoRows(this.state.tagsData, 3);
     return (
       <View style={styles.wrapper}>
+        {this.state.isLoading && (
+          <View style={styles.loading}>
+            <ActivityIndicator size="large" color={Colors.BB_darkRedPurple} />
+            <Text>Loading...</Text>
+          </View>
+        )}
         <TopBar />
 
         <View style={styles.scrollfield}>
           <ScrollView scrollEnabled={this.state.isScrollEnabled}>
-              
-                <Text style={styles.buttonText2}>Create Listing</Text>
-              
+            <TouchableOpacity onPress={this.handleCreateListing}>
+              <View style={styles.createButton}>
+                <Text style={styles.buttonText}>Create Listing</Text>
+              </View>
+            </TouchableOpacity>
+
             <View style={styles.rowContainer}>
               <View style={styles.rowContainer}>
                 <Text style={styles.label}>Title</Text>
@@ -464,7 +561,10 @@ class CreateListing extends Component {
             </View>
             <TextInput
               ref={this.titleInput}
-              style={[styles.input]}
+              style={[
+                styles.input,
+                isTitleInvalid ? { borderColor: "red", borderWidth: 1 } : null,
+              ]}
               value={this.state.title}
               onChangeText={(text) => {
                 this.setState({ title: text, isTitleInvalid: false });
@@ -499,6 +599,9 @@ class CreateListing extends Component {
                 styles.input,
                 styles.multilineInput,
                 (textAlign = "left"),
+                isDescriptionInvalid
+                  ? { borderColor: "red", borderWidth: 1 }
+                  : null,
               ]}
               value={this.state.description}
               onChangeText={(text) => {
@@ -536,7 +639,10 @@ class CreateListing extends Component {
 
             <TextInput
               ref={this.priceInput}
-              style={[styles.input]}
+              style={[
+                styles.input,
+                isPriceInvalid ? { borderColor: "red", borderWidth: 1 } : null,
+              ]}
               value={this.state.price}
               onChangeText={(text) => {
                 this.setState({ price: text, isPriceInvalid: false });
@@ -548,24 +654,22 @@ class CreateListing extends Component {
               maxLength={9}
             />
 
-            <View style={styles.cameraContainer}>
-              <Camera
-                style={styles.cameraPreview}
-                ref={(ref) => (this.camera = ref)}
-              />
-            </View>
             <TouchableOpacity
               onPress={this.handleImagePick}
               style={styles.button}
-              
             >
               <Text style={styles.buttonText}>Select Images</Text>
             </TouchableOpacity>
-            <View style={styles.imageField}>
+            <View
+              style={[
+                styles.imageField,
+                isImageInvalid ? { borderColor: "red", borderWidth: 1 } : null,
+              ]}
+            >
               <View style={styles.innerField}>
                 <DraggableGrid
                   numColumns={3}
-                  renderItem={this.render_item}
+                  renderItem={(item, index) => this.render_item(item, index)}
                   data={this.state.data}
                   onDragRelease={this.handleDragRelease}
                   onDragStart={this.handleDragStart}
@@ -573,14 +677,46 @@ class CreateListing extends Component {
               </View>
             </View>
 
-            <View style={styles.tagField}>
-              {/* {tagsData.map((tag, index) => (
-                <TouchableOpacity key={index} style={styles.tagContainer}>
-                  <Text>{tag.name}</Text>
-                </TouchableOpacity>
-              ))}
-              ; */}
-            </View>
+
+
+
+            <ScrollView style={[
+                  styles.tagField,
+                  isTagInvalid ? { borderColor: "red", borderWidth: 1 } : null,
+                ]}>
+              <View>
+                {rowsOfTags.map((row, rowIndex) => (
+                  <View key={rowIndex} style={styles.tagRowContainer}>
+                    {row.map((tag, tagIndex) => (
+                      <TouchableOpacity
+                        key={tagIndex}
+                        style={styles.tagContainer}
+                        onPress={() =>
+                          {
+                          this.handleTagPress(tagIndex + rowIndex * 3);
+                          this.setState({ isTagInvalid: false });
+                          }
+                        }
+                      >
+                        <View
+                          style={[
+                            styles.tagSelected,
+                            { opacity: tag.selected ? 1 : 0.3 },
+                          ]}
+                        />
+                        <View
+                          style={[
+                            styles.rhombus,
+                            { opacity: tag.selected ? 0.15 : 0 },
+                          ]}
+                        />
+                        <Text style={styles.tagText}>{tag.name}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
 
             <TouchableOpacity onPress={this.handleCreateListing}>
               <View style={[styles.createButton, (top = 30), (bottom = 0)]}>
@@ -591,8 +727,6 @@ class CreateListing extends Component {
             <Text style={styles.spacer} />
           </ScrollView>
         </View>
-
-        <BottomBar />
       </View>
     );
   }
@@ -622,54 +756,124 @@ const styles = StyleSheet.create({
     fontSize: 22,
     alignSelf: "center",
     fontWeight: "bold",
-
   },
   imageField: {
     alignSelf: "center",
     width: "95%",
-    height: 400,
+    height: 0.45 * screenHeight,
     backgroundColor: Colors.white,
     borderRadius: 20,
-    borderColor: Colors.black,
-    borderWidth: 1,
-    //shadowColor: "black",
-    //shadowOpacity: 0.5,
-    //shadowOffset: { width: 2, height: 4 },
-    //shadowRadius: 3,
-    //elevation: 5,
-    //margin: 0,
+    shadowColor: "gray",
+    shadowOpacity: 0.9,
+    shadowOffset: { width: 1, height: 1 },
+    shadowRadius: 3,
   },
+  deleteButton: {
+    position: 'absolute',
+    alignContent: 'center',
+    justifyContent: 'center',
+    width: 20,
+    height: 20,
+    top: 2,
+    right: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderRadius: 12,
+    zIndex: 2,
+    textAlign: 'center',
+  },
+  deleteButtonText: {
+    color: 'red',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    alignSelf: 'center',
+  },
+///////////////
   tagField: {
     alignSelf: "center",
     width: "95%",
-    height: 600,
+    height: 0.4 * screenHeight,
     backgroundColor: Colors.white,
     borderRadius: 20,
-    borderWidth: 1,
-    bordercolor: Colors.black,
-
-  
-    //borderRadius: 20,
-    //shadowColor: "black",
-    //shadowOpacity: 0.5,
-    //shadowOffset: { width: 2, height: 4 },
-    //shadowRadius: 3,
     top: 30,
     marginBottom: 50,
+    shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 2,
   },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+  elevation: 5,
+  },
+  tagRowContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  tagContainer: {
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 20,
+    alignContent: "center",
+    justifyContent: "center",
+    textAlign: "center",
+    height: 0.08 * screenHeight,
+    width: 0.3 * screenWidth,
+    shadowColor: "gray",
+    shadowOpacity: 0.9,
+    shadowOffset: { width: 1, height: 1 },
+    shadowRadius: 3,
+  },
+  tagText: {
+    color: Colors.white,
+    fontSize: 18,
+    alignSelf: "center",
+    fontWeight: "bold",
+    shadowColor: "black",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 1, height: 1 },
+  },
+  rhombus: {
+    alignSelf: "center",
+    position: "absolute",
+    width: "40%",
+    aspectRatio: 1,
+    backgroundColor: Colors.BB_darkPink,
+    opacity: 0.15,
+    transform: [{ rotate: "45deg" }],
+  },
+  tagSelected: {
+    alignSelf: "center",
+    backgroundColor: Colors.BB_darkRedPurple,
+    borderRadius: 20,
+    height: "100%",
+    width: "100%",
+    position: "absolute",
+  },
+///////////////////////////
   innerField: {
     margin: 10,
     marginTop: 20,
     width: "95%",
     height: "95%",
   },
+  itemContainer: {
+    width: "33%",
+    height: "33%",
+    alignContent: "center",
+    justifyContent: "center",
+  },
   item: {
     marginTop: 10,
     width: 100,
     height: 100,
     borderRadius: 8,
-    borderColor: Colors.BB_darkOrange,
-    borderWidth: 2,
+    borderColor: Colors.BB_darkRedPurple,
+    shadowColor: "gray",
+    shadowOpacity: 0.9,
+    shadowOffset: { width: 1, height: 1 },
+    shadowRadius: 3,
     backgroundColor: "red",
     justifyContent: "center",
     alignItems: "center",
@@ -694,93 +898,100 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignSelf: "center",
     width: screenWidth * 0.4,
-    backgroundColor: Colors.BB_orange,
+    backgroundColor: Colors.BB_darkRedPurple,
     padding: 5,
-    borderColor: Colors.black,
     borderRadius: 10,
     fontWeight: "bold",
-    borderWidth: 1,
     height: 36,
     width: 150,
-    //shadowColor: "black",
-    //shadowOpacity: 1,
-    //shadowOffset: {
-    //  width: 1,
-    //  height: 1,
-    //},
-    //shadowRadius: 2,
+    shadowColor: "gray",
+    shadowOpacity: 0.9,
+    shadowOffset: { width: 1, height: 1 },
+    shadowRadius: 3,
   },
+
   label: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "BB_black",
+    color: "black",
+    marginTop: 20,
+    left: 0.05 * screenWidth,
   },
   asterisk: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 10,
     color: "red",
+    left: 0.05 * screenWidth,
   },
   errorMessage: {
     fontSize: 12,
     color: "red",
     marginLeft: 10,
-    left: 10,
+    top: 0.008 * screenHeight,
+    left: 0.05 * screenWidth,
   },
+
   input: {
     height: 40,
     borderColor: Colors.BB_black,
-    borderWidth: 1,
     borderRadius: 10,
     backgroundColor: "white",
     opacity: 0.9,
     marginBottom: 10,
     width: "90%",
     left: "5%",
-    //shadowColor: "blue",
-    //shadowOpacity: 0.9,
-    //shadowOffset: { width: 2, height: 4 },
-    //shadowRadius: 3,
+    shadowColor: "gray",
+    shadowOpacity: 0.9,
+    shadowOffset: { width: 1, height: 1 },
+    shadowRadius: 3,
     textAlign: "center",
     color: "black",
   },
   multilineInput: {
     height: 120,
   },
+
   button: {
     width: 150,
     height: 36,
-    boarderWidth: 1,
-    boarderColor: "black",
-    backgroundColor: Colors.BB_orange,
+    backgroundColor: Colors.BB_darkRedPurple,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 30,
     alignSelf: "center",
     borderRadius: 10,
     marginTop: 20,
-    borderWidth: 1,
     borderColor: Colors.black,
-    //shadowColor: "black",
-    //shadowOpacity: 0.5,
-    //shadowOffset: { width: 2, height: 4 },
-    //shadowRadius: 3,
+    shadowColor: "gray",
+    shadowOpacity: 0.9,
+    shadowOffset: { width: 1, height: 1 },
+    shadowRadius: 3,
   },
   buttonText: {
     fontSize: 18,
     color: "white",
     alignSelf: "center",
   },
+
   rowContainer: {
     flexDirection: "row",
     alignItems: "center",
   },
   characterCounter: {
     fontSize: 12,
-    color: "white",
+    color: "black",
     position: "absolute",
     right: 0.05 * screenWidth,
+  },
+  loading: {
+    height: screenHeight,
+    width: screenWidth,
+    position: "absolute",
+    backgroundColor: "rgba(0,0,0,0.2)",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1,
   },
   spacer: {
     height: 400,

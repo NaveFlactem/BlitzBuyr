@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React, { useEffect, useRef, memo } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, Vie, Dimensions } from "react-native";
 import Icon, { Icons } from "../components/Icons";
 import Colors from "../constants/Colors";
 import * as Animatable from "react-native-animatable";
@@ -76,7 +76,7 @@ const TabButton = (props) => {
     // Load and cache the assets when the component mounts
     async function loadAssetsAsync() {
       const assetPromises = assetsToPreload.map((asset) =>
-        Asset.fromModule(asset).downloadAsync(),
+        Asset.fromModule(asset).downloadAsync()
       );
       await Promise.all(assetPromises);
     }
@@ -87,14 +87,15 @@ const TabButton = (props) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      activeOpacity={1}
-      style={styles.container}
+      activeOpacity={0.7}
+      style={styles.tabButtonContainer}
     >
-      <Animatable.View ref={viewRef} duration={500} style={styles.container}>
+      <Animatable.View ref={viewRef} duration={500} style={styles.tabButton}>
         <Icon
           type={item.type}
           name={focused ? item.activeIcon : item.inActiveIcon}
-          color={focused ? Colors.white : Colors.gray}
+          color={focused ? Colors.primary : Colors.gray}
+          size={25}
         />
       </Animatable.View>
     </TouchableOpacity>
@@ -102,17 +103,18 @@ const TabButton = (props) => {
 };
 
 function BottomNavOverlay() {
+  const screenHeight = Dimensions.get("window").height;
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          height: "6%",
-          position: "absolute",
-          bottom: "1%",
-          backgroundColor: "transparent",
+          height: screenHeight * 0.08,
+          backgroundColor: Colors.BB_pink,
           borderTopWidth: 0,
+          elevation: 0
         },
       }}
     >
@@ -133,13 +135,19 @@ function BottomNavOverlay() {
   );
 }
 
-export default memo(BottomNavOverlay);
-
 const styles = StyleSheet.create({
-  container: {
+  tabButtonContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "transparent",
+    backgroundColor: Colors.BB_darkRedPurple,
+  },
+  tabButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    width: "100%",
   },
 });
+
+export default memo(BottomNavOverlay);
