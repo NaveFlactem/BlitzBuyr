@@ -461,18 +461,18 @@ function ProfileScreen({ navigation, route }) {
                   height: 36,
                   alignItems: "center",
                   justifyContent: "center",
-                  backgroundColor: Colors.BB_orange,
+                  backgroundColor: Colors.BB_darkRedPurple,
                   borderRadius: 10,
                   marginHorizontal: 10,
                   top: 10,
                   borderWidth: 2,
-                  borderColor: "black",
+                  borderColor: "black"
                 }}
               >
                 <Text
                   style={{
                     fontStyle: "normal",
-                    color: Colors.BB_darkRedPurple,
+                    color: Colors.white,
                     fontWeight: "500",
                     fontSize: 15,
                   }}
@@ -591,18 +591,18 @@ const styles = StyleSheet.create({
     height: 36,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.BB_orange,
+    backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 10,
     marginHorizontal: 10,
-    top: 10,
+    top: 10, 
     borderWidth: 2,
-    borderColor: Colors.black,
+    borderColor: Colors.black
   },
   logoutButtonText: {
     fontStyle: "normal",
     fontWeight: "500",
     fontSize: 15,
-    color: Colors.BB_darkRedPurple,
+    color: Colors.white,
   },
   ratingStar: {
     alignSelf: "center",

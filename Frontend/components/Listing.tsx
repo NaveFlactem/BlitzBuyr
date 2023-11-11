@@ -448,11 +448,19 @@ const styles = StyleSheet.create({
   },
   blurContainer: {
     position: "absolute",
-    top: 0.18 * screenHeight,
-    width: 0.9 * screenWidth,
-    height: 0.8 * screenHeight,
+    top: 0.185 * screenHeight,
+    alignSelf: "center",
+    width: 0.88 * screenWidth,
+    height: 0.79 * screenHeight,
     borderRadius: 20,
     zIndex: 10,
+    shadowColor: "lightgray",
+    shadowOpacity: 0.4,
+    shadowRadius: 5,
+    shadowOffset: {
+      height: 0,
+      width: 0,
+    },
   },
   priceContainer: {
     position: "absolute",
