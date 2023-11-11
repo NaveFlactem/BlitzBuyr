@@ -12,7 +12,7 @@ import {
   useFocusEffect,
 } from "react-native";
 import Colors from "../constants/Colors";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList, TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { TabBar, TabView } from "react-native-tab-view";
 import * as SecureStore from "expo-secure-store";
 import {
@@ -22,30 +22,33 @@ import {
 } from "./auth/Authenticate.js";
 import { useIsFocused } from "@react-navigation/native";
 import { Entypo } from "@expo/vector-icons";
+import Listing from "../components/Listing.tsx";
 
-const UserListingsRoute = ({ profileInfo }) => (
+const UserListingsRoute = ({ profileInfo, onPressListing }) => (
   <View style={{ flex: 1 }}>
     {profileInfo.userListings.length > 0 ? (
       <FlatList
         data={profileInfo.userListings}
         numColumns={3}
         renderItem={({ item }) => (
-          <View
-            style={{
-              flex: 1,
-              aspectRatio: 1,
-              margin: 3,
-            }}
-          >
-            {item.images.length > 0 && (
-              <Image
-                source={{
-                  uri: `${serverIp}/img/${item.images[0]}`, // load the listing's first image
-                }}
-                style={{ width: "100%", height: "100%", borderRadius: 12 }}
-              />
-            )}
-          </View>
+            <View
+              style={{
+                flex: 1,
+                aspectRatio: 1,
+                margin: 3,
+              }}
+            >
+            <TouchableWithoutFeedback onPress={() => onPressListing(item)}>
+              {item.images.length > 0 && (
+                <Image
+                  source={{
+                    uri: `${serverIp}/img/${item.images[0]}`, // load the listing's first image
+                  }}
+                  style={{ width: "100%", height: "100%", borderRadius: 12 }}
+                />
+              )}
+              </TouchableWithoutFeedback>
+            </View>
         )}
       />
     ) : (
@@ -54,29 +57,31 @@ const UserListingsRoute = ({ profileInfo }) => (
   </View>
 );
 
-const LikedListingsRoute = ({ profileInfo }) => (
+const LikedListingsRoute = ({ profileInfo, onPressListing }) => (
   <View style={{ flex: 1 }}>
     {profileInfo.likedListings.length > 0 ? (
       <FlatList
         data={profileInfo.likedListings}
         numColumns={3}
         renderItem={({ item }) => (
-          <View
-            style={{
-              flex: 1,
-              aspectRatio: 1,
-              margin: 3,
-            }}
-          >
-            {item.images.length > 0 && (
-              <Image
-                source={{
-                  uri: `${serverIp}/img/${item.images[0]}`, // load the listing's first image
-                }}
-                style={{ width: "100%", height: "100%", borderRadius: 12 }}
-              />
-            )}
-          </View>
+          <TouchableOpacity onPress={() => onPressListing(item)}>
+            <View
+              style={{
+                flex: 1,
+                aspectRatio: 1,
+                margin: 3,
+              }}
+            >
+              {item.images.length > 0 && (
+                <Image
+                  source={{
+                    uri: `${serverIp}/img/${item.images[0]}`, // load the listing's first image
+                  }}
+                  style={{ width: "100%", height: "100%", borderRadius: 12 }}
+                />
+              )}
+            </View>
+          </TouchableOpacity>
         )}
       />
     ) : (
@@ -98,6 +103,12 @@ function ProfileScreen({ navigation, route }) {
   const [profileName, setProfileName] = useState("");
   const [loggedUser, setLoggedUser] = useState(""); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
   const [routes, setRoutes] = useState([]);
+  const [selectedListing, setSelectedListing] = useState(null);
+  const [starStates, setStarStates] = useState({});
+
+  const onPressListing = (listingDetails) => {
+    setSelectedListing(listingDetails);
+  };
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -166,6 +177,11 @@ function ProfileScreen({ navigation, route }) {
           coverPicture: profileData.coverPicture,
         });
 
+        const initialStarStates = Object.fromEntries(
+          [...profileData.likedListings, ...profileData.userListings].map((listing) => [listing.ListingId, listing.liked])
+        );
+        setStarStates(initialStarStates);
+
         console.log(`Profile for ${username} fetched successfully`);
       } else {
         console.log(
@@ -177,6 +193,40 @@ function ProfileScreen({ navigation, route }) {
     } catch (err) {
       console.log("Error:", err);
     }
+  };
+
+  // star states
+  const handleStarPress = async (listingId) => {
+    // toggle the like
+    const newStarStates = { ...starStates }; // Create a copy of the current starStates
+    newStarStates[listingId] = !newStarStates[listingId]; // Update the liked status
+
+    const likeData = {
+      username: await SecureStore.getItemAsync("username"),
+      listingId: listingId,
+    };
+
+    // Update the backend
+    const likedResponse = await fetch(`${serverIp}/api/like`, {
+      method: newStarStates[listingId] ? "POST" : "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(likeData),
+    });
+
+    if (likedResponse.status > 201) {
+      console.log("Error Liking listing:", listingId, likedResponse.status);
+    }
+
+    // Update the state with the new star states object
+    setStarStates(newStarStates);
+
+    console.log(
+      `${
+        newStarStates[listingId] ? "Starred" : "Unstarred"
+      } listing ID ${listingId}`
+    );
   };
 
   const renderTabBar = (props) => (
@@ -415,7 +465,7 @@ function ProfileScreen({ navigation, route }) {
                   borderRadius: 10,
                   marginHorizontal: 10,
                   top: 10,
-                  borderWidth: 1,
+                  borderWidth: 2,
                   borderColor: "black",
                 }}
               >
@@ -473,9 +523,19 @@ function ProfileScreen({ navigation, route }) {
           renderScene={({ route }) => {
             switch (route.key) {
               case "first":
-                return <UserListingsRoute profileInfo={profileInfo} />;
+                return (
+                  <UserListingsRoute
+                    profileInfo={profileInfo}
+                    onPressListing={onPressListing}
+                  />
+                );
               case "second":
-                return <LikedListingsRoute profileInfo={profileInfo} />;
+                return (
+                  <LikedListingsRoute
+                    profileInfo={profileInfo}
+                    onPressListing={onPressListing}
+                  />
+                );
               default:
                 return null;
             }
@@ -485,6 +545,34 @@ function ProfileScreen({ navigation, route }) {
           renderTabBar={renderTabBar}
         />
       </View>
+
+      {/* Overlay for displaying selected listing */}
+      {selectedListing && (
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+          }}
+        >
+          <Listing
+            key={selectedListing.ListingId}
+            item={selectedListing}
+            starStates={starStates}
+            handleStarPress={handleStarPress}
+            numItems={selectedListing.images.length}
+          />
+          <TouchableOpacity onPress={() => setSelectedListing(null)}>
+            <Text style={{ color: "white" }}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -507,8 +595,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: 10,
     top: 10,
-    borderWidth: 1,
-    borderColor: "black",
+    borderWidth: 2,
+    borderColor: Colors.black,
   },
   logoutButtonText: {
     fontStyle: "normal",
