@@ -171,7 +171,18 @@ router.post("/register", (req, res) => {
               console.error("Error registering the account:", err);
               return res.status(500).json({ error: "Internal Server Error" });
             }
-            // WIP: Consider adding constraints to the password (such as checking that it's strong enough with length, characters, etc.).
+          }
+        );
+
+        // create new profile for the account
+        db.run(
+          "INSERT INTO Profiles (Username) VALUES (?)",
+          [username],
+          (err) => {
+            if (err) {
+              console.error("Error creating a new profile:", err);
+              return res.status(500).json({ error: "Internal Server Error" });
+            }
             return res.status(201).json({
               message: "Account created",
               username: username,

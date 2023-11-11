@@ -23,12 +23,116 @@ const db = new sqlite3.Database("./blitzbuyr.db", (err) => {
   }
 });
 
+function extractColumnsFromDefinition(definition) {
+  const matchResult = definition.match(/\(([\s\S]+)\)/);
+  return matchResult
+    ? matchResult[1].replace(/\s+/g, " ").toLowerCase().trim()
+    : "";
+}
+
+function areTableDefinitionsEqual(definition1, definition2) {
+  // Extract and compare the normalized column definitions
+  const columns1 = extractColumnsFromDefinition(definition1);
+  const columns2 = extractColumnsFromDefinition(definition2);
+
+  //console.log(columns1, columns2);
+  return columns1 === columns2;
+}
+
+function createOrUpdateTable(db, tableDefinition) {
+  db.serialize(() => {
+    // Extract table name from the definition
+    const tableName = tableDefinition.match(
+      /CREATE TABLE IF NOT EXISTS (\w+)/i
+    )[1];
+
+    // Check if the table already exists
+    db.get(
+      `SELECT sql FROM sqlite_master WHERE type='table' AND name='${tableName}'`,
+      (err, existingTable) => {
+        if (err) {
+          console.error(err.message);
+          return;
+        }
+
+        if (!existingTable) {
+          // If the table doesn't exist, create it
+          db.run(tableDefinition);
+          console.log(`Table '${tableName}' created successfully.`);
+        } else {
+          // If the table exists, compare the column definitions
+          const existingTableDefinition = existingTable.sql;
+
+          if (
+            areTableDefinitionsEqual(existingTableDefinition, tableDefinition)
+          ) {
+            console.log(
+              `Table '${tableName}' structure is already up to date.`
+            );
+          } else {
+            // If the table structures are different, alter it
+            const tempTableName = `${tableName}_Temp`;
+
+            // Create a temporary table with the new structure
+            db.run(
+              tableDefinition.replace(
+                new RegExp(tableName, "g"),
+                tempTableName
+              ),
+              (err) => {
+                if (err) {
+                  console.error(err.message);
+                  return;
+                }
+
+                // Copy data from the existing table to the temporary table
+                db.run(
+                  `INSERT INTO ${tempTableName} SELECT * FROM ${tableName}`,
+                  (err) => {
+                    if (err) {
+                      console.error(err.message);
+                      return;
+                    }
+
+                    // Drop the existing table
+                    db.run(`DROP TABLE IF EXISTS ${tableName}`, (err) => {
+                      if (err) {
+                        console.error(err.message);
+                        return;
+                      }
+
+                      // Rename the temporary table to the original table name
+                      db.run(
+                        `ALTER TABLE ${tempTableName} RENAME TO ${tableName}`,
+                        (err) => {
+                          if (err) {
+                            console.error(err.message);
+                            return;
+                          }
+
+                          console.log(
+                            `Table '${tableName}' altered successfully.`
+                          );
+                        }
+                      );
+                    });
+                  }
+                );
+              }
+            );
+          }
+        }
+      }
+    );
+  });
+}
+
 // Accounts Table //
 const accountsTable = `
 CREATE TABLE IF NOT EXISTS Accounts (
   Username TEXT PRIMARY KEY,
   Password TEXT,
-  Email INTEGER
+  Email TEXT
   );`;
 
 // Listings Table //
@@ -40,7 +144,7 @@ CREATE TABLE IF NOT EXISTS Listings (
   Username TEXT,
   Description TEXT,
   PostDate TIMESTAMP,
-  FOREIGN KEY (Username) REFERENCES Accounts (Username) ON DELETE CASCADE
+  FOREIGN KEY (Username) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE
   );`;
 
 // Images Table //
@@ -50,7 +154,7 @@ CREATE TABLE IF NOT EXISTS Images (
   ListingId INTEGER, 
   ImageURI TEXT,
   BlurHash TEXT,
-  FOREIGN KEY (ListingId) REFERENCES Listings (ListingId) ON DELETE CASCADE
+  FOREIGN KEY (ListingId) REFERENCES Listings (ListingId) ON DELETE CASCADE ON UPDATE CASCADE
 );`;
 
 // Rating Table //
@@ -61,7 +165,8 @@ CREATE TABLE IF NOT EXISTS Ratings (
   Rating REAL,
   ReviewDescription TEXT,
   PRIMARY KEY (Username, UserRated),
-  FOREIGN KEY (UserRated) REFERENCES Users (Username) ON DELETE CASCADE
+  FOREIGN KEY (UserRated) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (Username) REFERENCES Accounts (Username) ON UPDATE CASCADE
   );`;
 
 // Profile Table //
@@ -71,7 +176,8 @@ CREATE TABLE IF NOT EXISTS Profiles (
   ContactInfo TEXT,
   ProfilePicture TEXT DEFAULT "http://blitzbuyr.lol/img/profile_default.png",
   CoverPicture TEXT DEFAULT "http://blitzbuyr.lol/img/cover_default.jpg",
-  PRIMARY KEY (Username)
+  PRIMARY KEY (Username),
+  FOREIGN KEY (Username) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE
   );`;
 
 // Likes Table //
@@ -80,8 +186,8 @@ CREATE TABLE IF NOT EXISTS Likes (
   Username Text,
   ListingId INTEGER,
   PRIMARY KEY (Username, ListingId),
-  FOREIGN KEY (Username) REFERENCES Users (Username) ON DELETE CASCADE,
-  FOREIGN KEY (ListingId) REFERENCES Listings (ListingId) ON DELETE CASCADE
+  FOREIGN KEY (Username) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (ListingId) REFERENCES Listings (ListingId) ON DELETE CASCADE ON UPDATE CASCADE
   );`;
 
 // Create tables using Promises
@@ -95,30 +201,6 @@ const tables = [
 ];
 
 /**
- * Initializes tables in the existing database. Does not populate the database.
- *
- * @function
- * @name createTable
- *
- * @param {String} sql - SQL create statement that's run using the initialized SQlite db object.
- * @param {String} tableName - Holds the name of the table being created
- */
-// Function to create tables
-function createTable(sql, tableName) {
-  return new Promise((resolve, reject) => {
-    db.run(sql, (err) => {
-      if (err) {
-        console.error(`Error creating table ${tableName}:`, err.message);
-        reject(err);
-      } else {
-        console.log(`Table ${tableName} created successfully.`);
-        resolve();
-      }
-    });
-  });
-}
-
-/**
  * Loops through globally initialized list that holds all SQL create statements.
  *
  * @function
@@ -127,9 +209,12 @@ function createTable(sql, tableName) {
 async function createTables() {
   try {
     for (const table of tables) {
-      await createTable(table.sql, table.name);
+      createOrUpdateTable(db, table.sql);
     }
-  } catch (err) {} //error already logged
+    db.run("PRAGMA foreign_keys=ON");
+  } catch (err) {
+    console.log("error:", err);
+  }
 }
 
 createTables();
