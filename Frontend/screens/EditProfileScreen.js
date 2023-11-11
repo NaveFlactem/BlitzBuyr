@@ -4,18 +4,14 @@ import {
   View,
   Text,
   SafeAreaView,
-  StatusBar,
   Image,
-  useWindowDimensions,
   StyleSheet,
   Dimensions,
   ActivityIndicator,
-  useFocusEffect,
 } from "react-native";
 import Colors from "../constants/Colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
-  FlatList,
   TouchableOpacity,
   ScrollView,
   TextInput,
@@ -26,59 +22,54 @@ import {
   setStoredCredentials,
 } from "./auth/Authenticate.js";
 import { useIsFocused } from "@react-navigation/native";
-import { Entypo } from "@expo/vector-icons";
-import { Feather } from '@expo/vector-icons'; 
+import { Feather } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 const EditProfileScreen = ({ navigation, route }) => {
-  const layout = useWindowDimensions();
-  const [profileInfo, setProfileInfo] = useState({
-    likedListings: [],
-    userListings: [],
-    userRatings: {},
-  });
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(true);
   const [profileName, setProfileName] = useState("");
-  const [loggedUser, setLoggedUser] = useState(""); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
-  const [routes, setRoutes] = useState([]);
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("temporary@temp.com");
-  const [password, setPassword] = useState("temp_password");
+  const [password, setPassword] = useState("");
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
-  const [selectedProfileImage, setSelectedProfileImage] = useState("");
-  const [selectedCoverImage, setSelectedCoverImage] = useState("");
+  const [selectedProfilePicture, setSelectedProfilePicture] = useState("");
+  const [selectedCoverPicture, setSelectedCoverPicture] = useState("");
 
   const togglePasswordVisibility = () => {
     setIsPasswordHidden(!isPasswordHidden);
   };
 
-  //Sets text field data = current profile data / default data
   useEffect(() => {
-    setName(profileName);
-  }, [profileName]);
+    if (isFocused) {
+      setLoading(true);
+      setProfileName(route.params.profileName);
+      setSelectedProfilePicture(route.params.profilePicture);
+      setSelectedCoverPicture(route.params.coverPicture);
+      setPassword(getStoredPassword());
+    }
+  }, [isFocused]);
 
   useEffect(() => {
-    setEmail("temporary@temp.com");
-  }, ["temporary@temp.com"]);
-
-  useEffect(() => {
-    setPassword("temp_password");
-  }, ["temp_password"]);
-
-  useEffect(() => {
-    setSelectedProfileImage(profileInfo.profilePicture);
-  }, [profileInfo.profilePicture]);
-
-  useEffect(() => {
-    setSelectedCoverImage(profileInfo.coverPicture);
-  }, [profileInfo.profilePicture]);
+    if (
+      loading &&
+      profileName !== "" &&
+      selectedProfilePicture !== "" &&
+      selectedCoverPicture !== ""
+    ) {
+      setLoading(false);
+      console.log("Finished getting original profile data.");
+      console.log("Profile Name:", profileName);
+      console.log("Password:", password);
+      console.log("Profile Picture:", selectedProfilePicture);
+      console.log("Cover Picture:", selectedCoverPicture);
+    }
+  }, [profileName, selectedProfilePicture, selectedCoverPicture, password]);
 
   //Functions for touchable opacity prompts for changing profile/cover photo
-
   const handleProfileImageSelection = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -88,8 +79,30 @@ const EditProfileScreen = ({ navigation, route }) => {
     });
 
     if (!result.canceled) {
-      console.log("Profile Picture was successfully changed.");
-      setSelectedProfileImage(result.assets[0].uri);
+      try {
+        const manipulateResult = await ImageManipulator.manipulateAsync(
+          result.assets[0].uri,
+          [],
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+        );
+        let localUri = manipulateResult.uri;
+        let filename = localUri.split("/").pop();
+
+        /*
+        result = {
+          name: filename,
+          key: String(Date.now()),
+          uri: localUri,
+          type: "image/jpeg", // The content type of the file
+        };
+        */
+        result = localUri;
+      } catch (error) {
+        console.error("Image processing error:", error);
+        return null;
+      }
+      setSelectedProfilePicture(result);
+      console.log(`Profile picture ${result} selected.`);
     } else {
       console.log("Profile Picture change function was canceled.");
     }
@@ -104,9 +117,30 @@ const EditProfileScreen = ({ navigation, route }) => {
     });
 
     if (!result.canceled) {
-      console.log("Cover Photo was successfully changed.");
-      console.log(result.assets[0].uri);
-      setSelectedCoverImage(result.assets[0].uri);
+      try {
+        const manipulateResult = await ImageManipulator.manipulateAsync(
+          result.assets[0].uri,
+          [],
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+        );
+        let localUri = manipulateResult.uri;
+        let filename = localUri.split("/").pop();
+
+        /*
+        result = {
+          name: filename,
+          key: String(Date.now()),
+          uri: localUri,
+          type: "image/jpeg", // The content type of the file
+        };
+        */
+        result = localUri;
+      } catch (error) {
+        console.error("Image processing error:", error);
+        return null;
+      }
+      setSelectedCoverPicture(result);
+      console.log(`Cover picture ${result} selected.`);
     } else {
       console.log("Cover Picture change function was canceled.");
     }
@@ -114,105 +148,55 @@ const EditProfileScreen = ({ navigation, route }) => {
 
   //Function for handling save changes press
   const saveChanges = async () => {
-    // Notes: 
-    // - Data needed to be fetched: email and password
-    // Data to be overwritten
-    /* 
-       username = (varname: name)
-       email = (varname: email)
-       password = (varname: password)
-       profile picture = (varname: selectedProfileImage)
-       cover photo = (varname: selectedCoverImage)
-    */  
-    //On press this function should overwrite all db data for each of them.
+    const formData = new FormData();
+    formData.append("username", getStoredUsername());
+    formData.append("profileName", profileName);
+    formData.append("password", password);
 
-    console.log("Saving Changes");
-    
-    // Should also call goback to main page: uncomment bottom
-    // navigation.navigate("BottomNavOverlay"); 
-  }
-
-  // Fetching data
-
-  useEffect(() => {
-    const fetchUsername = async () => {
-      const username = getStoredUsername();
-      setLoggedUser(username);
-      if (route.params?.username) {
-        console.log(
-          `Setting username to passed username ${route.params.username}`
-        );
-        setProfileName(route.params.username);
-      } else {
-        console.log(`Setting username to cached logged in user`);
-        setProfileName(username);
-      }
-    };
-
-    fetchUsername();
-  }, [navigation, route.params?.username]); // called when navigation is updated (clicking the page, or when username is changed)
-
-  // get user's profile when the username changes or when we open the page
-  useEffect(() => {
-    setLoading(true);
-    if (isFocused) {
-      if (profileName !== "") getProfileInfo(profileName);
+    if (selectedCoverPicture != route.params.coverPicture) {
+      formData.append("coverPicture", {
+        uri: selectedCoverPicture,
+        name: "coverPicture.jpg",
+        type: "image/jpeg",
+      });
     }
-  }, [isFocused, profileName]);
 
-  // this is just to print out a profile's information for now
-  useEffect(() => {
-    setLoading(false);
-
-    console.log("User's Listings:", profileInfo.userListings);
-    console.log("User's Liked Listings:", profileInfo.likedListings);
-    console.log("User's Ratings:", profileInfo.userRatings);
-    console.log("Profile Picture URL:", profileInfo.profilePicture);
-    console.log("Cover Picture URL:", profileInfo.coverPicture);
-
-    if (profileName === loggedUser) {
-      setRoutes([
-        { key: "first", title: "My Listings" },
-        { key: "second", title: "Liked Listings" },
-      ]);
-    } else {
-      setRoutes([{ key: "first", title: `${profileName}'s listings` }]);
+    if (selectedProfilePicture != route.params.ProfilePicture) {
+      formData.append("profilePicture", {
+        uri: selectedProfilePicture,
+        name: "profilePicture.jpg",
+        type: "image/jpeg",
+      });
     }
-  }, [profileInfo]);
 
-  getProfileInfo = async function (username) {
-    console.log(`Fetching profile info for ${username}`);
     try {
-      const profileResponse = await fetch(
-        `${serverIp}/api/profile?username=${encodeURIComponent(username)}`,
-        {
-          method: "GET",
-        }
-      );
-      const profileData = await profileResponse.json();
+      console.log("FormData:", formData);
+      const response = await fetch(`${serverIp}/api/editprofile`, {
+        method: "POST",
+        body: formData,
+        timeout: 10000,
+      });
 
-      if (profileResponse.status <= 201) {
-        setProfileInfo({
-          likedListings: profileData.likedListings,
-          userListings: profileData.userListings,
-          userRatings: profileData.ratings.reduce(
-            (acc, rating) => ({ ...acc, ...rating }),
-            {}
-          ),
-          profilePicture: profileData.profilePicture,
-          coverPicture: profileData.coverPicture,
+      if (response.status <= 201) {
+        const responseData = await response.json();
+        console.log("Profile edited successfully:", responseData);
+
+        // update the new credentials locally
+        await setStoredCredentials(profileName, password);
+
+        // update the profile page's profile name
+        navigation.setOptions({
+          params: { profileName: profileName },
         });
 
-        console.log(`Profile for ${username} fetched successfully`);
+        // go back to profile page, WIP MAYBE INCLUDE A SUCCESS MESSAGE OR SOMETHING
+        navigation.goBack();
       } else {
-        console.log(
-          "Error fetching profile:",
-          profileResponse.status,
-          profileData
-        );
+        console.error("HTTP error! Status: ", response.status);
       }
-    } catch (err) {
-      console.log("Error:", err);
+      console.log("Saving Changes");
+    } catch (error) {
+      console.error("Error editing profile:", error);
     }
   };
 
@@ -265,13 +249,12 @@ const EditProfileScreen = ({ navigation, route }) => {
         </Text>
       </View>
       <ScrollView>
-
         {/* Edit Cover Photo */}
         <View style={{ marginTop: 15, width: "100%", position: "relative" }}>
           <TouchableOpacity onPress={handleCoverImageSelection}>
             <Image
               source={{
-                uri: selectedCoverImage,
+                uri: selectedCoverPicture,
               }}
               resizeMode="cover"
               style={{
@@ -303,7 +286,7 @@ const EditProfileScreen = ({ navigation, route }) => {
           >
             <TouchableOpacity onPress={handleProfileImageSelection}>
               <Image
-                source={{ uri: selectedProfileImage }}
+                source={{ uri: selectedProfilePicture }}
                 resizeMode="contain"
                 style={{
                   height: 145,
@@ -361,8 +344,8 @@ const EditProfileScreen = ({ navigation, route }) => {
             }}
           >
             <TextInput
-              value={name}
-              onChangeText={(value) => setName(value)}
+              value={profileName}
+              onChangeText={(value) => setProfileName(value)}
               editable={true}
             />
           </View>
@@ -453,7 +436,8 @@ const EditProfileScreen = ({ navigation, route }) => {
             }}
           >
             <View style={{ flex: 1, top: 15 }}>
-              <TouchableOpacity onPress={saveChanges}
+              <TouchableOpacity
+                onPress={saveChanges}
                 style={{
                   width: 150,
                   height: 50,
