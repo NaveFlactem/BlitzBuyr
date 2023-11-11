@@ -8,11 +8,11 @@ import {
   StyleSheet,
   Dimensions,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import Colors from "../constants/Colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
-  TouchableOpacity,
   ScrollView,
   TextInput,
 } from "react-native-gesture-handler";

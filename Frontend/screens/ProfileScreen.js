@@ -10,11 +10,11 @@ import {
   StyleSheet,
   ActivityIndicator,
   useFocusEffect,
+  TouchableOpacity,
 } from "react-native";
 import Colors from "../constants/Colors";
 import {
   FlatList,
-  TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 import { TabBar, TabView } from "react-native-tab-view";
@@ -111,7 +111,6 @@ function ProfileScreen({ navigation, route }) {
   const [starStates, setStarStates] = useState({});
 
   const onPressListing = (listingDetails) => {
-    console.log("hello");
     setSelectedListing(listingDetails);
   };
 
