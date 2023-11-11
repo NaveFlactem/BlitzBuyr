@@ -336,7 +336,7 @@ function ProfileScreen({ navigation, route }) {
               {profileInfo.userRatings.AverageRating
                 ? profileInfo.userRatings.AverageRating.toFixed(1)
                 : "N/A"}
-              {profileInfo.userRatings.AverageRating && (
+              {profileInfo.userRatings.RatingCount > 0 && (
                 <Entypo
                   name="star"
                   size={25}
