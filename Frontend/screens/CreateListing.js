@@ -22,21 +22,6 @@ import * as ImageManipulator from "expo-image-manipulator";
 
 const blurhash = "L5H2EC=PM+yV0g-mq.wG9c010J}I";
 
-const tagsData = [
-  { name: "Furniture", selected: false },
-  { name: "Electronics", selected: false },
-  { name: "Clothing", selected: false },
-  { name: "Books", selected: false },
-  { name: "Appliances", selected: false },
-  { name: "Sports", selected: false },
-  { name: "Toys", selected: false },
-  { name: "Tools", selected: false },
-  { name: "Vehicles", selected: false },
-  { name: "Service", selected: false},
-
-  { name: "Other", selected: false },
-];
-
 /**
  * @class
  * @classdesc - CreateListing is a screen that allows users to create a listing
@@ -66,6 +51,19 @@ class CreateListing extends Component {
       isImageInvalid: false,
       isTagInvalid: false,
       isLoading: false,
+      tagsData: [
+        { name: "Furniture", selected: false },
+        { name: "Electronics", selected: false },
+        { name: "Clothing", selected: false },
+        { name: "Books", selected: false },
+        { name: "Appliances", selected: false },
+        { name: "Sports", selected: false },
+        { name: "Toys", selected: false },
+        { name: "Tools", selected: false },
+        { name: "Vehicles", selected: false },
+        { name: "Service", selected: false },
+        { name: "Other", selected: false },
+      ],
     };
     this.titleInput = React.createRef();
     this.descriptionInput = React.createRef();
@@ -136,14 +134,11 @@ class CreateListing extends Component {
         this.setState({ isPriceInvalid: false });
       }
 
-      if (this.state.data.length == 0) {
-        this.setState({ isImageInvalid: true });
+      if (this.state.selectedTags.length == 0) {
+        this.setState({ isTagInvalid: true });
         returnCode = -1;
       }
-      if (this.state.data.length > 9) {
-        this.setState({ isImageInvalid: true });
-        returnCode = -1;
-      }
+
       if (this.state.price < 0) {
         returnCode = -1;
       }
@@ -175,11 +170,13 @@ class CreateListing extends Component {
     }
 
     if (this.state.data.length == 0) {
-      returnCode = 1;
-    }
-    if (this.state.data.length > 9) {
-      returnCode = 2;
-    }
+        this.setState({ isImageInvalid: true });
+        returnCode = 1;
+      }
+      if (this.state.data.length > 9) {
+        this.setState({ isImageInvalid: true });
+        returnCode = 2;
+      }
 
     return returnCode;
   };
@@ -313,6 +310,7 @@ class CreateListing extends Component {
 
     this.setState((prevState) => ({
       isLoading: false,
+      isImageInvalid: false,
       data: [...prevState.data, ...filteredImages],
     }));
   };
@@ -394,17 +392,37 @@ class CreateListing extends Component {
 
   handleTagPress = (index) => {
     this.setState((prevState) => {
-      const newTagsData = tagsData.map((tag, idx) => {
-        if (idx === index) return { ...tag, selected: !tag.selected };
+      // Toggle the 'selected' state of the pressed tag
+      const newTagsData = prevState.tagsData.map((tag, idx) => {
+        if (idx === index) {
+          return { ...tag, selected: !tag.selected };
+        }
         return tag;
       });
 
-      const newSelectedTags = newTagsData
-        .filter((tag) => tag.selected)
-        .map((tag) => tag.name);
+      // Get the name of the tag that was pressed
+      const pressedTagName = newTagsData[index].name;
 
-      console.log("Selected tags:", newSelectedTags);
-      return { selectedTags: newSelectedTags };
+      // Check if the tag is already in the selectedTags array
+      const isAlreadySelected = prevState.selectedTags.includes(pressedTagName);
+
+      let newSelectedTags;
+      if (isAlreadySelected) {
+        // If already selected, remove it from the array
+        newSelectedTags = prevState.selectedTags.filter(
+          (tagName) => tagName !== pressedTagName
+        );
+      } else {
+        // If not selected, add it to the array
+        newSelectedTags = [...prevState.selectedTags, pressedTagName];
+      }
+
+      console.log("New selected tags:", newSelectedTags);
+
+      return {
+        tagsData: newTagsData, // Update tagsData with the new 'selected' state
+        selectedTags: newSelectedTags, // Update selectedTags array
+      };
     });
   };
 
@@ -425,7 +443,7 @@ class CreateListing extends Component {
       isTagInvalid,
     } = this.state;
 
-    const rowsOfTags = this.groupTagsIntoRows(tagsData, 3);
+    const rowsOfTags = this.groupTagsIntoRows(this.state.tagsData, 3);
     return (
       <View style={styles.wrapper}>
         {this.state.isLoading && (
@@ -468,7 +486,10 @@ class CreateListing extends Component {
             </View>
             <TextInput
               ref={this.titleInput}
-              style={[styles.input, isTitleInvalid ? { borderColor: "red", borderWidth: 1 } : null]}
+              style={[
+                styles.input,
+                isTitleInvalid ? { borderColor: "red", borderWidth: 1 } : null,
+              ]}
               value={this.state.title}
               onChangeText={(text) => {
                 this.setState({ title: text, isTitleInvalid: false });
@@ -503,7 +524,9 @@ class CreateListing extends Component {
                 styles.input,
                 styles.multilineInput,
                 (textAlign = "left"),
-                isDescriptionInvalid ? { borderColor: "red", borderWidth: 1 } : null,
+                isDescriptionInvalid
+                  ? { borderColor: "red", borderWidth: 1 }
+                  : null,
               ]}
               value={this.state.description}
               onChangeText={(text) => {
@@ -541,7 +564,10 @@ class CreateListing extends Component {
 
             <TextInput
               ref={this.priceInput}
-              style={[styles.input, isPriceInvalid ? { borderColor: "red", borderWidth: 1 } : null]}
+              style={[
+                styles.input,
+                isPriceInvalid ? { borderColor: "red", borderWidth: 1 } : null,
+              ]}
               value={this.state.price}
               onChangeText={(text) => {
                 this.setState({ price: text, isPriceInvalid: false });
@@ -559,7 +585,12 @@ class CreateListing extends Component {
             >
               <Text style={styles.buttonText}>Select Images</Text>
             </TouchableOpacity>
-            <View style={[styles.imageField, isImageInvalid ? { borderColor: "red", borderWidth: 1 } : null]}>
+            <View
+              style={[
+                styles.imageField,
+                isImageInvalid ? { borderColor: "red", borderWidth: 1 } : null,
+              ]}
+            >
               <View style={styles.innerField}>
                 <DraggableGrid
                   numColumns={3}
@@ -570,26 +601,44 @@ class CreateListing extends Component {
                 />
               </View>
             </View>
-            <ScrollView style={styles.tagFieldScroll}>
-            <View style={[styles.tagField, isTagInvalid ? { borderColor: "red", borderWidth: 1 } : null]}>
-              {rowsOfTags.map((row, rowIndex) => (
-                <View key={rowIndex} style={styles.tagRowContainer}>
-                  {row.map((tag, tagIndex) => (
-                    <TouchableOpacity
-                      key={tagIndex}
-                      style={styles.tagContainer}
-                      onPress={() =>
-                        this.handleTagPress(tagIndex + rowIndex * 3)
-                      }
-                    >
-                      <View style={styles.tagSelected} />
-                      <View style={styles.rhombus} />
-                      <Text style={styles.tagText}>{tag.name}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              ))}
-            </View>
+            <ScrollView style={[
+                  styles.tagField,
+                  isTagInvalid ? { borderColor: "red", borderWidth: 1 } : null,
+                ]}>
+              <View
+                
+              >
+                {rowsOfTags.map((row, rowIndex) => (
+                  <View key={rowIndex} style={styles.tagRowContainer}>
+                    {row.map((tag, tagIndex) => (
+                      <TouchableOpacity
+                        key={tagIndex}
+                        style={styles.tagContainer}
+                        onPress={() =>
+                          {
+                          this.handleTagPress(tagIndex + rowIndex * 3);
+                          this.setState({ isTagInvalid: false });
+                          }
+                        }
+                      >
+                        <View
+                          style={[
+                            styles.tagSelected,
+                            { opacity: tag.selected ? 1 : 0.3 },
+                          ]}
+                        />
+                        <View
+                          style={[
+                            styles.rhombus,
+                            { opacity: tag.selected ? 0.15 : 0 },
+                          ]}
+                        />
+                        <Text style={styles.tagText}>{tag.name}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                ))}
+              </View>
             </ScrollView>
 
             <TouchableOpacity onPress={this.handleCreateListing}>
@@ -642,11 +691,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 1, height: 1 },
     shadowRadius: 3,
   },
-
+///////////////
   tagField: {
     alignSelf: "center",
     width: "95%",
-    height: 600,
+    height: 0.4 * screenHeight,
     backgroundColor: Colors.white,
     borderRadius: 20,
     shadowColor: "gray",
@@ -681,6 +730,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     alignSelf: "center",
     fontWeight: "bold",
+    shadowColor: "black",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 1, height: 1 },
   },
   rhombus: {
     alignSelf: "center",
@@ -699,7 +751,7 @@ const styles = StyleSheet.create({
     width: "100%",
     position: "absolute",
   },
-
+///////////////////////////
   innerField: {
     margin: 10,
     marginTop: 20,
