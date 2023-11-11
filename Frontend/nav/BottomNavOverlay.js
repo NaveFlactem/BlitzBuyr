@@ -141,6 +141,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.BB_darkRedPurple,
+    height: Platform.OS === 'ios' ? "200%" : null,
   },
   tabButton: {
     justifyContent: "center",
