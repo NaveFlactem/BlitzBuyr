@@ -293,7 +293,7 @@ function ProfileScreen({ navigation, route }) {
         backgroundColor: Colors.bone,
       }}
     >
-      <StatusBar backgroundColor={"black"} />
+      <StatusBar backgroundColor={Colors.BB_darkRedPurple} />
 
       {/* //Cover Photo */}
       <View style={{ width: "100%" }}>
