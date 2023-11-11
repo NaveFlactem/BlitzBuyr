@@ -250,69 +250,99 @@ class CreateListing extends Component {
    * @getPermissionAsync - asks for permission to access camera roll
    */
   getPermissionAsync = async () => {
-    if (Constants.platform.ios) {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
-      }
+    // Camera roll Permission 
+    const { status: libraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (libraryStatus !== 'granted') {
+      alert('Sorry, we need camera roll permissions to make this work!');
+    }
+
+    // Camera Permission
+    const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
+    if (cameraStatus !== 'granted') {
+      alert('Sorry, we need camera permissions to make this work!');
     }
   };
 
-  /**
-   * @function
-   * @handleImagePick - allows user to select images from their camera roll
-   * @param {Object} result - object that contains the image(s) that the user selected
-   */
-  handleImagePick = async () => {
+  
+  handleImagePick = () => {
+    Alert.alert(
+      "Select Image",
+      "Choose where to select images from:",
+      [
+        {
+          text: "Camera",
+          onPress: () => this.handleCameraPick(),
+        },
+        {
+          text: "Photo Library",
+          onPress: () => this.handleLibraryPick(),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  handleCameraPick = async () => {
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: false,
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      this.processImage(result);
+    }
+  };
+
+  handleLibraryPick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
       quality: 1,
       allowsMultipleSelection: true,
-      selectionLimit: 9,
+      selectionLimit: 9 - this.state.data.length,
     });
 
-    if (result.canceled) {
-      return;
+    if (!result.cancelled) {
+      this.processSelectedImages(result.assets);
     }
+  };
 
-    /**
-     * @function
-     * @selectedImages - processes images allowing them to be sent and displayed
-     */
-    const selectedImages = await Promise.all(
-      result.assets.map(async function (image) {
-        try {
-          const manipulateResult = await ImageManipulator.manipulateAsync(
-            image.uri,
-            [],
-            { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
-          );
-          let localUri = manipulateResult.uri;
-          let filename = localUri.split("/").pop();
+  processImage = async (image) => {
+    // Process a single image
+    const manipulatedImage = await this.manipulateImage(image.uri);
+    if (manipulatedImage) {
+      this.setState((prevState) => ({
+        data: [...prevState.data, manipulatedImage],
+      }));
+    }
+  };
 
-          return {
-            name: filename,
-            key: String(Date.now()),
-            uri: localUri,
-          };
-        } catch (error) {
-          console.error("Image processing error:", error);
-          return null;
-        }
-      })
+  processSelectedImages = async (assets) => {
+    // Process multiple images
+    const processedImages = await Promise.all(
+      assets.map(async (asset) => this.manipulateImage(asset.uri))
     );
-
-    // Filter out any potential null values (indicating errors)
-    this.setState({ isLoading: true });
-    const filteredImages = selectedImages.filter((image) => image !== null);
-
     this.setState((prevState) => ({
-      isLoading: false,
-      isImageInvalid: false,
-      data: [...prevState.data, ...filteredImages],
+      data: [...prevState.data, ...processedImages.filter(Boolean)],
     }));
+  };
+
+  manipulateImage = async (uri) => {
+    try {
+      const manipulateResult = await ImageManipulator.manipulateAsync(
+        uri,
+        [],
+        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+      );
+      return {
+        name: manipulateResult.uri.split("/").pop(),
+        key: String(Date.now()),
+        uri: manipulateResult.uri,
+      };
+    } catch (error) {
+      console.error("Image processing error:", error);
+      return null;
+    }
   };
 
   /**
