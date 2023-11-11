@@ -184,21 +184,21 @@ class CreateListing extends Component {
     }
 
     if (this.state.data.length == 0) {
-        this.setState({ isImageInvalid: true });
-        returnCode = 1;
-      }
-      if (this.state.data.length > 9) {
-        this.setState({ isImageInvalid: true });
-        returnCode = 2;
-      }
-      if (this.state.selectedTags.length == 0) {
-        this.setState({ isTagInvalid: true });
-        returnCode = 3;
-      }
-      if (this.state.selectedTags == []) {
-        this.setState({ isTagInvalid: true });
-        returnCode = 3;
-      }
+      this.setState({ isImageInvalid: true });
+      returnCode = 1;
+    }
+    if (this.state.data.length > 9) {
+      this.setState({ isImageInvalid: true });
+      returnCode = 2;
+    }
+    if (this.state.selectedTags.length == 0) {
+      this.setState({ isTagInvalid: true });
+      returnCode = 3;
+    }
+    if (this.state.selectedTags == []) {
+      this.setState({ isTagInvalid: true });
+      returnCode = 3;
+    }
 
     return returnCode;
   };
@@ -226,13 +226,11 @@ class CreateListing extends Component {
         Alert.alert("Too many images selected.");
         this.setState({ isLoading: false });
         return;
-      } 
-      else if (returnCode == 3) {
+      } else if (returnCode == 3) {
         Alert.alert("No tags selected.");
         this.setState({ isLoading: false });
         return;
-      }
-      else if (returnCode == 0) {
+      } else if (returnCode == 0) {
         const formData = new FormData();
 
         data.forEach((image, index) => {
@@ -283,20 +281,26 @@ class CreateListing extends Component {
    * @getPermissionAsync - asks for permission to access camera roll
    */
   getPermissionAsync = async () => {
-    // Camera roll Permission 
-    const { status: libraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (libraryStatus !== 'granted') {
-      alert('Sorry, we need camera roll permissions to make this work!');
+    // Camera roll Permission
+    const { status: libraryStatus } =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (libraryStatus !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
     }
 
     // Camera Permission
-    const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
-    if (cameraStatus !== 'granted') {
-      alert('Sorry, we need camera permissions to make this work!');
+    const { status: cameraStatus } =
+      await ImagePicker.requestCameraPermissionsAsync();
+    if (cameraStatus !== "granted") {
+      alert("Sorry, we need camera permissions to make this work!");
     }
   };
 
-  
+  /**
+   * @function
+   * @handleImagePick - allows the user to select images from their library or take photos with their camera
+   * @returns Returns the images that the user selected
+   */
   handleImagePick = () => {
     Alert.alert(
       "Select Image",
@@ -319,6 +323,12 @@ class CreateListing extends Component {
     );
   };
 
+  /**
+   * @function
+   * @handleCameraPick - allows the user to take photos with their camera
+   * @returns Returns the photos that the user took
+   * @description - allows the user to take photos with their camera
+   */
   handleCameraPick = async () => {
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: false,
@@ -330,6 +340,12 @@ class CreateListing extends Component {
     }
   };
 
+  /**
+   * @function
+   * @handleLibraryPick - allows the user to select images from their library
+   * @returns Returns the images that the user selected
+   * @description - allows the user to select images from their library
+   */
   handleLibraryPick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -344,6 +360,13 @@ class CreateListing extends Component {
     }
   };
 
+  /**
+   * @function
+   * @processImage - processes the image that the user selected
+   * @param {*} image
+   * @returns Returns the image that the user selected
+   * @description - processes the image that the user selected
+   */
   processImage = async (image) => {
     // Process a single image
     const manipulatedImage = await this.manipulateImage(image.uri);
@@ -354,6 +377,11 @@ class CreateListing extends Component {
     }
   };
 
+  /**
+   * @function
+   * @processSelectedImages - processes the images that the user selected
+   * @param {*} assets
+   */
   processSelectedImages = async (assets) => {
     // Process multiple images
     const processedImages = await Promise.all(
@@ -364,13 +392,18 @@ class CreateListing extends Component {
     }));
   };
 
+  /**
+   * @function
+   * @manipulateImage - compresses the image that the user selected
+   * @param {*} uri
+   * @returns
+   */
   manipulateImage = async (uri) => {
     try {
-      const manipulateResult = await ImageManipulator.manipulateAsync(
-        uri,
-        [],
-        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
-      );
+      const manipulateResult = await ImageManipulator.manipulateAsync(uri, [], {
+        compress: 0.4,
+        format: ImageManipulator.SaveFormat.JPEG,
+      });
       return {
         name: manipulateResult.uri.split("/").pop(),
         key: String(Date.now()),
@@ -396,8 +429,8 @@ class CreateListing extends Component {
       {
         text: "Delete",
         onPress: () => {
-          this.setState(prevState => ({
-            data: prevState.data.filter((_, i) => i !== index)
+          this.setState((prevState) => ({
+            data: prevState.data.filter((_, i) => i !== index),
           }));
         },
       },
@@ -412,26 +445,26 @@ class CreateListing extends Component {
    */
   render_item(item, index) {
     return (
-      <View style={styles.itemContainer} key={item.key} >
-      {item.uri ? (
-        <View style={styles.item}>
-          <Image
-            source={{ uri: item.uri }}
-            style={styles.image}
-            placeholder={blurhash}
-            transition={200}
-          />
-          <TouchableOpacity 
-            style={styles.deleteButton}
-            onPress={() => this.handleDeletePhoto(index)}
-          >
-            <Text style={styles.deleteButtonText}>X</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <Text style={styles.item_text}>{item.name}</Text>
-      )}
-    </View>
+      <View style={styles.itemContainer} key={item.key}>
+        {item.uri ? (
+          <View style={styles.item}>
+            <Image
+              source={{ uri: item.uri }}
+              style={styles.image}
+              placeholder={blurhash}
+              transition={200}
+            />
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => this.handleDeletePhoto(index)}
+            >
+              <Text style={styles.deleteButtonText}>X</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <Text style={styles.item_text}>{item.name}</Text>
+        )}
+      </View>
     );
   }
 
@@ -453,6 +486,12 @@ class CreateListing extends Component {
     this.setState({ data, isScrollEnabled: true });
   };
 
+  /**
+   * @function
+   * @handlePriceChange - handles when the user enters a price
+   * @param {*} text
+   * @description - handles when the user enters a price
+   */
   handlePriceChange = (text) => {
     const regex = /^(\d{0,6}(\.\d{0,2})?)$/;
 
@@ -465,6 +504,19 @@ class CreateListing extends Component {
     }
   };
 
+  /**
+   * @function
+   * @handleTagPress - handles when the user presses a tag
+   * @param {Number} index - index of the tag that the user pressed
+   * @param {String} pressedTagName - name of the tag that the user pressed
+   * @param {Boolean} isAlreadySelected - boolean that checks if the tag is already selected
+   * @param {Array} newSelectedTags - array of the selected tags
+   * @param {Array} newTagsData - array of the tags data
+   * @param {Array} tagsData - array of the tags data
+   * @param {Array} selectedTags - array of the selected tags
+   * @description - handles when the user presses a tag
+   * @returns Returns the tags that the user selected
+   */
   handleTagPress = (index) => {
     this.setState((prevState) => {
       // Toggle the 'selected' state of the pressed tag
@@ -492,8 +544,6 @@ class CreateListing extends Component {
         newSelectedTags = [...prevState.selectedTags, pressedTagName];
       }
 
-      console.log("New selected tags:", newSelectedTags);
-
       return {
         tagsData: newTagsData, // Update tagsData with the new 'selected' state
         selectedTags: newSelectedTags, // Update selectedTags array
@@ -501,6 +551,12 @@ class CreateListing extends Component {
     });
   };
 
+  /**
+   *
+   * @param {*} tags
+   * @param {*} itemsPerRow
+   * @returns
+   */
   groupTagsIntoRows = (tags, itemsPerRow) => {
     return tags.reduce((rows, tag, index) => {
       if (index % itemsPerRow === 0) rows.push([]);
@@ -677,13 +733,12 @@ class CreateListing extends Component {
               </View>
             </View>
 
-
-
-
-            <ScrollView style={[
-                  styles.tagField,
-                  isTagInvalid ? { borderColor: "red", borderWidth: 1 } : null,
-                ]}>
+            <ScrollView
+              style={[
+                styles.tagField,
+                isTagInvalid ? { borderColor: "red", borderWidth: 1 } : null,
+              ]}
+            >
               <View>
                 {rowsOfTags.map((row, rowIndex) => (
                   <View key={rowIndex} style={styles.tagRowContainer}>
@@ -691,12 +746,12 @@ class CreateListing extends Component {
                       <TouchableOpacity
                         key={tagIndex}
                         style={styles.tagContainer}
-                        onPress={() =>
-                          {
+                        onPress={() => {
                           this.handleTagPress(tagIndex + rowIndex * 3);
-                          this.setState({ isTagInvalid: false });
+                          if (this.state.selectedTags.length > 0) {
+                            this.setState({ isTagInvalid: false });
                           }
-                        }
+                        }}
                       >
                         <View
                           style={[
@@ -769,25 +824,25 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   deleteButton: {
-    position: 'absolute',
-    alignContent: 'center',
-    justifyContent: 'center',
+    position: "absolute",
+    alignContent: "center",
+    justifyContent: "center",
     width: 20,
     height: 20,
     top: 2,
     right: 2,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
     borderRadius: 12,
     zIndex: 2,
-    textAlign: 'center',
+    textAlign: "center",
   },
   deleteButtonText: {
-    color: 'red',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    alignSelf: 'center',
+    color: "red",
+    fontWeight: "bold",
+    textAlign: "center",
+    alignSelf: "center",
   },
-///////////////
+  ///////////////
   tagField: {
     alignSelf: "center",
     width: "95%",
@@ -797,13 +852,13 @@ const styles = StyleSheet.create({
     top: 30,
     marginBottom: 50,
     shadowColor: "#000",
-  shadowOffset: {
-    width: 0,
-    height: 2,
-  },
-  shadowOpacity: 0.25,
-  shadowRadius: 3.84,
-  elevation: 5,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   tagRowContainer: {
     flexDirection: "row",
@@ -851,7 +906,7 @@ const styles = StyleSheet.create({
     width: "100%",
     position: "absolute",
   },
-///////////////////////////
+  ///////////////////////////
   innerField: {
     margin: 10,
     marginTop: 20,
