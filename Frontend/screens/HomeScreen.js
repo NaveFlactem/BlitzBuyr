@@ -8,7 +8,8 @@ import {
   Dimensions,
   TouchableOpacity,
   RefreshControl,
-  ActivityIndicator, // Added for loading indicator
+  ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import NetInfo from "@react-native-community/netinfo"; // Import NetInfo
 import { useIsFocused } from "@react-navigation/native";
@@ -22,7 +23,11 @@ import noWifi from "../components/noWifi";
 import noListings from "../components/noListings";
 import Listing from "../components/Listing.tsx";
 import { PanGestureHandlerProps } from "react-native-gesture-handler";
-import { getStoredUsername, getStoredPassword, setStoredCredentials } from "./auth/Authenticate.js";
+import {
+  getStoredUsername,
+  getStoredPassword,
+  setStoredCredentials,
+} from "./auth/Authenticate.js";
 
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -51,17 +56,17 @@ const HomeScreen = ({ route }) => {
     try {
       const listingsResponse = await fetch(
         `${serverIp}/api/listings?username=${encodeURIComponent(
-          await SecureStore.getItemAsync("username"),
+          await SecureStore.getItemAsync("username")
         )}`,
         {
           method: "GET",
-        },
+        }
       );
 
       if (listingsResponse.status <= 201) {
         const listingsData = await listingsResponse.json();
         const initialStarStates = Object.fromEntries(
-          listingsData.map((listing) => [listing.ListingId, listing.liked]),
+          listingsData.map((listing) => [listing.ListingId, listing.liked])
         );
 
         setStarStates(initialStarStates);
@@ -120,7 +125,7 @@ const HomeScreen = ({ route }) => {
     console.log(
       `${
         newStarStates[listingId] ? "Starred" : "Unstarred"
-      } listing ID ${listingId}`,
+      } listing ID ${listingId}`
     );
   };
 
@@ -155,26 +160,35 @@ const HomeScreen = ({ route }) => {
       {networkConnected ? (
         listings && listings.length > 0 ? (
           <View style={styles.container}>
-            <Swiper
-              ref={swiperRef}
-              loop={false}
-              horizontal={false}
-              showsPagination={false}
-              showsButtons={false}
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+              scrollEventThrottle={16}
             >
-              {listings.map((item, listIndex) => {
-                Image.prefetch(item.images);
-                return (
-                  <Listing
-                    key={item.ListingId}
-                    item={item}
-                    starStates={starStates}
-                    handleStarPress={handleStarPress}
-                    numItems={item.images.length}
-                  />
-                );
-              })}
-            </Swiper>
+              <View style={[{ height: screenHeight }]}>
+                <Swiper
+                  ref={swiperRef}
+                  loop={false}
+                  horizontal={false}
+                  showsPagination={false}
+                  showsButtons={false}
+                >
+                  {listings.map((item, listIndex) => {
+                    Image.prefetch(item.images);
+                    return (
+                      <Listing
+                        key={item.ListingId}
+                        item={item}
+                        starStates={starStates}
+                        handleStarPress={handleStarPress}
+                        numItems={item.images.length}
+                      />
+                    );
+                  })}
+                </Swiper>
+              </View>
+            </ScrollView>
           </View>
         ) : (
           noListings()
@@ -182,7 +196,6 @@ const HomeScreen = ({ route }) => {
       ) : (
         noWifi()
       )}
-
     </SafeAreaView>
   );
 };

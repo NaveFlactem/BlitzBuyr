@@ -98,13 +98,16 @@ class CreateListing extends Component {
       isTitleInvalid: false,
       isDescriptionInvalid: false,
       isPriceInvalid: false,
+      isImageInvalid: false,
+      isTagInvalid: false,
+      isLoading: false,
     });
   }
 
   /**
    * @function
    * @checkValidListing - checks if the listing is valid
-   * @returns Returns 0 if the listing is valid, 1 if no images are selected, 2 if too many images are selected, and -1 if the listing is invalid
+   * @returns Returns 0 if the listing is valid, -1 if the listing is invalid and 1 if no images are selected and 2 if too many images are selected and 3 if no tags are selected
    */
   checkValidListing = () => {
     let returnCode = 0;
@@ -148,7 +151,6 @@ class CreateListing extends Component {
 
       if (this.state.selectedTags.length == 0) {
         this.setState({ isTagInvalid: true });
-        returnCode = -1;
       }
 
       if (this.state.price < 0) {
@@ -189,6 +191,14 @@ class CreateListing extends Component {
         this.setState({ isImageInvalid: true });
         returnCode = 2;
       }
+      if (this.state.selectedTags.length == 0) {
+        this.setState({ isTagInvalid: true });
+        returnCode = 3;
+      }
+      if (this.state.selectedTags == []) {
+        this.setState({ isTagInvalid: true });
+        returnCode = 3;
+      }
 
     return returnCode;
   };
@@ -206,12 +216,23 @@ class CreateListing extends Component {
     try {
       const returnCode = this.checkValidListing();
       if (returnCode == -1) {
+        this.setState({ isLoading: false });
         return;
       } else if (returnCode == 1) {
         Alert.alert("No images selected.");
+        this.setState({ isLoading: false });
+        return;
       } else if (returnCode == 2) {
         Alert.alert("Too many images selected.");
-      } else if (returnCode == 0) {
+        this.setState({ isLoading: false });
+        return;
+      } 
+      else if (returnCode == 3) {
+        Alert.alert("No tags selected.");
+        this.setState({ isLoading: false });
+        return;
+      }
+      else if (returnCode == 0) {
         const formData = new FormData();
 
         data.forEach((image, index) => {
@@ -288,6 +309,10 @@ class CreateListing extends Component {
         {
           text: "Photo Library",
           onPress: () => this.handleLibraryPick(),
+        },
+        {
+          text: "Cancel",
+          style: "cancel",
         },
       ],
       { cancelable: true }
@@ -651,13 +676,15 @@ class CreateListing extends Component {
                 />
               </View>
             </View>
+
+
+
+
             <ScrollView style={[
                   styles.tagField,
                   isTagInvalid ? { borderColor: "red", borderWidth: 1 } : null,
                 ]}>
-              <View
-                
-              >
+              <View>
                 {rowsOfTags.map((row, rowIndex) => (
                   <View key={rowIndex} style={styles.tagRowContainer}>
                     {row.map((tag, tagIndex) => (
@@ -767,12 +794,16 @@ const styles = StyleSheet.create({
     height: 0.4 * screenHeight,
     backgroundColor: Colors.white,
     borderRadius: 20,
-    shadowColor: "gray",
-    shadowOpacity: 0.9,
-    shadowOffset: { width: 1, height: 1 },
-    shadowRadius: 3,
     top: 30,
     marginBottom: 50,
+    shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 2,
+  },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+  elevation: 5,
   },
   tagRowContainer: {
     flexDirection: "row",
