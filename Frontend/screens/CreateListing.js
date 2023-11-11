@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import DraggableGrid from "react-native-draggable-grid";
 import * as ImagePicker from "expo-image-picker";
-import Constants from "expo-constants";
 import { Image } from "expo-image";
 import Colors from "../constants/Colors";
 import TopBar from "../components/TopBar";
@@ -359,9 +358,9 @@ class CreateListing extends Component {
       {
         text: "Delete",
         onPress: () => {
-          const updatedPhotos = [...photos];
-          updatedPhotos.splice(index, 1);
-          setPhotos(updatedPhotos);
+          this.setState(prevState => ({
+            data: prevState.data.filter((_, i) => i !== index)
+          }));
         },
       },
     ]);
@@ -373,20 +372,28 @@ class CreateListing extends Component {
    * @description - renders the images that the user selected
    * @returns Returns the images that the user selected
    */
-  render_item(item) {
+  render_item(item, index) {
     return (
-      <View style={styles.item} key={item.key}>
-        {item.uri ? (
+      <View style={styles.itemContainer} key={item.key} >
+      {item.uri ? (
+        <View style={styles.item}>
           <Image
             source={{ uri: item.uri }}
             style={styles.image}
             placeholder={blurhash}
             transition={200}
           />
-        ) : (
-          <Text style={styles.item_text}>{item.name}</Text>
-        )}
-      </View>
+          <TouchableOpacity 
+            style={styles.deleteButton}
+            onPress={() => this.handleDeletePhoto(index)}
+          >
+            <Text style={styles.deleteButtonText}>X</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <Text style={styles.item_text}>{item.name}</Text>
+      )}
+    </View>
     );
   }
 
@@ -624,7 +631,7 @@ class CreateListing extends Component {
               <View style={styles.innerField}>
                 <DraggableGrid
                   numColumns={3}
-                  renderItem={this.render_item}
+                  renderItem={(item, index) => this.render_item(item, index)}
                   data={this.state.data}
                   onDragRelease={this.handleDragRelease}
                   onDragStart={this.handleDragStart}
@@ -713,13 +720,32 @@ const styles = StyleSheet.create({
   imageField: {
     alignSelf: "center",
     width: "95%",
-    height: 400,
+    height: 0.45 * screenHeight,
     backgroundColor: Colors.white,
     borderRadius: 20,
     shadowColor: "gray",
     shadowOpacity: 0.9,
     shadowOffset: { width: 1, height: 1 },
     shadowRadius: 3,
+  },
+  deleteButton: {
+    position: 'absolute',
+    alignContent: 'center',
+    justifyContent: 'center',
+    width: 20,
+    height: 20,
+    top: 2,
+    right: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderRadius: 12,
+    zIndex: 2,
+    textAlign: 'center',
+  },
+  deleteButtonText: {
+    color: 'red',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    alignSelf: 'center',
   },
 ///////////////
   tagField: {
@@ -787,6 +813,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: "95%",
     height: "95%",
+  },
+  itemContainer: {
+    width: "33%",
+    height: "33%",
+    alignContent: "center",
+    justifyContent: "center",
   },
   item: {
     marginTop: 10,
