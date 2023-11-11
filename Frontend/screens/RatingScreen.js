@@ -80,7 +80,7 @@ const RatingScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        onPress={() => navigation.navigate("Profile")}
+        onPress={() => navigation.goBack()}
         style={styles.backButton}
       >
         <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
