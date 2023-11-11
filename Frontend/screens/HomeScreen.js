@@ -13,7 +13,6 @@ import {
 import NetInfo from "@react-native-community/netinfo"; // Import NetInfo
 import { useIsFocused } from "@react-navigation/native";
 import Swiper from "react-native-swiper";
-import BottomBar from "../components/BottomBar";
 import TopBar from "../components/TopBar";
 import Colors from "../constants/Colors";
 import { Image } from "expo-image";
@@ -138,7 +137,6 @@ const HomeScreen = ({ route }) => {
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={Colors.BB_pink} />
         </View>
-        <BottomBar />
       </SafeAreaView>
     );
   }
@@ -184,7 +182,7 @@ const HomeScreen = ({ route }) => {
       ) : (
         noWifi()
       )}
-      <BottomBar />
+
     </SafeAreaView>
   );
 };
@@ -212,5 +210,11 @@ const styles = StyleSheet.create({
     width: screenWidth,
     height: 0.05 * screenHeight,
     zIndex: 3,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 100,
   },
 });

@@ -22,7 +22,7 @@ import {
   setStoredCredentials,
 } from "./auth/Authenticate.js";
 import { useIsFocused } from "@react-navigation/native";
-import { Feather } from "@expo/vector-icons";
+import { Feather, Entypo } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 
@@ -443,14 +443,21 @@ const EditProfileScreen = ({ navigation, route }) => {
                   height: 50,
                   alignItems: "center",
                   justifyContent: "center",
-                  backgroundColor: Colors.BB_orange,
+                  backgroundColor: Colors.BB_darkRedPurple,
                   borderRadius: 10,
-                  borderWidth: 1,
-                  borderColor: Colors.BB_darkRedPurple,
+                  borderWidth: 2,
+                  borderColor: Colors.black,
                   marginVertical: 20,
                 }}
               >
-                <Text style={{ color: Colors.BB_darkRedPurple }}>
+                <Text
+                  style={{
+                    fontStyle: "normal",
+                    color: Colors.white,
+                    fontWeight: "500",
+                    fontSize: 15,
+                  }}
+                >
                   Save Changes
                 </Text>
               </TouchableOpacity>
