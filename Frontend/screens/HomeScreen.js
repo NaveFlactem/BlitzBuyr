@@ -162,7 +162,7 @@ const HomeScreen = ({ route }) => {
           <View style={styles.container}>
             <ScrollView
               refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} progressViewOffset={50}/>
               }
               scrollEventThrottle={16}
             >
