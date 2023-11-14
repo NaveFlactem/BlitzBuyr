@@ -22,6 +22,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import noWifi from "../components/noWifi";
 import noListings from "../components/noListings";
 import Listing from "../components/Listing.tsx";
+import { likedNotification } from '../components/Notifications.js';
 import { PanGestureHandlerProps } from "react-native-gesture-handler";
 import {
   getStoredUsername,
@@ -114,6 +115,7 @@ const HomeScreen = ({ route }) => {
       },
       body: JSON.stringify(likeData),
     });
+    likedNotification();
 
     if (likedResponse.status > 201) {
       console.log("Error Liking listing:", listingId, likedResponse.status);

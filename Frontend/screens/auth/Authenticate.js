@@ -4,6 +4,7 @@ import * as SecureStore from "expo-secure-store";
 import { StyleSheet } from "react-native";
 import Colors from "../../constants/Colors";
 import { View, Image } from "react-native";
+import { scheduleNotification } from '../../components/Notifications.js';
 
 let storedUsername;
 let storedPassword;
@@ -44,6 +45,8 @@ const AuthenticateScreen = ({ navigation }) => {
         if (response.status <= 201) {
           console.log("Response data:", responseData);
           navigation.navigate("BottomNavOverlay");
+          scheduleNotification();
+
         } else {
           navigation.navigate("Login");
         }
