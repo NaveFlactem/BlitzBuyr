@@ -243,16 +243,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: Colors.BB_pink,
     width: windowWidth * 0.8,
-    height: windowHeight * 0.5,
+    height: "auto",
     padding: 20,
     borderRadius: 10,
-    shadowColor: "black",
-    shadowOpacity: 1,
-    shadowOffset: {
-      width: 5,
-      height: 5,
-    },
-    shadowRadius: 7,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 1,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
   title: {
     fontSize: 24,
@@ -266,13 +270,17 @@ const styles = StyleSheet.create({
     borderColor: Colors.black,
     borderRadius: 10,
     fontWeight: "bold",
-    shadowColor: "black",
-    shadowOpacity: 1,
-    shadowOffset: {
-      width: 1,
-      height: 1,
-    },
-    shadowRadius: 2,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 1,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
   createAccountText: {
     fontSize: 16,
@@ -309,7 +317,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     width: windowWidth * 0.4,
-    height: windowHeight * 0.1,
+    height: "auto",
     marginBottom: 15,
   },
   passwordRequirement: {

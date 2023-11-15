@@ -1,29 +1,52 @@
 import React from "react";
-import { View, Text, Image, Dimensions, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  Dimensions,
+  StyleSheet,
+  Platform,
+} from "react-native";
 import { memo } from "react";
+import Colors from "../constants/Colors";
+import { Icons } from "./Icons";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
   logo: {
-    height: 0.04 * screenHeight,
-    width: 0.5 * screenWidth,
+    height: 0.1 * screenWidth,
+    width: 0.55 * screenWidth,
     top: 0.02 * screenHeight,
     right: 0.01 * screenWidth,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 5,
+      },
+    }),
   },
   topBar: {
     position: "absolute",
-    top: 0,
-    height: 0.09 * screenHeight,
+    height: 0.08 * screenHeight,
     width: screenWidth,
-    backgroundColor: "#58293F",
+    backgroundColor: Colors.BB_darkRedPurple,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "black",
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    shadowOffset: { width: 0, height: 2 },
+    borderBottomWidth: 3,
+    borderColor:
+      Platform.OS == "ios" ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.3)",
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 5,
+      },
+    }),
     zIndex: 10,
   },
 });

@@ -1,5 +1,5 @@
 import { serverIp } from "../config.js";
-import React, { Component } from "react";
+import React, { Component, memo } from "react";
 import {
   View,
   StyleSheet,
@@ -10,6 +10,7 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
+  SafeAreaView,
 } from "react-native";
 import DraggableGrid from "react-native-draggable-grid";
 import * as ImagePicker from "expo-image-picker";
@@ -18,8 +19,15 @@ import Colors from "../constants/Colors";
 import TopBar from "../components/TopBar";
 import * as SecureStore from "expo-secure-store";
 import * as ImageManipulator from "expo-image-manipulator";
+import BouncePulse from "../components/BouncePulse.js";
 
 const blurhash = "L5H2EC=PM+yV0g-mq.wG9c010J}I";
+
+const LoadingView = memo(() => (
+  <View style={styles.loadingContainer}>
+    <BouncePulse />
+  </View>
+));
 
 /**
  * @class
@@ -319,7 +327,7 @@ class CreateListing extends Component {
           style: "cancel",
         },
       ],
-      { cancelable: true }
+      { cancelable: true },
     );
   };
 
@@ -385,7 +393,7 @@ class CreateListing extends Component {
   processSelectedImages = async (assets) => {
     // Process multiple images
     const processedImages = await Promise.all(
-      assets.map(async (asset) => this.manipulateImage(asset.uri))
+      assets.map(async (asset) => this.manipulateImage(asset.uri)),
     );
     this.setState((prevState) => ({
       data: [...prevState.data, ...processedImages.filter(Boolean)],
@@ -537,7 +545,7 @@ class CreateListing extends Component {
       if (isAlreadySelected) {
         // If already selected, remove it from the array
         newSelectedTags = prevState.selectedTags.filter(
-          (tagName) => tagName !== pressedTagName
+          (tagName) => tagName !== pressedTagName,
         );
       } else {
         // If not selected, add it to the array
@@ -574,15 +582,18 @@ class CreateListing extends Component {
       isTagInvalid,
     } = this.state;
 
+    if (this.state.isLoading) {
+      return (
+        <SafeAreaView style={styles.screenfield}>
+          <TopBar />
+          <LoadingView />
+        </SafeAreaView>
+      );
+    }
+
     const rowsOfTags = this.groupTagsIntoRows(this.state.tagsData, 3);
     return (
       <View style={styles.wrapper}>
-        {this.state.isLoading && (
-          <View style={styles.loading}>
-            <ActivityIndicator size="large" color={Colors.BB_darkRedPurple} />
-            <Text>Loading...</Text>
-          </View>
-        )}
         <TopBar />
 
         <View style={styles.scrollfield}>
@@ -603,8 +614,8 @@ class CreateListing extends Component {
                       {this.state.title == ""
                         ? "Title is required"
                         : this.state.title.length > 25
-                        ? "Title too long"
-                        : "Must enter a valid title"}
+                          ? "Title too long"
+                          : "Must enter a valid title"}
                     </Text>
                   </View>
                 ) : (
@@ -639,8 +650,8 @@ class CreateListing extends Component {
                       {this.state.description.length > 500
                         ? "Description too long"
                         : this.state.description.length === 0
-                        ? "Description is required"
-                        : "Must enter a valid description"}
+                          ? "Description is required"
+                          : "Must enter a valid description"}
                     </Text>
                   </View>
                 )}
@@ -682,10 +693,10 @@ class CreateListing extends Component {
                     {this.state.price == ""
                       ? "Price is required"
                       : this.state.price < 0
-                      ? "Invalid price"
-                      : this.state.price.length > 7
-                      ? "Price too long"
-                      : "Must enter a valid price"}
+                        ? "Invalid price"
+                        : this.state.price.length > 7
+                          ? "Price too long"
+                          : "Must enter a valid price"}
                   </Text>
                 </View>
               ) : (
@@ -815,13 +826,20 @@ const styles = StyleSheet.create({
   imageField: {
     alignSelf: "center",
     width: "95%",
-    height: 0.45 * screenHeight,
+    height: 0.95 * screenWidth,
     backgroundColor: Colors.white,
     borderRadius: 20,
-    shadowColor: "gray",
-    shadowOpacity: 0.9,
-    shadowOffset: { width: 1, height: 1 },
-    shadowRadius: 3,
+    ...Platform.select({
+      ios: {
+        shadowColor: "gray",
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.9,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
   deleteButton: {
     position: "absolute",
@@ -851,14 +869,20 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     top: 30,
     marginBottom: 50,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
   tagRowContainer: {
     flexDirection: "row",
@@ -875,24 +899,36 @@ const styles = StyleSheet.create({
     textAlign: "center",
     height: 0.08 * screenHeight,
     width: 0.3 * screenWidth,
-    shadowColor: "gray",
-    shadowOpacity: 0.9,
-    shadowOffset: { width: 1, height: 1 },
-    shadowRadius: 3,
+    ...Platform.select({
+      ios: {
+        shadowColor: "gray",
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.9,
+        shadowRadius: 2,
+      },
+    }),
   },
   tagText: {
     color: Colors.white,
     fontSize: 18,
     alignSelf: "center",
     fontWeight: "bold",
-    shadowColor: "black",
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 1, height: 1 },
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
   rhombus: {
     alignSelf: "center",
     position: "absolute",
-    width: "40%",
+    width: 0.055 * screenHeight,
     aspectRatio: 1,
     backgroundColor: Colors.BB_darkPink,
     opacity: 0.15,
@@ -921,22 +957,25 @@ const styles = StyleSheet.create({
   },
   item: {
     marginTop: 10,
-    width: 100,
-    height: 100,
+    width: 0.25 * screenWidth,
+    height: 0.25 * screenWidth,
     borderRadius: 8,
     borderColor: Colors.BB_darkRedPurple,
-    shadowColor: "gray",
-    shadowOpacity: 0.9,
-    shadowOffset: { width: 1, height: 1 },
-    shadowRadius: 3,
+    ...Platform.select({
+      ios: {
+        shadowColor: "gray",
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.9,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
     backgroundColor: "red",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
-  },
-  item_text: {
-    fontSize: 40,
-    color: "#FFFFFF",
   },
   image: {
     width: "100%",
@@ -959,10 +998,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     height: 36,
     width: 150,
-    shadowColor: "gray",
-    shadowOpacity: 0.9,
-    shadowOffset: { width: 1, height: 1 },
-    shadowRadius: 3,
+    ...Platform.select({
+      ios: {
+        shadowColor: "gray",
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.9,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
 
   label: {
@@ -996,10 +1042,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: "90%",
     left: "5%",
-    shadowColor: "gray",
-    shadowOpacity: 0.9,
-    shadowOffset: { width: 1, height: 1 },
-    shadowRadius: 3,
+    ...Platform.select({
+      ios: {
+        shadowColor: "gray",
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.9,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
     textAlign: "center",
     color: "black",
   },
@@ -1018,10 +1071,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
     borderColor: Colors.black,
-    shadowColor: "gray",
-    shadowOpacity: 0.9,
-    shadowOffset: { width: 1, height: 1 },
-    shadowRadius: 3,
+    ...Platform.select({
+      ios: {
+        shadowColor: "gray",
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.9,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
   buttonText: {
     fontSize: 18,
@@ -1049,6 +1109,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   spacer: {
-    height: 400,
+    height: 0.15 * screenHeight,
   },
 });

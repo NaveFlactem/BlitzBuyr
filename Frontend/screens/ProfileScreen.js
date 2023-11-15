@@ -11,10 +11,12 @@ import {
   ActivityIndicator,
   useFocusEffect,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import Colors from "../constants/Colors";
 import {
   FlatList,
+  ScrollView,
   TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 import { TabBar, TabView } from "react-native-tab-view";
@@ -26,7 +28,9 @@ import {
 } from "./auth/Authenticate.js";
 import { useIsFocused } from "@react-navigation/native";
 import { Entypo } from "@expo/vector-icons";
-import Listing from "../components/Listing.tsx";
+import Listing from "../components/Listing.js";
+import useBackButtonHandler from "../hooks/DisableBackButton.js";
+import BouncePulse from "../components/BouncePulse";
 
 const UserListingsRoute = ({ profileInfo, onPressListing }) => (
   <View style={{ flex: 1 }}>
@@ -75,16 +79,16 @@ const LikedListingsRoute = ({ profileInfo, onPressListing }) => (
               margin: 3,
             }}
           >
-              {item.images.length > 0 && (
-                <TouchableOpacity onPress={() => onPressListing(item)}>
+            {item.images.length > 0 && (
+              <TouchableOpacity onPress={() => onPressListing(item)}>
                 <Image
                   source={{
                     uri: `${serverIp}/img/${item.images[0]}`, // load the listing's first image
                   }}
                   style={{ width: "100%", height: "100%", borderRadius: 12 }}
                 />
-                </TouchableOpacity>
-              )}
+              </TouchableOpacity>
+            )}
           </View>
         )}
       />
@@ -108,7 +112,13 @@ function ProfileScreen({ navigation, route }) {
   const [loggedUser, setLoggedUser] = useState(""); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
   const [routes, setRoutes] = useState([]);
   const [selectedListing, setSelectedListing] = useState(null);
-  const [starStates, setStarStates] = useState({});
+  const [LikeStates, setLikeStates] = useState({});
+
+  const onBackPress = () => {
+    return true;
+  };
+
+  useBackButtonHandler(onBackPress);
 
   const onPressListing = (listingDetails) => {
     setSelectedListing(listingDetails);
@@ -120,7 +130,7 @@ function ProfileScreen({ navigation, route }) {
       setLoggedUser(username);
       if (route.params?.username) {
         console.log(
-          `Setting username to passed username ${route.params.username}`
+          `Setting username to passed username ${route.params.username}`,
         );
         // we navigated with a username passed as param (i.e. clicking someone's profile)
         setProfileName(route.params.username);
@@ -165,7 +175,7 @@ function ProfileScreen({ navigation, route }) {
         `${serverIp}/api/profile?username=${encodeURIComponent(username)}`,
         {
           method: "GET",
-        }
+        },
       );
       const profileData = await profileResponse.json();
 
@@ -175,25 +185,25 @@ function ProfileScreen({ navigation, route }) {
           userListings: profileData.userListings,
           userRatings: profileData.ratings.reduce(
             (acc, rating) => ({ ...acc, ...rating }),
-            {}
+            {},
           ),
           profilePicture: profileData.profilePicture,
           coverPicture: profileData.coverPicture,
         });
 
-        const initialStarStates = Object.fromEntries(
+        const initialLikeStates = Object.fromEntries(
           [...profileData.likedListings, ...profileData.userListings].map(
-            (listing) => [listing.ListingId, listing.liked]
-          )
+            (listing) => [listing.ListingId, listing.liked],
+          ),
         );
-        setStarStates(initialStarStates);
+        setLikeStates(initialLikeStates);
 
         console.log(`Profile for ${username} fetched successfully`);
       } else {
         console.log(
           "Error fetching profile:",
           profileResponse.status,
-          profileData
+          profileData,
         );
       }
     } catch (err) {
@@ -201,11 +211,11 @@ function ProfileScreen({ navigation, route }) {
     }
   };
 
-  // star states
-  const handleStarPress = async (listingId) => {
+  // Like states
+  const handleLikePress = async (listingId) => {
     // toggle the like
-    const newStarStates = { ...starStates }; // Create a copy of the current starStates
-    newStarStates[listingId] = !newStarStates[listingId]; // Update the liked status
+    const newLikeStates = { ...LikeStates }; // Create a copy of the current LikeStates
+    newLikeStates[listingId] = !newLikeStates[listingId]; // Update the liked status
 
     const likeData = {
       username: await SecureStore.getItemAsync("username"),
@@ -214,7 +224,7 @@ function ProfileScreen({ navigation, route }) {
 
     // Update the backend
     const likedResponse = await fetch(`${serverIp}/api/like`, {
-      method: newStarStates[listingId] ? "POST" : "DELETE",
+      method: newLikeStates[listingId] ? "POST" : "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
@@ -225,13 +235,13 @@ function ProfileScreen({ navigation, route }) {
       console.log("Error Liking listing:", listingId, likedResponse.status);
     }
 
-    // Update the state with the new star states object
-    setStarStates(newStarStates);
+    // Update the state with the new Like states object
+    setLikeStates(newLikeStates);
 
     console.log(
       `${
-        newStarStates[listingId] ? "Starred" : "Unstarred"
-      } listing ID ${listingId}`
+        newLikeStates[listingId] ? "Likered" : "UnLikered"
+      } listing ID ${listingId}`,
     );
   };
 
@@ -280,7 +290,7 @@ function ProfileScreen({ navigation, route }) {
   if (loading) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator size="large" color="blue" />
+        <BouncePulse />
         <Text>Loading...</Text>
       </View>
     );
@@ -294,7 +304,6 @@ function ProfileScreen({ navigation, route }) {
       }}
     >
       <StatusBar backgroundColor={"black"} />
-
       {/* //Cover Photo */}
       <View style={{ width: "100%" }}>
         <Image
@@ -304,9 +313,10 @@ function ProfileScreen({ navigation, route }) {
           resizeMode="cover"
           style={{
             width: "100%",
-            height: 180,
+            height: 0.2 * screenHeight,
             borderWidth: 1,
             borderColor: Colors.BB_darkRedPurple,
+            position: "absolute",
           }}
         />
       </View>
@@ -319,16 +329,19 @@ function ProfileScreen({ navigation, route }) {
           }}
           resizeMode="contain"
           style={{
-            height: 145,
-            width: 145,
+            height: 0.38 * screenWidth,
+            width: 0.38 * screenWidth,
             borderRadius: 999,
             borderColor: Colors.BB_darkRedPurple,
             borderWidth: 2,
             marginTop: -90,
+            position: "absolute",
+            top: 0.2 * screenHeight,
           }}
         />
         <Text
           style={{
+            top: 0.28 * screenHeight,
             marginTop: 10,
             marginBottom: 5,
             fontStyle: "normal",
@@ -345,6 +358,7 @@ function ProfileScreen({ navigation, route }) {
           style={{
             paddingVertical: 2,
             flexDirection: "row",
+            top: 0.28 * screenHeight,
           }}
         >
           {/* Listings */}
@@ -394,10 +408,10 @@ function ProfileScreen({ navigation, route }) {
                 : "N/A"}
               {profileInfo.userRatings.RatingCount > 0 && (
                 <Entypo
-                  name="star"
+                  name="Like"
                   size={25}
                   color="gold"
-                  style={styles.ratingStar}
+                  style={styles.ratingLike}
                 />
               )}
             </Text>
@@ -443,7 +457,14 @@ function ProfileScreen({ navigation, route }) {
           )}
         </View>
 
-        <View style={{ flexDirection: "row", marginTop: 5 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            marginTop: 5,
+            top: 0.28 * screenHeight,
+            marginBottom: -100,
+          }}
+        >
           {/* Logout and Edit Profile Buttons */}
           {profileName === loggedUser && (
             <>
@@ -471,8 +492,17 @@ function ProfileScreen({ navigation, route }) {
                   borderRadius: 10,
                   marginHorizontal: 10,
                   top: 10,
-                  borderWidth: 2,
-                  borderColor: "black"
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: Colors.black,
+                      shadowOffset: { width: 2, height: 2 },
+                      shadowOpacity: 0.8,
+                      shadowRadius: 2,
+                    },
+                    android: {
+                      elevation: 10,
+                    },
+                  }),
                 }}
               >
                 <Text
@@ -523,7 +553,14 @@ function ProfileScreen({ navigation, route }) {
         </View>
       </View>
 
-      <View style={{ flex: 1, marginHorizontal: 22, marginTop: -150 }}>
+      <View
+        style={{
+          flex: 1,
+          marginHorizontal: 22,
+          marginTop: 20,
+          top: 0.04 * screenHeight,
+        }}
+      >
         <TabView
           navigationState={{ index, routes }}
           renderScene={({ route }) => {
@@ -567,21 +604,33 @@ function ProfileScreen({ navigation, route }) {
             right: 0,
           }}
         >
-          <Listing
-            key={selectedListing.ListingId}
-            item={selectedListing}
-            starStates={starStates}
-            handleStarPress={handleStarPress}
-            numItems={selectedListing.images.length}
-          />
+          <View
+            style={{
+              top:
+                Platform.OS == "ios"
+                  ? 0.03 * screenHeight
+                  : -0.05 * screenHeight,
+            }}
+          >
+            <Listing
+              key={selectedListing.ListingId}
+              item={selectedListing}
+              LikeStates={LikeStates}
+              handleLikePress={handleLikePress}
+              numItems={selectedListing.images.length}
+            />
+          </View>
           <TouchableOpacity onPress={() => setSelectedListing(null)}>
-            <Text style={{ color: "white" }}>Close</Text>
+            <Text style={styles.closeText}>Close</Text>
           </TouchableOpacity>
         </View>
       )}
     </SafeAreaView>
   );
 }
+
+const screenHeight = Dimensions.get("window").height;
+const screenWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
   noListingsText: {
@@ -592,6 +641,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: Colors.BB_darkRedPurple,
   },
+  closeText: {
+    color: "white",
+    bottom: 0.015 * screenHeight,
+  },
   logoutButton: {
     width: 110,
     height: 36,
@@ -600,9 +653,18 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 10,
     marginHorizontal: 10,
-    top: 10, 
-    borderWidth: 2,
-    borderColor: Colors.black
+    top: 10,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
   logoutButtonText: {
     fontStyle: "normal",
@@ -610,19 +672,23 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: Colors.white,
   },
-  ratingStar: {
+  ratingLike: {
     alignSelf: "center",
     position: "absolute",
     width: "30%",
     height: "60%",
     borderRadius: 20,
-    shadowColor: "black",
-    shadowOpacity: 0.8,
-    shadowRadius: 5,
-    shadowOffset: {
-      height: 2,
-      width: 2,
-    },
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.5,
+        shadowRadius: 1,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
 });
 

@@ -1,44 +1,36 @@
 import { serverIp } from "../config.js";
-import React, { useEffect, useRef, useState, memo } from "react";
+import React, { useEffect, useRef, useState, useCallback, memo } from "react";
 import {
   View,
   StyleSheet,
   SafeAreaView,
-  Text,
   Dimensions,
-  TouchableOpacity,
   RefreshControl,
   ActivityIndicator,
   ScrollView,
+  Platform,
 } from "react-native";
-import NetInfo from "@react-native-community/netinfo"; // Import NetInfo
-import { useIsFocused } from "@react-navigation/native";
+import NetInfo from "@react-native-community/netinfo";
 import Swiper from "react-native-swiper";
 import TopBar from "../components/TopBar";
 import Colors from "../constants/Colors";
 import { Image } from "expo-image";
 import * as SecureStore from "expo-secure-store";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import noWifi from "../components/noWifi";
 import noListings from "../components/noListings";
-import Listing from "../components/Listing.tsx";
-import { PanGestureHandlerProps } from "react-native-gesture-handler";
-import {
-  getStoredUsername,
-  getStoredPassword,
-  setStoredCredentials,
-} from "./auth/Authenticate.js";
+import Listing from "../components/Listing.js";
+import useBackButtonHandler from "../hooks/DisableBackButton.js";
+import BouncePulse from "../components/BouncePulse.js";
 
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [listings, setListings] = useState([]);
-  const [images, setImages] = useState([]);
-  const didMount = useRef(false);
-  const isFocused = useIsFocused();
   const swiperRef = useRef(null);
-  const [starStates, setStarStates] = useState({});
-  const [networkConnected, setNetworkConnected] = useState(true); // Add network connectivity state
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [LikeStates, setLikeStates] = useState({});
+  const [networkConnected, setNetworkConnected] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [scrollPosition, setScrollPosition] = useState({ x: 0, y: 0 });
+  const scrollViewRef = useRef(null);
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
@@ -56,20 +48,20 @@ const HomeScreen = ({ route }) => {
     try {
       const listingsResponse = await fetch(
         `${serverIp}/api/listings?username=${encodeURIComponent(
-          await SecureStore.getItemAsync("username")
+          await SecureStore.getItemAsync("username"),
         )}`,
         {
           method: "GET",
-        }
+        },
       );
 
       if (listingsResponse.status <= 201) {
         const listingsData = await listingsResponse.json();
-        const initialStarStates = Object.fromEntries(
-          listingsData.map((listing) => [listing.ListingId, listing.liked])
+        const initialLikeStates = Object.fromEntries(
+          listingsData.map((listing) => [listing.ListingId, listing.liked]),
         );
 
-        setStarStates(initialStarStates);
+        setLikeStates(initialLikeStates);
         setListings(listingsData);
         console.log("Listings fetched successfully");
       } else {
@@ -83,6 +75,12 @@ const HomeScreen = ({ route }) => {
     }
   };
 
+  const onBackPress = () => {
+    return true;
+  };
+
+  useBackButtonHandler(onBackPress);
+
   // This will run on mount
   useEffect(() => {
     fetchListings();
@@ -94,54 +92,72 @@ const HomeScreen = ({ route }) => {
       setRefreshing(true);
       fetchListings();
     }
-  }, [route.params]);
+  }, []);
 
-  const handleStarPress = async (listingId) => {
-    // toggle the like
-    const newStarStates = { ...starStates }; // Create a copy of the current starStates
-    newStarStates[listingId] = !newStarStates[listingId]; // Update the liked status
+  const handleLikePress = useCallback(
+    async (listingId) => {
+      setLikeStates((prevLikeStates) => {
+        return { ...prevLikeStates, [listingId]: !prevLikeStates[listingId] };
+      });
 
-    const likeData = {
-      username: await SecureStore.getItemAsync("username"),
-      listingId: listingId,
-    };
+      const likeData = {
+        username: await SecureStore.getItemAsync("username"),
+        listingId: listingId,
+      };
 
-    // Update the backend
-    const likedResponse = await fetch(`${serverIp}/api/like`, {
-      method: newStarStates[listingId] ? "POST" : "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(likeData),
-    });
+      // Update the backend
+      const method = LikeStates[listingId] ? "DELETE" : "POST"; // Note: This may need adjustment based on how the state update works
+      const likedResponse = fetch(`${serverIp}/api/like`, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(likeData),
+      });
 
-    if (likedResponse.status > 201) {
-      console.log("Error Liking listing:", listingId, likedResponse.status);
-    }
+      // if (likedResponse.status > 201) {
+      //   console.log("Error Liking listing:", listingId, likedResponse.status);
+      // }
 
-    // Update the state with the new star states object
-    setStarStates(newStarStates);
+      // console.log(
+      //   `${!LikeStates[listingId] ? "Liked" : "Unliked"} listing ID ${listingId}`
+      // );
+    },
+    [LikeStates],
+  );
 
-    console.log(
-      `${
-        newStarStates[listingId] ? "Starred" : "Unstarred"
-      } listing ID ${listingId}`
-    );
-  };
-
-  const onRefresh = React.useCallback(() => {
-    console.log("refreshing...");
+  const onRefresh = useCallback(() => {
+    //console.log("Refreshing...");
     setRefreshing(true);
     fetchListings();
+  }, [fetchListings]);
+
+  const handleScroll = (event) => {
+    // Update the scroll position state
+    setScrollPosition(event.nativeEvent.contentOffset);
+  };
+
+  const restoreScrollPosition = () => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo(scrollPosition);
+    }
+  };
+
+  useEffect(() => {
+    restoreScrollPosition();
   }, []);
+
+  const LoadingView = memo(() => (
+    <View style={styles.loadingContainer}>
+      <BouncePulse />
+    </View>
+  ));
 
   if (isLoading) {
     return (
       <SafeAreaView style={styles.screenfield}>
         <TopBar />
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={Colors.BB_pink} />
-        </View>
+        <LoadingView />
       </SafeAreaView>
     );
   }
@@ -152,21 +168,29 @@ const HomeScreen = ({ route }) => {
 
       <View
         style={styles.topTap}
-        onTouchStart={() => {
+        onStartShouldSetResponder={() => true}
+        onResponderRelease={() => {
           swiperRef.current.scrollTo(0);
         }}
       />
 
       {networkConnected ? (
         listings && listings.length > 0 ? (
-          <View style={styles.container}>
+          Platform.OS === "ios" ? (
             <ScrollView
+              ref={scrollViewRef}
+              onScroll={handleScroll}
               refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} progressViewOffset={50}/>
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  progressViewOffset={50}
+                />
               }
               scrollEventThrottle={16}
+              scrollEnabled={Platform.OS === "ios" ? true : false}
             >
-              <View style={[{ height: screenHeight }]}>
+              <View style={styles.swiperContainer}>
                 <Swiper
                   ref={swiperRef}
                   loop={false}
@@ -180,8 +204,8 @@ const HomeScreen = ({ route }) => {
                       <Listing
                         key={item.ListingId}
                         item={item}
-                        starStates={starStates}
-                        handleStarPress={handleStarPress}
+                        LikeStates={LikeStates}
+                        handleLikePress={handleLikePress}
                         numItems={item.images.length}
                       />
                     );
@@ -189,7 +213,37 @@ const HomeScreen = ({ route }) => {
                 </Swiper>
               </View>
             </ScrollView>
-          </View>
+          ) : (
+            <View style={styles.swiperContainer}>
+              <Swiper
+                ref={swiperRef}
+                loop={false}
+                horizontal={false}
+                showsPagination={false}
+                showsButtons={false}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    progressViewOffset={50}
+                  />
+                }
+              >
+                {listings.map((item, listIndex) => {
+                  Image.prefetch(item.images);
+                  return (
+                    <Listing
+                      key={item.ListingId}
+                      item={item}
+                      LikeStates={LikeStates}
+                      handleLikePress={handleLikePress}
+                      numItems={item.images.length}
+                    />
+                  );
+                })}
+              </Swiper>
+            </View>
+          )
         ) : (
           noListings()
         )
@@ -209,13 +263,11 @@ const screenHeight = Dimensions.get("window").height;
 const styles = StyleSheet.create({
   screenfield: {
     flex: 1,
-  },
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
     backgroundColor: Colors.BB_pink,
-    top: "0%",
+  },
+  swiperContainer: {
+    height: screenHeight,
+    width: screenWidth,
   },
   topTap: {
     position: "absolute",
