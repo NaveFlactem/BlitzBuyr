@@ -83,7 +83,7 @@ const TabButton = memo((props) => {
         <Icon
           type={item.type}
           name={focused ? item.activeIcon : item.inActiveIcon}
-          color={focused ? Colors.BB_darkOrange : Colors.gray}
+          color={focused ? Colors.BB_darkOrange : Colors.BB_bone}
           size={20}
         />
       </Animated.View>

@@ -408,10 +408,10 @@ function ProfileScreen({ navigation, route }) {
                 : "N/A"}
               {profileInfo.userRatings.RatingCount > 0 && (
                 <Entypo
-                  name="Like"
+                  name="star"
                   size={25}
                   color="gold"
-                  style={styles.ratingLike}
+                  style={styles.ratingStar}
                 />
               )}
             </Text>
@@ -672,7 +672,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: Colors.white,
   },
-  ratingLike: {
+  ratingStar: {
     alignSelf: "center",
     position: "absolute",
     width: "30%",
