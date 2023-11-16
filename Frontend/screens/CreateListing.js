@@ -16,7 +16,7 @@ import DraggableGrid from "react-native-draggable-grid";
 import * as ImagePicker from "expo-image-picker";
 import { Image } from "expo-image";
 import Colors from "../constants/Colors";
-import TopBar from "../components/TopBar";
+import TopBar from "../components/TopBarGeneric.js";
 import * as SecureStore from "expo-secure-store";
 import * as ImageManipulator from "expo-image-manipulator";
 import BouncePulse from "../components/BouncePulse.js";
@@ -343,7 +343,7 @@ class CreateListing extends Component {
       quality: 1,
     });
 
-    if (!result.cancelled) {
+    if (!result.canceled) {
       this.processImage(result);
     }
   };
@@ -363,7 +363,7 @@ class CreateListing extends Component {
       selectionLimit: 9 - this.state.data.length,
     });
 
-    if (!result.cancelled) {
+    if (!result.canceled) {
       this.processSelectedImages(result.assets);
     }
   };
