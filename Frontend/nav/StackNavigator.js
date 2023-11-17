@@ -19,12 +19,36 @@ const StackNavigator = () => {
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Authenticate" component={Authenticate} />
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
-      <Stack.Screen name="BottomNavOverlay" component={BottomNavOverlay} />
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="CreateListing" component={CreateListing} />
-      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ gestureEnabled: false }}
+      />
+      <Stack.Screen
+        name="CreateAccount"
+        component={CreateAccountScreen}
+        options={{ gestureEnabled: false }}
+      />
+      <Stack.Screen
+        name="BottomNavOverlay"
+        component={BottomNavOverlay}
+        options={{ gestureEnabled: false }}
+      />
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ gestureEnabled: false }}
+      />
+      <Stack.Screen
+        name="CreateListing"
+        component={CreateListing}
+        options={{ gestureEnabled: false }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ gestureEnabled: false }}
+      />
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="RatingScreen" component={RatingScreen} />
     </Stack.Navigator>

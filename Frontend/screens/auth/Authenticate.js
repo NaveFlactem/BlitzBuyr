@@ -4,6 +4,22 @@ import * as SecureStore from "expo-secure-store";
 import { StyleSheet } from "react-native";
 import Colors from "../../constants/Colors";
 import { View, Image } from "react-native";
+import { Asset } from "expo-asset";
+
+const assetsToPreload = [
+  require("../../assets/blitzbuyr_name_logo.png"),
+  require("../../assets/blitzbuyr_name_logo.png"),
+  require("../../assets/blitzbuyr_name_transparent_horizontal.png"),
+  require("../../assets/blitzbuyr_name_transparent.png"),
+  require("../../assets/blitzbuyr_name.png"),
+  require("../../assets/icon_background_transparent_upright.png"),
+  require("../../assets/icon_background_transparent.png"),
+  require("../../assets/icon_transparent_background_filled_upright.png"),
+  require("../../assets/icon_transparent_background_filled.png"),
+  require("../../assets/icon_transparent.png"),
+  require("../../assets/icon.png"),
+  require("../../assets/no_wifi_icon_transparent.png"),
+];
 
 let storedUsername;
 let storedPassword;
@@ -19,6 +35,18 @@ const setStoredCredentials = async (username, password) => {
 };
 
 const AuthenticateScreen = ({ navigation }) => {
+  useEffect(() => {
+    // Load and cache the assets when the component mounts
+    async function loadAssetsAsync() {
+      const assetPromises = assetsToPreload.map((asset) =>
+        Asset.fromModule(asset).downloadAsync(),
+      );
+      await Promise.all(assetPromises);
+    }
+
+    loadAssetsAsync();
+  }, []);
+
   useEffect(() => {
     const checkStoredCredentials = async () => {
       storedUsername = await SecureStore.getItemAsync("username");

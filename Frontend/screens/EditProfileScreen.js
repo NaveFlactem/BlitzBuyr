@@ -8,14 +8,11 @@ import {
   StyleSheet,
   Dimensions,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import Colors from "../constants/Colors";
 import { MaterialIcons } from "@expo/vector-icons";
-import {
-  TouchableOpacity,
-  ScrollView,
-  TextInput,
-} from "react-native-gesture-handler";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import {
   getStoredUsername,
   getStoredPassword,
@@ -83,7 +80,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         const manipulateResult = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
         );
         let localUri = manipulateResult.uri;
         let filename = localUri.split("/").pop();
@@ -121,7 +118,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         const manipulateResult = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
         );
         let localUri = manipulateResult.uri;
         let filename = localUri.split("/").pop();
