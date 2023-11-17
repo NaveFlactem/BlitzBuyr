@@ -130,7 +130,7 @@ function ProfileScreen({ navigation, route }) {
       setLoggedUser(username);
       if (route.params?.username) {
         console.log(
-          `Setting username to passed username ${route.params.username}`,
+          `Setting username to passed username ${route.params.username}`
         );
         // we navigated with a username passed as param (i.e. clicking someone's profile)
         setProfileName(route.params.username);
@@ -175,7 +175,7 @@ function ProfileScreen({ navigation, route }) {
         `${serverIp}/api/profile?username=${encodeURIComponent(username)}`,
         {
           method: "GET",
-        },
+        }
       );
       const profileData = await profileResponse.json();
 
@@ -185,7 +185,7 @@ function ProfileScreen({ navigation, route }) {
           userListings: profileData.userListings,
           userRatings: profileData.ratings.reduce(
             (acc, rating) => ({ ...acc, ...rating }),
-            {},
+            {}
           ),
           profilePicture: profileData.profilePicture,
           coverPicture: profileData.coverPicture,
@@ -193,8 +193,8 @@ function ProfileScreen({ navigation, route }) {
 
         const initialLikeStates = Object.fromEntries(
           [...profileData.likedListings, ...profileData.userListings].map(
-            (listing) => [listing.ListingId, listing.liked],
-          ),
+            (listing) => [listing.ListingId, listing.liked]
+          )
         );
         setLikeStates(initialLikeStates);
 
@@ -203,7 +203,7 @@ function ProfileScreen({ navigation, route }) {
         console.log(
           "Error fetching profile:",
           profileResponse.status,
-          profileData,
+          profileData
         );
       }
     } catch (err) {
@@ -241,7 +241,7 @@ function ProfileScreen({ navigation, route }) {
     console.log(
       `${
         newLikeStates[listingId] ? "Likered" : "UnLikered"
-      } listing ID ${listingId}`,
+      } listing ID ${listingId}`
     );
   };
 
@@ -470,9 +470,9 @@ function ProfileScreen({ navigation, route }) {
             <>
               <TouchableOpacity
                 onPress={handleLogout}
-                style={styles.logoutButton}
+                style={styles.purpleButton}
               >
-                <Text style={styles.logoutButtonText}>Logout</Text>
+                <Text style={styles.buttonText}>Logout</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -483,38 +483,9 @@ function ProfileScreen({ navigation, route }) {
                     coverPicture: profileInfo.coverPicture,
                   });
                 }}
-                style={{
-                  width: 124,
-                  height: 36,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: Colors.BB_darkRedPurple,
-                  borderRadius: 10,
-                  marginHorizontal: 10,
-                  top: 10,
-                  ...Platform.select({
-                    ios: {
-                      shadowColor: Colors.black,
-                      shadowOffset: { width: 2, height: 2 },
-                      shadowOpacity: 0.8,
-                      shadowRadius: 2,
-                    },
-                    android: {
-                      elevation: 10,
-                    },
-                  }),
-                }}
+                style={{ ...styles.purpleButton, width: 114 }}
               >
-                <Text
-                  style={{
-                    fontStyle: "normal",
-                    color: Colors.white,
-                    fontWeight: "500",
-                    fontSize: 15,
-                  }}
-                >
-                  Edit Profile
-                </Text>
+                <Text style={styles.buttonText}>Edit Profile</Text>
               </TouchableOpacity>
             </>
           )}
@@ -620,8 +591,11 @@ function ProfileScreen({ navigation, route }) {
               numItems={selectedListing.images.length}
             />
           </View>
-          <TouchableOpacity onPress={() => setSelectedListing(null)}>
-            <Text style={styles.closeText}>Close</Text>
+          <TouchableOpacity
+            onPress={() => setSelectedListing(null)}
+            style={{ ...styles.purpleButton, bottom: 0.05 * screenHeight }}
+          >
+            <Text style={styles.buttonText}>Close</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -641,11 +615,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: Colors.BB_darkRedPurple,
   },
-  closeText: {
-    color: "white",
-    bottom: 0.015 * screenHeight,
-  },
-  logoutButton: {
+  purpleButton: {
     width: 110,
     height: 36,
     alignItems: "center",
@@ -653,7 +623,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 10,
     marginHorizontal: 10,
-    top: 10,
     ...Platform.select({
       ios: {
         shadowColor: Colors.black,
@@ -666,7 +635,7 @@ const styles = StyleSheet.create({
       },
     }),
   },
-  logoutButtonText: {
+  buttonText: {
     fontStyle: "normal",
     fontWeight: "500",
     fontSize: 15,
