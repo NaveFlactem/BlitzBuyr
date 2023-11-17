@@ -88,7 +88,7 @@ function createOrUpdateTable(db, tableDefinition) {
                 // Copy data from the existing table to the temporary table
                 db.run(
                   `INSERT INTO ${tempTableName} SELECT * FROM ${tableName}`,
-                  (err) => {
+                  (err) => { 
                     if (err) {
                       console.error(err.message);
                       return;
@@ -147,6 +147,21 @@ CREATE TABLE IF NOT EXISTS Listings (
   FOREIGN KEY (Username) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE
   );`;
 
+const tagDetails = `
+CREATE TABLE IF NOT EXISTS Tags (
+  TagId INTEGER PRIMARY KEY AUTOINCREMENT,
+  TagName TEXT UNIQUE
+);`;
+
+ const tagTable = `
+CREATE TABLE IF NOT EXISTS ListingTags (
+  ListingId INTEGER,
+  TagId INTEGER,
+  PRIMARY KEY (ListingId, TagId),
+  FOREIGN KEY (ListingId) REFERENCES Listings (ListingId) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (TagId) REFERENCES Tags (TagId) ON DELETE CASCADE ON UPDATE CASCADE
+);`;
+
 // Images Table //
 const images = `
 CREATE TABLE IF NOT EXISTS Images (
@@ -198,6 +213,8 @@ const tables = [
   { sql: rating, name: "Ratings" },
   { sql: profile, name: "Profiles" },
   { sql: likes, name: "Likes" },
+  { sql: tagTable, name: "TagTable" },
+  { sql: tagDetails, name: "TagDetails" },
 ];
 
 /**

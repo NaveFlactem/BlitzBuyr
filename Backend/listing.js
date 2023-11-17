@@ -85,7 +85,49 @@ router.post("/createListing", imageUpload, function (req, res) {
         const listingId = this.lastID;
         const componentX = req.body.componentX ?? 4;
         const componentY = req.body.componentY ?? 3;
+        //TOMMY CODE==========================================================
+        const tags = req.body.tags || [];
+        // Loop through tags and insert them into the "Tags" table if they don't exist
+        tags.forEach((tag) => {
+          db.run(
+            "INSERT OR IGNORE INTO TagDetails (TagName) VALUES (?)",
+            [tag],
+            (err) => {
+              if (err) {
+                console.error("Error querying the database:", err);
+                return res.status(500).json({ error: "Internal Server Error" });
+              }
 
+              // Get the TagId for the inserted or existing tag
+              db.get(
+                "SELECT TagId FROM Tags WHERE TagName = ?",
+                [tag],
+                (err, tagRow) => {
+                  if (err) {
+                    console.error("Error querying the database:", err);
+                    return res.status(500).json({ error: "Internal Server Error" });
+                  }
+
+                  const tagId = tagRow.TagId;
+
+                  // Associate the tag with the listing in the "ListingTags" table
+                  db.run(
+                    "INSERT INTO TagTable (ListingId, TagId) VALUES (?, ?)",
+                    [listingId, tagId],
+                    (err) => {
+                      if (err) {
+                        console.error("Error querying the database:", err);
+                        return res.status(500).json({ error: "Internal Server Error" });
+                      }
+                      // Tag associated with the listing successfully
+                    }
+                  );
+                }
+              );
+            }
+          );
+        });
+        //END OF TOMMY CODE
         // Insert images into the Images table
         if (images.length > 0) {
           images.forEach(async (image) => {
