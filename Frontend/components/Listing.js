@@ -1,5 +1,5 @@
 import { serverIp } from "../config.js";
-import React, { useState, memo, useCallback } from "react";
+import React, { useState, memo, useCallback, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -12,10 +12,6 @@ import {
   Platform,
   SafeAreaView,
 } from "react-native";
-import Animated, {
-  interpolate,
-  useAnimatedStyle,
-} from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
 import { parallaxLayout } from "./parallax.ts";
 import { Image } from "expo-image";
@@ -25,25 +21,28 @@ import Entypo from "react-native-vector-icons/Entypo";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { PinchGestureHandler } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
+import * as SecureStore from "expo-secure-store";
 
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
-const LikeButton = ({ item, LikeStates, handleLikePress }) => (
-  <TouchableOpacity
-    style={[styles.likeButton]}
-    activeOpacity={1}
-    onPress={() => handleLikePress(item.ListingId)}
-  >
-    {LikeStates[item.ListingId] ? (
-      <MaterialCommunityIcons name="heart" size={50} color="red" />
-    ) : (
-      <MaterialCommunityIcons name="heart" size={50} color="black" />
-    )}
-  </TouchableOpacity>
-);
+const LikeButton = ({ isLiked, onLikePress }) => {
+  return (
+    <TouchableOpacity onPress={onLikePress} style={styles.likeButton}>
+      <MaterialCommunityIcons
+        name="heart"
+        size={50}
+        color={isLiked ? "red" : "black"}
+      />
+    </TouchableOpacity>
+  );
+};
 
 const calculateFontSize = (price) => {
+  if (price === undefined || price === null) {
+    return 16; // Default font size if price is not provided
+  }
+  
   const numberOfDigits = price.toString().length;
 
   if (numberOfDigits <= 4) {
@@ -55,7 +54,7 @@ const calculateFontSize = (price) => {
   }
 };
 
-const CardOverlay1 = ({ children, price }) => {
+const CardOverlay1 = memo(({ children, price }) => {
   return (
     <View style={styles.card}>
       <View style={styles.cardBackground}>
@@ -68,9 +67,9 @@ const CardOverlay1 = ({ children, price }) => {
       </View>
     </View>
   );
-};
+});
 
-const CardOverlay2 = ({ children, price }) => {
+const CardOverlay2 = memo(({ children, price }) => {
   return (
     <View style={styles.card}>
       <View style={styles.cardBackground2}>
@@ -88,72 +87,90 @@ const CardOverlay2 = ({ children, price }) => {
       </View>
     </View>
   );
-};
+});
 
-const Listing = ({ item, LikeStates, handleLikePress, numItems }) => {
-  const navigation = useNavigation();
-
-  const arrayOfURIs = item.images.map((imageURI, index) => {
-    const modifiedURI = `${serverIp}/img/${imageURI}`;
-    return modifiedURI;
-  });
-
-  const CustomItem = ({ source, index, animationValue, numItems, props }) => {
-    const maskStyle = useAnimatedStyle(() => {
-      const opacity = interpolate(animationValue.value, [-1, 0, 1], [1, 0, 1]);
-
-      return {
-        opacity,
-      };
-    }, [animationValue]);
-
-    const scale = new AnimatedRN.Value(1);
-
-    const onZoomEvent = AnimatedRN.event(
-      [
-        {
-          nativeEvent: {
-            scale: scale,
-          },
-        },
-      ],
-      { useNativeDriver: true },
+const MemoizedImage = memo(
+  ({ source, style, contentFit, transition }) => {
+    return (
+      <Image
+        source={{ uri: source }}
+        style={style}
+        contentFit={contentFit}
+        transition={transition}
+      />
     );
-
-    const onZoomStateChange = (event) => {
-      if (event.nativeEvent.oldState === 4) {
-        AnimatedRN.spring(scale, {
-          toValue: 1,
-          useNativeDriver: true,
-        }).start();
-      }
-    };
+  }
+  );
+  
+  const CustomItem = memo(
+    ({ source, scale, price, isLiked, onLikePress }) => {
+      const onZoomEvent = AnimatedRN.event([{ nativeEvent: { scale: scale } }], {
+        useNativeDriver: true,
+      });
+      
+      const onZoomStateChange = (event) => {
+        if (event.nativeEvent.oldState === 4) {
+          AnimatedRN.spring(scale, {
+            toValue: 1,
+            useNativeDriver: true,
+          }).start();
+        }
+      };
 
     return (
-      <CardOverlay1 price={item.Price}>
+      <CardOverlay1 price={price}>
         <View>
           <PinchGestureHandler
             onGestureEvent={onZoomEvent}
             onHandlerStateChange={onZoomStateChange}
           >
             <AnimatedRN.View style={[{ transform: [{ scale: scale }] }]}>
-              <Image
-                source={{ uri: source }}
+              <MemoizedImage
+                source={source}
                 style={styles.image}
                 contentFit="contain"
-                transition={200}
+                transition={0}
               />
             </AnimatedRN.View>
           </PinchGestureHandler>
         </View>
-        <LikeButton
-          item={item}
-          LikeStates={LikeStates}
-          handleLikePress={handleLikePress}
-        />
+        <LikeButton isLiked={isLiked} onLikePress={onLikePress} />
       </CardOverlay1>
     );
+  }
+);
+
+const Listing = ({ item }) => {
+  const navigation = useNavigation();
+  const price = item.Price;
+  const [isLiked, setIsLiked] = useState(item.liked); // Initially KNOWN
+
+  const handleLikePress = async () => {
+    const username = await SecureStore.getItemAsync("username");
+    const method = isLiked ? "DELETE" : "POST";
+    try {
+      const response = await fetch(`${serverIp}/api/like`, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, listingId: item.ListingId }),
+      });
+
+      if (response.ok) {
+        setIsLiked(!isLiked);
+      } else {
+        console.error('Failed to update like status');
+      }
+    } catch (error) {
+      console.error('Error updating like status:', error);
+    }
   };
+
+  const arrayOfURIs = item.images.map((imageURI, index) => {
+    const modifiedURI = `${serverIp}/img/${imageURI}`;
+    return modifiedURI;
+  });
 
   return (
     <SafeAreaView>
@@ -181,9 +198,10 @@ const Listing = ({ item, LikeStates, handleLikePress, numItems }) => {
             renderItem={({ item, index, animationValue }) => (
               <CustomItem
                 source={item}
-                index={index}
-                animationValue={animationValue}
-                numItems={numItems}
+                scale={new AnimatedRN.Value(1)}
+                price={price}
+                isLiked={isLiked}
+                onLikePress={() => handleLikePress()}
               />
             )}
             customAnimation={parallaxLayout(
@@ -195,12 +213,13 @@ const Listing = ({ item, LikeStates, handleLikePress, numItems }) => {
                 parallaxScrollingScale: 1,
                 parallaxAdjacentItemScale: 0.5,
                 parallaxScrollingOffset: 10,
-              },
+              }
             )}
           />
         </View>
 
         <CardOverlay2 price={item.Price}>
+          <Text style={styles.title}>{item.Title}</Text>
           <View style={styles.sellerInfoBox}>
             <View
               style={[
@@ -281,11 +300,7 @@ const Listing = ({ item, LikeStates, handleLikePress, numItems }) => {
             <Text style={styles.description}>{item.Description}</Text>
           </ScrollView>
 
-          <LikeButton
-            item={item}
-            LikeStates={LikeStates}
-            handleLikePress={handleLikePress}
-          />
+          <LikeButton isLiked={isLiked} onLikePress={handleLikePress} />
         </CardOverlay2>
       </FlipCard>
     </SafeAreaView>
