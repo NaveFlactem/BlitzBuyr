@@ -13,6 +13,11 @@ import {
 } from "react-native";
 import Colors from "../../constants/Colors";
 import * as SecureStore from "expo-secure-store";
+import {
+  getStoredUsername,
+  getStoredPassword,
+  setStoredCredentials,
+} from "./Authenticate.js";
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -43,8 +48,7 @@ const LoginScreen = ({ navigation }) => {
 
     if (response.status <= 201) {
       console.log("Response data:", responseData);
-      await SecureStore.setItemAsync("username", username);
-      await SecureStore.setItemAsync("password", password);
+      await setStoredCredentials(username, password);
       clearFields();
       navigation.navigate("BottomNavOverlay");
     } else {
@@ -112,14 +116,17 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.BB_pink,
     padding: 20,
     borderRadius: 10,
-    shadowColor: "black",
-    shadowOpacity: 1,
-    shadowOffset: {
-      width: 5,
-      height: 5,
-    },
-    shadowRadius: 7,
-    elevation: 5,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 1,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
   input: {
     width: windowWidth * 0.45,
@@ -129,13 +136,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 7,
     backgroundColor: "white",
-    shadowColor: "black",
-    shadowRadius: 2,
-    shadowOpacity: 1,
-    shadowOffset: {
-      width: 1,
-      height: 1,
-    },
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 1,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
   loginTextContainer: {
     width: windowWidth * 0.2,
@@ -146,13 +157,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     fontWeight: "bold",
     shadowColor: "black",
-    shadowOpacity: 1,
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowRadius: 2,
-    elevation: 2,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 1,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
   loginText: {
     fontSize: 15,
@@ -164,30 +179,27 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     color: "black",
     fontWeight: "bold",
-    shadowColor: "black",
-    shadowOpacity: 1,
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowRadius: 1,
-    elevation: 2,
   },
   createAccountText: {
     fontSize: 8,
     color: "white",
   },
   logo: {
-    width: 100, // Adjust the width as needed
-    height: 100, // Adjust the height as needed
-    marginBottom: 20, // Adjust the spacing
+    width: 100,
+    height: 100,
+    marginBottom: 20,
     shadowRadius: 3,
-    shadowColor: "black",
-    shadowOpacity: 1,
-    shadowOffset: {
-      width: 2,
-      height: 3,
-    },
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 1,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
 });
 

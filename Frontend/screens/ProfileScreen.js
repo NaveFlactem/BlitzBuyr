@@ -1,4 +1,5 @@
-import React, { useState, memo } from "react";
+import React, { useEffect, useState, memo } from "react";
+import { serverIp } from "../config.js";
 import {
   View,
   Text,
@@ -6,119 +7,265 @@ import {
   StatusBar,
   Image,
   useWindowDimensions,
-  ScrollView,
   StyleSheet,
+  ActivityIndicator,
+  useFocusEffect,
+  TouchableOpacity,
+  Dimensions,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
-import { SceneMap, TabBar, TabView } from "react-native-tab-view";
+import Colors from "../constants/Colors";
+import {
+  FlatList,
+  ScrollView,
+  TouchableWithoutFeedback,
+} from "react-native-gesture-handler";
+import { TabBar, TabView } from "react-native-tab-view";
 import * as SecureStore from "expo-secure-store";
+import {
+  getStoredUsername,
+  getStoredPassword,
+  setStoredCredentials,
+} from "./auth/Authenticate.js";
+import { useIsFocused } from "@react-navigation/native";
+import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
+import Listing from "../components/Listing.js";
+import useBackButtonHandler from "../hooks/DisableBackButton.js";
+import BouncePulse from "../components/BouncePulse";
 
-const image_one = require("../screens/assets/images/image_one.jpg");
-const image_two = require("../screens/assets/images/image_two.jpg");
-const image_three = require("../screens/assets/images/image_three.jpg");
-const image_four = require("../screens/assets/images/image_four.jpg");
-const image_five = require("../screens/assets/images/image_five.jpg");
-const image_six = require("../screens/assets/images/image_six.jpg");
-const image_seven = require("../screens/assets/images/image_five.jpg");
-const image_eight = require("../screens/assets/images/image_one.jpg");
-
-const likedPhotos = [
-  image_one,
-  image_two,
-  image_three,
-  image_four,
-  image_five,
-  image_six,
-  image_seven,
-  image_eight,
-]; //Will hold the list of Liked photos of user
-
-const savedListings = [
-  image_one,
-  image_two,
-  image_three,
-  image_four,
-  image_five,
-  image_six,
-  image_seven,
-  image_eight,
-]; //Will hold the list of saved listings of user
-
-const PhotosRoutes = () => (
+const UserListingsRoute = ({ profileInfo, onPressListing }) => (
   <View style={{ flex: 1 }}>
-    <FlatList
-      data={likedPhotos}
-      numColumns={3}
-      renderItem={({ item, index }) => (
-        <View
-          style={{
-            flex: 1,
-            aspectRatio: 1,
-            margin: 3,
-          }}
-        >
-          <Image
-            key={index}
-            source={item}
-            style={{ width: "100%", height: "100%", borderRadius: 12 }}
-          />
-        </View>
-      )}
-    />
+    {profileInfo.userListings.length > 0 ? (
+      <FlatList
+        data={profileInfo.userListings}
+        numColumns={3}
+        renderItem={({ item }) => (
+          <View
+            style={{
+              flex: 1,
+              aspectRatio: 1,
+              margin: 3,
+            }}
+          >
+            {item.images.length > 0 && (
+              <TouchableOpacity onPress={() => onPressListing(item)}>
+                <Image
+                  source={{
+                    uri: `${serverIp}/img/${item.images[0]}`, // load the listing's first image
+                  }}
+                  style={{ width: "100%", height: "100%", borderRadius: 12 }}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+      />
+    ) : (
+      <Text style={styles.noListingsText}>No user listings found.</Text>
+    )}
   </View>
 );
 
-const LikesRoutes = () => (
+const LikedListingsRoute = ({ profileInfo, onPressListing }) => (
   <View style={{ flex: 1 }}>
-    <FlatList
-      data={savedListings}
-      numColumns={3}
-      renderItem={({ item, index }) => (
-        <View
-          style={{
-            flex: 1,
-            aspectRatio: 1,
-            margin: 3,
-          }}
-        >
-          <Image
-            key={index}
-            source={item}
-            style={{ width: "100%", height: "100%", borderRadius: 12 }}
-          />
-        </View>
-      )}
-    />
+    {profileInfo.likedListings.length > 0 ? (
+      <FlatList
+        data={profileInfo.likedListings}
+        numColumns={3}
+        renderItem={({ item }) => (
+          <View
+            style={{
+              flex: 1,
+              aspectRatio: 1,
+              margin: 3,
+            }}
+          >
+            {item.images.length > 0 && (
+              <TouchableOpacity onPress={() => onPressListing(item)}>
+                <Image
+                  source={{
+                    uri: `${serverIp}/img/${item.images[0]}`, // load the listing's first image
+                  }}
+                  style={{ width: "100%", height: "100%", borderRadius: 12 }}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+      />
+    ) : (
+      <Text style={styles.noListingsText}>No liked listings found.</Text>
+    )}
   </View>
 );
 
-const renderScene = SceneMap({
-  first: PhotosRoutes,
-  second: LikesRoutes,
-});
-
-function ProfileScreen({ navigation }) {
+function ProfileScreen({ navigation, route }) {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
+  const [profileInfo, setProfileInfo] = useState({
+    likedListings: [],
+    userListings: [],
+    userRatings: {},
+  });
+  const isFocused = useIsFocused();
+  const [loading, setLoading] = useState(true);
+  const [profileName, setProfileName] = useState("");
+  const [selfProfile, setSelfProfile] = useState(); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
+  const [routes, setRoutes] = useState([]);
+  const [selectedListing, setSelectedListing] = useState(null);
+  const [LikeStates, setLikeStates] = useState({});
 
-  const [routes] = useState([
-    { key: "first", title: "Photos" },
-    { key: "second", title: "Likes" },
-  ]);
+  const onBackPress = () => {
+    return true;
+  };
+
+  useBackButtonHandler(onBackPress);
+
+  const onPressListing = (listingDetails) => {
+    setSelectedListing(listingDetails);
+  };
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      const username = getStoredUsername();
+      if (route.params?.username) {
+        console.log(
+          `Setting username to passed username ${route.params.username}`
+        );
+        // we navigated with a username passed as param (i.e. clicking someone's profile)
+        setProfileName(route.params.username);
+        setSelfProfile(false);
+      } else {
+        console.log(`Setting username to cached logged in user`);
+        setProfileName(username);
+        setSelfProfile(true);
+      }
+      getProfileInfo(route.params?.username ? route.params.username : username);
+    };
+
+    setLoading(true);
+    if (isFocused) {
+      fetchUsername();
+    }
+  }, [isFocused]); // called when navigation is updated (clicking the page, or when username is changed)
+
+  // this is just to print out a profile's information for now
+  useEffect(() => {
+    setLoading(false);
+    /*
+    console.log("User's Listings:", profileInfo.userListings);
+    console.log("User's Liked Listings:", profileInfo.likedListings);
+    console.log("User's Ratings:", profileInfo.userRatings);
+    console.log("Profile Picture URL:", profileInfo.profilePicture);
+    console.log("Cover Picture URL:", profileInfo.coverPicture);
+    */
+
+    if (selfProfile) {
+      setRoutes([
+        { key: "first", title: "My Listings" },
+        { key: "second", title: "Liked Listings" },
+      ]);
+    } else {
+      setRoutes([{ key: "first", title: `${profileName}'s listings` }]);
+    }
+  }, [profileInfo]);
+
+  const getProfileInfo = async function (username) {
+    console.log(`Fetching profile info for ${username}`);
+    try {
+      const profileResponse = await fetch(
+        `${serverIp}/api/profile?username=${encodeURIComponent(username)}`,
+        {
+          method: "GET",
+        }
+      );
+      const profileData = await profileResponse.json();
+
+      if (profileResponse.status <= 201) {
+        setProfileInfo({
+          likedListings: profileData.likedListings,
+          userListings: profileData.userListings,
+          userRatings: profileData.ratings.reduce(
+            (acc, rating) => ({ ...acc, ...rating }),
+            {}
+          ),
+          profilePicture: profileData.profilePicture,
+          coverPicture: profileData.coverPicture,
+        });
+
+        const initialLikeStates = Object.fromEntries(
+          [...profileData.likedListings, ...profileData.userListings].map(
+            (listing) => [listing.ListingId, listing.liked]
+          )
+        );
+        setLikeStates(initialLikeStates);
+
+        console.log(`Profile for ${username} fetched successfully`);
+      } else {
+        console.log(
+          "Error fetching profile:",
+          profileResponse.status,
+          profileData
+        );
+      }
+    } catch (err) {
+      console.log("Error:", err);
+    }
+  };
+
+  // Like states
+  const handleLikePress = async (listingId) => {
+    // toggle the like
+    const newLikeStates = { ...LikeStates }; // Create a copy of the current LikeStates
+    newLikeStates[listingId] = !newLikeStates[listingId]; // Update the liked status
+
+    const likeData = {
+      username: await SecureStore.getItemAsync("username"),
+      listingId: listingId,
+    };
+
+    // Update the backend
+    const likedResponse = await fetch(`${serverIp}/api/like`, {
+      method: newLikeStates[listingId] ? "POST" : "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(likeData),
+    });
+
+    if (likedResponse.status > 201) {
+      console.log("Error Liking listing:", listingId, likedResponse.status);
+    }
+
+    // Update the state with the new Like states object
+    setLikeStates(newLikeStates);
+
+    console.log(
+      `${
+        newLikeStates[listingId] ? "Likered" : "UnLikered"
+      } listing ID ${listingId}`
+    );
+  };
 
   const renderTabBar = (props) => (
     <TabBar
       {...props}
       indicatorStyle={{
-        backgroundColor: "gray",
+        backgroundColor: Colors.BB_darkRedPurple,
       }}
       style={{
-        backgroundColor: "white",
+        backgroundColor: Colors.bone,
         height: 44,
       }}
       renderLabel={({ focused, route }) => (
-        <Text style={[{ color: focused ? "black" : "gray" }]}>
+        <Text
+          style={[
+            {
+              color: Colors.BB_darkRedPurple,
+              fontWeight: "bold",
+              fontSize: 14,
+            },
+          ]}
+        >
           {route.title}
         </Text>
       )}
@@ -137,238 +284,391 @@ function ProfileScreen({ navigation }) {
 
   const handleLogout = () => {
     clearCredentials();
+    setLoading(true);
     navigation.navigate("Login");
   };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <BouncePulse />
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: "white",
+        backgroundColor: Colors.bone,
       }}
     >
-      <StatusBar backgroundColor={"gray"} />
-
+      <StatusBar backgroundColor={"black"} />
       {/* //Cover Photo */}
       <View style={{ width: "100%" }}>
         <Image
-          source={require("../screens/assets/images/cover.jpg")}
+          source={{
+            uri: profileInfo.coverPicture,
+          }}
           resizeMode="cover"
-          style={{ width: "100%", height: 228 }}
+          style={{
+            width: "100%",
+            height: 0.2 * screenHeight,
+            borderWidth: 1,
+            borderColor: Colors.BB_darkRedPurple,
+            position: "absolute",
+          }}
         />
+        {/* Back button */}
+        {!selfProfile && (
+          <TouchableOpacity
+            onPress={() => {
+              setLoading(true);
+              navigation.navigate("BottomNavOverlay");
+            }}
+            style={{
+              position: "absolute",
+              top: 10, // Adjust the top position as needed
+              left: 10, // Adjust the left position as needed
+            }}
+          >
+            <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* //Profile Picture */}
       <View style={{ flex: 1, alignItems: "center" }}>
         <Image
-          source={require("../screens/assets/images/profile.png")}
+          source={{
+            uri: profileInfo.profilePicture,
+          }}
           resizeMode="contain"
           style={{
-            height: 155,
-            width: 155,
+            height: 0.38 * screenWidth,
+            width: 0.38 * screenWidth,
             borderRadius: 999,
-            borderColor: "black",
+            borderColor: Colors.BB_darkRedPurple,
             borderWidth: 2,
             marginTop: -90,
+            position: "absolute",
+            top: 0.2 * screenHeight,
           }}
         />
         <Text
           style={{
+            top: 0.28 * screenHeight,
+            marginTop: 10,
+            marginBottom: 5,
             fontStyle: "normal",
-            color: "black",
-            marginVertical: 8,
+            fontWeight: "bold",
+            fontSize: 25,
+            color: Colors.BB_darkRedPurple,
           }}
         >
-          Alfonso Luis Del Rosario
+          {profileName}
         </Text>
-
-        {/* Location Information */}
-        <View
-          style={{
-            flexDirection: "row",
-            marginVertical: 6,
-            alignItems: "center",
-          }}
-        >
-          <MaterialIcons name="location-on" size={24} color="black" />
-          <Text
-            style={{
-              fontStyle: "normal",
-              marginLeft: 4,
-            }}
-          >
-            Santa Cruz, California
-          </Text>
-        </View>
 
         {/* Rating, Following, Likes */}
         <View
           style={{
-            paddingVertical: 8,
+            paddingVertical: 2,
             flexDirection: "row",
+            top: 0.28 * screenHeight,
+            alignItems: "center",
           }}
         >
-          {/* RATING */}
+          {/* Listings */}
           <View
             style={{
               flexDirection: "column",
               alignItems: "center",
-              marginHorizontal: 4,
             }}
           >
             <Text
               style={{
                 fontStyle: "normal",
-                color: "black",
+                fontWeight: "bold",
+                fontSize: 20,
+                color: Colors.BB_darkRedPurple,
               }}
             >
-              4.5
+              {profileInfo.userListings.length}
             </Text>
             <Text
               style={{
                 fontStyle: "normal",
-                color: "black",
+                color: Colors.BB_darkRedPurple,
               }}
             >
-              Rating
+              Listings
+            </Text>
+          </View>
+          {/* Rating */}
+          <View
+            style={{
+              flexDirection: "column",
+              alignItems: "center",
+              marginHorizontal: selfProfile ? 25 : 10,
+              marginEnd: !selfProfile ? -10 : 25,
+            }}
+          >
+            <Text
+              style={{
+                fontStyle: "normal",
+                fontWeight: "bold",
+                fontSize: 20,
+                color: Colors.BB_darkRedPurple,
+              }}
+            >
+              {profileInfo.userRatings.AverageRating
+                ? profileInfo.userRatings.AverageRating.toFixed(1)
+                : "N/A"}
+              {profileInfo.userRatings.RatingCount > 0 && (
+                <Entypo
+                  name="star"
+                  size={20}
+                  color="gold"
+                  style={styles.ratingStar}
+                />
+              )}
+            </Text>
+            <Text
+              style={{
+                alignContent: "center",
+                fontStyle: "normal",
+                color: Colors.BB_darkRedPurple,
+              }}
+            >
+              Rating ({profileInfo.userRatings.RatingCount})
             </Text>
           </View>
 
-          {/* Items Sold */}
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems: "center",
-              marginHorizontal: 4,
-            }}
-          >
-            <Text
+          {/* LIKED */}
+          {selfProfile && (
+            <View
               style={{
-                fontStyle: "normal",
-                color: "black",
+                flexDirection: "column",
+                alignItems: "center",
               }}
             >
-              1254
-            </Text>
-            <Text
-              style={{
-                fontStyle: "normal",
-                color: "black",
-              }}
-            >
-              Transactions
-            </Text>
-          </View>
-
-          {/* LIKES */}
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems: "center",
-              marginHorizontal: 4,
-            }}
-          >
-            <Text
-              style={{
-                fontStyle: "normal",
-                color: "black",
-              }}
-            >
-              24
-            </Text>
-            <Text
-              style={{
-                fontStyle: "normal",
-                color: "black",
-              }}
-            >
-              Likes
-            </Text>
-          </View>
+              <Text
+                style={{
+                  fontStyle: "normal",
+                  fontWeight: "bold",
+                  fontSize: 20,
+                  color: Colors.BB_darkRedPurple,
+                }}
+              >
+                {profileInfo.likedListings.length}
+              </Text>
+              <Text
+                style={{
+                  fontStyle: "normal",
+                  color: Colors.BB_darkRedPurple,
+                }}
+              >
+                Liked
+              </Text>
+            </View>
+          )}
         </View>
-        <View style={{ flexDirection: "row" }}>
-          {/* Logout Button */}
-          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-            <Text style={styles.logoutButtonText}>Logout</Text>
-          </TouchableOpacity>
-          {/* Edit Profile Button */}
-          <TouchableOpacity
-            onPress={() => navigation.navigate("EditProfile")}
+        {/* Logout and Edit Profile Buttons */}
+        {selfProfile && (
+          <View
             style={{
-              width: 124,
-              height: 36,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "blue",
-              borderRadius: 10,
-              marginHorizontal: 10,
-              top: 10,
+              flexDirection: "row",
+              marginTop: 5,
+              top: 0.28 * screenHeight,
+              marginBottom: -100,
             }}
           >
-            <Text
-              style={{
-                fontStyle: "normal",
-                color: "white",
+            <TouchableOpacity onPress={handleLogout} style={styles.button}>
+              <Text style={styles.buttonText}>Logout</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setLoading(true);
+                navigation.navigate("EditProfile", {
+                  profileName: profileName,
+                  profilePicture: profileInfo.profilePicture,
+                  coverPicture: profileInfo.coverPicture,
+                });
               }}
+              style={{ ...styles.button, width: 114 }}
             >
-              Edit Profile
-            </Text>
-          </TouchableOpacity>
-
-          {/* Rate User Button */}
-          <TouchableOpacity
+              <Text style={styles.buttonText}>Edit Profile</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {/* Rate User Button */}
+        {!selfProfile && (
+          <View
             style={{
-              width: 124,
-              height: 36,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "blue",
-              borderRadius: 10,
-              marginHorizontal: 10,
-              top: 10,
+              flexDirection: "row",
+              marginTop: 5,
+              top: 0.28 * screenHeight,
+              marginBottom: -100,
             }}
           >
-            <Text
-              style={{
-                fontStyle: "normal",
-                color: "white",
+            <TouchableOpacity
+              onPress={() => {
+                setLoading(true);
+                navigation.navigate("RatingScreen", {
+                  profileInfo: profileInfo,
+                  username: profileName,
+                });
               }}
+              style={{ ...styles.button }}
             >
-              Rate User
-            </Text>
-          </TouchableOpacity>
-        </View>
+              <Text
+                style={{
+                  fontStyle: "normal",
+                  color: "white",
+                }}
+              >
+                Rate User
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
 
-      <View style={{ flex: 1, marginHorizontal: 22, marginTop: 20 }}>
+      <View
+        style={{
+          flex: 1,
+          marginHorizontal: 22,
+          marginTop: selfProfile? 20: 0,
+        }}
+      >
         <TabView
           navigationState={{ index, routes }}
-          renderScene={renderScene}
+          renderScene={({ route }) => {
+            switch (route.key) {
+              case "first":
+                return (
+                  <UserListingsRoute
+                    profileInfo={profileInfo}
+                    onPressListing={onPressListing}
+                  />
+                );
+              case "second":
+                return (
+                  <LikedListingsRoute
+                    profileInfo={profileInfo}
+                    onPressListing={onPressListing}
+                  />
+                );
+              default:
+                return null;
+            }
+          }}
           onIndexChange={setIndex}
-          initialLayoiut={{ width: layout.width }}
+          initialLayout={{ width: layout.width }}
           renderTabBar={renderTabBar}
         />
       </View>
+
+      {/* Overlay for displaying selected listing */}
+      {selectedListing && (
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+          }}
+        >
+          <View
+            style={{
+              top:
+                Platform.OS == "ios"
+                  ? 0.03 * screenHeight
+                  : -0.05 * screenHeight,
+            }}
+          >
+            <Listing
+              key={selectedListing.ListingId}
+              item={selectedListing}
+              LikeStates={LikeStates}
+              handleLikePress={handleLikePress}
+              numItems={selectedListing.images.length}
+            />
+          </View>
+          <TouchableOpacity
+            onPress={() => setSelectedListing(null)}
+            style={{ ...styles.button, bottom: 0.05 * screenHeight }}
+          >
+            <Text style={styles.buttonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
 
-export default memo(ProfileScreen);
+const screenHeight = Dimensions.get("window").height;
+const screenWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
-  logoutButton: {
-    backgroundColor: "red",
-    width: 150,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 20,
-    marginTop: 20,
-    alignSelf: "center",
-  },
-  logoutButtonText: {
-    color: "white",
-    fontSize: 16,
+  noListingsText: {
+    textAlign: "center",
+    marginTop: 110,
+    fontStyle: "normal",
     fontWeight: "bold",
+    fontSize: 20,
+    color: Colors.BB_darkRedPurple,
+  },
+  button: {
+    width: 110,
+    height: 36,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.BB_darkRedPurple,
+    borderRadius: 10,
+    marginHorizontal: 10,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+  },
+  buttonText: {
+    fontStyle: "normal",
+    fontWeight: "500",
+    fontSize: 15,
+    color: Colors.white,
+  },
+  ratingStar: {
+    alignSelf: "center",
+    position: "absolute",
+    width: "30%",
+    height: "60%",
+    borderRadius: 20,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.5,
+        shadowRadius: 1,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
 });
+
+export default memo(ProfileScreen);

@@ -9,6 +9,7 @@ var bodyParser = require("body-parser");
 const { getImagesFromListings } = require("./listing");
 router.use(bodyParser.urlencoded({ extended: true })).use(bodyParser.json());
 const db = require("./db").db;
+const { imageStorage, imageUpload } = require("./listing");
 
 /**
  * Handles a user liking a listing.
@@ -301,16 +302,38 @@ router.delete("/rate", function (req, res) {
  * }
  */
 router.get("/ratings", function (req, res) {
-  // Query the database for a list of ratings
-  db.all("SELECT * FROM Ratings", (err, rows) => {
-    if (err) {
-      console.error("Error querying the database:", err);
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
+  const { username } = req.query;
 
-    // Respond with a JSON array of ratings
-    return res.status(200).json({ Ratings: rows });
-  });
+  if (username) {
+    // If a username was provided in the query, return the AverageRating and RatingCount of the user's Profile
+    // Query the database for the user's ratings
+    db.get(
+      "SELECT AVG(Rating) AS AverageRating, COUNT(*) AS RatingCount FROM Ratings WHERE UserRated = ?",
+      [username],
+      (err, row) => {
+        if (err) {
+          console.error("Error querying the database:", err);
+          return res.status(500).json({ error: "Internal Server Error" });
+        }
+        // Respond with the user's ratings data
+        return res.status(200).json({
+          AverageRating: row.AverageRating,
+          RatingCount: row.RatingCount,
+        });
+      }
+    );
+  } else {
+    // If no username was provided, return all ratings in the db
+    // Query the database for a list of all ratings
+    db.all("SELECT * FROM Ratings", (err, rows) => {
+      if (err) {
+        console.error("Error querying the database:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+      // Respond with a JSON array of all ratings
+      return res.status(200).json({ Ratings: rows });
+    });
+  }
 });
 
 /**
@@ -368,6 +391,21 @@ router.get("/profile", async function (req, res) {
       );
     });
 
+    // Get the profile and cover pictures
+    let profilePictureResult = await new Promise((resolve, reject) => {
+      db.all(
+        "SELECT ProfilePicture, CoverPicture FROM Profiles WHERE Username = ?",
+        [username],
+        (err, rows) => {
+          if (err) {
+            console.error("Error querying the database (fourth query):", err);
+            reject(err);
+          }
+          resolve(rows);
+        }
+      );
+    });
+
     // get the user's posted listings
     const userListingsResult = await new Promise((resolve, reject) => {
       db.all(
@@ -412,11 +450,92 @@ router.get("/profile", async function (req, res) {
       likedListings: likedListings,
       userListings: userListings,
       ratings: ratingsResult,
+      profilePicture: profilePictureResult[0].ProfilePicture,
+      coverPicture: profilePictureResult[0].CoverPicture,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
+});
+
+router.get("/pfp", function (req, res) {
+  const username = req.query.username;
+  if (!username) return res.status(400).json({ error: "Missing username" });
+
+  // Query the database for a list of ratings
+  db.get(
+    "SELECT ProfilePicture FROM Profiles WHERE Username = ?",
+    [username],
+    (err, row) => {
+      if (err || !row) {
+        console.error("Error fetching the pfp:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      // return the image in the result's URI
+      res.redirect(row.ProfilePicture);
+    }
+  );
+});
+
+router.post("/editprofile", imageUpload, function (req, res) {
+  const { username, contactInfo, profileName, password } = req.body;
+
+  const profilePicture = req.files.find(
+    (file) => file.fieldname === "profilePicture"
+  );
+
+  const coverPicture = req.files.find(
+    (file) => file.fieldname === "coverPicture"
+  );
+
+  const newProfilePicture = profilePicture
+    ? `http://blitzbuyr.lol/img/${profilePicture.filename}`
+    : null;
+
+  const newCoverPicture = coverPicture
+    ? `http://blitzbuyr.lol/img/${coverPicture.filename}`
+    : null;
+
+  console.log(req.body);
+  console.log(req.files);
+  console.log("Debug Information:");
+  console.log("Profile Name:", profileName);
+  console.log("Contact Info:", contactInfo);
+  console.log("New Profile Picture:", newProfilePicture);
+  console.log("New Cover Picture:", newCoverPicture);
+  console.log("Existing Username:", username);
+
+  // Update the Profiles table
+  db.run(
+    `UPDATE Profiles SET ContactInfo = COALESCE(?, ContactInfo), 
+    ProfilePicture = COALESCE(?, ProfilePicture), CoverPicture = COALESCE(?, CoverPicture) WHERE Username = ?`,
+    [contactInfo, newProfilePicture, newCoverPicture, username],
+    function (err) {
+      if (err) {
+        console.error("Error updating the Profiles table:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      // Update the Accounts table
+      db.run(
+        "UPDATE Accounts SET Password = COALESCE(?, Password), Username = COALESCE(?, Username) WHERE Username = ?",
+        [password, profileName, username],
+        function (err) {
+          if (err) {
+            console.error("Error updating the Accounts table:", err);
+            return res.status(500).json({ error: "Internal Server Error" });
+          }
+
+          // Respond with success
+          res.status(200).json({ message: "Profile updated successfully" });
+        }
+      );
+
+      console.log("Rows affected:", this.changes);
+    }
+  );
 });
 
 // Export the router

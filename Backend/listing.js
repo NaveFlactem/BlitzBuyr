@@ -66,7 +66,7 @@ const imageUpload = multer({
  * }
  */
 router.post("/createListing", imageUpload, function (req, res) {
-  const { price, title, description, username } = req.body;
+  const { price, title, description, username, tags } = req.body;
   const images = req.files;
 
   const sqlTimeStamp = new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -85,7 +85,53 @@ router.post("/createListing", imageUpload, function (req, res) {
         const listingId = this.lastID;
         const componentX = req.body.componentX ?? 4;
         const componentY = req.body.componentY ?? 3;
+        //TOMMY CODE==========================================================
+        //const tags = req.body.tags || [];
+        // Loop through tags and insert them into the "Tags" table if they don't exist
+        JSON.parse(tags).forEach((tag) => {
+          db.run(
+            "INSERT OR IGNORE INTO Tags (TagName) VALUES (?)",
+            [tag],
+            (err) => {
+              if (err) {
+                console.error("Error querying the database:", err);
+                return res.status(500).json({ error: "Internal Server Error" });
+              }
 
+              // Get the TagId for the inserted or existing tag
+              db.get(
+                "SELECT TagId FROM Tags WHERE TagName = ?",
+                [tag],
+                (err, tagRow) => {
+                  if (err) {
+                    console.error("Error querying the database:", err);
+                    return res
+                      .status(500)
+                      .json({ error: "Internal Server Error" });
+                  }
+
+                  const tagId = tagRow.TagId;
+
+                  // Associate the tag with the listing in the "ListingTags" table
+                  db.run(
+                    "INSERT INTO ListingTags (ListingId, TagId, TagName) VALUES (?, ?, ?)",
+                    [listingId, tagId, tagRow.TagName],
+                    (err) => {
+                      if (err) {
+                        console.error("Error querying the database:", err);
+                        return res
+                          .status(500)
+                          .json({ error: "Internal Server Error" });
+                      }
+                      // Tag associated with the listing successfully
+                    }
+                  );
+                }
+              );
+            }
+          );
+        });
+        //END OF TOMMY CODE
         // Insert images into the Images table
         if (images.length > 0) {
           images.forEach(async (image) => {
@@ -346,19 +392,12 @@ router.delete("/deleteimages", function (req, res) {
  * @throws {Error} If there's an error during the database query.
  */
 getImagesFromListings = async (listingsResult, likedListingsResult) => {
-  // WIP: Maybe don't pass likedListings, restructure this
   const imagesResult = await new Promise((resolve, reject) => {
-    // Extract the ListingIds from listingsResult
     const listingIds = listingsResult.map((listing) => listing.ListingId);
-
     if (listingIds.length === 0) {
-      // If there are no ListingIds, there's no need to query the Images table.
       resolve([]);
     } else {
-      // Generate placeholders for the IN clause based on the number of ListingIds
       const placeholders = listingIds.map(() => "?").join(", ");
-
-      // Second query using placeholders for the IN clause
       db.all(
         `SELECT * FROM Images i WHERE i.ListingId IN (${placeholders})`,
         listingIds,
@@ -373,19 +412,49 @@ getImagesFromListings = async (listingsResult, likedListingsResult) => {
     }
   });
 
+  // Fetch ratings for each listing's username
+  const ratingsResult = await new Promise((resolve, reject) => {
+    const usernames = listingsResult.map((listing) => listing.Username);
+    if (usernames.length === 0) {
+      resolve([]);
+    } else {
+      const placeholders = usernames.map(() => "?").join(", ");
+      db.all(
+        `SELECT UserRated, AVG(Rating) AS AverageRating, COUNT(*) AS RatingCount FROM Ratings WHERE UserRated IN (${placeholders}) GROUP BY UserRated`,
+        usernames,
+        (err, rows) => {
+          if (err) {
+            console.error("Error querying the database (ratings query):", err);
+            reject(err);
+          }
+          resolve(rows);
+        }
+      );
+    }
+  });
+
   const combinedData = listingsResult.map((listing) => {
-    // Check if the listing's ListingId is in the likedListingsResult
     const isLiked = likedListingsResult.some(
       (likedListing) => likedListing.ListingId === listing.ListingId
     );
-
     const matchingImages = imagesResult
       .filter((image) => image.ListingId === listing.ListingId)
       .map((image) => image.ImageURI);
+
+    // Get the ratings for the listing's username
+    const usernameRatings = {};
+    ratingsResult.forEach((rating) => {
+      if (rating.UserRated === listing.Username) {
+        usernameRatings.averageRating = rating.AverageRating;
+        usernameRatings.ratingCount = rating.RatingCount;
+      }
+    });
+
     return {
-      ...listing, // Include all properties from the listing
-      images: matchingImages, // Add the matching images
+      ...listing,
+      images: matchingImages,
       liked: isLiked,
+      ratings: usernameRatings, // Add the ratings for the listing's username
     };
   });
 
@@ -393,4 +462,4 @@ getImagesFromListings = async (listingsResult, likedListingsResult) => {
 };
 
 // Export the router
-module.exports = { router, getImagesFromListings };
+module.exports = { router, getImagesFromListings, imageStorage, imageUpload };
