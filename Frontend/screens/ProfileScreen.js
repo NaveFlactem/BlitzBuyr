@@ -109,7 +109,7 @@ function ProfileScreen({ navigation, route }) {
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(true);
   const [profileName, setProfileName] = useState("");
-  const [loggedUser, setLoggedUser] = useState(""); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
+  const [selfProfile, setSelfProfile] = useState(); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
   const [routes, setRoutes] = useState([]);
   const [selectedListing, setSelectedListing] = useState(null);
   const [LikeStates, setLikeStates] = useState({});
@@ -127,16 +127,17 @@ function ProfileScreen({ navigation, route }) {
   useEffect(() => {
     const fetchUsername = async () => {
       const username = getStoredUsername();
-      setLoggedUser(username);
       if (route.params?.username) {
         console.log(
           `Setting username to passed username ${route.params.username}`
         );
         // we navigated with a username passed as param (i.e. clicking someone's profile)
         setProfileName(route.params.username);
+        setSelfProfile(false);
       } else {
         console.log(`Setting username to cached logged in user`);
         setProfileName(username);
+        setSelfProfile(true);
       }
       getProfileInfo(route.params?.username ? route.params.username : username);
     };
@@ -158,7 +159,7 @@ function ProfileScreen({ navigation, route }) {
     console.log("Cover Picture URL:", profileInfo.coverPicture);
     */
 
-    if (profileName === loggedUser) {
+    if (selfProfile) {
       setRoutes([
         { key: "first", title: "My Listings" },
         { key: "second", title: "Liked Listings" },
@@ -320,7 +321,7 @@ function ProfileScreen({ navigation, route }) {
           }}
         />
         {/* Back button */}
-        {profileName !== loggedUser && (
+        {!selfProfile && (
           <TouchableOpacity
             onPress={() => {
               setLoading(true);
@@ -409,8 +410,8 @@ function ProfileScreen({ navigation, route }) {
             style={{
               flexDirection: "column",
               alignItems: "center",
-              marginHorizontal: profileName == loggedUser ? 25 : 10,
-              marginEnd: profileName != loggedUser ? -10 : 25,
+              marginHorizontal: selfProfile ? 25 : 10,
+              marginEnd: !selfProfile ? -10 : 25,
             }}
           >
             <Text
@@ -445,7 +446,7 @@ function ProfileScreen({ navigation, route }) {
           </View>
 
           {/* LIKED */}
-          {profileName === loggedUser && (
+          {selfProfile && (
             <View
               style={{
                 flexDirection: "column",
@@ -474,7 +475,7 @@ function ProfileScreen({ navigation, route }) {
           )}
         </View>
         {/* Logout and Edit Profile Buttons */}
-        {profileName === loggedUser && (
+        {selfProfile && (
           <View
             style={{
               flexDirection: "row",
@@ -502,7 +503,7 @@ function ProfileScreen({ navigation, route }) {
           </View>
         )}
         {/* Rate User Button */}
-        {profileName !== loggedUser && (
+        {!selfProfile && (
           <View
             style={{
               flexDirection: "row",
@@ -538,7 +539,7 @@ function ProfileScreen({ navigation, route }) {
         style={{
           flex: 1,
           marginHorizontal: 22,
-          marginTop: 20,
+          marginTop: selfProfile? 20: 0,
         }}
       >
         <TabView
