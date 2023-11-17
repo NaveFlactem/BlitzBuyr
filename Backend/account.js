@@ -204,11 +204,11 @@ router.post("/register", (req, res) => {
  * @param {Object} res - Express.js response object.
  *
  * @example
- * // Sample HTTP DELETE request to '/api/deleteaccounts?username=testuser'
- * // Delete a specific user account by providing the 'username' query parameter.
+ * // Sample HTTP DELETE request to '/api/deleteaccount?username=testuser&password=testpassword'
+ * // Delete a specific user account by providing the 'username' and 'password' query parameters.
  * // If successful, it will respond with a success message.
  * // If the username doesn't exist, it will respond with an error message.
- * const deleteResponse = await fetch(`${serverIp}/api/deleteaccounts?username=testuser`, {
+ * const deleteResponse = await fetch(`${serverIp}/api/deleteaccount?username=testuser&password=testpassword`, {
  *     method: "DELETE",
  *     headers: {
  *       "Content-Type": "application/json",
@@ -221,28 +221,47 @@ router.post("/register", (req, res) => {
  *     console.log("Error deleting account");
  * }
  */
-router.delete("/deleteaccounts", function (req, res) {
-  const username = req.query.username;
+router.delete("/deleteaccount", function (req, res) {
+  const { username, password } = req.query;
 
-  if (username) {
-    db.run("DELETE FROM Accounts WHERE Username = ?", [username], (err) => {
-      if (err) {
-        console.error(`Error deleting account ${username}:`, err);
-        return res.status(500).json({ error: "Internal Server Error" });
-      }
-
-      return res.status(200).json({ message: `${username} account deleted` });
-    });
-  } else {
-    db.run("DELETE FROM Accounts", (err) => {
-      if (err) {
-        console.error("Error deleting all accounts:", err);
-        return res.status(500).json({ error: "Internal Server Error" });
-      }
-
-      return res.status(200).json({ message: "All accounts deleted" });
-    });
+  // Check if both username and password are provided
+  if (!username || !password) {
+    return res
+      .status(400)
+      .json({ error: "Both username and password are required" });
   }
+
+  // Validate the username and password
+  db.get(
+    "SELECT Username, Password FROM Accounts WHERE Username = ?",
+    [username],
+    (err, row) => {
+      if (err) {
+        console.error("Error querying the database:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      if (!row) {
+        return res.status(401).json({ error: "Username not found" }); // 401 = Unauthorized
+      }
+
+      if (password === row.Password) {
+        // If the password matches, delete the account
+        db.run("DELETE FROM Accounts WHERE Username = ?", [username], (err) => {
+          if (err) {
+            console.error(`Error deleting account ${username}:`, err);
+            return res.status(500).json({ error: "Internal Server Error" });
+          }
+
+          return res
+            .status(200)
+            .json({ message: `${username} account deleted` });
+        });
+      } else {
+        return res.status(401).json({ error: "Incorrect password" });
+      }
+    }
+  );
 });
 
 // Export the router

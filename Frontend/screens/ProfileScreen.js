@@ -25,6 +25,7 @@ import {
   getStoredUsername,
   getStoredPassword,
   setStoredCredentials,
+  clearStoredCredentials,
 } from "./auth/Authenticate.js";
 import { useIsFocused } from "@react-navigation/native";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -272,18 +273,8 @@ function ProfileScreen({ navigation, route }) {
     />
   );
 
-  async function clearCredentials() {
-    try {
-      await SecureStore.deleteItemAsync("username");
-      await SecureStore.deleteItemAsync("password");
-      console.log("Stored credentials cleared.");
-    } catch (error) {
-      console.error("Error clearing stored credentials:", error);
-    }
-  }
-
   const handleLogout = () => {
-    clearCredentials();
+    clearStoredCredentials();
     setLoading(true);
     navigation.navigate("Login");
   };

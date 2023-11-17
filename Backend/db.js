@@ -181,8 +181,7 @@ CREATE TABLE IF NOT EXISTS Ratings (
   Rating REAL,
   ReviewDescription TEXT,
   PRIMARY KEY (Username, UserRated),
-  FOREIGN KEY (UserRated) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (Username) REFERENCES Accounts (Username) ON UPDATE CASCADE
+  FOREIGN KEY (UserRated) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE
   );`;
 
 // Profile Table //
