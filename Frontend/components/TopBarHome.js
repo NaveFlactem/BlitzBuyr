@@ -6,7 +6,7 @@ import {
   Dimensions,
   StyleSheet,
   Platform,
-  TouchableOpacity, 
+  TouchableOpacity,
 } from "react-native";
 import { memo } from "react";
 import Colors from "../constants/Colors";
@@ -87,12 +87,16 @@ const styles = StyleSheet.create({
 const TopBar = memo(function TopBar() {
   return (
     <View style={styles.topBar}>
-    <TouchableOpacity style={styles.menu}>
-      <MaterialCommunityIcons name="menu" size={30} color={Colors.BB_bone}/>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.location}>
-      <MaterialCommunityIcons name="map-marker" size={30} color={Colors.BB_bone}/>
-    </TouchableOpacity>
+      <TouchableOpacity style={styles.menu}>
+        <MaterialCommunityIcons name="menu" size={30} color={Colors.BB_bone} />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.location}>
+        <MaterialCommunityIcons
+          name="map-marker"
+          size={30}
+          color={Colors.BB_bone}
+        />
+      </TouchableOpacity>
       <Image
         style={styles.logo}
         source={require("../assets/blitzbuyr_name_logo.png")}

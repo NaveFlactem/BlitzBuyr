@@ -616,8 +616,8 @@ class CreateListing extends Component {
                       {this.state.title == ""
                         ? "Title is required"
                         : this.state.title.length > 25
-                          ? "Title too long"
-                          : "Must enter a valid title"}
+                        ? "Title too long"
+                        : "Must enter a valid title"}
                     </Text>
                   </View>
                 ) : (
@@ -652,8 +652,8 @@ class CreateListing extends Component {
                       {this.state.description.length > 500
                         ? "Description too long"
                         : this.state.description.length === 0
-                          ? "Description is required"
-                          : "Must enter a valid description"}
+                        ? "Description is required"
+                        : "Must enter a valid description"}
                     </Text>
                   </View>
                 )}
@@ -695,10 +695,10 @@ class CreateListing extends Component {
                     {this.state.price == ""
                       ? "Price is required"
                       : this.state.price < 0
-                        ? "Invalid price"
-                        : this.state.price.length > 7
-                          ? "Price too long"
-                          : "Must enter a valid price"}
+                      ? "Invalid price"
+                      : this.state.price.length > 7
+                      ? "Price too long"
+                      : "Must enter a valid price"}
                   </Text>
                 </View>
               ) : (

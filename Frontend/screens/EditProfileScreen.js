@@ -82,7 +82,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         const manipulateResult = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
         );
         let localUri = manipulateResult.uri;
         let filename = localUri.split("/").pop();
@@ -112,7 +112,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         const manipulateResult = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
         );
         let localUri = manipulateResult.uri;
         let filename = localUri.split("/").pop();
@@ -194,12 +194,12 @@ const EditProfileScreen = ({ navigation, route }) => {
   };
 
   const deleteAccount = async () => {
-    const response = await fetch( 
+    const response = await fetch(
       `${serverIp}/api/deleteaccount?username=${confirmUsername}&password=${confirmPassword}`,
       {
         method: "DELETE",
         timeout: 10000,
-      }
+      },
     );
 
     const responseData = await response.json();
@@ -207,7 +207,7 @@ const EditProfileScreen = ({ navigation, route }) => {
     if (response.ok) {
       console.log(
         `Account ${getStoredUsername} deleted successfully:`,
-        responseData
+        responseData,
       );
       await clearStoredCredentials();
       alert("Account deleted successfully.");
@@ -558,8 +558,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginTop: 15,
   },
   confirmButton: {

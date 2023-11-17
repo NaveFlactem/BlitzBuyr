@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  View,
-  Image,
-  Dimensions,
-  StyleSheet,
-  Platform,
-} from "react-native";
+import { View, Image, Dimensions, StyleSheet, Platform } from "react-native";
 import { memo } from "react";
 import Colors from "../constants/Colors";
 

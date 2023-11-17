@@ -55,7 +55,7 @@ const AndroidSwiperComponent = memo(
         })}
       </Swiper>
     );
-  }
+  },
 );
 
 const HomeScreen = ({ route }) => {
@@ -83,11 +83,11 @@ const HomeScreen = ({ route }) => {
     try {
       const listingsResponse = await fetch(
         `${serverIp}/api/listings?username=${encodeURIComponent(
-          await SecureStore.getItemAsync("username")
+          await SecureStore.getItemAsync("username"),
         )}`,
         {
           method: "GET",
-        }
+        },
       );
 
       if (listingsResponse.status <= 201) {

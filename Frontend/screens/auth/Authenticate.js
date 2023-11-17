@@ -42,7 +42,7 @@ const clearStoredCredentials = async () => {
   } catch (error) {
     console.error("Error clearing stored credentials:", error);
   }
-}
+};
 
 const AuthenticateScreen = ({ navigation }) => {
   useEffect(() => {
@@ -105,5 +105,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export { getStoredUsername, getStoredPassword, setStoredCredentials, clearStoredCredentials };
+export {
+  getStoredUsername,
+  getStoredPassword,
+  setStoredCredentials,
+  clearStoredCredentials,
+};
 export default AuthenticateScreen;
