@@ -332,9 +332,7 @@ function ProfileScreen({ navigation, route }) {
               left: 10, // Adjust the left position as needed
             }}
           >
-            <MaterialCommunityIcons
-              name="arrow-left" size={30} color="black"
-            />
+            <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
           </TouchableOpacity>
         )}
       </View>
@@ -411,7 +409,8 @@ function ProfileScreen({ navigation, route }) {
             style={{
               flexDirection: "column",
               alignItems: "center",
-              marginHorizontal: 25,
+              marginHorizontal: profileName == loggedUser ? 25 : 10,
+              marginEnd: profileName != loggedUser ? -10 : 25,
             }}
           >
             <Text
