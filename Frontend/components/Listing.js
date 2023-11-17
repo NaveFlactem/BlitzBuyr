@@ -219,6 +219,7 @@ const Listing = ({ item }) => {
         </View>
 
         <CardOverlay2 price={item.Price}>
+          <Text style={styles.title}>{item.Title}</Text>
           <View style={styles.sellerInfoBox}>
             <View
               style={[
