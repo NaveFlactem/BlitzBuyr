@@ -13,6 +13,12 @@ const sharp = require("sharp");
 const { encode } = require("blurhash");
 const path = require("path");
 
+/**
+ * Storage configuration for multer to handle image uploads.
+ * @constant {Object} imageStorage
+ * @property {string} destination - The directory where uploaded files will be stored.
+ * @property {Function} filename - Generates a unique filename for each uploaded file.
+ */
 const imageStorage = multer.diskStorage({
   destination: "./img/", // Set the directory where uploaded files will be stored
   filename: (req, file, callback) => {
@@ -25,6 +31,12 @@ const imageStorage = multer.diskStorage({
   },
 });
 
+/**
+ * Multer configuration for handling image uploads.
+ * @constant {Object} imageUpload
+ * @property {Object} storage - The storage configuration for multer.
+ * @property {Object} limits - The limits for uploaded files, such as file size.
+ */
 const imageUpload = multer({
   storage: imageStorage,
   limits: {
@@ -375,6 +387,77 @@ router.delete("/deleteimages", function (req, res) {
 
       return res.status(200).json({ message: "All images deleted" });
     });
+  }
+});
+
+/**
+ * Handles deleting a listing.
+ *
+ * @function
+ * @name handleDeleteListing
+ *
+ * @param {Object} req - Express.js request object.
+ * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP DELETE request to '/api/deletelisting'
+ * const deleteListingResponse = await fetch(`${serverIp}/api/deletelisting`, {
+ *     method: "DELETE",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *     body: JSON.stringify({ username: "sampleUser", password: "samplePassword", listingId: 123 }),
+ *   });
+ *
+ * if (deleteListingResponse.status === 200) {
+ *     const deleteListingData = await deleteListingResponse.json();
+ *     console.log("Listing deleted:", deleteListingData.message);
+ * } else {
+ *     console.log("Error deleting listing");
+ * }
+ */
+router.delete("/deletelisting", async function (req, res) {
+  const { username, password, listingId } = req.body;
+
+  try {
+    const user = await new Promise((resolve, reject) => {
+      db.get(
+        "SELECT * FROM Accounts WHERE Username = ? AND Password = ?",
+        [username, password],
+        (err, row) => {
+          if (err) {
+            console.error("Error querying the database:", err);
+            reject(err);
+          }
+          resolve(row);
+        }
+      );
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    db.run(
+      "DELETE FROM Listings WHERE ListingId = ? AND Username = ?",
+      [listingId, username],
+      (err, rows) => {
+        if (err) {
+          console.error(`Error deleting listing ${listingId}:`, err);
+          return res.status(500).json({ error: "Internal Server Error" });
+        }
+        if (this.changes === 0) {
+          return res
+            .status(401)
+            .json({ error: "Invalid listing or credentials" });
+        }
+        return res
+          .status(200)
+          .json({ message: `Listing ${listingId} deleted` });
+      }
+    );
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 });
 

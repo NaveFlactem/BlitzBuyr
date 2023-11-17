@@ -41,6 +41,12 @@ const sharp = require("sharp");
 const { encode } = require("blurhash");
 const path = require("path");
 
+/**
+ * Storage configuration for multer to handle image uploads.
+ * @constant {Object} imageStorage
+ * @property {string} destination - The directory where uploaded files will be stored.
+ * @property {Function} filename - Generates a unique filename for each uploaded file.
+ */
 const imageStorage = multer.diskStorage({
   destination: "./img/", // Set the directory where uploaded files will be stored
   filename: (req, file, callback) => {
@@ -53,6 +59,12 @@ const imageStorage = multer.diskStorage({
   },
 });
 
+/**
+ * Multer configuration for handling image uploads.
+ * @constant {Object} imageUpload
+ * @property {Object} storage - The storage configuration for multer.
+ * @property {Object} limits - The limits for uploaded files, such as file size.
+ */
 const imageUpload = multer({
   storage: imageStorage,
   limits: {
@@ -94,7 +106,7 @@ const imageUpload = multer({
  * }
  */
 router.post("/createListing", imageUpload, function (req, res) {
-  const { price, title, description, username } = req.body;
+  const { price, title, description, username, tags } = req.body;
   const images = req.files;
 
   const sqlTimeStamp = new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -113,7 +125,53 @@ router.post("/createListing", imageUpload, function (req, res) {
         const listingId = this.lastID;
         const componentX = req.body.componentX ?? 4;
         const componentY = req.body.componentY ?? 3;
+        //TOMMY CODE==========================================================
+        //const tags = req.body.tags || [];
+        // Loop through tags and insert them into the "Tags" table if they don't exist
+        JSON.parse(tags).forEach((tag) => {
+          db.run(
+            "INSERT OR IGNORE INTO Tags (TagName) VALUES (?)",
+            [tag],
+            (err) => {
+              if (err) {
+                console.error("Error querying the database:", err);
+                return res.status(500).json({ error: "Internal Server Error" });
+              }
 
+              // Get the TagId for the inserted or existing tag
+              db.get(
+                "SELECT TagId FROM Tags WHERE TagName = ?",
+                [tag],
+                (err, tagRow) => {
+                  if (err) {
+                    console.error("Error querying the database:", err);
+                    return res
+                      .status(500)
+                      .json({ error: "Internal Server Error" });
+                  }
+
+                  const tagId = tagRow.TagId;
+
+                  // Associate the tag with the listing in the "ListingTags" table
+                  db.run(
+                    "INSERT INTO ListingTags (ListingId, TagId, TagName) VALUES (?, ?, ?)",
+                    [listingId, tagId, tagRow.TagName],
+                    (err) => {
+                      if (err) {
+                        console.error("Error querying the database:", err);
+                        return res
+                          .status(500)
+                          .json({ error: "Internal Server Error" });
+                      }
+                      // Tag associated with the listing successfully
+                    }
+                  );
+                }
+              );
+            }
+          );
+        });
+        //END OF TOMMY CODE
         // Insert images into the Images table
         if (images.length > 0) {
           images.forEach(async (image) => {
@@ -185,7 +243,7 @@ router.get("/listings", async function (req, res) {
     });
 
     const username = req.query.username;
-    const likedListingsResult = await new Promise(() => {
+    const likedListingsResult = await new Promise((resolve, reject) => {
       // First query
       db.all(
         "SELECT ListingId FROM Likes WHERE Username = ? ORDER BY ListingId DESC",
@@ -200,50 +258,10 @@ router.get("/listings", async function (req, res) {
       );
     });
 
-    const imagesResult = await new Promise((resolve, reject) => {
-      // Extract the ListingIds from listingsResult
-      const listingIds = listingsResult.map((listing) => listing.ListingId);
-
-      if (listingIds.length === 0) {
-        // If there are no ListingIds, there's no need to query the Images table.
-        resolve([]);
-      } else {
-        // Generate placeholders for the IN clause based on the number of ListingIds
-        const placeholders = listingIds.map(() => "?").join(", ");
-
-        // Second query using placeholders for the IN clause
-        db.all(
-          `SELECT * FROM Images i WHERE i.ListingId IN (${placeholders})`,
-          listingIds,
-          (err, rows) => {
-            if (err) {
-              console.error("Error querying the database (third query):", err);
-              reject(err);
-            }
-            resolve(rows);
-          }
-        );
-      }
-    });
-
-    const combinedData = listingsResult.map((listing) => {
-      // Check if the listing's ListingId is in the likedListingsResult
-      const isLiked = likedListingsResult.some(
-        (likedListing) => likedListing.ListingId === listing.ListingId
-      );
-
-      const matchingImages = imagesResult
-        .filter((image) => image.ListingId === listing.ListingId)
-        .map((image) => image.ImageURI);
-      return {
-        ...listing, // Include all properties from the listing
-        images: matchingImages, // Add the matching images
-        liked: isLiked,
-      };
-    });
-
     // Now you can use both firstQueryResult and secondQueryResult
-    return res.status(200).json(combinedData);
+    return res
+      .status(200)
+      .json(await getImagesFromListings(listingsResult, likedListingsResult));
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
@@ -400,8 +418,162 @@ router.delete("/deleteimages", function (req, res) {
   }
 });
 
+/**
+ * Handles deleting a listing.
+ *
+ * @function
+ * @name handleDeleteListing
+ *
+ * @param {Object} req - Express.js request object.
+ * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP DELETE request to '/api/deletelisting'
+ * const deleteListingResponse = await fetch(`${serverIp}/api/deletelisting`, {
+ *     method: "DELETE",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *     body: JSON.stringify({ username: "sampleUser", password: "samplePassword", listingId: 123 }),
+ *   });
+ *
+ * if (deleteListingResponse.status === 200) {
+ *     const deleteListingData = await deleteListingResponse.json();
+ *     console.log("Listing deleted:", deleteListingData.message);
+ * } else {
+ *     console.log("Error deleting listing");
+ * }
+ */
+router.delete("/deletelisting", async function (req, res) {
+  const { username, password, listingId } = req.body;
+
+  try {
+    const user = await new Promise((resolve, reject) => {
+      db.get(
+        "SELECT * FROM Accounts WHERE Username = ? AND Password = ?",
+        [username, password],
+        (err, row) => {
+          if (err) {
+            console.error("Error querying the database:", err);
+            reject(err);
+          }
+          resolve(row);
+        }
+      );
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    db.run(
+      "DELETE FROM Listings WHERE ListingId = ? AND Username = ?",
+      [listingId, username],
+      (err, rows) => {
+        if (err) {
+          console.error(`Error deleting listing ${listingId}:`, err);
+          return res.status(500).json({ error: "Internal Server Error" });
+        }
+        if (this.changes === 0) {
+          return res
+            .status(401)
+            .json({ error: "Invalid listing or credentials" });
+        }
+        return res
+          .status(200)
+          .json({ message: `Listing ${listingId} deleted` });
+      }
+    );
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+/**
+ * Retrieves images associated with listings and combines them with listing data.
+ *
+ * @function
+ * @async
+ * @name getImagesFromListings
+ *
+ * @param {Array} listingsResult - An array of listing objects to retrieve images for.
+ *
+ * @returns {Promise&lt;Array>} A Promise that resolves to an array of combined data objects. Each combined object includes listing information, associated images, and a flag indicating whether the listing is liked.
+ *
+ * @throws {Error} If there's an error during the database query.
+ */
+getImagesFromListings = async (listingsResult, likedListingsResult) => {
+  const imagesResult = await new Promise((resolve, reject) => {
+    const listingIds = listingsResult.map((listing) => listing.ListingId);
+    if (listingIds.length === 0) {
+      resolve([]);
+    } else {
+      const placeholders = listingIds.map(() => "?").join(", ");
+      db.all(
+        `SELECT * FROM Images i WHERE i.ListingId IN (${placeholders})`,
+        listingIds,
+        (err, rows) => {
+          if (err) {
+            console.error("Error querying the database (third query):", err);
+            reject(err);
+          }
+          resolve(rows);
+        }
+      );
+    }
+  });
+
+  // Fetch ratings for each listing's username
+  const ratingsResult = await new Promise((resolve, reject) => {
+    const usernames = listingsResult.map((listing) => listing.Username);
+    if (usernames.length === 0) {
+      resolve([]);
+    } else {
+      const placeholders = usernames.map(() => "?").join(", ");
+      db.all(
+        `SELECT UserRated, AVG(Rating) AS AverageRating, COUNT(*) AS RatingCount FROM Ratings WHERE UserRated IN (${placeholders}) GROUP BY UserRated`,
+        usernames,
+        (err, rows) => {
+          if (err) {
+            console.error("Error querying the database (ratings query):", err);
+            reject(err);
+          }
+          resolve(rows);
+        }
+      );
+    }
+  });
+
+  const combinedData = listingsResult.map((listing) => {
+    const isLiked = likedListingsResult.some(
+      (likedListing) => likedListing.ListingId === listing.ListingId
+    );
+    const matchingImages = imagesResult
+      .filter((image) => image.ListingId === listing.ListingId)
+      .map((image) => image.ImageURI);
+
+    // Get the ratings for the listing's username
+    const usernameRatings = {};
+    ratingsResult.forEach((rating) => {
+      if (rating.UserRated === listing.Username) {
+        usernameRatings.averageRating = rating.AverageRating;
+        usernameRatings.ratingCount = rating.RatingCount;
+      }
+    });
+
+    return {
+      ...listing,
+      images: matchingImages,
+      liked: isLiked,
+      ratings: usernameRatings, // Add the ratings for the listing's username
+    };
+  });
+
+  return combinedData;
+};
+
 // Export the router
-module.exports = router;
+module.exports = { router, getImagesFromListings, imageStorage, imageUpload };
 </code></pre>
         </article>
     </section>
@@ -418,7 +590,7 @@ module.exports = router;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Nov 03 2023 01:41:41 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Nov 17 2023 02:18:59 GMT-0800 (Pacific Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
