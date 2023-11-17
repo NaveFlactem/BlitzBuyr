@@ -684,7 +684,7 @@ const styles = StyleSheet.create({
     width: "10%",
     bottom: "0%",
     right: "5%",
-    zIndex: 50,
+    zIndex: 49,
   },
   modalContainer: {
     backgroundColor: "white",
