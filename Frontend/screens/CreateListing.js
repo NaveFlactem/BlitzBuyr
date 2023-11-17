@@ -219,7 +219,7 @@ class CreateListing extends Component {
   handleCreateListing = async () => {
     this.setState({ isLoading: true });
 
-    const { title, description, price, data } = this.state;
+    const { title, description, price, selectedTags, data } = this.state;
 
     try {
       const returnCode = this.checkValidListing();
@@ -250,9 +250,11 @@ class CreateListing extends Component {
           });
         });
 
+        console.log(typeof selectedTags);
         formData.append("price", price);
         formData.append("title", title);
         formData.append("description", description);
+        formData.append("tags", JSON.stringify(selectedTags));
         formData.append("username", await SecureStore.getItemAsync("username"));
 
         console.log("FormData:", formData);

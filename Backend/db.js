@@ -88,7 +88,7 @@ function createOrUpdateTable(db, tableDefinition) {
                 // Copy data from the existing table to the temporary table
                 db.run(
                   `INSERT INTO ${tempTableName} SELECT * FROM ${tableName}`,
-                  (err) => { 
+                  (err) => {
                     if (err) {
                       console.error(err.message);
                       return;
@@ -153,10 +153,11 @@ CREATE TABLE IF NOT EXISTS Tags (
   TagName TEXT UNIQUE
 );`;
 
- const tagTable = `
+const tagTable = `
 CREATE TABLE IF NOT EXISTS ListingTags (
   ListingId INTEGER,
   TagId INTEGER,
+  TagName TEXT,
   PRIMARY KEY (ListingId, TagId),
   FOREIGN KEY (ListingId) REFERENCES Listings (ListingId) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (TagId) REFERENCES Tags (TagId) ON DELETE CASCADE ON UPDATE CASCADE

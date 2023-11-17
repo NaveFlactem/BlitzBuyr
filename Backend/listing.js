@@ -66,7 +66,7 @@ const imageUpload = multer({
  * }
  */
 router.post("/createListing", imageUpload, function (req, res) {
-  const { price, title, description, username } = req.body;
+  const { price, title, description, username, tags } = req.body;
   const images = req.files;
 
   const sqlTimeStamp = new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -86,11 +86,11 @@ router.post("/createListing", imageUpload, function (req, res) {
         const componentX = req.body.componentX ?? 4;
         const componentY = req.body.componentY ?? 3;
         //TOMMY CODE==========================================================
-        const tags = req.body.tags || [];
+        //const tags = req.body.tags || [];
         // Loop through tags and insert them into the "Tags" table if they don't exist
-        tags.forEach((tag) => {
+        JSON.parse(tags).forEach((tag) => {
           db.run(
-            "INSERT OR IGNORE INTO TagDetails (TagName) VALUES (?)",
+            "INSERT OR IGNORE INTO Tags (TagName) VALUES (?)",
             [tag],
             (err) => {
               if (err) {
@@ -105,19 +105,23 @@ router.post("/createListing", imageUpload, function (req, res) {
                 (err, tagRow) => {
                   if (err) {
                     console.error("Error querying the database:", err);
-                    return res.status(500).json({ error: "Internal Server Error" });
+                    return res
+                      .status(500)
+                      .json({ error: "Internal Server Error" });
                   }
 
                   const tagId = tagRow.TagId;
 
                   // Associate the tag with the listing in the "ListingTags" table
                   db.run(
-                    "INSERT INTO TagTable (ListingId, TagId) VALUES (?, ?)",
-                    [listingId, tagId],
+                    "INSERT INTO ListingTags (ListingId, TagId, TagName) VALUES (?, ?, ?)",
+                    [listingId, tagId, tagRow.TagName],
                     (err) => {
                       if (err) {
                         console.error("Error querying the database:", err);
-                        return res.status(500).json({ error: "Internal Server Error" });
+                        return res
+                          .status(500)
+                          .json({ error: "Internal Server Error" });
                       }
                       // Tag associated with the listing successfully
                     }
@@ -372,35 +376,6 @@ router.delete("/deleteimages", function (req, res) {
       return res.status(200).json({ message: "All images deleted" });
     });
   }
-});
-
-/**
- * 
- * @function
- * @name handleLikeListing
- * 
- */
-router.get("/check-like", function (req, res) {
-  const { username, listingId } = req.query;
-
-  if (!username || !listingId) {
-    return res.status(400).json({ error: "Missing username or listingId" });
-  }
-
-  db.get(
-    "SELECT COUNT(*) AS count FROM Likes WHERE Username = ? AND ListingId = ?",
-    [username, listingId],
-    (err, row) => {
-      if (err) {
-        console.error("Error querying the database:", err);
-        return res.status(500).json({ error: "Internal Server Error" });
-      }
-
-      // If count is greater than 0, it means the user has liked the listing
-      const isLiked = row.count > 0;
-      return res.status(200).json({ isLiked });
-    }
-  );
 });
 
 /**

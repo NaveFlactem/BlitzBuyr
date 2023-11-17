@@ -114,7 +114,6 @@ const HomeScreen = ({ route }) => {
   // This will run with refresh = true
   useEffect(() => {
     if (route.params?.refresh) {
-      console.log("e");
       setRefreshing(true);
       fetchListings();
     }
