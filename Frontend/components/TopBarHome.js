@@ -11,6 +11,7 @@ import {
 import { memo } from "react";
 import Colors from "../constants/Colors";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import LocationSlider from "./LocationSlider";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -82,6 +83,14 @@ const styles = StyleSheet.create({
     }),
     zIndex: 10,
   },
+  locationslide: {
+    position: "absolute",
+    height: "auto",
+    width: "auto",
+    bottom: "8%",
+    right: "20%",
+    zIndex: 11,
+  },
 });
 
 const TopBar = memo(function TopBar() {
@@ -97,6 +106,9 @@ const TopBar = memo(function TopBar() {
         style={styles.logo}
         source={require("../assets/blitzbuyr_name_logo.png")}
       />
+    <View style={styles.locationslide}>
+      <LocationSlider />
+    </View>
     </View>
   );
 });
