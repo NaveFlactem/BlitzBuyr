@@ -12,10 +12,6 @@ import {
   Platform,
   SafeAreaView,
 } from "react-native";
-import Animated, {
-  interpolate,
-  useAnimatedStyle,
-} from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
 import { parallaxLayout } from "./parallax.ts";
 import { Image } from "expo-image";
@@ -150,31 +146,32 @@ const Listing = ({ item }) => {
   const [isLiked, setIsLiked] = useState(null); // Initially unknown
 
   useEffect(() => {
-    const fetchLikeStatus = async () => {
+    const checkLikedStatus = async () => {
       const username = await SecureStore.getItemAsync("username");
-      if (route.params?.refresh) route.params.refresh = false;
-      try {
-        const response = await fetch(
-          `${serverIp}/api/listings?username=${encodeURIComponent(
-            await SecureStore.getItemAsync("username"),
-          )}`,
-          {
-            method: "GET",
-          },
-        );
-        if (response.status <= 201) {
-          const data = await response.json();
-          setIsLiked(data.liked);
-        } else {
-          console.error('Failed to fetch like status');
-        }
-      } catch (error) {
-        console.error('Error fetching like status:', error);
+      if (username) {
+        const liked = await checkIfLiked(username, item.ListingId);
+        setIsLiked(liked);
       }
     };
-    fetchLikeStatus();
+
+    checkLikedStatus();
   }, [item.ListingId]);
 
+  const checkIfLiked = async (username, listingId) => {
+    try {
+      const response = await fetch(`${serverIp}/api/check-like?username=${encodeURIComponent(username)}&listingId=${listingId}`);
+      if (response.ok) {
+        const data = await response.json();
+        return data.isLiked;
+      } else {
+        console.error('Failed to fetch like status');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error fetching like status:', error);
+      return false;
+    }
+  };
 
   const handleLikePress = async () => {
     const username = await SecureStore.getItemAsync("username");
