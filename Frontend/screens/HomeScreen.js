@@ -22,10 +22,7 @@ import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/BouncePulse.js";
 
-
-
-
-const IOSSwiperComponent = memo(({swiperRef, listings}) => {
+const IOSSwiperComponent = memo(({ swiperRef, listings }) => {
   return (
     <Swiper
       ref={swiperRef}
@@ -35,17 +32,14 @@ const IOSSwiperComponent = memo(({swiperRef, listings}) => {
       showsButtons={false}
     >
       {listings.map((item) => (
-        <Listing
-          key={item.ListingId}
-          item={item}
-        />
+        <Listing key={item.ListingId} item={item} />
       ))}
     </Swiper>
   );
 });
 
 const AndroidSwiperComponent = memo(
-  ({swiperRef, listings}) => {
+  ({ swiperRef, listings, refreshControl }) => {
     return (
       <Swiper
         ref={swiperRef}
@@ -53,21 +47,16 @@ const AndroidSwiperComponent = memo(
         horizontal={false}
         showsPagination={false}
         showsButtons={false}
+        refreshControl={refreshControl}
       >
         {listings.map((item, listIndex) => {
           Image.prefetch(item.images);
-          return (
-            <Listing
-              key={item.ListingId}
-              item={item}
-            />
-          );
+          return <Listing key={item.ListingId} item={item} />;
         })}
       </Swiper>
     );
   }
 );
-
 
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -196,10 +185,7 @@ const HomeScreen = ({ route }) => {
               scrollEnabled={Platform.OS === "ios" ? true : false}
             >
               <View style={styles.swiperContainer}>
-                <IOSSwiperComponent
-                  swiperRef={swiperRef}
-                  listings={listings}
-                />
+                <IOSSwiperComponent swiperRef={swiperRef} listings={listings} />
               </View>
             </ScrollView>
           ) : (
@@ -207,6 +193,13 @@ const HomeScreen = ({ route }) => {
               <AndroidSwiperComponent
                 swiperRef={swiperRef}
                 listings={listings}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    progressViewOffset={50}
+                  />
+                }
               />
             </View>
           )
