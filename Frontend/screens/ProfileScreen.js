@@ -312,12 +312,6 @@ function ProfileScreen({ navigation, route }) {
           }}
         />
         {/* Back button */}
-        <View
-        style={{
-          flexDirection: "row",
-          paddingTop: 10,
-        }}
-      >
         {!selfProfile && (
           <TouchableOpacity
             onPress={() => {
@@ -334,7 +328,7 @@ function ProfileScreen({ navigation, route }) {
           </TouchableOpacity>
         )}
       </View>
-      </View>
+
       {/* //Profile Picture */}
       <View style={{ flex: 1, alignItems: "center" }}>
         <Image
