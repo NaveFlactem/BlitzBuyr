@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Colors from "../constants/Colors";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import {
   getStoredUsername,
@@ -218,7 +218,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       <View
         style={{
           flexDirection: "row",
-          paddingTop: 20,
+          paddingTop: 10,
         }}
       >
         <TouchableOpacity
@@ -227,10 +227,8 @@ const EditProfileScreen = ({ navigation, route }) => {
             navigation.navigate("BottomNavOverlay");
           }}
         >
-          <MaterialIcons
-            name="keyboard-arrow-left"
-            size={24}
-            color={Colors.BB_darkRedPurple}
+          <MaterialCommunityIcons
+            name="arrow-left" size={30} color="black"
           />
         </TouchableOpacity>
 

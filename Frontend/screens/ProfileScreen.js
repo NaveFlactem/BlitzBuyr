@@ -27,7 +27,7 @@ import {
   setStoredCredentials,
 } from "./auth/Authenticate.js";
 import { useIsFocused } from "@react-navigation/native";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/BouncePulse";
@@ -319,6 +319,24 @@ function ProfileScreen({ navigation, route }) {
             position: "absolute",
           }}
         />
+        {/* Back button */}
+        {profileName !== loggedUser && (
+          <TouchableOpacity
+            onPress={() => {
+              setLoading(true);
+              navigation.navigate("BottomNavOverlay");
+            }}
+            style={{
+              position: "absolute",
+              top: 10, // Adjust the top position as needed
+              left: 10, // Adjust the left position as needed
+            }}
+          >
+            <MaterialCommunityIcons
+              name="arrow-left" size={30} color="black"
+            />
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* //Profile Picture */}
@@ -359,6 +377,7 @@ function ProfileScreen({ navigation, route }) {
             paddingVertical: 2,
             flexDirection: "row",
             top: 0.28 * screenHeight,
+            alignItems: "center",
           }}
         >
           {/* Listings */}
@@ -409,7 +428,7 @@ function ProfileScreen({ navigation, route }) {
               {profileInfo.userRatings.RatingCount > 0 && (
                 <Entypo
                   name="star"
-                  size={25}
+                  size={20}
                   color="gold"
                   style={styles.ratingStar}
                 />
@@ -432,7 +451,6 @@ function ProfileScreen({ navigation, route }) {
               style={{
                 flexDirection: "column",
                 alignItems: "center",
-                marginHorizontal: 4,
               }}
             >
               <Text
@@ -456,42 +474,44 @@ function ProfileScreen({ navigation, route }) {
             </View>
           )}
         </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            marginTop: 5,
-            top: 0.28 * screenHeight,
-            marginBottom: -100,
-          }}
-        >
-          {/* Logout and Edit Profile Buttons */}
-          {profileName === loggedUser && (
-            <>
-              <TouchableOpacity
-                onPress={handleLogout}
-                style={styles.purpleButton}
-              >
-                <Text style={styles.buttonText}>Logout</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setLoading(true);
-                  navigation.navigate("EditProfile", {
-                    profileName: profileName,
-                    profilePicture: profileInfo.profilePicture,
-                    coverPicture: profileInfo.coverPicture,
-                  });
-                }}
-                style={{ ...styles.purpleButton, width: 114 }}
-              >
-                <Text style={styles.buttonText}>Edit Profile</Text>
-              </TouchableOpacity>
-            </>
-          )}
-
-          {/* Rate User Button */}
-          {profileName !== loggedUser && (
+        {/* Logout and Edit Profile Buttons */}
+        {profileName === loggedUser && (
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 5,
+              top: 0.28 * screenHeight,
+              marginBottom: -100,
+            }}
+          >
+            <TouchableOpacity onPress={handleLogout} style={styles.button}>
+              <Text style={styles.buttonText}>Logout</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setLoading(true);
+                navigation.navigate("EditProfile", {
+                  profileName: profileName,
+                  profilePicture: profileInfo.profilePicture,
+                  coverPicture: profileInfo.coverPicture,
+                });
+              }}
+              style={{ ...styles.button, width: 114 }}
+            >
+              <Text style={styles.buttonText}>Edit Profile</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {/* Rate User Button */}
+        {profileName !== loggedUser && (
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 5,
+              top: 0.28 * screenHeight,
+              marginBottom: -100,
+            }}
+          >
             <TouchableOpacity
               onPress={() => {
                 setLoading(true);
@@ -500,16 +520,7 @@ function ProfileScreen({ navigation, route }) {
                   username: profileName,
                 });
               }}
-              style={{
-                width: 124,
-                height: 36,
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "blue",
-                borderRadius: 10,
-                marginHorizontal: 10,
-                top: 10,
-              }}
+              style={{ ...styles.button }}
             >
               <Text
                 style={{
@@ -520,8 +531,8 @@ function ProfileScreen({ navigation, route }) {
                 Rate User
               </Text>
             </TouchableOpacity>
-          )}
-        </View>
+          </View>
+        )}
       </View>
 
       <View
@@ -529,7 +540,6 @@ function ProfileScreen({ navigation, route }) {
           flex: 1,
           marginHorizontal: 22,
           marginTop: 20,
-          top: 0.04 * screenHeight,
         }}
       >
         <TabView
@@ -593,7 +603,7 @@ function ProfileScreen({ navigation, route }) {
           </View>
           <TouchableOpacity
             onPress={() => setSelectedListing(null)}
-            style={{ ...styles.purpleButton, bottom: 0.05 * screenHeight }}
+            style={{ ...styles.button, bottom: 0.05 * screenHeight }}
           >
             <Text style={styles.buttonText}>Close</Text>
           </TouchableOpacity>
@@ -615,7 +625,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: Colors.BB_darkRedPurple,
   },
-  purpleButton: {
+  button: {
     width: 110,
     height: 36,
     alignItems: "center",
