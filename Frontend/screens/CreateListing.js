@@ -24,7 +24,7 @@ import BouncePulse from "../components/BouncePulse.js";
 const blurhash = "L5H2EC=PM+yV0g-mq.wG9c010J}I";
 
 const LoadingView = memo(() => (
-  <View style={styles.loadingContainer}>
+  <View style={styles.loading}>
     <BouncePulse />
   </View>
 ));
@@ -274,8 +274,9 @@ class CreateListing extends Component {
       }
     } catch (error) {
       console.error("Error creating listing:", error);
+    } finally {
+      this.setState({ isLoading: false });
     }
-    this.setState({ isLoading: false });
   };
 
   /**
@@ -329,7 +330,7 @@ class CreateListing extends Component {
           style: "cancel",
         },
       ],
-      { cancelable: true },
+      { cancelable: true }
     );
   };
 
@@ -395,7 +396,7 @@ class CreateListing extends Component {
   processSelectedImages = async (assets) => {
     // Process multiple images
     const processedImages = await Promise.all(
-      assets.map(async (asset) => this.manipulateImage(asset.uri)),
+      assets.map(async (asset) => this.manipulateImage(asset.uri))
     );
     this.setState((prevState) => ({
       data: [...prevState.data, ...processedImages.filter(Boolean)],
@@ -547,7 +548,7 @@ class CreateListing extends Component {
       if (isAlreadySelected) {
         // If already selected, remove it from the array
         newSelectedTags = prevState.selectedTags.filter(
-          (tagName) => tagName !== pressedTagName,
+          (tagName) => tagName !== pressedTagName
         );
       } else {
         // If not selected, add it to the array

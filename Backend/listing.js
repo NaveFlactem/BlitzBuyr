@@ -202,39 +202,77 @@ router.post("/createListing", imageUpload, function (req, res) {
  * }
  */
 router.get("/listings", async function (req, res) {
+  const { username, tags } = req.query;
+  console.log(tags);
   try {
-    const listingsResult = await new Promise((resolve, reject) => {
-      // First query
-      db.all("SELECT * FROM Listings ORDER BY ListingId DESC", (err, rows) => {
+    let query = `
+      SELECT
+        Listings.*,
+        GROUP_CONCAT(DISTINCT Tags.TagName) AS tags,
+        GROUP_CONCAT(DISTINCT Images.ImageURI) AS images,
+        COALESCE((
+          SELECT 1 
+          FROM Likes 
+          WHERE Likes.ListingId = Listings.ListingId AND Likes.Username = '${username}'
+          LIMIT 1
+        ), 0) AS liked,
+        COALESCE((
+          SELECT AVG(Rating) 
+          FROM Ratings 
+          WHERE Ratings.UserRated = Listings.Username
+        ), null) AS averageRating,
+        COALESCE((
+          SELECT COUNT(Rating) 
+          FROM Ratings 
+          WHERE Ratings.UserRated = Listings.Username
+        ), null) AS ratingCount
+      FROM Listings
+      LEFT JOIN ListingTags ON Listings.ListingId = ListingTags.ListingId
+      LEFT JOIN Tags ON ListingTags.TagId = Tags.TagId
+      LEFT JOIN Images ON Listings.ListingId = Images.ListingId`;
+
+    if (tags) {
+      query += `
+          WHERE Tags.TagName IN (${tags.map((tag) => `'${tag}'`).join(",")})
+        `;
+    }
+
+    query += `
+      GROUP BY Listings.ListingId
+      ORDER BY Listings.ListingId DESC;
+    `;
+
+    // Execute the query
+    const rows = await new Promise((resolve, reject) => {
+      db.all(query, (err, rows) => {
         if (err) {
-          console.error("Error querying the database (first query):", err);
+          console.error("Error querying the database:", err);
           reject(err);
         }
         resolve(rows);
       });
     });
 
-    const username = req.query.username;
-    const likedListingsResult = await new Promise((resolve, reject) => {
-      // First query
-      db.all(
-        "SELECT ListingId FROM Likes WHERE Username = ? ORDER BY ListingId DESC",
-        [username],
-        (err, rows) => {
-          if (err) {
-            console.error("Error querying the database (second query):", err);
-            reject(err);
-          }
-          resolve(rows);
-        }
-      );
+    // Parse the rows
+    const parsedRows = rows.map((row) => {
+      const { averageRating, ratingCount, ...rest } = row;
+      return {
+        ...rest,
+        tags: row.tags ? row.tags.split(",") : [],
+        images: row.images ? row.images.split(",") : [],
+        liked: Boolean(row.liked),
+        ratings: {
+          averageRating: row.averageRating
+            ? parseFloat(row.averageRating.toFixed(1))
+            : row.averageRating,
+          ratingCount: row.ratingCount,
+        },
+      };
     });
 
-    // Now you can use both firstQueryResult and secondQueryResult
-    return res
-      .status(200)
-      .json(await getImagesFromListings(listingsResult, likedListingsResult));
+    return res.status(200).json(parsedRows);
   } catch (error) {
+    console.error("Internal Server Error:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
