@@ -53,13 +53,6 @@ const AndroidSwiperComponent = memo(
         horizontal={false}
         showsPagination={false}
         showsButtons={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            progressViewOffset={50}
-          />
-        }
       >
         {listings.map((item, listIndex) => {
           Image.prefetch(item.images);
@@ -132,6 +125,7 @@ const HomeScreen = ({ route }) => {
   // This will run with refresh = true
   useEffect(() => {
     if (route.params?.refresh) {
+      console.log("e");
       setRefreshing(true);
       fetchListings();
     }

@@ -143,35 +143,7 @@ const MemoizedImage = memo(
 const Listing = ({ item }) => {
   const navigation = useNavigation();
   const price = item.Price;
-  const [isLiked, setIsLiked] = useState(null); // Initially unknown
-
-  useEffect(() => {
-    const checkLikedStatus = async () => {
-      const username = await SecureStore.getItemAsync("username");
-      if (username) {
-        const liked = await checkIfLiked(username, item.ListingId);
-        setIsLiked(liked);
-      }
-    };
-
-    checkLikedStatus();
-  }, [item.ListingId]);
-
-  const checkIfLiked = async (username, listingId) => {
-    try {
-      const response = await fetch(`${serverIp}/api/check-like?username=${encodeURIComponent(username)}&listingId=${listingId}`);
-      if (response.ok) {
-        const data = await response.json();
-        return data.isLiked;
-      } else {
-        console.error('Failed to fetch like status');
-        return false;
-      }
-    } catch (error) {
-      console.error('Error fetching like status:', error);
-      return false;
-    }
-  };
+  const [isLiked, setIsLiked] = useState(item.liked); // Initially KNOWN
 
   const handleLikePress = async () => {
     const username = await SecureStore.getItemAsync("username");
