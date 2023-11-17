@@ -319,9 +319,8 @@ function ProfileScreen({ navigation, route }) {
               navigation.navigate("BottomNavOverlay");
             }}
             style={{
-              position: "absolute",
-              top: 10, // Adjust the top position as needed
-              left: 10, // Adjust the left position as needed
+              top: 15, // Adjust the top position as needed
+              left: 15, // Adjust the left position as needed
             }}
           >
             <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
