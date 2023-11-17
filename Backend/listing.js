@@ -333,6 +333,35 @@ router.delete("/deleteimages", function (req, res) {
 });
 
 /**
+ * 
+ * @function
+ * @name handleLikeListing
+ * 
+ */
+router.get("/check-like", function (req, res) {
+  const { username, listingId } = req.query;
+
+  if (!username || !listingId) {
+    return res.status(400).json({ error: "Missing username or listingId" });
+  }
+
+  db.get(
+    "SELECT COUNT(*) AS count FROM Likes WHERE Username = ? AND ListingId = ?",
+    [username, listingId],
+    (err, row) => {
+      if (err) {
+        console.error("Error querying the database:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      // If count is greater than 0, it means the user has liked the listing
+      const isLiked = row.count > 0;
+      return res.status(200).json({ isLiked });
+    }
+  );
+});
+
+/**
  * Retrieves images associated with listings and combines them with listing data.
  *
  * @function

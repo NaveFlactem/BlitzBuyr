@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 import Swiper from "react-native-swiper";
-import TopBar from "../components/TopBar";
+import TopBar from "../components/TopBarHome.js";
 import Colors from "../constants/Colors";
 import { Image } from "expo-image";
 import * as SecureStore from "expo-secure-store";
@@ -22,11 +22,46 @@ import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/BouncePulse.js";
 
+const IOSSwiperComponent = memo(({ swiperRef, listings }) => {
+  return (
+    <Swiper
+      ref={swiperRef}
+      loop={false}
+      horizontal={false}
+      showsPagination={false}
+      showsButtons={false}
+    >
+      {listings.map((item) => (
+        <Listing key={item.ListingId} item={item} />
+      ))}
+    </Swiper>
+  );
+});
+
+const AndroidSwiperComponent = memo(
+  ({ swiperRef, listings, refreshControl }) => {
+    return (
+      <Swiper
+        ref={swiperRef}
+        loop={false}
+        horizontal={false}
+        showsPagination={false}
+        showsButtons={false}
+        refreshControl={refreshControl}
+      >
+        {listings.map((item, listIndex) => {
+          Image.prefetch(item.images);
+          return <Listing key={item.ListingId} item={item} />;
+        })}
+      </Swiper>
+    );
+  }
+);
+
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [listings, setListings] = useState([]);
   const swiperRef = useRef(null);
-  const [LikeStates, setLikeStates] = useState({});
   const [networkConnected, setNetworkConnected] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [scrollPosition, setScrollPosition] = useState({ x: 0, y: 0 });
@@ -48,20 +83,16 @@ const HomeScreen = ({ route }) => {
     try {
       const listingsResponse = await fetch(
         `${serverIp}/api/listings?username=${encodeURIComponent(
-          await SecureStore.getItemAsync("username"),
+          await SecureStore.getItemAsync("username")
         )}`,
         {
           method: "GET",
-        },
+        }
       );
 
       if (listingsResponse.status <= 201) {
         const listingsData = await listingsResponse.json();
-        const initialLikeStates = Object.fromEntries(
-          listingsData.map((listing) => [listing.ListingId, listing.liked]),
-        );
 
-        setLikeStates(initialLikeStates);
         setListings(listingsData);
         console.log("Listings fetched successfully");
       } else {
@@ -75,12 +106,6 @@ const HomeScreen = ({ route }) => {
     }
   };
 
-  const onBackPress = () => {
-    return true;
-  };
-
-  useBackButtonHandler(onBackPress);
-
   // This will run on mount
   useEffect(() => {
     fetchListings();
@@ -89,48 +114,17 @@ const HomeScreen = ({ route }) => {
   // This will run with refresh = true
   useEffect(() => {
     if (route.params?.refresh) {
+      console.log("e");
       setRefreshing(true);
       fetchListings();
     }
-  }, []);
+  }, [route.params]);
 
-  const handleLikePress = useCallback(
-    async (listingId) => {
-      setLikeStates((prevLikeStates) => {
-        return { ...prevLikeStates, [listingId]: !prevLikeStates[listingId] };
-      });
-
-      const likeData = {
-        username: await SecureStore.getItemAsync("username"),
-        listingId: listingId,
-      };
-
-      // Update the backend
-      const method = LikeStates[listingId] ? "DELETE" : "POST"; // Note: This may need adjustment based on how the state update works
-      const likedResponse = fetch(`${serverIp}/api/like`, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(likeData),
-      });
-
-      // if (likedResponse.status > 201) {
-      //   console.log("Error Liking listing:", listingId, likedResponse.status);
-      // }
-
-      // console.log(
-      //   `${!LikeStates[listingId] ? "Liked" : "Unliked"} listing ID ${listingId}`
-      // );
-    },
-    [LikeStates],
-  );
-
-  const onRefresh = useCallback(() => {
-    //console.log("Refreshing...");
+  const onRefresh = React.useCallback(() => {
+    console.log("refreshing...");
     setRefreshing(true);
     fetchListings();
-  }, [fetchListings]);
+  }, []);
 
   const handleScroll = (event) => {
     // Update the scroll position state
@@ -179,7 +173,7 @@ const HomeScreen = ({ route }) => {
           Platform.OS === "ios" ? (
             <ScrollView
               ref={scrollViewRef}
-              onScroll={handleScroll}
+              onScroll={handleScroll} //doesn't work
               refreshControl={
                 <RefreshControl
                   refreshing={refreshing}
@@ -191,36 +185,14 @@ const HomeScreen = ({ route }) => {
               scrollEnabled={Platform.OS === "ios" ? true : false}
             >
               <View style={styles.swiperContainer}>
-                <Swiper
-                  ref={swiperRef}
-                  loop={false}
-                  horizontal={false}
-                  showsPagination={false}
-                  showsButtons={false}
-                >
-                  {listings.map((item, listIndex) => {
-                    Image.prefetch(item.images);
-                    return (
-                      <Listing
-                        key={item.ListingId}
-                        item={item}
-                        LikeStates={LikeStates}
-                        handleLikePress={handleLikePress}
-                        numItems={item.images.length}
-                      />
-                    );
-                  })}
-                </Swiper>
+                <IOSSwiperComponent swiperRef={swiperRef} listings={listings} />
               </View>
             </ScrollView>
           ) : (
             <View style={styles.swiperContainer}>
-              <Swiper
-                ref={swiperRef}
-                loop={false}
-                horizontal={false}
-                showsPagination={false}
-                showsButtons={false}
+              <AndroidSwiperComponent
+                swiperRef={swiperRef}
+                listings={listings}
                 refreshControl={
                   <RefreshControl
                     refreshing={refreshing}
@@ -228,20 +200,7 @@ const HomeScreen = ({ route }) => {
                     progressViewOffset={50}
                   />
                 }
-              >
-                {listings.map((item, listIndex) => {
-                  Image.prefetch(item.images);
-                  return (
-                    <Listing
-                      key={item.ListingId}
-                      item={item}
-                      LikeStates={LikeStates}
-                      handleLikePress={handleLikePress}
-                      numItems={item.images.length}
-                    />
-                  );
-                })}
-              </Swiper>
+              />
             </View>
           )
         ) : (
@@ -254,7 +213,7 @@ const HomeScreen = ({ route }) => {
   );
 };
 
-export default memo(HomeScreen);
+export default HomeScreen;
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;

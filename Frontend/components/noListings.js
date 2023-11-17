@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Colors from "../constants/Colors";
 
 const NoListings = () => {
   return (
@@ -8,9 +9,9 @@ const NoListings = () => {
       <MaterialCommunityIcons
         name="file-document-outline"
         size={100}
-        color="gray"
+        color={Colors.BB_darkRedPurple}
       />
-      <Text style={styles.text}>No listings available.</Text>
+      <Text style={styles.text}>No listings available</Text>
     </View>
   );
 };
@@ -23,7 +24,8 @@ const styles = {
   },
   text: {
     fontSize: 18,
-    color: "gray",
+    fontWeight: "bold",
+    color: Colors.BB_darkRedPurple,
   },
 };
 
