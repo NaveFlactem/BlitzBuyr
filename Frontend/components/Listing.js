@@ -160,7 +160,7 @@ const CustomItem = memo(
   },
 );
 
-const Listing = ({ item }) => {
+const Listing = ({ item, removeListing }) => {
   const navigation = useNavigation();
   const price = item.Price;
   const [isLiked, setIsLiked] = useState(item.liked); // Initially KNOWN
@@ -188,6 +188,7 @@ const Listing = ({ item }) => {
       const responseData = await response.json();
 
       if (response.ok) {
+        removeListing(item.ListingId);
         alert("Listing deleted successfully.");
       } else {
         alert(`Error deleting listing: ${responseData.error}`);

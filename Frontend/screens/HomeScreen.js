@@ -22,7 +22,7 @@ import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/BouncePulse.js";
 
-const IOSSwiperComponent = memo(({ swiperRef, listings }) => {
+const IOSSwiperComponent = memo(({ swiperRef, listings, removeListing }) => {
   return (
     <Swiper
       ref={swiperRef}
@@ -32,14 +32,18 @@ const IOSSwiperComponent = memo(({ swiperRef, listings }) => {
       showsButtons={false}
     >
       {listings.map((item) => (
-        <Listing key={item.ListingId} item={item} />
+        <Listing
+          key={item.ListingId}
+          item={item}
+          removeListing={removeListing}
+        />
       ))}
     </Swiper>
   );
 });
 
 const AndroidSwiperComponent = memo(
-  ({ swiperRef, listings, refreshControl }) => {
+  ({ swiperRef, listings, refreshControl, removeListing }) => {
     return (
       <Swiper
         ref={swiperRef}
@@ -51,11 +55,17 @@ const AndroidSwiperComponent = memo(
       >
         {listings.map((item, listIndex) => {
           Image.prefetch(item.images);
-          return <Listing key={item.ListingId} item={item} />;
+          return (
+            <Listing
+              key={item.ListingId}
+              item={item}
+              removeListing={removeListing}
+            />
+          );
         })}
       </Swiper>
     );
-  },
+  }
 );
 
 const HomeScreen = ({ route }) => {
@@ -83,11 +93,11 @@ const HomeScreen = ({ route }) => {
     try {
       const listingsResponse = await fetch(
         `${serverIp}/api/listings?username=${encodeURIComponent(
-          await SecureStore.getItemAsync("username"),
+          await SecureStore.getItemAsync("username")
         )}`,
         {
           method: "GET",
-        },
+        }
       );
 
       if (listingsResponse.status <= 201) {
@@ -184,7 +194,17 @@ const HomeScreen = ({ route }) => {
               scrollEnabled={Platform.OS === "ios" ? true : false}
             >
               <View style={styles.swiperContainer}>
-                <IOSSwiperComponent swiperRef={swiperRef} listings={listings} />
+                <IOSSwiperComponent
+                  swiperRef={swiperRef}
+                  listings={listings}
+                  removeListing={(listingId) => {
+                    setListings((prevListings) =>
+                      prevListings.filter(
+                        (item) => item.ListingId !== listingId
+                      )
+                    );
+                  }}
+                />
               </View>
             </ScrollView>
           ) : (
@@ -192,6 +212,11 @@ const HomeScreen = ({ route }) => {
               <AndroidSwiperComponent
                 swiperRef={swiperRef}
                 listings={listings}
+                removeListing={(listingId) => {
+                  setListings((prevListings) =>
+                    prevListings.filter((item) => item.ListingId !== listingId)
+                  );
+                }}
                 refreshControl={
                   <RefreshControl
                     refreshing={refreshing}
