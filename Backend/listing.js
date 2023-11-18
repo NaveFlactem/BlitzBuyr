@@ -78,7 +78,8 @@ const imageUpload = multer({
  * }
  */
 router.post("/createListing", imageUpload, function (req, res) {
-  const { price, title, description, username, tags } = req.body;
+  const { price, title, description, username, tags, location } = req.body;
+  const { latitude, longitude } = JSON.parse(location);
   const images = req.files;
 
   const sqlTimeStamp = new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -86,8 +87,8 @@ router.post("/createListing", imageUpload, function (req, res) {
   try {
     // Insert the listing into the Listings table
     db.run(
-      "INSERT INTO Listings (price, title, description, userName, postDate) VALUES (?, ?, ?, ?, ?)",
-      [price, title, description, username, sqlTimeStamp],
+      "INSERT INTO Listings (price, title, description, userName, postDate, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [price, title, description, username, sqlTimeStamp, latitude, longitude],
       function (err) {
         if (err) {
           console.error("Error querying the database:", err);
@@ -202,8 +203,8 @@ router.post("/createListing", imageUpload, function (req, res) {
  * }
  */
 router.get("/listings", async function (req, res) {
-  const { username, tags } = req.query;
-  console.log(tags);
+  const { username, tags, latitude, longitude, distance } = req.query;
+
   try {
     let query = `
       SELECT
@@ -225,7 +226,11 @@ router.get("/listings", async function (req, res) {
           SELECT COUNT(Rating) 
           FROM Ratings 
           WHERE Ratings.UserRated = Listings.Username
-        ), null) AS ratingCount
+        ), null) AS ratingCount`;
+    if (distance)
+      query += `-- Calculate distance using Haversine formula
+        ,(6371 * acos(cos(radians(${latitude})) * cos(radians(Listings.Latitude)) * cos(radians(Listings.Longitude) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(Listings.Latitude)))) AS distance`;
+    query += `
       FROM Listings
       LEFT JOIN ListingTags ON Listings.ListingId = ListingTags.ListingId
       LEFT JOIN Tags ON ListingTags.TagId = Tags.TagId
@@ -235,6 +240,12 @@ router.get("/listings", async function (req, res) {
     if (tags) {
       query += `
           AND Tags.TagName IN (${tags.map((tag) => `'${tag}'`).join(",")})
+        `;
+    }
+
+    if (distance) {
+      query += `
+          AND distance <= ${distance}
         `;
     }
 

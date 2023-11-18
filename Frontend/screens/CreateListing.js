@@ -20,6 +20,7 @@ import TopBar from "../components/TopBarGeneric.js";
 import * as SecureStore from "expo-secure-store";
 import * as ImageManipulator from "expo-image-manipulator";
 import BouncePulse from "../components/BouncePulse.js";
+import * as Location from "expo-location";
 
 const blurhash = "L5H2EC=PM+yV0g-mq.wG9c010J}I";
 
@@ -250,7 +251,26 @@ class CreateListing extends Component {
           });
         });
 
-        console.log(typeof selectedTags);
+        // Get the device's location
+        let { status } = await Location.requestForegroundPermissionsAsync();
+
+        if (status !== "granted") {
+          console.error("Location permission not granted");
+          // Handle location permission not granted
+          return;
+        }
+
+        let location = await Location.getCurrentPositionAsync({});
+        const { latitude, longitude } = location.coords;
+
+        // Convert location to a JSON string
+        const locationString = JSON.stringify({ latitude, longitude });
+
+        // Append the location to the formData
+        formData.append("location", locationString);
+
+        console.log("Location:", latitude, longitude);
+
         formData.append("price", price);
         formData.append("title", title);
         formData.append("description", description);
@@ -261,6 +281,7 @@ class CreateListing extends Component {
         const response = await fetch(`${serverIp}/api/createlisting`, {
           method: "POST",
           body: formData,
+          timeout: 10000,
         });
 
         if (response.status <= 201) {
