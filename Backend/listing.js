@@ -229,11 +229,12 @@ router.get("/listings", async function (req, res) {
       FROM Listings
       LEFT JOIN ListingTags ON Listings.ListingId = ListingTags.ListingId
       LEFT JOIN Tags ON ListingTags.TagId = Tags.TagId
-      LEFT JOIN Images ON Listings.ListingId = Images.ListingId`;
+      LEFT JOIN Images ON Listings.ListingId = Images.ListingId
+      WHERE PostDate >= datetime('now', '-14 days')`;
 
     if (tags) {
       query += `
-          WHERE Tags.TagName IN (${tags.map((tag) => `'${tag}'`).join(",")})
+          AND Tags.TagName IN (${tags.map((tag) => `'${tag}'`).join(",")})
         `;
     }
 
