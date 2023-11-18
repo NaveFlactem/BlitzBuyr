@@ -1,12 +1,9 @@
-import React from "react";
+import React, {memo} from "react";
 import { View, Text, TouchableOpacity, Image, Dimensions } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Colors from "../constants/Colors";
 
-const NoWifi = () => {
-  const onRetry = () => {
-    console.log("Retry button pressed.");
-  };
-
+const NoWifi = memo(({onRetry}) => {
   return (
     <View style={styles.noWifiContainer}>
       <Image
@@ -15,11 +12,11 @@ const NoWifi = () => {
       />
       <Text style={styles.noWifiText}>No network connection available.</Text>
       <TouchableOpacity onPress={onRetry} style={styles.retryButton}>
-        <Text style={styles.retryButtonText}>Retry</Text>
+        <Text style={styles.buttonText}>Retry</Text>
       </TouchableOpacity>
     </View>
   );
-};
+});
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -36,6 +33,7 @@ const styles = {
     fontWeight: "bold",
     textAlign: "center",
     color: "gray",
+    marginTop: 20,
   },
   noWifiImage: {
     position: "absolute",
@@ -44,18 +42,31 @@ const styles = {
     alignSelf: "center",
     top: 0.2 * screenHeight,
   },
-  retryButton: {
-    alignSelf: "center",
-    marginTop: 20,
-    backgroundColor: "pink",
-    padding: 10,
-    borderRadius: 5,
-    width: 0.3 * screenWidth,
-  },
-  retryButtonText: {
-    alignSelf: "center",
-    color: "white",
+  buttonText: {
+    fontSize: 18,
     fontWeight: "bold",
+    color: Colors.BB_bone,
+    textAlign: "center",
+  },
+  retryButton: {
+    marginTop: 20,
+    backgroundColor: Colors.BB_darkRedPurple,
+    alignSelf: "center",
+    padding: 10,
+    borderRadius: 40,
+    width: 0.2 * screenWidth,
+    height: 0.05 * screenHeight,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.5,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 5,
+      },
+    }), 
   },
 };
 

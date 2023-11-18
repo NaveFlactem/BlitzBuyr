@@ -24,12 +24,12 @@ import Swiper from "react-native-swiper";
 import Colors from "../constants/Colors";
 import { Image } from "expo-image";
 import * as SecureStore from "expo-secure-store";
-import noWifi from "../components/noWifi";
-import noListings from "../components/noListings";
+import NoWifi from "../components/noWifi";
+import NoListings from "../components/noListings";
 import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/BouncePulse.js";
-import { PanGestureHandler } from "react-native-gesture-handler";
+import { PanGestureHandler, State } from "react-native-gesture-handler";
 
 const IOSSwiperComponent = memo(({ swiperRef, listings }) => {
   return (
@@ -99,8 +99,8 @@ const TagDrawer = memo(({ tags, handleTagPress, filterListings }) => {
                       </TouchableOpacity>
                     ))}
 
-                    <View style={styles.spacer} />
           </View>
+                    <View style={styles.spacer} />
         </ScrollView>
       </View>
         )
@@ -108,14 +108,10 @@ const TagDrawer = memo(({ tags, handleTagPress, filterListings }) => {
 
 
 const TopBar = memo(({ handleMenuPress }) => {
-  
-
-  
-
   return (
     <View style={styles.topBar}>
       <TouchableOpacity style={styles.menu} onPress={handleMenuPress}>
-        <MaterialCommunityIcons name="menu" size={30} color={Colors.BB_bone} />
+        <MaterialCommunityIcons name="menu" size={30} color={Colors.BB_bone} style={alignSelf="center"} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.location}>
         <MaterialCommunityIcons
@@ -162,21 +158,21 @@ const HomeScreen = ({ route }) => {
   const drawerOpen = useSharedValue(false);
   const drawerPosition = useSharedValue(-screenWidth);
   const [tags, setTags] = useState(tagsData);
-  const translateX = useSharedValue(0);
+  const translateX = useSharedValue(-screenWidth);
 
   const onGestureEvent = useAnimatedGestureHandler({
     onStart: (_, context) => {
       context.startX = translateX.value;
     },
     onActive: (event, context) => {
-      translateX.value = context.startX + event.translationX;
+      translateX.value = Math.min(0, context.startX + event.translationX); // Prevent swiping to the right
     },
-    onEnd: () => {
-      if (translateX.value > screenWidth / 2) {
-        // Close drawer
+    onEnd: (_, context) => {
+      if (translateX.value < -screenWidth / 16) {
+        // If swiped enough to the left, dismiss the drawer
         translateX.value = withTiming(-screenWidth);
       } else {
-        // Open drawer
+        // If not swiped enough, return to original position
         translateX.value = withTiming(0);
       }
     },
@@ -184,10 +180,17 @@ const HomeScreen = ({ route }) => {
 
 
   const toggleTagDrawer = () => {
-    drawerOpen.value = !drawerOpen.value;
-    drawerPosition.value = withTiming(drawerOpen.value ? 0 : -screenWidth, {
-      duration: 300,
-    });
+    if (translateX.value === 0) {
+      // Drawer is open, so close it
+      translateX.value = withTiming(-screenWidth, {
+        duration: 300,
+      });
+    } else {
+      // Drawer is closed, so open it
+      translateX.value = withTiming(0, {
+        duration: 300,
+      });
+    }
   };
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -307,6 +310,11 @@ const HomeScreen = ({ route }) => {
     }
   }, [route.params]);
 
+  retryButtonHandler = () => {
+    setRefreshing(true);
+    fetchListings();
+  }; 
+
   const onRefresh = React.useCallback(() => {
     console.log("refreshing...");
     setRefreshing(true);
@@ -392,10 +400,10 @@ const HomeScreen = ({ route }) => {
             </View>
           )
         ) : (
-          noListings()
+          <NoListings onRetry = {retryButtonHandler} />
         )
       ) : (
-        noWifi()
+        <NoWifi onRetry = {retryButtonHandler} />
       )}
       <PanGestureHandler onGestureEvent={onGestureEvent}>
       <Animated.View
@@ -414,6 +422,7 @@ const HomeScreen = ({ route }) => {
         <TagDrawer tags={tagsData} handleTagPress={handleTagPress} filterListings={filterListings}/>
       </Animated.View>
     </PanGestureHandler>
+
     </SafeAreaView>
   );
 };
@@ -462,9 +471,12 @@ const styles = StyleSheet.create({
   },
   menu: {
     position: "absolute",
-    height: "auto",
-    width: "auto",
-    bottom: "8%",
+    height: 0.1 * screenWidth,
+    width: 0.1 * screenWidth,
+    alignContent: "center",
+    justifyContent: "center",
+    top: "50%",
+    borderRadius: 80,
     left: "5%",
     zIndex: 11,
     ...Platform.select({
@@ -499,6 +511,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.BB_darkRedPurple,
     alignItems: "center",
     justifyContent: "center",
+    overflow: "hidden",
     borderBottomWidth: 3,
     borderColor:
     Platform.OS == "ios" ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.3)",
@@ -523,16 +536,15 @@ const styles = StyleSheet.create({
   drawerContainer: {
     position: 'absolute',
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.2)',
-    height: screenHeight,
-    width: screenWidth,
+    height: "auto",
+    width: 0.4 * screenWidth,
     zIndex: 110,
   },
   drawerScroll: {
     top: 0.08 * screenHeight,
     width: 0.40 * screenWidth,
     left: 0,
-    height: screenHeight,
+    height: "auto",
     backgroundColor: Colors.BB_darkRedPurple,
   },
 drawer: {
@@ -570,23 +582,10 @@ tagContainer: {
   textAlign: "center",
   height: 0.06 * screenHeight,
   width: 0.3 * screenWidth,
+  zIndex: 120,
   ...Platform.select({
     ios: {
       shadowColor: "white",
-      shadowOffset: { width: 1, height: 1 },
-      shadowOpacity: 0.2,
-      shadowRadius: 2,
-    },
-  }),
-},
-tagText: {
-  color: Colors.white,
-  fontSize: 18,
-  alignSelf: "center",
-  fontWeight: "bold",
-  ...Platform.select({
-    ios: {
-      shadowColor: Colors.black,
       shadowOffset: { width: 1, height: 1 },
       shadowOpacity: 0.2,
       shadowRadius: 2,
@@ -595,6 +594,12 @@ tagText: {
       elevation: 10,
     },
   }),
+},
+tagText: {
+  color: Colors.white,
+  fontSize: 18,
+  alignSelf: "center",
+  fontWeight: "bold",
 },
 rhombus: {
   alignSelf: "center",
@@ -643,8 +648,16 @@ applyButtonText: {
   fontSize: 18,
   fontWeight: "bold",
 },
+swipeArea: {
+  position: 'absolute',
+  width: 0.05 * screenWidth,
+  height: '100%',
+  left: 0,
+  top: 0,
+  zIndex: 200,
+},
 spacer: {
-  height: 0.1 * screenHeight,
+  height: screenHeight,
   width: "100%",
 },  
 });
