@@ -6,15 +6,18 @@ import {
   Dimensions,
   StyleSheet,
   Platform,
-  TouchableOpacity, 
+  TouchableOpacity,
 } from "react-native";
 import { memo, useState, useEffect, useCallback } from "react";
 import Colors from "../constants/Colors";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 import TagDrawer from "./TagDrawer";
 import LocationSlider from "./LocationSlider";
-
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -68,7 +71,7 @@ const styles = StyleSheet.create({
   },
   topBar: {
     position: "absolute",
-    height: 0.08 * screenHeight,
+    height: 0.09 * screenHeight,
     width: screenWidth,
     backgroundColor: Colors.BB_darkRedPurple,
     alignItems: "center",
@@ -96,24 +99,20 @@ const styles = StyleSheet.create({
   },
 });
 
-
-
-
-
-
 const TopBar = memo(function TopBar() {
   const drawerOpen = useSharedValue(false);
   const drawerPosition = useSharedValue(-screenWidth);
-  
+
   const handleMenuPress = () => {
     toggleTagDrawer();
-  }
-  
+  };
+
   const toggleTagDrawer = () => {
     drawerOpen.value = !drawerOpen.value;
     drawerPosition.value = withTiming(drawerOpen.value ? 0 : -screenWidth, {
       duration: 300,
-   })};
+    });
+  };
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -123,30 +122,37 @@ const TopBar = memo(function TopBar() {
 
   return (
     <View style={styles.topBar}>
-    <TouchableOpacity style={styles.menu} onPress={handleMenuPress}>
-      <MaterialCommunityIcons name="menu" size={30} color={Colors.BB_bone}/>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.location}>
-      <MaterialCommunityIcons name="map-marker" size={30} color={Colors.BB_bone}/>
-    </TouchableOpacity>
+      <TouchableOpacity style={styles.menu} onPress={handleMenuPress}>
+        <MaterialCommunityIcons name="menu" size={30} color={Colors.BB_bone} />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.location}>
+        <MaterialCommunityIcons
+          name="map-marker"
+          size={30}
+          color={Colors.BB_bone}
+        />
+      </TouchableOpacity>
       <Image
         style={styles.logo}
         source={require("../assets/blitzbuyr_name_logo.png")}
       />
-    {/* <View style={styles.locationslide}>
+      {/* <View style={styles.locationslide}>
       <LocationSlider />
     </View> */}
       <Animated.View
-    style={[{
-      position: 'absolute',
-      left: 0,
-      top: 0,
-      bottom: 0,
-      width: screenWidth,
-    }, animatedStyle]}
-  >
-    <TagDrawer />
-  </Animated.View>
+        style={[
+          {
+            position: "absolute",
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: screenWidth,
+          },
+          animatedStyle,
+        ]}
+      >
+        <TagDrawer />
+      </Animated.View>
     </View>
   );
 });

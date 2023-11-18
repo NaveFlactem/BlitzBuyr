@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
   cardBackground: {
     position: "absolute",
     width: 0.9 * screenWidth,
-    height: 0.8 * screenHeight,
+    height: 0.79 * screenHeight,
     backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 20,
     borderWidth: 0.01 * screenHeight,
