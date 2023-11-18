@@ -42,11 +42,12 @@ const styles = {
   },
   retryButton: {
     marginTop: 20,
+    justifyContent: "center",
     backgroundColor: Colors.BB_darkRedPurple,
     padding: 10,
     borderRadius: 40,
-    width: 0.2 * screenWidth,
-    height: 0.05 * screenHeight,
+    width: "20%",
+    height: "7%",
     ...Platform.select({
       ios: {
         shadowColor: Colors.black,

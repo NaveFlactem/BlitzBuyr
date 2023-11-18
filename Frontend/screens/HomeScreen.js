@@ -654,6 +654,7 @@ swipeArea: {
   height: '100%',
   left: 0,
   top: 0,
+  backgroundColor: 'black',
   zIndex: 200,
 },
 spacer: {
