@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@react-native-picker/picker": "^2.5.1",
+    "react-native-picker-select": "^9.0.0"
+  }
+}
