@@ -31,14 +31,6 @@ import {
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
-async function getCityFromCoords(latitude, longitude) {
-  const response = await fetch(
-    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
-  );
-  const data = await response.json();
-  return data.address.city || "Unknown City";
-}
-
 function getDistance(lat1, lon1, lat2, lon2) {
   function toRadians(degrees) {
     return degrees * (Math.PI / 180);
@@ -197,7 +189,6 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
   const navigation = useNavigation();
   const price = item.Price;
   const [isLiked, setIsLiked] = useState(item.liked); // Initially KNOWN
-  const [city, setCity] = useState("Loading...");
   const [distance, setDistance] = useState(
     item.Latitude
       ? getDistance(
@@ -208,26 +199,6 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
         )
       : "Unknown"
   );
-
-  useEffect(() => {
-    const getCityFromCoords = async (latitude, longitude) => {
-      try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
-        );
-        const data = await response.json();
-        return data.address.city || "Unknown";
-      } catch (error) {
-        console.error("Error getting city:", error);
-        return "Unknown";
-      }
-    };
-
-    getCityFromCoords(item.Latitude, item.Longitude)
-      .then((result) => setCity(result))
-      .catch((error) => console.error("Error:", error));
-  }, [item.Latitude, item.Longitude]);
-
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
     origin == "profile" && item.Username == getStoredUsername()
@@ -360,8 +331,8 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 color="white"
                 style={styles.locationPin}
               />
-              <Text style={styles.city}>{city}</Text>
-              <Text style={styles.distance}>{distance} miles</Text>
+              <Text style={styles.city}>{item.City}</Text>
+              <Text style={styles.distance}>{distance > 0 ? distance + "miles": "Less than 1 mile"} </Text>
             </View>
             <View
               style={[
