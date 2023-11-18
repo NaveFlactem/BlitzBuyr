@@ -31,6 +31,38 @@ import {
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
 
+async function getCityFromCoords(latitude, longitude) {
+  const response = await fetch(
+    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+  );
+  const data = await response.json();
+  return data.address.city || "Unknown City";
+}
+
+function getDistance(lat1, lon1, lat2, lon2) {
+  function toRadians(degrees) {
+    return degrees * (Math.PI / 180);
+  }
+
+  const R = 6371; // Radius of the Earth in kilometers
+  const dLat = toRadians(lat2 - lat1);
+  const dLon = toRadians(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRadians(lat1)) *
+      Math.cos(toRadians(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  const distance = R * c; // Distance in kilometers
+  const distanceMiles = distance * 0.621371; // Convert distance to miles
+
+  return Math.floor(distanceMiles);
+}
+
 const LikeButton = ({ isLiked, onLikePress }) => {
   return (
     <TouchableOpacity onPress={onLikePress} style={styles.likeButton}>
@@ -161,10 +193,41 @@ const CustomItem = memo(
   }
 );
 
-const Listing = ({ item, origin, removeListing }) => {
+const Listing = ({ item, origin, removeListing, userLocation }) => {
   const navigation = useNavigation();
   const price = item.Price;
   const [isLiked, setIsLiked] = useState(item.liked); // Initially KNOWN
+  const [city, setCity] = useState("Loading...");
+  const [distance, setDistance] = useState(
+    item.Latitude
+      ? getDistance(
+          item.Latitude,
+          item.Longitude,
+          userLocation.latitude,
+          userLocation.longitude
+        )
+      : "Unknown"
+  );
+
+  useEffect(() => {
+    const getCityFromCoords = async (latitude, longitude) => {
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+        );
+        const data = await response.json();
+        return data.address.city || "Unknown";
+      } catch (error) {
+        console.error("Error getting city:", error);
+        return "Unknown";
+      }
+    };
+
+    getCityFromCoords(item.Latitude, item.Longitude)
+      .then((result) => setCity(result))
+      .catch((error) => console.error("Error:", error));
+  }, [item.Latitude, item.Longitude]);
+
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
     origin == "profile" && item.Username == getStoredUsername()
@@ -297,8 +360,8 @@ const Listing = ({ item, origin, removeListing }) => {
                 color="white"
                 style={styles.locationPin}
               />
-              <Text style={styles.city}>Toronto</Text>
-              <Text style={styles.distance}>2.5 km</Text>
+              <Text style={styles.city}>{city}</Text>
+              <Text style={styles.distance}>{distance} miles</Text>
             </View>
             <View
               style={[

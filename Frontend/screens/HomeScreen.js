@@ -21,8 +21,9 @@ import noListings from "../components/noListings";
 import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/BouncePulse.js";
+import * as Location from "expo-location";
 
-const IOSSwiperComponent = memo(({ swiperRef, listings, removeListing }) => {
+const IOSSwiperComponent = memo(({ swiperRef, listings, removeListing, userLocation }) => {
   return (
     <Swiper
       ref={swiperRef}
@@ -36,6 +37,7 @@ const IOSSwiperComponent = memo(({ swiperRef, listings, removeListing }) => {
           key={item.ListingId}
           item={item}
           removeListing={removeListing}
+          userLocation={userLocation}
         />
       ))}
     </Swiper>
@@ -43,7 +45,7 @@ const IOSSwiperComponent = memo(({ swiperRef, listings, removeListing }) => {
 });
 
 const AndroidSwiperComponent = memo(
-  ({ swiperRef, listings, refreshControl, removeListing }) => {
+  ({ swiperRef, listings, refreshControl, removeListing, userLocation }) => {
     return (
       <Swiper
         ref={swiperRef}
@@ -60,6 +62,7 @@ const AndroidSwiperComponent = memo(
               key={item.ListingId}
               item={item}
               removeListing={removeListing}
+              userLocation={userLocation}
             />
           );
         })}
@@ -75,26 +78,45 @@ const HomeScreen = ({ route }) => {
   const [networkConnected, setNetworkConnected] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [scrollPosition, setScrollPosition] = useState({ x: 0, y: 0 });
+  const [userLocation, setUserLocation] = useState(null);
   const scrollViewRef = useRef(null);
 
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      setNetworkConnected(state.isConnected);
-    });
+  const getUserLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
 
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+    if (status !== "granted") {
+      console.error("Location permission not granted");
+      // FIXME: Handle location permission not granted
+      return;
+    }
+
+    const location = await Location.getCurrentPositionAsync({});
+    const { latitude, longitude } = location.coords;
+    setUserLocation({ latitude: latitude, longitude: longitude });
+  };
 
   const fetchListings = async () => {
     console.log("Fetching listings...");
     if (route.params?.refresh) route.params.refresh = false;
+
     try {
+      // Get the device's location
+      let { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== "granted") {
+        console.error("Location permission not granted");
+        // Handle location permission not granted
+        return;
+      }
+
+      const { latitude, longitude } = userLocation;
+      console.log("User Location:", userLocation);
+      console.log("Latitude:", latitude);
+      console.log("Longitude:", longitude);
       const listingsResponse = await fetch(
         `${serverIp}/api/listings?username=${encodeURIComponent(
           await SecureStore.getItemAsync("username")
-        )}`,
+        )}&latitude=${latitude}&longitude=${longitude}&distance=${1}`, // FIXME: Consider encrypting this data. This 1 value needs to be determined by the UI slider
         {
           method: "GET",
         }
@@ -116,16 +138,32 @@ const HomeScreen = ({ route }) => {
     }
   };
 
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setNetworkConnected(state.isConnected);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
   // This will run on mount
   useEffect(() => {
-    fetchListings();
+    getUserLocation();
   }, []);
+
+  // this will run after you have location
+  useEffect(() => {
+    if (userLocation) fetchListings();
+  }, [userLocation]);
 
   // This will run with refresh = true
   useEffect(() => {
     if (route.params?.refresh) {
       setRefreshing(true);
-      fetchListings();
+      if (userLocation) fetchListings();
+      else getUserLocation();
     }
   }, [route.params]);
 
@@ -197,6 +235,7 @@ const HomeScreen = ({ route }) => {
                 <IOSSwiperComponent
                   swiperRef={swiperRef}
                   listings={listings}
+                  userLocation={userLocation}
                   removeListing={(listingId) => {
                     setListings((prevListings) =>
                       prevListings.filter(
@@ -212,6 +251,7 @@ const HomeScreen = ({ route }) => {
               <AndroidSwiperComponent
                 swiperRef={swiperRef}
                 listings={listings}
+                userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
                     prevListings.filter((item) => item.ListingId !== listingId)
