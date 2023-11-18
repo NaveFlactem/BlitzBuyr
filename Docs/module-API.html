@@ -98,6 +98,304 @@
     
 
     
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="~imageStorage"><span class="type-signature">(inner, constant) </span>imageStorage<span class="type-signature"> :Object</span></h4>
+
+
+
+
+<div class="description">
+    Storage configuration for multer to handle image uploads.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>destination</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The directory where uploaded files will be stored.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>filename</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Generates a unique filename for each uploaded file.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~imageUpload"><span class="type-signature">(inner, constant) </span>imageUpload<span class="type-signature"> :Object</span></h4>
+
+
+
+
+<div class="description">
+    Multer configuration for handling image uploads.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>storage</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The storage configuration for multer.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>limits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The limits for uploaded files, such as file size.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line34">line 34</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -232,7 +530,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line35">line 35</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line47">line 47</a>
     </li></ul></dd>
     
 
@@ -397,7 +695,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line140">line 140</a>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line142">line 142</a>
     </li></ul></dd>
     
 
@@ -727,7 +1025,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line273">line 273</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line291">line 291</a>
     </li></ul></dd>
     
 
@@ -759,6 +1057,194 @@
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/images?listingId=123'const getImagesResponse = await fetch(`${serverIp}/api/images?listingId=123`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (getImagesResponse.status === 200) {    const imagesData = await getImagesResponse.json();    console.log("Images:", imagesData.Images);} else {    console.log("Error retrieving images");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getImagesFromListings"><span class="type-signature">(async, inner) </span>getImagesFromListings<span class="signature">(listingsResult)</span><span class="type-signature"> &rarr; {Promise.&lt;Array>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Retrieves images associated with listings and combines them with listing data.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>listingsResult</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An array of listing objects to retrieve images for.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line464">line 464</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        If there's an error during the database query.
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">Error</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    A Promise that resolves to an array of combined data objects. Each combined object includes listing information, associated images, and a flag indicating whether the listing is liked.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Array></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
 
 
 
@@ -892,7 +1378,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line104">line 104</a>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line106">line 106</a>
     </li></ul></dd>
     
 
@@ -1057,7 +1543,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line121">line 121</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line179">line 179</a>
     </li></ul></dd>
     
 
@@ -1089,6 +1575,530 @@
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/listings'const listingsResponse = await fetch(`${serverIp}/api/listings`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (listingsResponse.status === 200) {    const listingsData = await listingsResponse.json();    console.log("List of Listings:", listingsData);} else {    console.log("Error retrieving listings");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getProfilePicture"><span class="type-signature">(inner) </span>getProfilePicture<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    GET request endpoint at /api/pfp for retrieving a user's profile picture.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with a 'username' query parameter.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line462">line 462</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/pfp?username=testuser'const pfpResponse = await fetch(`${serverIp}/api/pfp?username=testuser`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },});if (pfpResponse.status === 200) {    // Profile picture is available in the response    console.log("Profile Picture:", pfpResponse.url);}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getRatings"><span class="type-signature">(inner) </span>getRatings<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    GET request endpoint at /api/ratings for retrieving a list of ratings.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line281">line 281</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/ratings'const ratingsResponse = await fetch(`${serverIp}/api/ratings`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },});if (ratingsResponse.status === 200) {    const ratingsData = await ratingsResponse.json();    console.log("List of Ratings:", ratingsData.Ratings);}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getUserProfile"><span class="type-signature">(async, inner) </span>getUserProfile<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles retrieving a user's profile, including ratings, listings, and liked listings.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with a 'username' query parameter.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line339">line 339</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        If there's an error during the database queries.
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">Error</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/profile?username=currentUser'// The 'username' query parameter specifies the user's profile to retrieve.</code></pre>
 
 
 
@@ -1222,7 +2232,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="account.js.html">account.js</a>, <a href="account.js.html#line186">line 186</a>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line197">line 197</a>
     </li></ul></dd>
     
 
@@ -1253,7 +2263,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteaccounts?username=testuser'// Delete a specific user account by providing the 'username' query parameter.// If successful, it will respond with a success message.// If the username doesn't exist, it will respond with an error message.const deleteResponse = await fetch(`${serverIp}/api/deleteaccounts?username=testuser`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteResponse.status === 200) {    console.log("Account deleted successfully");} else if (deleteResponse.status === 500) {    console.log("Error deleting account");}</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteaccount?username=testuser&amp;password=testpassword'// Delete a specific user account by providing the 'username' and 'password' query parameters.// If successful, it will respond with a success message.// If the username doesn't exist, it will respond with an error message.const deleteResponse = await fetch(`${serverIp}/api/deleteaccount?username=testuser&amp;password=testpassword`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteResponse.status === 200) {    console.log("Account deleted successfully");} else if (deleteResponse.status === 500) {    console.log("Error deleting account");}</code></pre>
 
 
 
@@ -1387,7 +2397,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line326">line 326</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line344">line 344</a>
     </li></ul></dd>
     
 
@@ -1419,6 +2429,171 @@
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteimages'const deleteImagesResponse = await fetch(`${serverIp}/api/deleteimages`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteImagesResponse.status === 200) {    const deleteImagesData = await deleteImagesResponse.json();    console.log("Images deleted:", deleteImagesData.message);} else {    console.log("Error deleting images");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~handleDeleteListing"><span class="type-signature">(inner) </span>handleDeleteListing<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles deleting a listing.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line393">line 393</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deletelisting'const deleteListingResponse = await fetch(`${serverIp}/api/deletelisting`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify({ username: "sampleUser", password: "samplePassword", listingId: 123 }),  });if (deleteListingResponse.status === 200) {    const deleteListingData = await deleteListingResponse.json();    console.log("Listing deleted:", deleteListingData.message);} else {    console.log("Error deleting listing");}</code></pre>
 
 
 
@@ -1552,7 +2727,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line224">line 224</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line242">line 242</a>
     </li></ul></dd>
     
 
@@ -1717,7 +2892,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line12">line 12</a>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line14">line 14</a>
     </li></ul></dd>
     
 
@@ -2212,7 +3387,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line58">line 58</a>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line60">line 60</a>
     </li></ul></dd>
     
 
@@ -2244,6 +3419,501 @@
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/like'const unlikeData = {    username: "testuser",    listingId: 1,  };const unlikedResponse = await fetch(`${serverIp}/api/like`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(unlikeData),  });if (unlikedResponse.status > 201) {    console.log("Error Unliking listing:", 1, unlikedResponse.status);}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~rateUser"><span class="type-signature">(inner) </span>rateUser<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles rating a user.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with a JSON body containing 'username', 'userRated', and 'rating'.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line176">line 176</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/rate'// Request body should contain a JSON object with 'username', 'userRated', and 'rating' fields.const requestPayload = {  "username": "currentUser",  "userRated": "ratedUser",  "rating": 4.5};</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~removeUserRating"><span class="type-signature">(inner) </span>removeUserRating<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles removing a user's rating.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with a JSON body containing 'username' and 'userRated'.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line245">line 245</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/rate'// Request body should contain a JSON object with 'username' and 'userRated' fields.const requestPayload = {  "username": "currentUser",  "userRated": "ratedUser"};</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~updateProfile"><span class="type-signature">(inner) </span>updateProfile<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    POST request endpoint at /api/editprofile for updating a user's profile information.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with form data containing 'username', 'contactInfo', 'profileName', 'password', 'profilePicture', and 'coverPicture'.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line505">line 505</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/editprofile'const formData = new FormData();formData.append('username', 'testuser');formData.append('contactInfo', 'New contact info');formData.append('profileName', 'New profile name');formData.append('password', 'newpassword');formData.append('profilePicture', profilePictureFile);formData.append('coverPicture', coverPictureFile);const editProfileResponse = await fetch(`${serverIp}/api/editprofile`, {    method: "POST",    body: formData,});if (editProfileResponse.status === 200) {    console.log("Profile updated successfully");}</code></pre>
 
 
 
@@ -2337,6 +4007,304 @@
     
 
     
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="~imageStorage"><span class="type-signature">(inner, constant) </span>imageStorage<span class="type-signature"> :Object</span></h4>
+
+
+
+
+<div class="description">
+    Storage configuration for multer to handle image uploads.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>destination</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The directory where uploaded files will be stored.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>filename</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Generates a unique filename for each uploaded file.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~imageUpload"><span class="type-signature">(inner, constant) </span>imageUpload<span class="type-signature"> :Object</span></h4>
+
+
+
+
+<div class="description">
+    Multer configuration for handling image uploads.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>storage</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The storage configuration for multer.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>limits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The limits for uploaded files, such as file size.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line34">line 34</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -2471,7 +4439,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line35">line 35</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line47">line 47</a>
     </li></ul></dd>
     
 
@@ -2636,7 +4604,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line140">line 140</a>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line142">line 142</a>
     </li></ul></dd>
     
 
@@ -2966,7 +4934,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line273">line 273</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line291">line 291</a>
     </li></ul></dd>
     
 
@@ -2998,6 +4966,194 @@
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/images?listingId=123'const getImagesResponse = await fetch(`${serverIp}/api/images?listingId=123`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (getImagesResponse.status === 200) {    const imagesData = await getImagesResponse.json();    console.log("Images:", imagesData.Images);} else {    console.log("Error retrieving images");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getImagesFromListings"><span class="type-signature">(async, inner) </span>getImagesFromListings<span class="signature">(listingsResult)</span><span class="type-signature"> &rarr; {Promise.&lt;Array>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Retrieves images associated with listings and combines them with listing data.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>listingsResult</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An array of listing objects to retrieve images for.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line464">line 464</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        If there's an error during the database query.
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">Error</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    A Promise that resolves to an array of combined data objects. Each combined object includes listing information, associated images, and a flag indicating whether the listing is liked.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Array></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
 
 
 
@@ -3131,7 +5287,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line104">line 104</a>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line106">line 106</a>
     </li></ul></dd>
     
 
@@ -3296,7 +5452,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line121">line 121</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line179">line 179</a>
     </li></ul></dd>
     
 
@@ -3328,6 +5484,530 @@
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/listings'const listingsResponse = await fetch(`${serverIp}/api/listings`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (listingsResponse.status === 200) {    const listingsData = await listingsResponse.json();    console.log("List of Listings:", listingsData);} else {    console.log("Error retrieving listings");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getProfilePicture"><span class="type-signature">(inner) </span>getProfilePicture<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    GET request endpoint at /api/pfp for retrieving a user's profile picture.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with a 'username' query parameter.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line462">line 462</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/pfp?username=testuser'const pfpResponse = await fetch(`${serverIp}/api/pfp?username=testuser`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },});if (pfpResponse.status === 200) {    // Profile picture is available in the response    console.log("Profile Picture:", pfpResponse.url);}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getRatings"><span class="type-signature">(inner) </span>getRatings<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    GET request endpoint at /api/ratings for retrieving a list of ratings.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line281">line 281</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/ratings'const ratingsResponse = await fetch(`${serverIp}/api/ratings`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },});if (ratingsResponse.status === 200) {    const ratingsData = await ratingsResponse.json();    console.log("List of Ratings:", ratingsData.Ratings);}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getUserProfile"><span class="type-signature">(async, inner) </span>getUserProfile<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles retrieving a user's profile, including ratings, listings, and liked listings.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with a 'username' query parameter.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line339">line 339</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        If there's an error during the database queries.
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">Error</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/profile?username=currentUser'// The 'username' query parameter specifies the user's profile to retrieve.</code></pre>
 
 
 
@@ -3461,7 +6141,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="account.js.html">account.js</a>, <a href="account.js.html#line186">line 186</a>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line197">line 197</a>
     </li></ul></dd>
     
 
@@ -3492,7 +6172,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteaccounts?username=testuser'// Delete a specific user account by providing the 'username' query parameter.// If successful, it will respond with a success message.// If the username doesn't exist, it will respond with an error message.const deleteResponse = await fetch(`${serverIp}/api/deleteaccounts?username=testuser`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteResponse.status === 200) {    console.log("Account deleted successfully");} else if (deleteResponse.status === 500) {    console.log("Error deleting account");}</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteaccount?username=testuser&amp;password=testpassword'// Delete a specific user account by providing the 'username' and 'password' query parameters.// If successful, it will respond with a success message.// If the username doesn't exist, it will respond with an error message.const deleteResponse = await fetch(`${serverIp}/api/deleteaccount?username=testuser&amp;password=testpassword`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteResponse.status === 200) {    console.log("Account deleted successfully");} else if (deleteResponse.status === 500) {    console.log("Error deleting account");}</code></pre>
 
 
 
@@ -3626,7 +6306,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line326">line 326</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line344">line 344</a>
     </li></ul></dd>
     
 
@@ -3658,6 +6338,171 @@
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteimages'const deleteImagesResponse = await fetch(`${serverIp}/api/deleteimages`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteImagesResponse.status === 200) {    const deleteImagesData = await deleteImagesResponse.json();    console.log("Images deleted:", deleteImagesData.message);} else {    console.log("Error deleting images");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~handleDeleteListing"><span class="type-signature">(inner) </span>handleDeleteListing<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles deleting a listing.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line393">line 393</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deletelisting'const deleteListingResponse = await fetch(`${serverIp}/api/deletelisting`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify({ username: "sampleUser", password: "samplePassword", listingId: 123 }),  });if (deleteListingResponse.status === 200) {    const deleteListingData = await deleteListingResponse.json();    console.log("Listing deleted:", deleteListingData.message);} else {    console.log("Error deleting listing");}</code></pre>
 
 
 
@@ -3791,7 +6636,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line224">line 224</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line242">line 242</a>
     </li></ul></dd>
     
 
@@ -3956,7 +6801,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line12">line 12</a>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line14">line 14</a>
     </li></ul></dd>
     
 
@@ -4451,7 +7296,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line58">line 58</a>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line60">line 60</a>
     </li></ul></dd>
     
 
@@ -4483,6 +7328,501 @@
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/like'const unlikeData = {    username: "testuser",    listingId: 1,  };const unlikedResponse = await fetch(`${serverIp}/api/like`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify(unlikeData),  });if (unlikedResponse.status > 201) {    console.log("Error Unliking listing:", 1, unlikedResponse.status);}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~rateUser"><span class="type-signature">(inner) </span>rateUser<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles rating a user.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with a JSON body containing 'username', 'userRated', and 'rating'.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line176">line 176</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/rate'// Request body should contain a JSON object with 'username', 'userRated', and 'rating' fields.const requestPayload = {  "username": "currentUser",  "userRated": "ratedUser",  "rating": 4.5};</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~removeUserRating"><span class="type-signature">(inner) </span>removeUserRating<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles removing a user's rating.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with a JSON body containing 'username' and 'userRated'.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line245">line 245</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/rate'// Request body should contain a JSON object with 'username' and 'userRated' fields.const requestPayload = {  "username": "currentUser",  "userRated": "ratedUser"};</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~updateProfile"><span class="type-signature">(inner) </span>updateProfile<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    POST request endpoint at /api/editprofile for updating a user's profile information.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with form data containing 'username', 'contactInfo', 'profileName', 'password', 'profilePicture', and 'coverPicture'.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line505">line 505</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/editprofile'const formData = new FormData();formData.append('username', 'testuser');formData.append('contactInfo', 'New contact info');formData.append('profileName', 'New profile name');formData.append('password', 'newpassword');formData.append('profilePicture', profilePictureFile);formData.append('coverPicture', coverPictureFile);const editProfileResponse = await fetch(`${serverIp}/api/editprofile`, {    method: "POST",    body: formData,});if (editProfileResponse.status === 200) {    console.log("Profile updated successfully");}</code></pre>
 
 
 
@@ -4576,6 +7916,304 @@
     
 
     
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="~imageStorage"><span class="type-signature">(inner, constant) </span>imageStorage<span class="type-signature"> :Object</span></h4>
+
+
+
+
+<div class="description">
+    Storage configuration for multer to handle image uploads.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>destination</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The directory where uploaded files will be stored.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>filename</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Generates a unique filename for each uploaded file.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~imageUpload"><span class="type-signature">(inner, constant) </span>imageUpload<span class="type-signature"> :Object</span></h4>
+
+
+
+
+<div class="description">
+    Multer configuration for handling image uploads.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>storage</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The storage configuration for multer.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>limits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The limits for uploaded files, such as file size.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line34">line 34</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -4710,7 +8348,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line35">line 35</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line47">line 47</a>
     </li></ul></dd>
     
 
@@ -4875,7 +8513,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line140">line 140</a>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line142">line 142</a>
     </li></ul></dd>
     
 
@@ -5205,7 +8843,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line273">line 273</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line291">line 291</a>
     </li></ul></dd>
     
 
@@ -5237,6 +8875,194 @@
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/images?listingId=123'const getImagesResponse = await fetch(`${serverIp}/api/images?listingId=123`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (getImagesResponse.status === 200) {    const imagesData = await getImagesResponse.json();    console.log("Images:", imagesData.Images);} else {    console.log("Error retrieving images");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getImagesFromListings"><span class="type-signature">(async, inner) </span>getImagesFromListings<span class="signature">(listingsResult)</span><span class="type-signature"> &rarr; {Promise.&lt;Array>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Retrieves images associated with listings and combines them with listing data.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>listingsResult</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An array of listing objects to retrieve images for.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line464">line 464</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        If there's an error during the database query.
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">Error</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    A Promise that resolves to an array of combined data objects. Each combined object includes listing information, associated images, and a flag indicating whether the listing is liked.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Array></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
 
 
 
@@ -5370,7 +9196,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line104">line 104</a>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line106">line 106</a>
     </li></ul></dd>
     
 
@@ -5535,7 +9361,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line121">line 121</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line179">line 179</a>
     </li></ul></dd>
     
 
@@ -5567,6 +9393,530 @@
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/listings'const listingsResponse = await fetch(`${serverIp}/api/listings`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },  });if (listingsResponse.status === 200) {    const listingsData = await listingsResponse.json();    console.log("List of Listings:", listingsData);} else {    console.log("Error retrieving listings");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getProfilePicture"><span class="type-signature">(inner) </span>getProfilePicture<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    GET request endpoint at /api/pfp for retrieving a user's profile picture.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with a 'username' query parameter.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line462">line 462</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/pfp?username=testuser'const pfpResponse = await fetch(`${serverIp}/api/pfp?username=testuser`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },});if (pfpResponse.status === 200) {    // Profile picture is available in the response    console.log("Profile Picture:", pfpResponse.url);}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getRatings"><span class="type-signature">(inner) </span>getRatings<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    GET request endpoint at /api/ratings for retrieving a list of ratings.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line281">line 281</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/ratings'const ratingsResponse = await fetch(`${serverIp}/api/ratings`, {    method: "GET",    headers: {      "Content-Type": "application/json",    },});if (ratingsResponse.status === 200) {    const ratingsData = await ratingsResponse.json();    console.log("List of Ratings:", ratingsData.Ratings);}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~getUserProfile"><span class="type-signature">(async, inner) </span>getUserProfile<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles retrieving a user's profile, including ratings, listings, and liked listings.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with a 'username' query parameter.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line339">line 339</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        If there's an error during the database queries.
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">Error</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP GET request to '/api/profile?username=currentUser'// The 'username' query parameter specifies the user's profile to retrieve.</code></pre>
 
 
 
@@ -5700,7 +10050,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="account.js.html">account.js</a>, <a href="account.js.html#line186">line 186</a>
+        <a href="account.js.html">account.js</a>, <a href="account.js.html#line197">line 197</a>
     </li></ul></dd>
     
 
@@ -5731,7 +10081,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteaccounts?username=testuser'// Delete a specific user account by providing the 'username' query parameter.// If successful, it will respond with a success message.// If the username doesn't exist, it will respond with an error message.const deleteResponse = await fetch(`${serverIp}/api/deleteaccounts?username=testuser`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteResponse.status === 200) {    console.log("Account deleted successfully");} else if (deleteResponse.status === 500) {    console.log("Error deleting account");}</code></pre>
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteaccount?username=testuser&amp;password=testpassword'// Delete a specific user account by providing the 'username' and 'password' query parameters.// If successful, it will respond with a success message.// If the username doesn't exist, it will respond with an error message.const deleteResponse = await fetch(`${serverIp}/api/deleteaccount?username=testuser&amp;password=testpassword`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteResponse.status === 200) {    console.log("Account deleted successfully");} else if (deleteResponse.status === 500) {    console.log("Error deleting account");}</code></pre>
 
 
 
@@ -5865,7 +10215,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line326">line 326</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line344">line 344</a>
     </li></ul></dd>
     
 
@@ -5897,6 +10247,171 @@
     <h5>Example</h5>
     
     <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deleteimages'const deleteImagesResponse = await fetch(`${serverIp}/api/deleteimages`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },  });if (deleteImagesResponse.status === 200) {    const deleteImagesData = await deleteImagesResponse.json();    console.log("Images deleted:", deleteImagesData.message);} else {    console.log("Error deleting images");}</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~handleDeleteListing"><span class="type-signature">(inner) </span>handleDeleteListing<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles deleting a listing.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line393">line 393</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/deletelisting'const deleteListingResponse = await fetch(`${serverIp}/api/deletelisting`, {    method: "DELETE",    headers: {      "Content-Type": "application/json",    },    body: JSON.stringify({ username: "sampleUser", password: "samplePassword", listingId: 123 }),  });if (deleteListingResponse.status === 200) {    const deleteListingData = await deleteListingResponse.json();    console.log("Listing deleted:", deleteListingData.message);} else {    console.log("Error deleting listing");}</code></pre>
 
 
 
@@ -6030,7 +10545,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line224">line 224</a>
+        <a href="listing.js.html">listing.js</a>, <a href="listing.js.html#line242">line 242</a>
     </li></ul></dd>
     
 
@@ -6195,7 +10710,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line12">line 12</a>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line14">line 14</a>
     </li></ul></dd>
     
 
@@ -6690,7 +11205,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line58">line 58</a>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line60">line 60</a>
     </li></ul></dd>
     
 
@@ -6726,6 +11241,501 @@
 
 
         
+            
+
+    
+
+    
+    <h4 class="name" id="~rateUser"><span class="type-signature">(inner) </span>rateUser<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles rating a user.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with a JSON body containing 'username', 'userRated', and 'rating'.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line176">line 176</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/rate'// Request body should contain a JSON object with 'username', 'userRated', and 'rating' fields.const requestPayload = {  "username": "currentUser",  "userRated": "ratedUser",  "rating": 4.5};</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~removeUserRating"><span class="type-signature">(inner) </span>removeUserRating<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Handles removing a user's rating.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with a JSON body containing 'username' and 'userRated'.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line245">line 245</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP DELETE request to '/api/rate'// Request body should contain a JSON object with 'username' and 'userRated' fields.const requestPayload = {  "username": "currentUser",  "userRated": "ratedUser"};</code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~updateProfile"><span class="type-signature">(inner) </span>updateProfile<span class="signature">(req, res)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    POST request endpoint at /api/editprofile for updating a user's profile information.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>req</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js request object with form data containing 'username', 'contactInfo', 'profileName', 'password', 'profilePicture', and 'coverPicture'.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>res</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Express.js response object.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="profile.js.html">profile.js</a>, <a href="profile.js.html#line505">line 505</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Sample HTTP POST request to '/api/editprofile'const formData = new FormData();formData.append('username', 'testuser');formData.append('contactInfo', 'New contact info');formData.append('profileName', 'New profile name');formData.append('password', 'newpassword');formData.append('profilePicture', profilePictureFile);formData.append('coverPicture', coverPictureFile);const editProfileResponse = await fetch(`${serverIp}/api/editprofile`, {    method: "POST",    body: formData,});if (editProfileResponse.status === 200) {    console.log("Profile updated successfully");}</code></pre>
+
+
+
+        
     
 
     
@@ -6747,7 +11757,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Nov 03 2023 01:41:41 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Nov 17 2023 02:19:00 GMT-0800 (Pacific Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

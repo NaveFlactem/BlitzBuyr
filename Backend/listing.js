@@ -13,6 +13,12 @@ const sharp = require("sharp");
 const { encode } = require("blurhash");
 const path = require("path");
 
+/**
+ * Storage configuration for multer to handle image uploads.
+ * @constant {Object} imageStorage
+ * @property {string} destination - The directory where uploaded files will be stored.
+ * @property {Function} filename - Generates a unique filename for each uploaded file.
+ */
 const imageStorage = multer.diskStorage({
   destination: "./img/", // Set the directory where uploaded files will be stored
   filename: (req, file, callback) => {
@@ -25,6 +31,12 @@ const imageStorage = multer.diskStorage({
   },
 });
 
+/**
+ * Multer configuration for handling image uploads.
+ * @constant {Object} imageUpload
+ * @property {Object} storage - The storage configuration for multer.
+ * @property {Object} limits - The limits for uploaded files, such as file size.
+ */
 const imageUpload = multer({
   storage: imageStorage,
   limits: {
@@ -66,7 +78,8 @@ const imageUpload = multer({
  * }
  */
 router.post("/createListing", imageUpload, function (req, res) {
-  const { price, title, description, username } = req.body;
+  const { price, title, description, username, tags, location } = req.body;
+  const { latitude, longitude } = JSON.parse(location);
   const images = req.files;
 
   const sqlTimeStamp = new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -74,8 +87,8 @@ router.post("/createListing", imageUpload, function (req, res) {
   try {
     // Insert the listing into the Listings table
     db.run(
-      "INSERT INTO Listings (price, title, description, userName, postDate) VALUES (?, ?, ?, ?, ?)",
-      [price, title, description, username, sqlTimeStamp],
+      "INSERT INTO Listings (price, title, description, userName, postDate, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [price, title, description, username, sqlTimeStamp, latitude, longitude],
       function (err) {
         if (err) {
           console.error("Error querying the database:", err);
@@ -85,7 +98,53 @@ router.post("/createListing", imageUpload, function (req, res) {
         const listingId = this.lastID;
         const componentX = req.body.componentX ?? 4;
         const componentY = req.body.componentY ?? 3;
+        //TOMMY CODE==========================================================
+        //const tags = req.body.tags || [];
+        // Loop through tags and insert them into the "Tags" table if they don't exist
+        JSON.parse(tags).forEach((tag) => {
+          db.run(
+            "INSERT OR IGNORE INTO Tags (TagName) VALUES (?)",
+            [tag],
+            (err) => {
+              if (err) {
+                console.error("Error querying the database:", err);
+                return res.status(500).json({ error: "Internal Server Error" });
+              }
 
+              // Get the TagId for the inserted or existing tag
+              db.get(
+                "SELECT TagId FROM Tags WHERE TagName = ?",
+                [tag],
+                (err, tagRow) => {
+                  if (err) {
+                    console.error("Error querying the database:", err);
+                    return res
+                      .status(500)
+                      .json({ error: "Internal Server Error" });
+                  }
+
+                  const tagId = tagRow.TagId;
+
+                  // Associate the tag with the listing in the "ListingTags" table
+                  db.run(
+                    "INSERT INTO ListingTags (ListingId, TagId, TagName) VALUES (?, ?, ?)",
+                    [listingId, tagId, tagRow.TagName],
+                    (err) => {
+                      if (err) {
+                        console.error("Error querying the database:", err);
+                        return res
+                          .status(500)
+                          .json({ error: "Internal Server Error" });
+                      }
+                      // Tag associated with the listing successfully
+                    }
+                  );
+                }
+              );
+            }
+          );
+        });
+        //END OF TOMMY CODE
         // Insert images into the Images table
         if (images.length > 0) {
           images.forEach(async (image) => {
@@ -144,39 +203,88 @@ router.post("/createListing", imageUpload, function (req, res) {
  * }
  */
 router.get("/listings", async function (req, res) {
+  const { username, tags, latitude, longitude, distance } = req.query;
+
   try {
-    const listingsResult = await new Promise((resolve, reject) => {
-      // First query
-      db.all("SELECT * FROM Listings ORDER BY ListingId DESC", (err, rows) => {
+    let query = `
+      SELECT
+        Listings.*,
+        GROUP_CONCAT(DISTINCT Tags.TagName) AS tags,
+        GROUP_CONCAT(DISTINCT Images.ImageURI) AS images,
+        COALESCE((
+          SELECT 1 
+          FROM Likes 
+          WHERE Likes.ListingId = Listings.ListingId AND Likes.Username = '${username}'
+          LIMIT 1
+        ), 0) AS liked,
+        COALESCE((
+          SELECT AVG(Rating) 
+          FROM Ratings 
+          WHERE Ratings.UserRated = Listings.Username
+        ), null) AS averageRating,
+        COALESCE((
+          SELECT COUNT(Rating) 
+          FROM Ratings 
+          WHERE Ratings.UserRated = Listings.Username
+        ), null) AS ratingCount`;
+    if (distance)
+      query += `-- Calculate distance using Haversine formula
+        ,(6371 * acos(cos(radians(${latitude})) * cos(radians(Listings.Latitude)) * cos(radians(Listings.Longitude) - radians(${longitude})) + sin(radians(${latitude})) * sin(radians(Listings.Latitude)))) AS distance`;
+    query += `
+      FROM Listings
+      LEFT JOIN ListingTags ON Listings.ListingId = ListingTags.ListingId
+      LEFT JOIN Tags ON ListingTags.TagId = Tags.TagId
+      LEFT JOIN Images ON Listings.ListingId = Images.ListingId
+      WHERE PostDate >= datetime('now', '-14 days')`;
+
+    if (tags) {
+      query += `
+          AND Tags.TagName IN (${tags.map((tag) => `'${tag}'`).join(",")})
+        `;
+    }
+
+    if (distance) {
+      query += `
+          AND distance <= ${distance}
+        `;
+    }
+
+    query += `
+      GROUP BY Listings.ListingId
+      ORDER BY Listings.ListingId DESC;
+    `;
+
+    // Execute the query
+    const rows = await new Promise((resolve, reject) => {
+      db.all(query, (err, rows) => {
         if (err) {
-          console.error("Error querying the database (first query):", err);
+          console.error("Error querying the database:", err);
           reject(err);
         }
         resolve(rows);
       });
     });
 
-    const username = req.query.username;
-    const likedListingsResult = await new Promise((resolve, reject) => {
-      // First query
-      db.all(
-        "SELECT ListingId FROM Likes WHERE Username = ? ORDER BY ListingId DESC",
-        [username],
-        (err, rows) => {
-          if (err) {
-            console.error("Error querying the database (second query):", err);
-            reject(err);
-          }
-          resolve(rows);
-        }
-      );
+    // Parse the rows
+    const parsedRows = rows.map((row) => {
+      const { averageRating, ratingCount, ...rest } = row;
+      return {
+        ...rest,
+        tags: row.tags ? row.tags.split(",") : [],
+        images: row.images ? row.images.split(",") : [],
+        liked: Boolean(row.liked),
+        ratings: {
+          averageRating: row.averageRating
+            ? parseFloat(row.averageRating.toFixed(1))
+            : row.averageRating,
+          ratingCount: row.ratingCount,
+        },
+      };
     });
 
-    // Now you can use both firstQueryResult and secondQueryResult
-    return res
-      .status(200)
-      .json(await getImagesFromListings(listingsResult, likedListingsResult));
+    return res.status(200).json(parsedRows);
   } catch (error) {
+    console.error("Internal Server Error:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -333,32 +441,74 @@ router.delete("/deleteimages", function (req, res) {
 });
 
 /**
- * 
+ * Handles deleting a listing.
+ *
  * @function
- * @name handleLikeListing
- * 
+ * @name handleDeleteListing
+ *
+ * @param {Object} req - Express.js request object.
+ * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP DELETE request to '/api/deletelisting'
+ * const deleteListingResponse = await fetch(`${serverIp}/api/deletelisting`, {
+ *     method: "DELETE",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *     body: JSON.stringify({ username: "sampleUser", password: "samplePassword", listingId: 123 }),
+ *   });
+ *
+ * if (deleteListingResponse.status === 200) {
+ *     const deleteListingData = await deleteListingResponse.json();
+ *     console.log("Listing deleted:", deleteListingData.message);
+ * } else {
+ *     console.log("Error deleting listing");
+ * }
  */
-router.get("/check-like", function (req, res) {
-  const { username, listingId } = req.query;
+router.delete("/deletelisting", async function (req, res) {
+  const { username, password, listingId } = req.body;
 
-  if (!username || !listingId) {
-    return res.status(400).json({ error: "Missing username or listingId" });
-  }
+  try {
+    const user = await new Promise((resolve, reject) => {
+      db.get(
+        "SELECT * FROM Accounts WHERE Username = ? AND Password = ?",
+        [username, password],
+        (err, row) => {
+          if (err) {
+            console.error("Error querying the database:", err);
+            reject(err);
+          }
+          resolve(row);
+        }
+      );
+    });
 
-  db.get(
-    "SELECT COUNT(*) AS count FROM Likes WHERE Username = ? AND ListingId = ?",
-    [username, listingId],
-    (err, row) => {
-      if (err) {
-        console.error("Error querying the database:", err);
-        return res.status(500).json({ error: "Internal Server Error" });
-      }
-
-      // If count is greater than 0, it means the user has liked the listing
-      const isLiked = row.count > 0;
-      return res.status(200).json({ isLiked });
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials" });
     }
-  );
+
+    db.run(
+      "DELETE FROM Listings WHERE ListingId = ? AND Username = ?",
+      [listingId, username],
+      (err, rows) => {
+        if (err) {
+          console.error(`Error deleting listing ${listingId}:`, err);
+          return res.status(500).json({ error: "Internal Server Error" });
+        }
+        if (this.changes === 0) {
+          return res
+            .status(401)
+            .json({ error: "Invalid listing or credentials" });
+        }
+        return res
+          .status(200)
+          .json({ message: `Listing ${listingId} deleted` });
+      }
+    );
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
 /**

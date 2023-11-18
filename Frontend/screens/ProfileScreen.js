@@ -25,12 +25,14 @@ import {
   getStoredUsername,
   getStoredPassword,
   setStoredCredentials,
+  clearStoredCredentials,
 } from "./auth/Authenticate.js";
 import { useIsFocused } from "@react-navigation/native";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/BouncePulse";
+import { getLocationWithRetry } from "../constants/Utilities";
 
 const UserListingsRoute = ({ profileInfo, onPressListing }) => (
   <View style={{ flex: 1 }}>
@@ -109,9 +111,10 @@ function ProfileScreen({ navigation, route }) {
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(true);
   const [profileName, setProfileName] = useState("");
-  const [loggedUser, setLoggedUser] = useState(""); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
+  const [selfProfile, setSelfProfile] = useState(null); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
   const [routes, setRoutes] = useState([]);
   const [selectedListing, setSelectedListing] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
   const [LikeStates, setLikeStates] = useState({});
 
   const onBackPress = () => {
@@ -127,29 +130,46 @@ function ProfileScreen({ navigation, route }) {
   useEffect(() => {
     const fetchUsername = async () => {
       const username = getStoredUsername();
-      setLoggedUser(username);
       if (route.params?.username) {
         console.log(
-          `Setting username to passed username ${route.params.username}`,
+          `Setting username to passed username ${route.params.username}`
         );
         // we navigated with a username passed as param (i.e. clicking someone's profile)
         setProfileName(route.params.username);
+        setSelfProfile(false);
       } else {
         console.log(`Setting username to cached logged in user`);
         setProfileName(username);
+        setSelfProfile(true);
       }
       getProfileInfo(route.params?.username ? route.params.username : username);
+    };
+
+    const getUserLocation = async () => {
+      console.log("Getting user's location...");
+
+      try {
+        const location = await getLocationWithRetry();
+        const { latitude, longitude } = location.coords;
+        setUserLocation({ latitude, longitude });
+      } catch (error) {
+        console.error("Error getting location:", error);
+        // FIXME: Handle the error appropriately
+      }
     };
 
     setLoading(true);
     if (isFocused) {
       fetchUsername();
+      getUserLocation();
     }
   }, [isFocused]); // called when navigation is updated (clicking the page, or when username is changed)
 
   // this is just to print out a profile's information for now
   useEffect(() => {
-    setLoading(false);
+    if (userLocation && profileInfo) {
+      setLoading(false);
+    }
     /*
     console.log("User's Listings:", profileInfo.userListings);
     console.log("User's Liked Listings:", profileInfo.likedListings);
@@ -158,7 +178,7 @@ function ProfileScreen({ navigation, route }) {
     console.log("Cover Picture URL:", profileInfo.coverPicture);
     */
 
-    if (profileName === loggedUser) {
+    if (selfProfile) {
       setRoutes([
         { key: "first", title: "My Listings" },
         { key: "second", title: "Liked Listings" },
@@ -166,7 +186,7 @@ function ProfileScreen({ navigation, route }) {
     } else {
       setRoutes([{ key: "first", title: `${profileName}'s listings` }]);
     }
-  }, [profileInfo]);
+  }, [profileInfo, userLocation]);
 
   const getProfileInfo = async function (username) {
     console.log(`Fetching profile info for ${username}`);
@@ -175,7 +195,7 @@ function ProfileScreen({ navigation, route }) {
         `${serverIp}/api/profile?username=${encodeURIComponent(username)}`,
         {
           method: "GET",
-        },
+        }
       );
       const profileData = await profileResponse.json();
 
@@ -185,7 +205,7 @@ function ProfileScreen({ navigation, route }) {
           userListings: profileData.userListings,
           userRatings: profileData.ratings.reduce(
             (acc, rating) => ({ ...acc, ...rating }),
-            {},
+            {}
           ),
           profilePicture: profileData.profilePicture,
           coverPicture: profileData.coverPicture,
@@ -193,8 +213,8 @@ function ProfileScreen({ navigation, route }) {
 
         const initialLikeStates = Object.fromEntries(
           [...profileData.likedListings, ...profileData.userListings].map(
-            (listing) => [listing.ListingId, listing.liked],
-          ),
+            (listing) => [listing.ListingId, listing.liked]
+          )
         );
         setLikeStates(initialLikeStates);
 
@@ -203,7 +223,7 @@ function ProfileScreen({ navigation, route }) {
         console.log(
           "Error fetching profile:",
           profileResponse.status,
-          profileData,
+          profileData
         );
       }
     } catch (err) {
@@ -241,7 +261,7 @@ function ProfileScreen({ navigation, route }) {
     console.log(
       `${
         newLikeStates[listingId] ? "Likered" : "UnLikered"
-      } listing ID ${listingId}`,
+      } listing ID ${listingId}`
     );
   };
 
@@ -271,18 +291,8 @@ function ProfileScreen({ navigation, route }) {
     />
   );
 
-  async function clearCredentials() {
-    try {
-      await SecureStore.deleteItemAsync("username");
-      await SecureStore.deleteItemAsync("password");
-      console.log("Stored credentials cleared.");
-    } catch (error) {
-      console.error("Error clearing stored credentials:", error);
-    }
-  }
-
   const handleLogout = () => {
-    clearCredentials();
+    clearStoredCredentials();
     setLoading(true);
     navigation.navigate("Login");
   };
@@ -319,6 +329,21 @@ function ProfileScreen({ navigation, route }) {
             position: "absolute",
           }}
         />
+        {/* Back button */}
+        {!selfProfile && (
+          <TouchableOpacity
+            onPress={() => {
+              setLoading(true);
+              navigation.navigate("BottomNavOverlay");
+            }}
+            style={{
+              top: 15, // Adjust the top position as needed
+              left: 15, // Adjust the left position as needed
+            }}
+          >
+            <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* //Profile Picture */}
@@ -359,6 +384,7 @@ function ProfileScreen({ navigation, route }) {
             paddingVertical: 2,
             flexDirection: "row",
             top: 0.28 * screenHeight,
+            alignItems: "center",
           }}
         >
           {/* Listings */}
@@ -392,7 +418,8 @@ function ProfileScreen({ navigation, route }) {
             style={{
               flexDirection: "column",
               alignItems: "center",
-              marginHorizontal: 25,
+              marginHorizontal: selfProfile ? 25 : 10,
+              marginEnd: !selfProfile ? -10 : 25,
             }}
           >
             <Text
@@ -409,7 +436,7 @@ function ProfileScreen({ navigation, route }) {
               {profileInfo.userRatings.RatingCount > 0 && (
                 <Entypo
                   name="star"
-                  size={25}
+                  size={20}
                   color="gold"
                   style={styles.ratingStar}
                 />
@@ -427,12 +454,11 @@ function ProfileScreen({ navigation, route }) {
           </View>
 
           {/* LIKED */}
-          {profileName === loggedUser && (
+          {selfProfile && (
             <View
               style={{
                 flexDirection: "column",
                 alignItems: "center",
-                marginHorizontal: 4,
               }}
             >
               <Text
@@ -456,71 +482,44 @@ function ProfileScreen({ navigation, route }) {
             </View>
           )}
         </View>
-
-        <View
-          style={{
-            flexDirection: "row",
-            marginTop: 5,
-            top: 0.28 * screenHeight,
-            marginBottom: -100,
-          }}
-        >
-          {/* Logout and Edit Profile Buttons */}
-          {profileName === loggedUser && (
-            <>
-              <TouchableOpacity
-                onPress={handleLogout}
-                style={styles.logoutButton}
-              >
-                <Text style={styles.logoutButtonText}>Logout</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  setLoading(true);
-                  navigation.navigate("EditProfile", {
-                    profileName: profileName,
-                    profilePicture: profileInfo.profilePicture,
-                    coverPicture: profileInfo.coverPicture,
-                  });
-                }}
-                style={{
-                  width: 124,
-                  height: 36,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: Colors.BB_darkRedPurple,
-                  borderRadius: 10,
-                  marginHorizontal: 10,
-                  top: 10,
-                  ...Platform.select({
-                    ios: {
-                      shadowColor: Colors.black,
-                      shadowOffset: { width: 2, height: 2 },
-                      shadowOpacity: 0.8,
-                      shadowRadius: 2,
-                    },
-                    android: {
-                      elevation: 10,
-                    },
-                  }),
-                }}
-              >
-                <Text
-                  style={{
-                    fontStyle: "normal",
-                    color: Colors.white,
-                    fontWeight: "500",
-                    fontSize: 15,
-                  }}
-                >
-                  Edit Profile
-                </Text>
-              </TouchableOpacity>
-            </>
-          )}
-
-          {/* Rate User Button */}
-          {profileName !== loggedUser && (
+        {/* Logout and Edit Profile Buttons */}
+        {selfProfile && (
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 5,
+              top: 0.28 * screenHeight,
+              marginBottom: -100,
+            }}
+          >
+            <TouchableOpacity onPress={handleLogout} style={styles.button}>
+              <Text style={styles.buttonText}>Logout</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setLoading(true);
+                navigation.navigate("EditProfile", {
+                  profileName: profileName,
+                  profilePicture: profileInfo.profilePicture,
+                  coverPicture: profileInfo.coverPicture,
+                });
+              }}
+              style={{ ...styles.button, width: 114 }}
+            >
+              <Text style={styles.buttonText}>Edit Profile</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {/* Rate User Button */}
+        {!selfProfile && (
+          <View
+            style={{
+              flexDirection: "row",
+              marginTop: 5,
+              top: 0.28 * screenHeight,
+              marginBottom: -100,
+            }}
+          >
             <TouchableOpacity
               onPress={() => {
                 setLoading(true);
@@ -529,16 +528,7 @@ function ProfileScreen({ navigation, route }) {
                   username: profileName,
                 });
               }}
-              style={{
-                width: 124,
-                height: 36,
-                alignItems: "center",
-                justifyContent: "center",
-                backgroundColor: "blue",
-                borderRadius: 10,
-                marginHorizontal: 10,
-                top: 10,
-              }}
+              style={{ ...styles.button }}
             >
               <Text
                 style={{
@@ -549,16 +539,15 @@ function ProfileScreen({ navigation, route }) {
                 Rate User
               </Text>
             </TouchableOpacity>
-          )}
-        </View>
+          </View>
+        )}
       </View>
 
       <View
         style={{
           flex: 1,
           marginHorizontal: 22,
-          marginTop: 20,
-          top: 0.04 * screenHeight,
+          marginTop: selfProfile ? 20 : 0,
         }}
       >
         <TabView
@@ -618,10 +607,28 @@ function ProfileScreen({ navigation, route }) {
               LikeStates={LikeStates}
               handleLikePress={handleLikePress}
               numItems={selectedListing.images.length}
+              userLocation={userLocation}
+              origin={"profile"}
+              removeListing={(listingId) => {
+                setProfileInfo((prevProfileInfo) => ({
+                  ...prevProfileInfo,
+                  likedListings: prevProfileInfo.likedListings.filter(
+                    (item) => item.ListingId !== listingId
+                  ),
+                  userListings: prevProfileInfo.userListings.filter(
+                    (item) => item.ListingId !== listingId
+                  ),
+                }));
+
+                setSelectedListing(null);
+              }}
             />
           </View>
-          <TouchableOpacity onPress={() => setSelectedListing(null)}>
-            <Text style={styles.closeText}>Close</Text>
+          <TouchableOpacity
+            onPress={() => setSelectedListing(null)}
+            style={{ ...styles.button, bottom: 0.05 * screenHeight }}
+          >
+            <Text style={styles.buttonText}>Close</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -641,11 +648,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: Colors.BB_darkRedPurple,
   },
-  closeText: {
-    color: "white",
-    bottom: 0.015 * screenHeight,
-  },
-  logoutButton: {
+  button: {
     width: 110,
     height: 36,
     alignItems: "center",
@@ -653,7 +656,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 10,
     marginHorizontal: 10,
-    top: 10,
     ...Platform.select({
       ios: {
         shadowColor: Colors.black,
@@ -666,7 +668,7 @@ const styles = StyleSheet.create({
       },
     }),
   },
-  logoutButtonText: {
+  buttonText: {
     fontStyle: "normal",
     fontWeight: "500",
     fontSize: 15,

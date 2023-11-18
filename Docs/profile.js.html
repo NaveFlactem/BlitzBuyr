@@ -34,8 +34,10 @@
 const express = require("express");
 const router = express.Router();
 var bodyParser = require("body-parser");
+const { getImagesFromListings } = require("./listing");
 router.use(bodyParser.urlencoded({ extended: true })).use(bodyParser.json());
 const db = require("./db").db;
+const { imageStorage, imageUpload } = require("./listing");
 
 /**
  * Handles a user liking a listing.
@@ -199,6 +201,422 @@ router.delete("/likes", function (req, res) {
   });
 });
 
+/**
+ * Handles rating a user.
+ *
+ * @function
+ * @name rateUser
+ *
+ * @param {Object} req - Express.js request object with a JSON body containing 'username', 'userRated', and 'rating'.
+ * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP POST request to '/api/rate'
+ * // Request body should contain a JSON object with 'username', 'userRated', and 'rating' fields.
+ * const requestPayload = {
+ *   "username": "currentUser",
+ *   "userRated": "ratedUser",
+ *   "rating": 4.5
+ * };
+ */
+router.post("/rate", async function (req, res) {
+  const { username, userRated, rating } = req.body;
+
+  // Check if user is already rated
+  const ratingResult = await new Promise((resolve, reject) => {
+    db.get(
+      "SELECT * FROM Ratings WHERE Username = ? AND UserRated = ?",
+      [username, userRated],
+      (err, row) => {
+        if (err) {
+          console.error("Error querying the database (check if rated):", err);
+          reject(err);
+        }
+        resolve(row);
+      }
+    );
+  });
+
+  if (ratingResult) {
+    // User has already rated, update the rating
+    db.run(
+      "UPDATE Ratings SET Rating = ? WHERE Username = ? AND UserRated = ?",
+      [rating, username, userRated],
+      (err) => {
+        if (err) {
+          console.error("Error updating the rating:", err);
+          return res.status(500).json({ error: "Internal Server Error" });
+        }
+        return res.status(200).json({
+          message: `${username} updated the rating for ${userRated} to ${rating}`,
+        });
+      }
+    );
+  } else {
+    // User has not rated, insert a new rating
+    db.run(
+      "INSERT INTO Ratings (Username, UserRated, Rating) VALUES (?, ?, ?)",
+      [username, userRated, rating],
+      (err, row) => {
+        if (err) {
+          console.error("Error inserting the rating:", err);
+          return res.status(500).json({ error: "Internal Server Error" });
+        }
+        return res.status(200).json({
+          message: `${username} successfully rated ${userRated} with ${rating}`,
+        });
+      }
+    );
+  }
+});
+
+/**
+ * Handles removing a user's rating.
+ *
+ * @function
+ * @name removeUserRating
+ *
+ * @param {Object} req - Express.js request object with a JSON body containing 'username' and 'userRated'.
+ * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP DELETE request to '/api/rate'
+ * // Request body should contain a JSON object with 'username' and 'userRated' fields.
+ * const requestPayload = {
+ *   "username": "currentUser",
+ *   "userRated": "ratedUser"
+ * };
+ */
+router.delete("/rate", function (req, res) {
+  const { username, userRated } = req.body;
+
+  db.run(
+    "DELETE FROM Ratings WHERE (Username, UserRated) = (?, ?)",
+    [username, userRated],
+    (err, row) => {
+      if (err) {
+        console.error("Error querying the database:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      return res.status(200).json({
+        message: `${username} successfully removed their rating of ${userRated}`,
+      });
+    }
+  );
+});
+
+/**
+ * GET request endpoint at /api/ratings for retrieving a list of ratings.
+ *
+ * @function
+ * @name getRatings
+ *
+ * @param {Object} req - Express.js request object.
+ * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP GET request to '/api/ratings'
+ * const ratingsResponse = await fetch(`${serverIp}/api/ratings`, {
+ *     method: "GET",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ * });
+ *
+ * if (ratingsResponse.status === 200) {
+ *     const ratingsData = await ratingsResponse.json();
+ *     console.log("List of Ratings:", ratingsData.Ratings);
+ * }
+ */
+router.get("/ratings", function (req, res) {
+  const { username } = req.query;
+
+  if (username) {
+    // If a username was provided in the query, return the AverageRating and RatingCount of the user's Profile
+    // Query the database for the user's ratings
+    db.get(
+      "SELECT AVG(Rating) AS AverageRating, COUNT(*) AS RatingCount FROM Ratings WHERE UserRated = ?",
+      [username],
+      (err, row) => {
+        if (err) {
+          console.error("Error querying the database:", err);
+          return res.status(500).json({ error: "Internal Server Error" });
+        }
+        // Respond with the user's ratings data
+        return res.status(200).json({
+          AverageRating: row.AverageRating,
+          RatingCount: row.RatingCount,
+        });
+      }
+    );
+  } else {
+    // If no username was provided, return all ratings in the db
+    // Query the database for a list of all ratings
+    db.all("SELECT * FROM Ratings", (err, rows) => {
+      if (err) {
+        console.error("Error querying the database:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+      // Respond with a JSON array of all ratings
+      return res.status(200).json({ Ratings: rows });
+    });
+  }
+});
+
+/**
+ * Handles retrieving a user's profile, including ratings, listings, and liked listings.
+ *
+ * @function
+ * @async
+ * @name getUserProfile
+ *
+ * @param {Object} req - Express.js request object with a 'username' query parameter.
+ * @param {Object} res - Express.js response object.
+ *
+ * @throws {Error} If there's an error during the database queries.
+ *
+ * @example
+ * // Sample HTTP GET request to '/api/profile?username=currentUser'
+ * // The 'username' query parameter specifies the user's profile to retrieve.
+ */
+router.get("/profile", async function (req, res) {
+  const username = req.query.username;
+
+  if (!username)
+    return res.status(409).json({ error: "Username not provided" });
+
+  try {
+    // check if user exists
+    const userResult = await new Promise((resolve, reject) => {
+      db.all(
+        "SELECT * FROM Accounts WHERE Username = ?",
+        [username],
+        (err, rows) => {
+          if (err) {
+            console.error("Error querying the database (first query):", err);
+            reject(err);
+          }
+          resolve(rows);
+        }
+      );
+    });
+    if (!userResult)
+      return res.status(404).json({ error: `User ${username} not found` });
+
+    // get the ratings belonging to the user
+    const ratingsResult = await new Promise((resolve, reject) => {
+      db.all(
+        "SELECT AVG(Rating) AS AverageRating, COUNT(Rating) AS RatingCount FROM Ratings WHERE UserRated = ?",
+        [username],
+        (err, rows) => {
+          if (err) {
+            console.error("Error querying the database (second query):", err);
+            reject(err);
+          }
+          resolve(rows);
+        }
+      );
+    });
+
+    // Get the profile and cover pictures
+    let profilePictureResult = await new Promise((resolve, reject) => {
+      db.all(
+        "SELECT ProfilePicture, CoverPicture FROM Profiles WHERE Username = ?",
+        [username],
+        (err, rows) => {
+          if (err) {
+            console.error("Error querying the database (fourth query):", err);
+            reject(err);
+          }
+          resolve(rows);
+        }
+      );
+    });
+
+    // get the user's posted listings
+    const userListingsResult = await new Promise((resolve, reject) => {
+      db.all(
+        "SELECT * FROM Listings WHERE Username = ? ORDER BY ListingId DESC",
+        [username],
+        (err, rows) => {
+          if (err) {
+            console.error("Error querying the database (third query):", err);
+            reject(err);
+          }
+          resolve(rows);
+        }
+      );
+    });
+
+    // get the user's liked listings
+    const likedListingsResult = await new Promise((resolve, reject) => {
+      db.all(
+        "SELECT * FROM Listings WHERE ListingId IN (SELECT ListingId FROM Likes WHERE Username = ?) ORDER BY ListingId DESC",
+        [username],
+        (err, rows) => {
+          if (err) {
+            console.error("Error querying the database (fourth query):", err);
+            reject(err);
+          }
+          resolve(rows);
+        }
+      );
+    });
+
+    // append the images to both
+    const likedListings = await getImagesFromListings(
+      likedListingsResult,
+      likedListingsResult
+    );
+    const userListings = await getImagesFromListings(
+      userListingsResult,
+      likedListingsResult
+    );
+
+    return res.status(200).json({
+      likedListings: likedListings,
+      userListings: userListings,
+      ratings: ratingsResult,
+      profilePicture: profilePictureResult[0].ProfilePicture,
+      coverPicture: profilePictureResult[0].CoverPicture,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+/**
+ * GET request endpoint at /api/pfp for retrieving a user's profile picture.
+ *
+ * @function
+ * @name getProfilePicture
+ *
+ * @param {Object} req - Express.js request object with a 'username' query parameter.
+ * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP GET request to '/api/pfp?username=testuser'
+ * const pfpResponse = await fetch(`${serverIp}/api/pfp?username=testuser`, {
+ *     method: "GET",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ * });
+ *
+ * if (pfpResponse.status === 200) {
+ *     // Profile picture is available in the response
+ *     console.log("Profile Picture:", pfpResponse.url);
+ * }
+ */
+router.get("/pfp", function (req, res) {
+  const username = req.query.username;
+  if (!username) return res.status(400).json({ error: "Missing username" });
+
+  // Query the database for a list of ratings
+  db.get(
+    "SELECT ProfilePicture FROM Profiles WHERE Username = ?",
+    [username],
+    (err, row) => {
+      if (err || !row) {
+        console.error("Error fetching the pfp:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      // return the image in the result's URI
+      res.redirect(row.ProfilePicture);
+    }
+  );
+});
+
+/**
+ * POST request endpoint at /api/editprofile for updating a user's profile information.
+ *
+ * @function
+ * @name updateProfile
+ *
+ * @param {Object} req - Express.js request object with form data containing 'username', 'contactInfo', 'profileName', 'password', 'profilePicture', and 'coverPicture'.
+ * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP POST request to '/api/editprofile'
+ * const formData = new FormData();
+ * formData.append('username', 'testuser');
+ * formData.append('contactInfo', 'New contact info');
+ * formData.append('profileName', 'New profile name');
+ * formData.append('password', 'newpassword');
+ * formData.append('profilePicture', profilePictureFile);
+ * formData.append('coverPicture', coverPictureFile);
+ *
+ * const editProfileResponse = await fetch(`${serverIp}/api/editprofile`, {
+ *     method: "POST",
+ *     body: formData,
+ * });
+ *
+ * if (editProfileResponse.status === 200) {
+ *     console.log("Profile updated successfully");
+ * }
+ */
+router.post("/editprofile", imageUpload, function (req, res) {
+  const { username, contactInfo, profileName, password } = req.body;
+
+  const profilePicture = req.files.find(
+    (file) => file.fieldname === "profilePicture"
+  );
+
+  const coverPicture = req.files.find(
+    (file) => file.fieldname === "coverPicture"
+  );
+
+  const newProfilePicture = profilePicture
+    ? `http://blitzbuyr.lol/img/${profilePicture.filename}`
+    : null;
+
+  const newCoverPicture = coverPicture
+    ? `http://blitzbuyr.lol/img/${coverPicture.filename}`
+    : null;
+
+  console.log(req.body);
+  console.log(req.files);
+  console.log("Debug Information:");
+  console.log("Profile Name:", profileName);
+  console.log("Contact Info:", contactInfo);
+  console.log("New Profile Picture:", newProfilePicture);
+  console.log("New Cover Picture:", newCoverPicture);
+  console.log("Existing Username:", username);
+
+  // Update the Profiles table
+  db.run(
+    `UPDATE Profiles SET ContactInfo = COALESCE(?, ContactInfo), 
+    ProfilePicture = COALESCE(?, ProfilePicture), CoverPicture = COALESCE(?, CoverPicture) WHERE Username = ?`,
+    [contactInfo, newProfilePicture, newCoverPicture, username],
+    function (err) {
+      if (err) {
+        console.error("Error updating the Profiles table:", err);
+        return res.status(500).json({ error: "Internal Server Error" });
+      }
+
+      // Update the Accounts table
+      db.run(
+        "UPDATE Accounts SET Password = COALESCE(?, Password), Username = COALESCE(?, Username) WHERE Username = ?",
+        [password, profileName, username],
+        function (err) {
+          if (err) {
+            console.error("Error updating the Accounts table:", err);
+            return res.status(500).json({ error: "Internal Server Error" });
+          }
+
+          // Respond with success
+          res.status(200).json({ message: "Profile updated successfully" });
+        }
+      );
+
+      console.log("Rows affected:", this.changes);
+    }
+  );
+});
+
 // Export the router
 module.exports = router;
 </code></pre>
@@ -217,7 +635,7 @@ module.exports = router;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Nov 03 2023 01:41:41 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Nov 17 2023 02:18:59 GMT-0800 (Pacific Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

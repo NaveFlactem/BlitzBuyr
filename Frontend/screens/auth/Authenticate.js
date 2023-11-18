@@ -34,6 +34,16 @@ const setStoredCredentials = async (username, password) => {
   await SecureStore.setItemAsync("password", password);
 };
 
+const clearStoredCredentials = async () => {
+  try {
+    await SecureStore.deleteItemAsync("username");
+    await SecureStore.deleteItemAsync("password");
+    console.log("Stored credentials cleared.");
+  } catch (error) {
+    console.error("Error clearing stored credentials:", error);
+  }
+};
+
 const AuthenticateScreen = ({ navigation }) => {
   useEffect(() => {
     // Load and cache the assets when the component mounts
@@ -95,5 +105,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export { getStoredUsername, getStoredPassword, setStoredCredentials };
+export {
+  getStoredUsername,
+  getStoredPassword,
+  setStoredCredentials,
+  clearStoredCredentials,
+};
 export default AuthenticateScreen;

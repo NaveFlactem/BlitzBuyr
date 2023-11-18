@@ -11,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   Platform,
   SafeAreaView,
+  Modal,
 } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
 import { parallaxLayout } from "./parallax.ts";
@@ -22,9 +23,37 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { PinchGestureHandler } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
+import {
+  getStoredPassword,
+  getStoredUsername,
+} from "../screens/auth/Authenticate.js";
 
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
+
+function getDistance(lat1, lon1, lat2, lon2) {
+  function toRadians(degrees) {
+    return degrees * (Math.PI / 180);
+  }
+
+  const R = 6371; // Radius of the Earth in kilometers
+  const dLat = toRadians(lat2 - lat1);
+  const dLon = toRadians(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRadians(lat1)) *
+      Math.cos(toRadians(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  const distance = R * c; // Distance in kilometers
+  const distanceMiles = distance * 0.621371; // Convert distance to miles
+
+  return Math.floor(distanceMiles);
+}
 
 const LikeButton = ({ isLiked, onLikePress }) => {
   return (
@@ -38,11 +67,19 @@ const LikeButton = ({ isLiked, onLikePress }) => {
   );
 };
 
+const DeleteButton = ({ onDeletePress }) => {
+  return (
+    <TouchableOpacity style={styles.deleteButton} onPress={onDeletePress}>
+      <MaterialCommunityIcons name="trash-can-outline" size={30} color="red" />
+    </TouchableOpacity>
+  );
+};
+
 const calculateFontSize = (price) => {
   if (price === undefined || price === null) {
     return 16; // Default font size if price is not provided
   }
-  
+
   const numberOfDigits = price.toString().length;
 
   if (numberOfDigits <= 4) {
@@ -89,33 +126,40 @@ const CardOverlay2 = memo(({ children, price }) => {
   );
 });
 
-const MemoizedImage = memo(
-  ({ source, style, contentFit, transition }) => {
-    return (
-      <Image
-        source={{ uri: source }}
-        style={style}
-        contentFit={contentFit}
-        transition={transition}
-      />
-    );
-  }
+const MemoizedImage = memo(({ source, style, contentFit, transition }) => {
+  return (
+    <Image
+      source={{ uri: source }}
+      style={style}
+      contentFit={contentFit}
+      transition={transition}
+    />
   );
-  
-  const CustomItem = memo(
-    ({ source, scale, price, isLiked, onLikePress }) => {
-      const onZoomEvent = AnimatedRN.event([{ nativeEvent: { scale: scale } }], {
-        useNativeDriver: true,
-      });
-      
-      const onZoomStateChange = (event) => {
-        if (event.nativeEvent.oldState === 4) {
-          AnimatedRN.spring(scale, {
-            toValue: 1,
-            useNativeDriver: true,
-          }).start();
-        }
-      };
+});
+
+const CustomItem = memo(
+  ({
+    source,
+    scale,
+    price,
+    isLiked,
+    onLikePress,
+    onDeletePress,
+    deleteVisible,
+    origin,
+  }) => {
+    const onZoomEvent = AnimatedRN.event([{ nativeEvent: { scale: scale } }], {
+      useNativeDriver: true,
+    });
+
+    const onZoomStateChange = (event) => {
+      if (event.nativeEvent.oldState === 4) {
+        AnimatedRN.spring(scale, {
+          toValue: 1,
+          useNativeDriver: true,
+        }).start();
+      }
+    };
 
     return (
       <CardOverlay1 price={price}>
@@ -135,15 +179,62 @@ const MemoizedImage = memo(
           </PinchGestureHandler>
         </View>
         <LikeButton isLiked={isLiked} onLikePress={onLikePress} />
+        {deleteVisible && <DeleteButton onDeletePress={onDeletePress} />}
       </CardOverlay1>
     );
   }
 );
 
-const Listing = ({ item }) => {
+const Listing = ({ item, origin, removeListing, userLocation }) => {
   const navigation = useNavigation();
   const price = item.Price;
   const [isLiked, setIsLiked] = useState(item.liked); // Initially KNOWN
+  const [distance, setDistance] = useState(
+    item.Latitude
+      ? getDistance(
+          item.Latitude,
+          item.Longitude,
+          userLocation.latitude,
+          userLocation.longitude
+        )
+      : "Unknown"
+  );
+  const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [deleteVisible, setDeleteVisible] = useState(
+    origin == "profile" && item.Username == getStoredUsername()
+  );
+
+  const toggleDeleteModal = () => {
+    setDeleteModalVisible(!isDeleteModalVisible);
+  };
+
+  const handleDeleteListing = async () => {
+    try {
+      const username = getStoredUsername();
+      const password = getStoredPassword();
+      const response = await fetch(`${serverIp}/api/deletelisting`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password, listingId: item.ListingId }),
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        removeListing(item.ListingId);
+        alert("Listing deleted successfully.");
+      } else {
+        alert(`Error deleting listing: ${responseData.error}`);
+      }
+    } catch (error) {
+      console.error("Error deleting listing:", error);
+      alert(`Error deleting listing: ${error}`);
+    } finally {
+      toggleDeleteModal(); // Close the modal
+    }
+  };
 
   const handleLikePress = async () => {
     const username = await SecureStore.getItemAsync("username");
@@ -160,10 +251,10 @@ const Listing = ({ item }) => {
       if (response.ok) {
         setIsLiked(!isLiked);
       } else {
-        console.error('Failed to update like status');
+        console.error("Failed to update like status");
       }
     } catch (error) {
-      console.error('Error updating like status:', error);
+      console.error("Error updating like status:", error);
     }
   };
 
@@ -202,6 +293,9 @@ const Listing = ({ item }) => {
                 price={price}
                 isLiked={isLiked}
                 onLikePress={() => handleLikePress()}
+                onDeletePress={() => toggleDeleteModal()}
+                deleteVisible={deleteVisible}
+                origin={origin}
               />
             )}
             customAnimation={parallaxLayout(
@@ -237,8 +331,8 @@ const Listing = ({ item }) => {
                 color="white"
                 style={styles.locationPin}
               />
-              <Text style={styles.city}>Toronto</Text>
-              <Text style={styles.distance}>2.5 km</Text>
+              <Text style={styles.city}>{item.City}</Text>
+              <Text style={styles.distance}>{distance} miles</Text>
             </View>
             <View
               style={[
@@ -303,6 +397,34 @@ const Listing = ({ item }) => {
           <LikeButton isLiked={isLiked} onLikePress={handleLikePress} />
         </CardOverlay2>
       </FlipCard>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        transparent={true}
+        visible={isDeleteModalVisible}
+        animationType="slide"
+        onRequestClose={() => toggleDeleteModal()}
+      >
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalText}>
+            Are you sure you want to delete this listing?
+          </Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.confirmButton}
+              onPress={() => handleDeleteListing()}
+            >
+              <Text style={styles.buttonText}>Yes</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => toggleDeleteModal()}
+            >
+              <Text style={styles.buttonText}>No</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -592,5 +714,48 @@ const styles = StyleSheet.create({
     bottom: "0%",
     right: "5%",
     zIndex: 50,
+  },
+  deleteButton: {
+    position: "absolute",
+    height: "95%",
+    width: "10%",
+    bottom: "0%",
+    right: "5%",
+    zIndex: 49,
+  },
+  modalContainer: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    borderColor: "black",
+    borderWidth: 2,
+    alignSelf: "center",
+    marginTop: "80%",
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 15,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 15,
+  },
+  confirmButton: {
+    flex: 1,
+    backgroundColor: "red",
+    padding: 10,
+    borderRadius: 5,
+  },
+  cancelButton: {
+    flex: 1,
+    backgroundColor: "gray",
+    padding: 10,
+    borderRadius: 5,
+    marginLeft: 5,
+  },
+  buttonText: {
+    color: "white",
+    textAlign: "center",
   },
 });

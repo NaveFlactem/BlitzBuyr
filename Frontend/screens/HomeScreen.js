@@ -30,25 +30,33 @@ import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/BouncePulse.js";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
+import { getLocationWithRetry } from "../constants/Utilities";
 
-const IOSSwiperComponent = memo(({ swiperRef, listings }) => {
-  return (
-    <Swiper
-      ref={swiperRef}
-      loop={false}
-      horizontal={false}
-      showsPagination={false}
-      showsButtons={false}
-    >
-      {listings.map((item) => (
-        <Listing key={item.ListingId} item={item} />
-      ))}
-    </Swiper>
-  );
-});
+const IOSSwiperComponent = memo(
+  ({ swiperRef, listings, removeListing, userLocation }) => {
+    return (
+      <Swiper
+        ref={swiperRef}
+        loop={false}
+        horizontal={false}
+        showsPagination={false}
+        showsButtons={false}
+      >
+        {listings.map((item) => (
+          <Listing
+            key={item.ListingId}
+            item={item}
+            removeListing={removeListing}
+            userLocation={userLocation}
+          />
+        ))}
+      </Swiper>
+    );
+  }
+);
 
 const AndroidSwiperComponent = memo(
-  ({ swiperRef, listings, refreshControl }) => {
+  ({ swiperRef, listings, refreshControl, removeListing, userLocation }) => {
     return (
       <Swiper
         ref={swiperRef}
@@ -60,7 +68,14 @@ const AndroidSwiperComponent = memo(
       >
         {listings.map((item, listIndex) => {
           Image.prefetch(item.images);
-          return <Listing key={item.ListingId} item={item} />;
+          return (
+            <Listing
+              key={item.ListingId}
+              item={item}
+              removeListing={removeListing}
+              userLocation={userLocation}
+            />
+          );
         })}
       </Swiper>
     );
@@ -140,6 +155,7 @@ const HomeScreen = ({ route }) => {
   const [networkConnected, setNetworkConnected] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [scrollPosition, setScrollPosition] = useState({ x: 0, y: 0 });
+  const [userLocation, setUserLocation] = useState(null);
   const scrollViewRef = useRef(null);
   const [tagsData, setTagsData] = useState([
       { name: "Furniture", selected: false },
@@ -201,15 +217,18 @@ const HomeScreen = ({ route }) => {
 
   
 
-  useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      setNetworkConnected(state.isConnected);
-    });
+  const getUserLocation = async () => {
+    console.log("Getting user's location...");
 
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+    try {
+      const location = await getLocationWithRetry();
+      const { latitude, longitude } = location.coords;
+      setUserLocation({ latitude, longitude });
+    } catch (error) {
+      console.error("Error getting location:", error);
+      // FIXME: Handle the error appropriately
+    }
+  };
 
   handleTagPress = (index) => {
      // Update the tagsData state
@@ -270,11 +289,16 @@ const HomeScreen = ({ route }) => {
   const fetchListings = async () => {
     console.log("Fetching listings...");
     if (route.params?.refresh) route.params.refresh = false;
+
     try {
+      const { latitude, longitude } = userLocation;
+      console.log("User Location:", userLocation);
+      console.log("Latitude:", latitude);
+      console.log("Longitude:", longitude);
       const listingsResponse = await fetch(
         `${serverIp}/api/listings?username=${encodeURIComponent(
           await SecureStore.getItemAsync("username")
-        )}`,
+        )}&latitude=${latitude}&longitude=${longitude}&distance=${100}`, // FIXME: Consider encrypting this data. This 1 value needs to be determined by the UI slider
         {
           method: "GET",
         }
@@ -296,17 +320,32 @@ const HomeScreen = ({ route }) => {
     }
   };
 
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      setNetworkConnected(state.isConnected);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
   // This will run on mount
   useEffect(() => {
-    fetchListings();
+    getUserLocation();
   }, []);
+
+  // this will run after you have location
+  useEffect(() => {
+    if (userLocation) fetchListings();
+  }, [userLocation]);
 
   // This will run with refresh = true
   useEffect(() => {
     if (route.params?.refresh) {
-      console.log("e");
       setRefreshing(true);
-      fetchListings();
+      if (userLocation) fetchListings();
+      else getUserLocation();
     }
   }, [route.params]);
 
@@ -381,7 +420,18 @@ const HomeScreen = ({ route }) => {
               scrollEnabled={Platform.OS === "ios" ? true : false}
             >
               <View style={styles.swiperContainer}>
-                <IOSSwiperComponent swiperRef={swiperRef} listings={listings} />
+                <IOSSwiperComponent
+                  swiperRef={swiperRef}
+                  listings={listings}
+                  userLocation={userLocation}
+                  removeListing={(listingId) => {
+                    setListings((prevListings) =>
+                      prevListings.filter(
+                        (item) => item.ListingId !== listingId
+                      )
+                    );
+                  }}
+                />
               </View>
             </ScrollView>
           ) : (
@@ -389,6 +439,12 @@ const HomeScreen = ({ route }) => {
               <AndroidSwiperComponent
                 swiperRef={swiperRef}
                 listings={listings}
+                userLocation={userLocation}
+                removeListing={(listingId) => {
+                  setListings((prevListings) =>
+                    prevListings.filter((item) => item.ListingId !== listingId)
+                  );
+                }}
                 refreshControl={
                   <RefreshControl
                     refreshing={refreshing}

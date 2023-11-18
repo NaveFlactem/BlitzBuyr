@@ -9,19 +9,22 @@ import {
   Dimensions,
   ActivityIndicator,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import Colors from "../constants/Colors";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import {
   getStoredUsername,
   getStoredPassword,
   setStoredCredentials,
+  clearStoredCredentials,
 } from "./auth/Authenticate.js";
 import { useIsFocused } from "@react-navigation/native";
 import { Feather, Entypo } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
+import Modal from "react-native-modal";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -80,19 +83,11 @@ const EditProfileScreen = ({ navigation, route }) => {
         const manipulateResult = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
         );
         let localUri = manipulateResult.uri;
         let filename = localUri.split("/").pop();
 
-        /*
-        result = {
-          name: filename,
-          key: String(Date.now()),
-          uri: localUri,
-          type: "image/jpeg", // The content type of the file
-        };
-        */
         result = localUri;
       } catch (error) {
         console.error("Image processing error:", error);
@@ -118,19 +113,11 @@ const EditProfileScreen = ({ navigation, route }) => {
         const manipulateResult = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
         );
         let localUri = manipulateResult.uri;
         let filename = localUri.split("/").pop();
 
-        /*
-        result = {
-          name: filename,
-          key: String(Date.now()),
-          uri: localUri,
-          type: "image/jpeg", // The content type of the file
-        };
-        */
         result = localUri;
       } catch (error) {
         console.error("Image processing error:", error);
@@ -197,6 +184,43 @@ const EditProfileScreen = ({ navigation, route }) => {
     }
   };
 
+  const [isConfirmationModalVisible, setConfirmationModalVisible] =
+    useState(false);
+  const [confirmUsername, setConfirmUsername] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const confirmDeletion = () => {
+    deleteAccount(confirmUsername, confirmPassword);
+    setConfirmationModalVisible(false);
+  };
+
+  const deleteAccount = async () => {
+    const response = await fetch(
+      `${serverIp}/api/deleteaccount?username=${confirmUsername}&password=${confirmPassword}`,
+      {
+        method: "DELETE",
+        timeout: 10000,
+      }
+    );
+
+    const responseData = await response.json();
+
+    if (response.ok) {
+      console.log(
+        `Account ${getStoredUsername} deleted successfully:`,
+        responseData
+      );
+      await clearStoredCredentials();
+      alert("Account deleted successfully.");
+      navigation.navigate("Login");
+    } else {
+      console.log("Error deleting account:", responseData.error);
+      alert(`Error deleting account: ${responseData.error}`);
+    }
+  };
+
+  // #endregion
+
   if (loading) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -218,7 +242,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       <View
         style={{
           flexDirection: "row",
-          paddingTop: 20,
+          paddingTop: 10,
         }}
       >
         <TouchableOpacity
@@ -226,12 +250,11 @@ const EditProfileScreen = ({ navigation, route }) => {
             setLoading(true);
             navigation.navigate("BottomNavOverlay");
           }}
+          style={{
+            left: Platform.OS == "ios" ? 15 : 0,
+          }}
         >
-          <MaterialIcons
-            name="keyboard-arrow-left"
-            size={24}
-            color={Colors.BB_darkRedPurple}
-          />
+          <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
         </TouchableOpacity>
 
         <Text
@@ -462,8 +485,102 @@ const EditProfileScreen = ({ navigation, route }) => {
           </View>
         </View>
       </ScrollView>
+
+      {/* DELETE ACCOUNT BUTTON */}
+      <View
+        style={{
+          position: "absolute",
+          bottom: 20,
+          left: 20,
+          zIndex: 999,
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => setConfirmationModalVisible(true)}
+          style={{
+            width: 100,
+            height: 40,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "red",
+            borderRadius: 10,
+            borderWidth: 2,
+            borderColor: Colors.black,
+          }}
+        >
+          <Text
+            style={{
+              fontStyle: "normal",
+              color: Colors.white,
+              fontWeight: "500",
+              fontSize: 12,
+            }}
+          >
+            Delete Account
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <Modal isVisible={isConfirmationModalVisible}>
+        <View style={styles.modalContainer}>
+          <Text>
+            Confirm your Username and Password to delete your account:
+          </Text>
+          <TextInput
+            placeholder="Username"
+            value={confirmUsername}
+            onChangeText={(text) => setConfirmUsername(text)}
+          />
+          <TextInput
+            placeholder="Password"
+            secureTextEntry
+            value={confirmPassword}
+            onChangeText={(text) => setConfirmPassword(text)}
+          />
+          <TouchableOpacity onPress={confirmDeletion}>
+            <View style={styles.confirmButton}>
+              <Text style={styles.buttonText}>Confirm</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setConfirmationModalVisible(false)}>
+            <View style={styles.cancelButton}>
+              <Text style={styles.buttonText}>Cancel</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  modalContainer: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+    borderColor: "black",
+    borderWidth: 2,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 15,
+  },
+  confirmButton: {
+    backgroundColor: "green",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  cancelButton: {
+    backgroundColor: "gray",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: "white",
+  },
+});
 
 export default memo(EditProfileScreen);

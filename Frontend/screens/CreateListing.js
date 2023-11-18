@@ -21,11 +21,12 @@ import * as SecureStore from "expo-secure-store";
 import * as ImageManipulator from "expo-image-manipulator";
 import RNPickerSelect from "react-native-picker-select";
 import BouncePulse from "../components/BouncePulse.js";
+import { getLocationWithRetry } from "../constants/Utilities";
 
 const blurhash = "L5H2EC=PM+yV0g-mq.wG9c010J}I";
 
 const LoadingView = memo(() => (
-  <View style={styles.loadingContainer}>
+  <View style={styles.loading}>
     <BouncePulse />
   </View>
 ));
@@ -281,7 +282,7 @@ class CreateListing extends Component {
   handleCreateListing = async () => {
     this.setState({ isLoading: true });
 
-    const { title, description, price, data } = this.state;
+    const { title, description, price, selectedTags, data } = this.state;
 
     try {
       const returnCode = this.checkValidListing();
@@ -312,15 +313,28 @@ class CreateListing extends Component {
           });
         });
 
+        let location = await getLocationWithRetry();
+        const { latitude, longitude } = location.coords;
+
+        // Convert location to a JSON string
+        const locationString = JSON.stringify({ latitude, longitude });
+
+        // Append the location to the formData
+        formData.append("location", locationString);
+
+        console.log("Location:", latitude, longitude);
+
         formData.append("price", price);
         formData.append("title", title);
         formData.append("description", description);
+        formData.append("tags", JSON.stringify(selectedTags));
         formData.append("username", await SecureStore.getItemAsync("username"));
 
         console.log("FormData:", formData);
         const response = await fetch(`${serverIp}/api/createlisting`, {
           method: "POST",
           body: formData,
+          timeout: 10000,
         });
 
         if (response.status <= 201) {
@@ -334,8 +348,9 @@ class CreateListing extends Component {
       }
     } catch (error) {
       console.error("Error creating listing:", error);
+    } finally {
+      this.setState({ isLoading: false });
     }
-    this.setState({ isLoading: false });
   };
 
   /**
