@@ -32,6 +32,7 @@ import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/BouncePulse";
+import { getLocationWithRetry } from "../constants/Utilities";
 
 const UserListingsRoute = ({ profileInfo, onPressListing }) => (
   <View style={{ flex: 1 }}>
@@ -110,9 +111,10 @@ function ProfileScreen({ navigation, route }) {
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(true);
   const [profileName, setProfileName] = useState("");
-  const [selfProfile, setSelfProfile] = useState(); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
+  const [selfProfile, setSelfProfile] = useState(null); // this needs to be a global state or something, after auth so we don't keep doing this everywhere.
   const [routes, setRoutes] = useState([]);
   const [selectedListing, setSelectedListing] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
   const [LikeStates, setLikeStates] = useState({});
 
   const onBackPress = () => {
@@ -143,15 +145,31 @@ function ProfileScreen({ navigation, route }) {
       getProfileInfo(route.params?.username ? route.params.username : username);
     };
 
+    const getUserLocation = async () => {
+      console.log("Getting user's location...");
+
+      try {
+        const location = await getLocationWithRetry();
+        const { latitude, longitude } = location.coords;
+        setUserLocation({ latitude, longitude });
+      } catch (error) {
+        console.error("Error getting location:", error);
+        // FIXME: Handle the error appropriately
+      }
+    };
+
     setLoading(true);
     if (isFocused) {
       fetchUsername();
+      getUserLocation();
     }
   }, [isFocused]); // called when navigation is updated (clicking the page, or when username is changed)
 
   // this is just to print out a profile's information for now
   useEffect(() => {
-    setLoading(false);
+    if (userLocation && profileInfo) {
+      setLoading(false);
+    }
     /*
     console.log("User's Listings:", profileInfo.userListings);
     console.log("User's Liked Listings:", profileInfo.likedListings);
@@ -168,7 +186,7 @@ function ProfileScreen({ navigation, route }) {
     } else {
       setRoutes([{ key: "first", title: `${profileName}'s listings` }]);
     }
-  }, [profileInfo]);
+  }, [profileInfo, userLocation]);
 
   const getProfileInfo = async function (username) {
     console.log(`Fetching profile info for ${username}`);
@@ -589,6 +607,7 @@ function ProfileScreen({ navigation, route }) {
               LikeStates={LikeStates}
               handleLikePress={handleLikePress}
               numItems={selectedListing.images.length}
+              userLocation={userLocation}
               origin={"profile"}
               removeListing={(listingId) => {
                 setProfileInfo((prevProfileInfo) => ({

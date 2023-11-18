@@ -21,28 +21,30 @@ import noListings from "../components/noListings";
 import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/BouncePulse.js";
-import * as Location from "expo-location";
+import { getLocationWithRetry } from "../constants/Utilities";
 
-const IOSSwiperComponent = memo(({ swiperRef, listings, removeListing, userLocation }) => {
-  return (
-    <Swiper
-      ref={swiperRef}
-      loop={false}
-      horizontal={false}
-      showsPagination={false}
-      showsButtons={false}
-    >
-      {listings.map((item) => (
-        <Listing
-          key={item.ListingId}
-          item={item}
-          removeListing={removeListing}
-          userLocation={userLocation}
-        />
-      ))}
-    </Swiper>
-  );
-});
+const IOSSwiperComponent = memo(
+  ({ swiperRef, listings, removeListing, userLocation }) => {
+    return (
+      <Swiper
+        ref={swiperRef}
+        loop={false}
+        horizontal={false}
+        showsPagination={false}
+        showsButtons={false}
+      >
+        {listings.map((item) => (
+          <Listing
+            key={item.ListingId}
+            item={item}
+            removeListing={removeListing}
+            userLocation={userLocation}
+          />
+        ))}
+      </Swiper>
+    );
+  }
+);
 
 const AndroidSwiperComponent = memo(
   ({ swiperRef, listings, refreshControl, removeListing, userLocation }) => {
@@ -82,17 +84,16 @@ const HomeScreen = ({ route }) => {
   const scrollViewRef = useRef(null);
 
   const getUserLocation = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
+    console.log("Getting user's location...");
 
-    if (status !== "granted") {
-      console.error("Location permission not granted");
-      // FIXME: Handle location permission not granted
-      return;
+    try {
+      const location = await getLocationWithRetry();
+      const { latitude, longitude } = location.coords;
+      setUserLocation({ latitude, longitude });
+    } catch (error) {
+      console.error("Error getting location:", error);
+      // FIXME: Handle the error appropriately
     }
-
-    const location = await Location.getCurrentPositionAsync({});
-    const { latitude, longitude } = location.coords;
-    setUserLocation({ latitude: latitude, longitude: longitude });
   };
 
   const fetchListings = async () => {
@@ -100,15 +101,6 @@ const HomeScreen = ({ route }) => {
     if (route.params?.refresh) route.params.refresh = false;
 
     try {
-      // Get the device's location
-      let { status } = await Location.requestForegroundPermissionsAsync();
-
-      if (status !== "granted") {
-        console.error("Location permission not granted");
-        // Handle location permission not granted
-        return;
-      }
-
       const { latitude, longitude } = userLocation;
       console.log("User Location:", userLocation);
       console.log("Latitude:", latitude);
@@ -116,7 +108,7 @@ const HomeScreen = ({ route }) => {
       const listingsResponse = await fetch(
         `${serverIp}/api/listings?username=${encodeURIComponent(
           await SecureStore.getItemAsync("username")
-        )}&latitude=${latitude}&longitude=${longitude}&distance=${1}`, // FIXME: Consider encrypting this data. This 1 value needs to be determined by the UI slider
+        )}&latitude=${latitude}&longitude=${longitude}&distance=${100}`, // FIXME: Consider encrypting this data. This 1 value needs to be determined by the UI slider
         {
           method: "GET",
         }

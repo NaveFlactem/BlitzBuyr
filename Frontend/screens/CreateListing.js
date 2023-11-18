@@ -20,7 +20,7 @@ import TopBar from "../components/TopBarGeneric.js";
 import * as SecureStore from "expo-secure-store";
 import * as ImageManipulator from "expo-image-manipulator";
 import BouncePulse from "../components/BouncePulse.js";
-import * as Location from "expo-location";
+import { getLocationWithRetry } from "../constants/Utilities";
 
 const blurhash = "L5H2EC=PM+yV0g-mq.wG9c010J}I";
 
@@ -251,16 +251,7 @@ class CreateListing extends Component {
           });
         });
 
-        // Get the device's location
-        let { status } = await Location.requestForegroundPermissionsAsync();
-
-        if (status !== "granted") {
-          console.error("Location permission not granted");
-          // Handle location permission not granted
-          return;
-        }
-
-        let location = await Location.getCurrentPositionAsync({});
+        let location = await getLocationWithRetry();
         const { latitude, longitude } = location.coords;
 
         // Convert location to a JSON string
