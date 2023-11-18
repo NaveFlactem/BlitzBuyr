@@ -122,6 +122,7 @@ const CustomItem = memo(
     onLikePress,
     onDeletePress,
     deleteVisible,
+    origin,
   }) => {
     const onZoomEvent = AnimatedRN.event([{ nativeEvent: { scale: scale } }], {
       useNativeDriver: true,
@@ -157,16 +158,16 @@ const CustomItem = memo(
         {deleteVisible && <DeleteButton onDeletePress={onDeletePress} />}
       </CardOverlay1>
     );
-  },
+  }
 );
 
-const Listing = ({ item, removeListing }) => {
+const Listing = ({ item, origin, removeListing }) => {
   const navigation = useNavigation();
   const price = item.Price;
   const [isLiked, setIsLiked] = useState(item.liked); // Initially KNOWN
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
-    item.Username == getStoredUsername(),
+    origin == "profile" && item.Username == getStoredUsername()
   );
 
   const toggleDeleteModal = () => {
@@ -260,6 +261,7 @@ const Listing = ({ item, removeListing }) => {
                 onLikePress={() => handleLikePress()}
                 onDeletePress={() => toggleDeleteModal()}
                 deleteVisible={deleteVisible}
+                origin={origin}
               />
             )}
             customAnimation={parallaxLayout(
@@ -271,7 +273,7 @@ const Listing = ({ item, removeListing }) => {
                 parallaxScrollingScale: 1,
                 parallaxAdjacentItemScale: 0.5,
                 parallaxScrollingOffset: 10,
-              },
+              }
             )}
           />
         </View>

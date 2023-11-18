@@ -589,6 +589,7 @@ function ProfileScreen({ navigation, route }) {
               LikeStates={LikeStates}
               handleLikePress={handleLikePress}
               numItems={selectedListing.images.length}
+              origin={"profile"}
               removeListing={(listingId) => {
                 setProfileInfo((prevProfileInfo) => ({
                   ...prevProfileInfo,
