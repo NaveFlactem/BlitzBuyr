@@ -13,7 +13,6 @@ import {
   Text,
 } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -28,10 +27,12 @@ import * as SecureStore from "expo-secure-store";
 import NoWifi from "../components/noWifi";
 import NoListings from "../components/noListings";
 import Listing from "../components/Listing.js";
-import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/BouncePulse.js";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { getLocationWithRetry } from "../constants/Utilities";
+import TopBar from "../components/TopBarHome.js";
+import TagDrawer from "../components/TagDrawer.js";
+
 
 const IOSSwiperComponent = memo(
   ({ swiperRef, listings, removeListing, userLocation }) => {
@@ -83,83 +84,6 @@ const AndroidSwiperComponent = memo(
   }
 );
 
-const TagDrawer = memo(
-  ({ tags, handleTagPress, filterListings, handleMenuPress, isDrawerOpen }) => {
-    return (
-      <View style={styles.drawerContainer}>
-        {isDrawerOpen && (
-          <TouchableOpacity onPress={handleMenuPress}>
-            <View style={styles.outsideDrawer} />
-          </TouchableOpacity>
-        )}
-        <ScrollView style={styles.drawerScroll}>
-          <View style={styles.drawer}>
-            <TouchableOpacity
-              style={styles.applyButton}
-              onPress={ () => {
-                filterListings();
-                handleMenuPress();
-              }
-              }
-            >
-              <Text style={styles.applyButtonText}>Apply</Text>
-            </TouchableOpacity>
-            {tags.map((tag, tagIndex) => (
-              <TouchableOpacity
-                key={tagIndex}
-                style={styles.tagContainer}
-                onPress={() => {
-                  handleTagPress(tagIndex);
-                }}
-              >
-                <View
-                  style={[
-                    styles.tagSelected,
-                    { opacity: tag.selected ? 1 : 0.3 },
-                  ]}
-                />
-                <View
-                  style={[styles.rhombus, { opacity: tag.selected ? 0.15 : 0 }]}
-                />
-                <Text style={styles.tagText}>{tag.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          <View style={styles.spacer} />
-        </ScrollView>
-      </View>
-    );
-  }
-);
-
-const TopBar = memo(({ handleMenuPress }) => {
-  return (
-    <View style={styles.topBar}>
-      <TouchableOpacity style={styles.menu} onPress={handleMenuPress}>
-        <MaterialCommunityIcons
-          name="menu"
-          size={30}
-          color={Colors.BB_bone}
-          style={(alignSelf = "center")}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.location}>
-        <MaterialCommunityIcons
-          name="map-marker"
-          size={30}
-          color={Colors.BB_bone}
-        />
-      </TouchableOpacity>
-      <Image
-        style={styles.logo}
-        source={require("../assets/blitzbuyr_name_logo.png")}
-      />
-      {/* <View style={styles.locationslide}>
-      <LocationSlider />
-    </View> */}
-    </View>
-  );
-});
 
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -184,8 +108,6 @@ const HomeScreen = ({ route }) => {
     { name: "Other", selected: false },
   ]);
   const [selectedTags, setSelectedTags] = useState([]);
-  const drawerOpen = useSharedValue(false);
-  const drawerPosition = useSharedValue(-screenWidth);
   const [tags, setTags] = useState(tagsData);
   const translateX = useSharedValue(-screenWidth);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -436,7 +358,7 @@ const HomeScreen = ({ route }) => {
   if (isLoading) {
     return (
       <SafeAreaView style={styles.screenfield}>
-        <TopBar />
+        <TopBar handleMenuPress={ toggleTagDrawer }/>
         <LoadingView />
       </SafeAreaView>
     );
@@ -444,7 +366,7 @@ const HomeScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.screenfield}>
-      <TopBar handleMenuPress={toggleTagDrawer} />
+      <TopBar handleMenuPress = {toggleTagDrawer} />
 
       <View
         style={styles.topTap}
@@ -574,222 +496,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     zIndex: 100,
   },
-  logo: {
-    height: 0.1 * screenWidth,
-    width: 0.55 * screenWidth,
-    top: 0.025 * screenHeight,
-    right: 0.01 * screenWidth,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-      },
-    }),
-  },
-  menu: {
-    position: "absolute",
-    paddingTop: 20,
-    paddingLeft: 20,
-    paddingBottom: 20,
-    paddingRight: 20,
-    height: "auto",
-    width: "auto",
-    alignContent: "center",
-    justifyContent: "center",
-    borderRadius: 80,
-    left: "1%",
-    zIndex: 11,
-    ...Platform.select({
-      ios: {
-        top: "28%",
-        shadowColor: Colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-      },
-      android: {
-        top: "12%",
-      },
-    }),
-  },
-  location: {
-    position: "absolute",
-    height: "auto",
-    width: "auto",
-    bottom: "8%",
-    right: "5%",
-    zIndex: 11,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-      },
-    }),
-  },
-  topBar: {
-    position: "absolute",
-    height: 0.09 * screenHeight,
-    width: screenWidth,
-    backgroundColor: Colors.BB_darkRedPurple,
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-    borderBottomWidth: 3,
-    borderColor:
-      Platform.OS == "ios" ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.3)",
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-      },
-    }),
-    zIndex: 10,
-  },
-  locationslide: {
-    position: "absolute",
-    height: "auto",
-    width: "auto",
-    bottom: "8%",
-    right: "20%",
-    zIndex: 11,
-  },
-  drawerContainer: {
-    position: "absolute",
-    height: screenHeight,
-    width: 0.4 * screenWidth,
-    zIndex: 110,
-    left: 0.6 * screenWidth,
-    backgroundColor: Colors.BB_darkRedPurple,
-  },
-  drawerScroll: {
-    top: 0.08 * screenHeight,
-    width: 0.4 * screenWidth,
-    height: "100%",
-    backgroundColor: Colors.BB_darkRedPurple,
-    borderRightWidth: 2,
-    borderRightColor: Colors.BB_orange,
-  },
-  drawer: {
-    alignSelf: "center",
-    left: "5%",
-    borderRadius: 20,
-    paddingTop: 20,
-    height: "auto",
-    width: "auto",
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 12,
-    backgroundColor: Colors.BB_darkerRedPurple,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  outsideDrawer: {
-    position: "absolute",
-    height: screenHeight,
-    width: screenWidth,
-    zIndex: 11,
-  },
-  tagContainer: {
-    marginLeft: 10,
-    marginRight: 10,
-    marginBottom: 10,
-    borderRadius: 20,
-    alignContent: "center",
-    justifyContent: "center",
-    textAlign: "center",
-    height: 0.06 * screenHeight,
-    width: 0.3 * screenWidth,
-    zIndex: 120,
-    ...Platform.select({
-      ios: {
-        shadowColor: "white",
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  tagText: {
-    color: Colors.white,
-    fontSize: 18,
-    alignSelf: "center",
-    fontWeight: "bold",
-  },
-  rhombus: {
-    alignSelf: "center",
-    position: "absolute",
-    width: 0.04 * screenHeight,
-    aspectRatio: 1,
-    backgroundColor: Colors.BB_darkPink,
-    opacity: 0.15,
-    transform: [{ rotate: "45deg" }],
-  },
-  tagSelected: {
-    alignSelf: "center",
-    backgroundColor: Colors.BB_darkRedPurple,
-    borderRadius: 20,
-    height: "100%",
-    width: "100%",
-    position: "absolute",
-    borderColor: Colors.BB_bone,
-    borderWidth: 1,
-  },
-  applyButton: {
-    borderRadius: 20,
-    height: 0.06 * screenHeight,
-    width: 0.3 * screenWidth,
-    marginBottom: 10,
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: Colors.BB_pink,
-    borderColor: Colors.BB_bone,
-    borderWidth: 1,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.BB_bone,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  applyButtonText: {
-    color: Colors.white,
-    fontSize: 18,
-    fontWeight: "bold",
-  },
   swipeArea: {
     position: "absolute",
     width: 0.05 * screenWidth,
     height: screenHeight,
     left: 0,
     zIndex: 200,
-  },
-  spacer: {
-    position: "relative",
-    height: 0.2 * screenHeight,
   },
 });

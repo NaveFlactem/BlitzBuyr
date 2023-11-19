@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   logo: {
     height: 0.1 * screenWidth,
     width: 0.55 * screenWidth,
-    top: 0.02 * screenHeight,
+    top: 0.025 * screenHeight,
     right: 0.01 * screenWidth,
     ...Platform.select({
       ios: {
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   topBar: {
     position: "absolute",
-    height: 0.08 * screenHeight,
+    height: 0.09 * screenHeight,
     width: screenWidth,
     backgroundColor: Colors.BB_darkRedPurple,
     alignItems: "center",
