@@ -135,13 +135,14 @@ class CreateListing extends Component {
   /**
    * @function
    * @checkValidListing - checks if the listing is valid
+   * @stateUpdates - updates the states of the variables that check if the listing is valid
    * @returns Returns 0 if the listing is valid, -1 if the listing is invalid and 1 if no images are selected and 2 if too many images are selected and 3 if no tags are selected
    */
   checkValidListing = () => {
     let stateUpdates = {
-      isPriceInvalid: !(this.state.price > 0 && this.state.price < 1000000),
-      isTitleInvalid: !(this.state.title.length <= 25),
-      isDescriptionInvalid: !(this.state.description.length <= 500),
+      isPriceInvalid: (this.state.price < 0 || this.state.price.length > 7 || this.state.price === ""),
+      isTitleInvalid: (this.state.title.length === 0 || this.state.title.length > 25),
+      isDescriptionInvalid: (this.state.description.length === 0 || this.state.description.length > 500),
       isConditionInvalid: !["Excellent", "Good", "Fair", "Poor", "For Parts"].includes(this.state.condition),
       isTransactionPreferenceInvalid: !["Pickup", "Meetup", "Delivery", "No Preference"].includes(this.state.transactionPreference),
       isImageInvalid: (this.state.data.length === 0 || this.state.data.length > 9),
@@ -895,7 +896,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: Colors.BB_bone,
+    backgroundColor: Colors.white,
   },
   minorLoadingContainer: {
     flex: 1,
