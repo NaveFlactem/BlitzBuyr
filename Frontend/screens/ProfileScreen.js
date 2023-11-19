@@ -331,19 +331,18 @@ function ProfileScreen({ navigation, route }) {
         />
         {/* Back button */}
         {!selfProfile && (
-          <TouchableOpacity
-            onPress={() => {
-              setLoading(true);
-              navigation.navigate("BottomNavOverlay");
-            }}
-            style={{
-              top: 15, // Adjust the top position as needed
-              left: 15, // Adjust the left position as needed
-            }}
-          >
-            <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
-          </TouchableOpacity>
-        )}
+  <TouchableOpacity
+    onPress={() => {
+      setLoading(true);
+      navigation.navigate("BottomNavOverlay");
+    }}
+    style={styles.circleContainer}
+  >
+    <View style={styles.circle}>
+      <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
+    </View>
+  </TouchableOpacity>
+)}
       </View>
 
       {/* //Profile Picture */}
@@ -691,6 +690,21 @@ const styles = StyleSheet.create({
         elevation: 10,
       },
     }),
+  },
+  circleContainer: {
+    position: 'absolute',
+    top: 15,
+    left: 15,
+  },
+  circle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'white',  // Set the background color as needed
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'black',  // Set the border color as needed
   },
 });
 
