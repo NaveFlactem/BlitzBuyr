@@ -28,7 +28,7 @@ import {
   clearStoredCredentials,
 } from "./auth/Authenticate.js";
 import { useIsFocused } from "@react-navigation/native";
-import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Entypo, MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/BouncePulse";
@@ -97,6 +97,35 @@ const LikedListingsRoute = ({ profileInfo, onPressListing }) => (
     ) : (
       <Text style={styles.noListingsText}>No liked listings found.</Text>
     )}
+  </View>
+);
+
+const ContactInfoRoute = ({ profileInfo }) => (
+  <View style={styles.contactInfoContainer}>
+    <TouchableOpacity style = {styles.socialIcons}>
+    <AntDesign name="instagram" size={24} color="black" />
+    <Text style = {styles.socialText}>@alfonsodelr</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style = {styles.socialIcons}>
+    <AntDesign name="twitter" size={24} color="black" />
+    <Text style = {styles.socialText}>@mytwitteraccount</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style = {styles.socialIcons}>
+    <Entypo name="facebook" size={24} color="black" />
+    <Text style = {styles.socialText}>@myfacebook</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style = {styles.socialIcons}>
+    <AntDesign name="phone" size={24} color="black" />
+    <Text style = {styles.socialText}>(213)-214-9702</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style = {styles.socialIcons}>
+    <MaterialCommunityIcons name="email" size={24} color="black" />
+    <Text style = {styles.socialText}>addelros@ucsc.edu</Text>
+    </TouchableOpacity>
+    <TouchableOpacity style = {styles.socialIcons}>
+    <Entypo name="link" size={24} color="black" />
+    <Text style = {styles.socialText}>@linktosomewhere</Text>
+    </TouchableOpacity>
   </View>
 );
 
@@ -177,14 +206,16 @@ function ProfileScreen({ navigation, route }) {
     console.log("Profile Picture URL:", profileInfo.profilePicture);
     console.log("Cover Picture URL:", profileInfo.coverPicture);
     */
+    console.log("All Profile Info: ", profileInfo);
 
     if (selfProfile) {
       setRoutes([
         { key: "first", title: "My Listings" },
-        { key: "second", title: "Liked Listings" },
+        { key: "second", title: "Liked" },
+        { key: "third", title: "Contact" },
       ]);
     } else {
-      setRoutes([{ key: "first", title: `${profileName}'s listings` }]);
+      setRoutes([{ key: "first", title: `${profileName}'s listings` }, {key: "third", title: `${profileName}'s contact`}]);
     }
   }, [profileInfo, userLocation]);
 
@@ -282,6 +313,9 @@ function ProfileScreen({ navigation, route }) {
               color: Colors.BB_darkRedPurple,
               fontWeight: "bold",
               fontSize: 14,
+              textAlign: "center"
+
+
             },
           ]}
         >
@@ -567,6 +601,12 @@ function ProfileScreen({ navigation, route }) {
                     onPressListing={onPressListing}
                   />
                 );
+              case "third":
+                return (
+                  <ContactInfoRoute
+                    profileInfo={profileInfo}
+                  />
+                  );
               default:
                 return null;
             }
@@ -639,6 +679,25 @@ const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
+  contactInfoContainer: {
+    flexDirection: "column", 
+    paddingVertical: 20,
+    paddingHorizontal: 15
+  },
+  socialIcons: {
+    flexDirection: "row",
+    paddingVertical: 5,
+    alignContent: "center",
+    textAlign: "center",
+  },
+  socialText: {
+    marginVertical: 1.5, 
+    marginHorizontal: 10,
+    fontWeight: "bold",
+    justifyContent: "center",
+    alignContent: "center",
+    textAlign: "center"
+  },
   noListingsText: {
     textAlign: "center",
     marginTop: 110,
