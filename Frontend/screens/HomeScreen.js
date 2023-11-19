@@ -82,14 +82,39 @@ const AndroidSwiperComponent = memo(
   }
 );
 
-const TagDrawer = memo(({ tags, handleTagPress, filterListings }) => {
+const TagDrawer = memo(({ tags, handleTagPress, filterListings, handleMenuPress }) => {
   return (
     <View style={styles.drawerContainer}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={handleMenuPress}>
         <View style={styles.outsideDrawer}/>
       </TouchableOpacity>
       <ScrollView style={styles.drawerScroll}>
         <View style={styles.drawer}>
+          <TouchableOpacity style={styles.applyButton} onPress={filterListings}>
+            <Text style={styles.applyButtonText}>Apply</Text>
+          </TouchableOpacity>
+          {tags.map((tag, tagIndex) => (
+            <TouchableOpacity
+              key={tagIndex}
+              style={styles.tagContainer}
+              onPress={() => {
+                handleTagPress(tagIndex);
+              }}
+            >
+              <View
+                style={[
+                  styles.tagSelected,
+                  { opacity: tag.selected ? 1 : 0.3 },
+                ]}
+              />
+              <View
+                style={[styles.rhombus, { opacity: tag.selected ? 0.15 : 0 }]}
+              />
+              <Text style={styles.tagText}>{tag.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <View style={[styles.drawer, {position: "relative", top: 0.9 * screenHeight}]}>
           <TouchableOpacity style={styles.applyButton} onPress={filterListings}>
             <Text style={styles.applyButtonText}>Apply</Text>
           </TouchableOpacity>
@@ -182,10 +207,10 @@ const HomeScreen = ({ route }) => {
       context.startX = translateX.value;
     },
     onActive: (event, context) => {
-      translateX.value = Math.min(0, context.startX + event.translationX); // Prevent swiping to the right
+      translateX.value = Math.min(-screenWidth * 0.6, context.startX + event.translationX); // Prevent swiping to the right
     },
     onEnd: (_, context) => {
-      if (translateX.value < -screenWidth / 16) {
+      if (translateX.value < -screenWidth / 8) {
         // If swiped enough to the left, dismiss the drawer
         translateX.value = withTiming(-screenWidth);
       } else {
@@ -195,15 +220,31 @@ const HomeScreen = ({ route }) => {
     },
   });
 
+  const onSwipeAreaGestureEvent = useAnimatedGestureHandler({
+    onStart: (_, context) => {
+        context.startX = translateX.value;
+    },
+    onActive: (event, context) => {
+        let newTranslateX = context.startX + event.translationX;
+        // Clamp the translateX value to prevent the drawer from moving beyond its width
+        newTranslateX = Math.min(Math.max(newTranslateX, -screenWidth), -screenWidth * 0.6);
+        translateX.value = newTranslateX;
+    },
+    onEnd: (_) => {
+        // Decide to open or close the drawer based on where the gesture ended
+        translateX.value = withTiming(translateX.value > -screenWidth * 0.9 ? -screenWidth * 0.6 : -screenWidth);
+    },
+});
+
   const toggleTagDrawer = () => {
-    if (translateX.value === 0) {
+    if (translateX.value === -screenWidth * 0.6) {
       // Drawer is open, so close it
       translateX.value = withTiming(-screenWidth, {
         duration: 300,
       });
     } else {
       // Drawer is closed, so open it
-      translateX.value = withTiming(0, {
+      translateX.value = withTiming(-screenWidth * 0.6, {
         duration: 300,
       });
     }
@@ -461,6 +502,7 @@ const HomeScreen = ({ route }) => {
       ) : (
         <NoWifi onRetry={retryButtonHandler} />
       )}
+
       <PanGestureHandler onGestureEvent={onGestureEvent}>
         <Animated.View
           style={[
@@ -479,9 +521,14 @@ const HomeScreen = ({ route }) => {
             tags={tagsData}
             handleTagPress={handleTagPress}
             filterListings={filterListings}
+            handleMenuPress={toggleTagDrawer}
           />
         </Animated.View>
       </PanGestureHandler>
+
+      <PanGestureHandler onGestureEvent={onSwipeAreaGestureEvent}>
+    <Animated.View style={styles.swipeArea} />
+  </PanGestureHandler>
     </SafeAreaView>
   );
 };
@@ -601,17 +648,19 @@ const styles = StyleSheet.create({
   },
   drawerContainer: {
     position: "absolute",
-    flex: 1,
-    height: "auto",
+    height: screenHeight,
     width: 0.4 * screenWidth,
     zIndex: 110,
+    left: 0.6 * screenWidth,
+    backgroundColor: Colors.BB_darkRedPurple,
   },
   drawerScroll: {
     top: 0.08 * screenHeight,
     width: 0.4 * screenWidth,
-    left: 0,
-    height: "auto",
+    height: "100%",
     backgroundColor: Colors.BB_darkRedPurple,
+    borderRightWidth: 2,
+    borderRightColor: Colors.BB_orange,
   },
   drawer: {
     position: "absolute",
@@ -621,7 +670,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     height: "auto",
     width: "auto",
-    backgroundColor: "#fff",
+    backgroundColor: "#fff", 
     justifyContent: "center",
     alignItems: "center",
     zIndex: 12,
@@ -640,11 +689,9 @@ const styles = StyleSheet.create({
   },
   outsideDrawer: {
     position: "absolute",
-    right: 0,
     height: screenHeight,
     width: screenWidth,
     zIndex: 11,
-    backgroundColor: "black",
   },  
   tagContainer: {
     marginLeft: 10,
@@ -725,11 +772,10 @@ const styles = StyleSheet.create({
   swipeArea: {
     position: "absolute",
     width: 0.05 * screenWidth,
-    height: "100%",
+    height: screenHeight,
     left: 0,
-    top: 0,
-    backgroundColor: "black",
     zIndex: 200,
+    backgroundColor: "black",
   },
   spacer: {
     height: screenHeight,
