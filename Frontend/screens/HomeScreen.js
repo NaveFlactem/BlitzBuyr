@@ -18,7 +18,7 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  useAnimatedGestureHandler
+  useAnimatedGestureHandler,
 } from "react-native-reanimated";
 import Swiper from "react-native-swiper";
 import Colors from "../constants/Colors";
@@ -82,51 +82,54 @@ const AndroidSwiperComponent = memo(
   }
 );
 
-const TagDrawer = memo(({ tags, handleTagPress, filterListings }) => { 
-  return(
-      <View style={styles.drawerContainer}>
-        <ScrollView style={styles.drawerScroll}>
-          <View style={styles.drawer}>
-            <TouchableOpacity style={styles.applyButton} onPress={filterListings}>
-              <Text style={styles.applyButtonText}>Apply</Text>
-            </TouchableOpacity>
+const TagDrawer = memo(({ tags, handleTagPress, filterListings }) => {
+  return (
+    <View style={styles.drawerContainer}>
+      <TouchableOpacity>
+        <View style={styles.outsideDrawer}/>
+      </TouchableOpacity>
+      <ScrollView style={styles.drawerScroll}>
+        <View style={styles.drawer}>
+          <TouchableOpacity style={styles.applyButton} onPress={filterListings}>
+            <Text style={styles.applyButtonText}>Apply</Text>
+          </TouchableOpacity>
           {tags.map((tag, tagIndex) => (
-                      <TouchableOpacity
-                        key={tagIndex}
-                        style={styles.tagContainer}
-                        onPress={() => {
-                          handleTagPress(tagIndex);
-                        }}
-                      >
-                        <View
-                          style={[
-                            styles.tagSelected,
-                            { opacity: tag.selected ? 1 : 0.3 },
-                          ]}
-                        />
-                        <View
-                          style={[
-                            styles.rhombus,
-                            { opacity: tag.selected ? 0.15 : 0 },
-                          ]}
-                        />
-                        <Text style={styles.tagText}>{tag.name}</Text>
-                      </TouchableOpacity>
-                    ))}
-
-          </View>
-                    <View style={styles.spacer} />
-        </ScrollView>
-      </View>
-        )
+            <TouchableOpacity
+              key={tagIndex}
+              style={styles.tagContainer}
+              onPress={() => {
+                handleTagPress(tagIndex);
+              }}
+            >
+              <View
+                style={[
+                  styles.tagSelected,
+                  { opacity: tag.selected ? 1 : 0.3 },
+                ]}
+              />
+              <View
+                style={[styles.rhombus, { opacity: tag.selected ? 0.15 : 0 }]}
+              />
+              <Text style={styles.tagText}>{tag.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        <View style={styles.spacer} />
+      </ScrollView>
+    </View>
+  );
 });
-
 
 const TopBar = memo(({ handleMenuPress }) => {
   return (
     <View style={styles.topBar}>
       <TouchableOpacity style={styles.menu} onPress={handleMenuPress}>
-        <MaterialCommunityIcons name="menu" size={30} color={Colors.BB_bone} style={alignSelf="center"} />
+        <MaterialCommunityIcons
+          name="menu"
+          size={30}
+          color={Colors.BB_bone}
+          style={(alignSelf = "center")}
+        />
       </TouchableOpacity>
       <TouchableOpacity style={styles.location}>
         <MaterialCommunityIcons
@@ -142,11 +145,9 @@ const TopBar = memo(({ handleMenuPress }) => {
       {/* <View style={styles.locationslide}>
       <LocationSlider />
     </View> */}
-      
     </View>
   );
 });
-
 
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -158,17 +159,17 @@ const HomeScreen = ({ route }) => {
   const [userLocation, setUserLocation] = useState(null);
   const scrollViewRef = useRef(null);
   const [tagsData, setTagsData] = useState([
-      { name: "Furniture", selected: false },
-      { name: "Electronics", selected: false },
-      { name: "Clothing", selected: false },
-      { name: "Books", selected: false },
-      { name: "Appliances", selected: false },
-      { name: "Sports", selected: false },
-      { name: "Toys", selected: false },
-      { name: "Tools", selected: false },
-      { name: "Vehicles", selected: false },
-      { name: "Service", selected: false },
-      { name: "Other", selected: false },
+    { name: "Furniture", selected: false },
+    { name: "Electronics", selected: false },
+    { name: "Clothing", selected: false },
+    { name: "Books", selected: false },
+    { name: "Appliances", selected: false },
+    { name: "Sports", selected: false },
+    { name: "Toys", selected: false },
+    { name: "Tools", selected: false },
+    { name: "Vehicles", selected: false },
+    { name: "Service", selected: false },
+    { name: "Other", selected: false },
   ]);
   const [selectedTags, setSelectedTags] = useState([]);
   const drawerOpen = useSharedValue(false);
@@ -194,7 +195,6 @@ const HomeScreen = ({ route }) => {
     },
   });
 
-
   const toggleTagDrawer = () => {
     if (translateX.value === 0) {
       // Drawer is open, so close it
@@ -215,8 +215,6 @@ const HomeScreen = ({ route }) => {
     };
   });
 
-  
-
   const getUserLocation = async () => {
     console.log("Getting user's location...");
 
@@ -231,8 +229,8 @@ const HomeScreen = ({ route }) => {
   };
 
   handleTagPress = (index) => {
-     // Update the tagsData state
-     const newTagsData = tagsData.map((tag, idx) => {
+    // Update the tagsData state
+    const newTagsData = tagsData.map((tag, idx) => {
       if (idx === index) {
         return { ...tag, selected: !tag.selected };
       }
@@ -244,7 +242,9 @@ const HomeScreen = ({ route }) => {
     const isAlreadySelected = selectedTags.includes(pressedTagName);
     let newSelectedTags;
     if (isAlreadySelected) {
-      newSelectedTags = selectedTags.filter(tagName => tagName !== pressedTagName);
+      newSelectedTags = selectedTags.filter(
+        (tagName) => tagName !== pressedTagName
+      );
     } else {
       newSelectedTags = [...selectedTags, pressedTagName];
     }
@@ -284,7 +284,6 @@ const HomeScreen = ({ route }) => {
       setRefreshing(false);
     }
   };
-
 
   const fetchListings = async () => {
     console.log("Fetching listings...");
@@ -352,7 +351,7 @@ const HomeScreen = ({ route }) => {
   retryButtonHandler = () => {
     setRefreshing(true);
     fetchListings();
-  }; 
+  };
 
   const onRefresh = React.useCallback(() => {
     console.log("refreshing...");
@@ -392,14 +391,15 @@ const HomeScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.screenfield}>
-      <TopBar handleMenuPress={toggleTagDrawer}/>
-
+      <TopBar handleMenuPress={toggleTagDrawer} />
 
       <View
         style={styles.topTap}
         onStartShouldSetResponder={() => true}
         onResponderRelease={() => {
-          swiperRef.current.scrollTo(0);
+          if (swiperRef.current != null) {
+            swiperRef.current.scrollTo(0);
+          }
         }}
       />
 
@@ -456,29 +456,32 @@ const HomeScreen = ({ route }) => {
             </View>
           )
         ) : (
-          <NoListings onRetry = {retryButtonHandler} />
+          <NoListings onRetry={retryButtonHandler} />
         )
       ) : (
-        <NoWifi onRetry = {retryButtonHandler} />
+        <NoWifi onRetry={retryButtonHandler} />
       )}
       <PanGestureHandler onGestureEvent={onGestureEvent}>
-      <Animated.View
-        style={[
-          {
-            position: "absolute",
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: screenWidth,
-            flex: 110,
-          },
-          animatedStyle,
-        ]}
-      >
-        <TagDrawer tags={tagsData} handleTagPress={handleTagPress} filterListings={filterListings}/>
-      </Animated.View>
-    </PanGestureHandler>
-
+        <Animated.View
+          style={[
+            {
+              position: "absolute",
+              left: 0,
+              top: 0,
+              bottom: 0,
+              width: screenWidth,
+              flex: 110,
+            },
+            animatedStyle,
+          ]}
+        >
+          <TagDrawer
+            tags={tagsData}
+            handleTagPress={handleTagPress}
+            filterListings={filterListings}
+          />
+        </Animated.View>
+      </PanGestureHandler>
     </SafeAreaView>
   );
 };
@@ -577,7 +580,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderBottomWidth: 3,
     borderColor:
-    Platform.OS == "ios" ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.3)",
+      Platform.OS == "ios" ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.3)",
     ...Platform.select({
       ios: {
         shadowColor: Colors.black,
@@ -597,7 +600,7 @@ const styles = StyleSheet.create({
     zIndex: 11,
   },
   drawerContainer: {
-    position: 'absolute',
+    position: "absolute",
     flex: 1,
     height: "auto",
     width: 0.4 * screenWidth,
@@ -605,22 +608,22 @@ const styles = StyleSheet.create({
   },
   drawerScroll: {
     top: 0.08 * screenHeight,
-    width: 0.40 * screenWidth,
+    width: 0.4 * screenWidth,
     left: 0,
     height: "auto",
     backgroundColor: Colors.BB_darkRedPurple,
   },
-drawer: {
-    position: 'absolute',
-    alignSelf: 'center',
+  drawer: {
+    position: "absolute",
+    alignSelf: "center",
     left: "5%",
     borderRadius: 20,
     paddingTop: 20,
     height: "auto",
     width: "auto",
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
     zIndex: 12,
     backgroundColor: Colors.BB_darkerRedPurple,
     ...Platform.select({
@@ -634,94 +637,102 @@ drawer: {
         elevation: 10,
       },
     }),
-},
-tagContainer: {
-  marginLeft: 10,
-  marginRight: 10,
-  marginBottom: 10,
-  borderRadius: 20,
-  alignContent: "center",
-  justifyContent: "center",
-  textAlign: "center",
-  height: 0.06 * screenHeight,
-  width: 0.3 * screenWidth,
-  zIndex: 120,
-  ...Platform.select({
-    ios: {
-      shadowColor: "white",
-      shadowOffset: { width: 1, height: 1 },
-      shadowOpacity: 0.2,
-      shadowRadius: 2,
-    },
-    android: {
-      elevation: 10,
-    },
-  }),
-},
-tagText: {
-  color: Colors.white,
-  fontSize: 18,
-  alignSelf: "center",
-  fontWeight: "bold",
-},
-rhombus: {
-  alignSelf: "center",
-  position: "absolute",
-  width: 0.04 * screenHeight,
-  aspectRatio: 1,
-  backgroundColor: Colors.BB_darkPink,
-  opacity: 0.15,
-  transform: [{ rotate: "45deg" }],
-},
-tagSelected: {
-  alignSelf: "center",
-  backgroundColor: Colors.BB_darkRedPurple,
-  borderRadius: 20,
-  height: "100%",
-  width: "100%",
-  position: "absolute",
-  borderColor: Colors.BB_bone,
-  borderWidth: 1,
-},
-applyButton: {
-  borderRadius: 20,
-  height: 0.06 * screenHeight,
-  width: 0.3 * screenWidth,
-  marginBottom: 10,
-  alignSelf: "center",
-  justifyContent: "center",
-  alignItems: "center",
-  backgroundColor: Colors.BB_pink,
-  borderColor: Colors.BB_bone,
-  borderWidth: 1,
-  ...Platform.select({
-    ios: {
-      shadowColor: Colors.BB_bone,
-      shadowOffset: { width: 1, height: 1 },
-      shadowOpacity: 0.2,
-      shadowRadius: 2,
-    },
-    android: {
-      elevation: 10,
-    },
-  }),
-},
-applyButtonText: {
-  color: Colors.white,
-  fontSize: 18,
-  fontWeight: "bold",
-},
-swipeArea: {
-  position: 'absolute',
-  width: 0.05 * screenWidth,
-  height: '100%',
-  left: 0,
-  top: 0,
-  backgroundColor: 'black',
-  zIndex: 200,
-},
-spacer: {
-  height: screenHeight,
-  width: "100%",
-},  
+  },
+  outsideDrawer: {
+    position: "absolute",
+    right: 0,
+    height: screenHeight,
+    width: screenWidth,
+    zIndex: 11,
+    backgroundColor: "black",
+  },  
+  tagContainer: {
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 10,
+    borderRadius: 20,
+    alignContent: "center",
+    justifyContent: "center",
+    textAlign: "center",
+    height: 0.06 * screenHeight,
+    width: 0.3 * screenWidth,
+    zIndex: 120,
+    ...Platform.select({
+      ios: {
+        shadowColor: "white",
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+  },
+  tagText: {
+    color: Colors.white,
+    fontSize: 18,
+    alignSelf: "center",
+    fontWeight: "bold",
+  },
+  rhombus: {
+    alignSelf: "center",
+    position: "absolute",
+    width: 0.04 * screenHeight,
+    aspectRatio: 1,
+    backgroundColor: Colors.BB_darkPink,
+    opacity: 0.15,
+    transform: [{ rotate: "45deg" }],
+  },
+  tagSelected: {
+    alignSelf: "center",
+    backgroundColor: Colors.BB_darkRedPurple,
+    borderRadius: 20,
+    height: "100%",
+    width: "100%",
+    position: "absolute",
+    borderColor: Colors.BB_bone,
+    borderWidth: 1,
+  },
+  applyButton: {
+    borderRadius: 20,
+    height: 0.06 * screenHeight,
+    width: 0.3 * screenWidth,
+    marginBottom: 10,
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.BB_pink,
+    borderColor: Colors.BB_bone,
+    borderWidth: 1,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.BB_bone,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+  },
+  applyButtonText: {
+    color: Colors.white,
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  swipeArea: {
+    position: "absolute",
+    width: 0.05 * screenWidth,
+    height: "100%",
+    left: 0,
+    top: 0,
+    backgroundColor: "black",
+    zIndex: 200,
+  },
+  spacer: {
+    height: screenHeight,
+    width: "100%",
+  },
 });

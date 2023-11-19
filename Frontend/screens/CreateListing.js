@@ -138,140 +138,32 @@ class CreateListing extends Component {
    * @returns Returns 0 if the listing is valid, -1 if the listing is invalid and 1 if no images are selected and 2 if too many images are selected and 3 if no tags are selected
    */
   checkValidListing = () => {
-    let returnCode = 0;
-
-    const { title, description, price, data } = this.state;
-
-    if (this.state.title == "") {
-      this.setState({ isTitleInvalid: true });
-      this.titleInput.current.focus();
+    let stateUpdates = {
+      isPriceInvalid: !(this.state.price > 0 && this.state.price < 1000000),
+      isTitleInvalid: !(this.state.title.length <= 25),
+      isDescriptionInvalid: !(this.state.description.length <= 500),
+      isConditionInvalid: !["Excellent", "Good", "Fair", "Poor", "For Parts"].includes(this.state.condition),
+      isTransactionPreferenceInvalid: !["Pickup", "Meetup", "Delivery", "No Preference"].includes(this.state.transactionPreference),
+      isImageInvalid: (this.state.data.length === 0 || this.state.data.length > 9),
+      isTagInvalid: (this.state.selectedTags.length === 0)
+    };
+  
+    this.setState(stateUpdates);
+  
+    if (Object.values(stateUpdates).includes(true)) {
+      return -1; // Invalid form
     }
-    if (this.state.description == "") {
-      this.setState({ isDescriptionInvalid: true });
-      this.descriptionInput.current.focus();
-    }
-    if (this.state.price == "") {
-      this.setState({ isPriceInvalid: true });
-      this.priceInput.current.focus();
-    }
-    if (
-      this.state.condition != "Excellent" ||
-      "Good" ||
-      "Fair" ||
-      "Poor" ||
-      "For Parts"
-    ) {
-      this.setState({ isConditionInvalid: true });
-    }
-    if (
-      this.state.transactionPreference != "Pickup" ||
-      "Meetup" ||
-      "Delivery" ||
-      "No Preference"
-    ) {
-      this.setState({ isTransactionPreferenceInvalid: true });
-    }
-
-    if (this.state.data.length == 0 || this.state.data.length > 9) {
-      this.setState({ isImageInvalid: true });
-    }
-    if (this.state.selectedTags.length == 0) {
-      this.setState({ isTagInvalid: true });
-    }
-
-    if (!title || !description || !price) {
-      if (!title) {
-        this.setState({ isTitleInvalid: true });
-        this.titleInput.current.focus();
-      } else {
-        this.setState({ isTitleInvalid: false });
-      }
-
-      if (!description) {
-        this.setState({ isDescriptionInvalid: true });
-        this.descriptionInput.current.focus();
-      } else {
-        this.setState({ isDescriptionInvalid: false });
-      }
-
-      if (!price) {
-        this.setState({ isPriceInvalid: true });
-        this.priceInput.current.focus();
-      } else {
-        this.setState({ isPriceInvalid: false });
-      }
-    }
-
-    if (this.state.selectedTags.length == 0) {
-      this.setState({ isTagInvalid: true });
-    }
-
-    if (this.state.price < 0) {
-      returnCode = -1;
-    }
-    if ((this.state.price = "")) {
-      returnCode = -1;
-    }
-    if (this.state.title.length > 25) {
-      returnCode = -1;
-    }
-    if ((this.state.title = "")) {
-      returnCode = -1;
-    }
-    if (this.state.description.length > 500) {
-      returnCode = -1;
-    }
-    if ((this.state.description = "")) {
-      returnCode = -1;
-    }
-    if (
-      this.state.condition != "Excellent" ||
-      "Good" ||
-      "Fair" ||
-      "Poor" ||
-      "For Parts"
-    ) {
-      returnCode = -1;
-    }
-    if (
-      this.state.transactionPreference != "Pickup" ||
-      "Meetup" ||
-      "Delivery" ||
-      "No Preference"
-    ) {
-      returnCode = -1;
-    }
-
-    if (
-      this.state.isPriceInvalid ||
-      this.state.isTitleInvalid ||
-      this.state.isDescriptionInvalid ||
-      this.state.isImageInvalid ||
-      this.state.isConditionInvalid ||
-      this.state.isTransactionPreferenceInvalid ||
-      this.state.isTagInvalid
-    ) {
-      returnCode = -1;
-    }
-
-    if (this.state.data.length == 0) {
-      this.setState({ isImageInvalid: true });
-      returnCode = 1;
+    if (this.state.data.length === 0) {
+      return 1; // No images selected
     }
     if (this.state.data.length > 9) {
-      this.setState({ isImageInvalid: true });
-      returnCode = 2;
+      return 2; // Too many images
     }
-    if (this.state.selectedTags.length == 0) {
-      this.setState({ isTagInvalid: true });
-      returnCode = 3;
+    if (this.state.selectedTags.length === 0) {
+      return 3; // No tags selected
     }
-    if (this.state.selectedTags == []) {
-      this.setState({ isTagInvalid: true });
-      returnCode = 3;
-    }
-
-    return returnCode;
+  
+    return 0; // Valid form
   };
 
   /**
@@ -282,26 +174,25 @@ class CreateListing extends Component {
   handleCreateListing = async () => {
     this.setState({ isLoading: true });
 
-    const { title, description, price, selectedTags, data } = this.state;
+    const { title, description, price, selectedTags, data } = this.state; // Destructuring state
+
+  const returnCode = this.checkValidListing();
+  if (returnCode !== 0) {
+    this.setState({ isLoading: false });
+    if (returnCode === -1) {
+      Alert.alert("Error", "Please correct the errors in the form.");
+    } else if (returnCode === 1) {
+      Alert.alert("No images selected", "Please select at least one image.");
+    } else if (returnCode === 2) {
+      Alert.alert("Too many images", "Please select no more than 9 images.");
+    } else if (returnCode === 3) {
+      Alert.alert("No tags selected", "Please select at least one tag.");
+    }
+    return;
+  }
+
 
     try {
-      const returnCode = this.checkValidListing();
-      if (returnCode == -1) {
-        this.setState({ isLoading: false });
-        return;
-      } else if (returnCode == 1) {
-        Alert.alert("No images selected.");
-        this.setState({ isLoading: false });
-        return;
-      } else if (returnCode == 2) {
-        Alert.alert("Too many images selected.");
-        this.setState({ isLoading: false });
-        return;
-      } else if (returnCode == 3) {
-        Alert.alert("No tags selected.");
-        this.setState({ isLoading: false });
-        return;
-      } else if (returnCode == 0) {
         const formData = new FormData();
 
         data.forEach((image, index) => {
@@ -344,10 +235,11 @@ class CreateListing extends Component {
           this.props.navigation.navigate("Home", { refresh: true });
         } else {
           console.error("HTTP error! Status: ", response.status);
+          Alert.alert("Error", "Failed to create listing.");
         }
-      }
     } catch (error) {
       console.error("Error creating listing:", error);
+      Alert.alert("Error", "An unexpected error occurred.");
     } finally {
       this.setState({ isLoading: false });
     }
@@ -825,8 +717,10 @@ class CreateListing extends Component {
             <View style={styles.pickerStyle}>
               <RNPickerSelect
                 selectedValue={this.state.condition}
-                onValueChange={(itemValue, itemIndex) =>
-                  this.setState({ condition: itemValue })
+                onValueChange={(itemValue, itemIndex) => {
+                  this.setState({ condition: itemValue });
+                  this.setState({ isConditionInvalid: false });
+                }
                 }
                 items={[
                   { label: "Excellent", value: "Excellent" },
@@ -854,9 +748,12 @@ class CreateListing extends Component {
             <View style={styles.pickerStyle}>
               <RNPickerSelect
                 selectedValue={this.state.transactionPreference}
-                onValueChange={(itemValue, itemIndex) =>
-                  this.setState({ transactionPreference: itemValue })
+                onValueChange={(itemValue, itemIndex) => {
+                  this.setState({ transactionPreference: itemValue });
+                  this.setState({ isTransactionPreferenceInvalid: false });
                 }
+                }
+                
                 items={[
                   { label: "Pickup", value: "Pickup" },
                   { label: "Meetup", value: "Meetup" },

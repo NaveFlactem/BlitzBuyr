@@ -91,6 +91,22 @@ const calculateFontSize = (price) => {
   }
 };
 
+const calculateFontSizeLocation = (city) => {
+    if (city === undefined || city === null) {
+      return 16; // Default font size if price is not provided
+    }
+  
+    if (city.length <= 10) {
+      return 14;
+    } else if (city.length <= 15) {
+      return 12;
+    }
+    else {
+      return 10;
+    }
+    
+};
+
 const CardOverlay1 = memo(({ children, price }) => {
   return (
     <View style={styles.card}>
@@ -331,7 +347,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 color="white"
                 style={styles.locationPin}
               />
-              <Text style={styles.city}>{item.City}</Text>
+              <Text style={[styles.city, {fontSize: calculateFontSizeLocation(item.City)}]}>{item.City}</Text>
               <Text style={styles.distance}>{distance} miles</Text>
             </View>
             <View
