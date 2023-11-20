@@ -620,7 +620,7 @@ const styles = StyleSheet.create({
   priceContainer: {
     position: "absolute",
     zIndex: 5,
-    width: "auto",
+    width: "60%",
     height: 0,
     bottom: 0,
     left: -70,

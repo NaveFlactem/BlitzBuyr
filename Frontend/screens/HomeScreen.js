@@ -24,18 +24,21 @@ import Swiper from "react-native-swiper";
 import Colors from "../constants/Colors";
 import { Image } from "expo-image";
 import * as SecureStore from "expo-secure-store";
+import { debounce } from 'lodash';
 import NoWifi from "../components/noWifi";
 import NoListings from "../components/noListings";
 import Listing from "../components/Listing.js";
 import BouncePulse from "../components/BouncePulse.js";
+import CustomScrollView  from "../components/CustomScrollView.js";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { getLocationWithRetry } from "../constants/Utilities";
 import TopBar from "../components/TopBarHome.js";
 import TagDrawer from "../components/TagDrawer.js";
 
 
+
 const IOSSwiperComponent = memo(
-  ({ swiperRef, listings, removeListing, userLocation }) => {
+  ({ swiperRef, listings, removeListing, userLocation, onIndexChanged }) => {
     return (
       <Swiper
         ref={swiperRef}
@@ -43,6 +46,7 @@ const IOSSwiperComponent = memo(
         horizontal={false}
         showsPagination={false}
         showsButtons={false}
+        onIndexChanged={onIndexChanged}
       >
         {listings.map((item) => (
           <Listing
@@ -58,7 +62,7 @@ const IOSSwiperComponent = memo(
 );
 
 const AndroidSwiperComponent = memo(
-  ({ swiperRef, listings, refreshControl, removeListing, userLocation }) => {
+  ({ swiperRef, listings, refreshControl, removeListing, userLocation, onIndexChanged }) => {
     return (
       <Swiper
         ref={swiperRef}
@@ -67,6 +71,7 @@ const AndroidSwiperComponent = memo(
         showsPagination={false}
         showsButtons={false}
         refreshControl={refreshControl}
+        onIndexChanged={onIndexChanged}
       >
         {listings.map((item, listIndex) => {
           Image.prefetch(item.images);
@@ -91,9 +96,10 @@ const HomeScreen = ({ route }) => {
   const swiperRef = useRef(null);
   const [networkConnected, setNetworkConnected] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const [scrollPosition, setScrollPosition] = useState({ x: 0, y: 0 });
   const [userLocation, setUserLocation] = useState(null);
   const scrollViewRef = useRef(null);
+  const [isScrollEnabled, setIsScrollEnabled] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [tagsData, setTagsData] = useState([
     { name: "Furniture", selected: false },
     { name: "Electronics", selected: false },
@@ -335,26 +341,16 @@ const HomeScreen = ({ route }) => {
     else getUserLocation();
   }, []);
 
-  const handleScroll = (event) => {
-    // Update the scroll position state
-    setScrollPosition(event.nativeEvent.contentOffset);
-  };
-
-  const restoreScrollPosition = () => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo(scrollPosition);
-    }
-  };
-
-  useEffect(() => {
-    restoreScrollPosition();
-  }, []);
+  const handleSwiperIndexChange = debounce((index) => {
+  setCurrentIndex(index);
+}, 100);
 
   const LoadingView = memo(() => (
     <View style={styles.loadingContainer}>
       <BouncePulse />
     </View>
   ));
+
 
   if (isLoading) {
     return (
@@ -382,34 +378,25 @@ const HomeScreen = ({ route }) => {
       {networkConnected ? (
         listings && listings.length > 0 ? (
           Platform.OS === "ios" ? (
-            <ScrollView
-              ref={scrollViewRef}
-              onScroll={handleScroll} //doesn't work
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                  progressViewOffset={50}
-                />
-              }
-              scrollEventThrottle={16}
-              scrollEnabled={Platform.OS === "ios" ? true : false}
-            >
-              <View style={styles.swiperContainer}>
+            <CustomScrollView onRefresh={onRefresh}>
+
+            <View style={styles.swiperContainer}>
                 <IOSSwiperComponent
                   swiperRef={swiperRef}
                   listings={listings}
                   userLocation={userLocation}
                   removeListing={(listingId) => {
                     setListings((prevListings) =>
-                      prevListings.filter(
-                        (item) => item.ListingId !== listingId
+                    prevListings.filter(
+                      (item) => item.ListingId !== listingId
                       )
-                    );
-                  }}
-                />
+                      );
+                    }}
+                    onIndexChanged={handleSwiperIndexChange}
+                    />
+              
               </View>
-            </ScrollView>
+                    </CustomScrollView>
           ) : (
             <View style={styles.swiperContainer}>
               <AndroidSwiperComponent
@@ -428,6 +415,7 @@ const HomeScreen = ({ route }) => {
                     progressViewOffset={50}
                   />
                 }
+                onIndexChanged={handleSwiperIndexChange}
               />
             </View>
           )
