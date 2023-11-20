@@ -16,7 +16,6 @@ const RatingScreen = ({ navigation, route }) => {
   console.log(route.params);
 
   const handleRating = (value) => {
-    
     if (selectedRating === value) {
       setSelectedRating(selectedRating - 0.5);
     } else {
@@ -25,7 +24,6 @@ const RatingScreen = ({ navigation, route }) => {
   };
 
   const handleSubmitRating = () => {
-    
     const ratingPayload = {
       username: getStoredUsername(),
       userRated: route.params.username,
@@ -64,14 +62,20 @@ const RatingScreen = ({ navigation, route }) => {
         >
           {i <= selectedRating ? (
             <MaterialCommunityIcons name="star" size={60} color="black" />
+          ) : i - 0.5 === selectedRating ? (
+            <MaterialCommunityIcons
+              name="star-half-full"
+              size={60}
+              color="black"
+            />
           ) : (
-            i - 0.5 === selectedRating ? (
-              <MaterialCommunityIcons name="star-half-full" size={60} color="black" />
-            ) : (
-              <MaterialCommunityIcons name="star-outline" size={60} color="black" />
-            )
+            <MaterialCommunityIcons
+              name="star-outline"
+              size={60}
+              color="black"
+            />
           )}
-        </TouchableOpacity>
+        </TouchableOpacity>,
       );
     }
     return starIcons;

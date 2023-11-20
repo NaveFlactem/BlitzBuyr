@@ -19,7 +19,16 @@ app.use(
   })
 );
 
-// Middleware for printing out request information
+/**
+ * Middleware for logging request information.
+ *
+ * @function
+ * @name requestLogger
+ *
+ * @param {Object} req - Express.js request object.
+ * @param {Object} res - Express.js response object.
+ * @param {Function} next - Callback function to invoke the next middleware.
+ */
 app.use(function (req, res, next) {
   console.log(`Received request:
     IP: ${req.ip}

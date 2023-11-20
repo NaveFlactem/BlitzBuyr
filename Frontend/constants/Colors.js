@@ -1,3 +1,5 @@
+import { Platform } from "react-native";
+
 export default {
   primary: "#637aff",
   primaryDark: "#2759ff",
@@ -28,6 +30,8 @@ export default {
   BB_orange: "#f6a05d",
   BB_rangeYellow: "#f8b254",
   BB_yellow: "#f9c34a",
-  BB_darkRedPurple: "#58293F",
+  BB_darkRedPurple: Platform.OS == "ios" ? "#58293F" : "#402030",
+  BB_darkerRedPurple: Platform.OS == "ios" ? "#402030" : "#301520",
   BB_bone: "#F5F5F5",
+  BB_red: "#CC3514"
 };

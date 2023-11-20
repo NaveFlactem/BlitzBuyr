@@ -2,6 +2,7 @@
   "expo": {
     "name": "BlitzBuyr",
     "slug": "BlitzBuyr",
+    "owner": "blitzbuyrcoders",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,7 +14,8 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "blitzbuyrcoders"
     },
     "android": {
       "adaptiveIcon": {
@@ -31,7 +33,6 @@
         "projectId": "abebe795-45a5-41c5-b01d-e0d182b58f0d"
       }
     },
-    "owner": "luke121",
     "runtimeVersion": {
       "policy": "appVersion"
     },

@@ -459,6 +459,29 @@ router.get("/profile", async function (req, res) {
   }
 });
 
+/**
+ * GET request endpoint at /api/pfp for retrieving a user's profile picture.
+ *
+ * @function
+ * @name getProfilePicture
+ *
+ * @param {Object} req - Express.js request object with a 'username' query parameter.
+ * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP GET request to '/api/pfp?username=testuser'
+ * const pfpResponse = await fetch(`${serverIp}/api/pfp?username=testuser`, {
+ *     method: "GET",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ * });
+ *
+ * if (pfpResponse.status === 200) {
+ *     // Profile picture is available in the response
+ *     console.log("Profile Picture:", pfpResponse.url);
+ * }
+ */
 router.get("/pfp", function (req, res) {
   const username = req.query.username;
   if (!username) return res.status(400).json({ error: "Missing username" });
@@ -479,6 +502,34 @@ router.get("/pfp", function (req, res) {
   );
 });
 
+/**
+ * POST request endpoint at /api/editprofile for updating a user's profile information.
+ *
+ * @function
+ * @name updateProfile
+ *
+ * @param {Object} req - Express.js request object with form data containing 'username', 'contactInfo', 'profileName', 'password', 'profilePicture', and 'coverPicture'.
+ * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP POST request to '/api/editprofile'
+ * const formData = new FormData();
+ * formData.append('username', 'testuser');
+ * formData.append('contactInfo', 'New contact info');
+ * formData.append('profileName', 'New profile name');
+ * formData.append('password', 'newpassword');
+ * formData.append('profilePicture', profilePictureFile);
+ * formData.append('coverPicture', coverPictureFile);
+ *
+ * const editProfileResponse = await fetch(`${serverIp}/api/editprofile`, {
+ *     method: "POST",
+ *     body: formData,
+ * });
+ *
+ * if (editProfileResponse.status === 200) {
+ *     console.log("Profile updated successfully");
+ * }
+ */
 router.post("/editprofile", imageUpload, function (req, res) {
   const { username, contactInfo, profileName, password } = req.body;
 

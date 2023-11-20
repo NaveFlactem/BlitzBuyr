@@ -144,8 +144,27 @@ CREATE TABLE IF NOT EXISTS Listings (
   Username TEXT,
   Description TEXT,
   PostDate TIMESTAMP,
+  Latitude REAL,
+  Longitude REAL,
+  City TEXT,
   FOREIGN KEY (Username) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE
   );`;
+
+const tagDetails = `
+CREATE TABLE IF NOT EXISTS Tags (
+  TagId INTEGER PRIMARY KEY AUTOINCREMENT,
+  TagName TEXT UNIQUE
+);`;
+
+const tagTable = `
+CREATE TABLE IF NOT EXISTS ListingTags (
+  ListingId INTEGER,
+  TagId INTEGER,
+  TagName TEXT,
+  PRIMARY KEY (ListingId, TagId),
+  FOREIGN KEY (ListingId) REFERENCES Listings (ListingId) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (TagId) REFERENCES Tags (TagId) ON DELETE CASCADE ON UPDATE CASCADE
+);`;
 
 // Images Table //
 const images = `
@@ -165,8 +184,7 @@ CREATE TABLE IF NOT EXISTS Ratings (
   Rating REAL,
   ReviewDescription TEXT,
   PRIMARY KEY (Username, UserRated),
-  FOREIGN KEY (UserRated) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (Username) REFERENCES Accounts (Username) ON UPDATE CASCADE
+  FOREIGN KEY (UserRated) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE
   );`;
 
 // Profile Table //
@@ -198,6 +216,8 @@ const tables = [
   { sql: rating, name: "Ratings" },
   { sql: profile, name: "Profiles" },
   { sql: likes, name: "Likes" },
+  { sql: tagTable, name: "TagTable" },
+  { sql: tagDetails, name: "TagDetails" },
 ];
 
 /**
