@@ -81,13 +81,21 @@ const calculateFontSize = (price) => {
   }
 
   const numberOfDigits = price.toString().length;
+  if (price == 0) {
+    return 24;
+  }
+
 
   if (numberOfDigits <= 4) {
     return 20;
   } else if (numberOfDigits <= 6) {
     return 18;
-  } else {
+  } else if (numberOfDigits <= 8) {
     return 16;
+  } else if (numberOfDigits <= 10) {
+    return 14
+  } else {
+    return 12;
   }
 };
 
@@ -112,9 +120,11 @@ const CardOverlay1 = memo(({ children, price }) => {
     <View style={styles.card}>
       <View style={styles.cardBackground}>
         <View style={styles.priceContainer}>
-          <Text
-            style={[styles.price, { fontSize: calculateFontSize(price) }]}
-          >{`$${price}`}</Text>
+        <Text
+            style={[styles.price, { fontSize: calculateFontSize(price) }, price === 0 && {fontWeight: "bold"}]}
+          >
+            {price === 0 ? "FREE" : `$${price}`}
+            </Text>
         </View>
         {children}
       </View>
@@ -133,8 +143,10 @@ const CardOverlay2 = memo(({ children, price }) => {
         <View style={styles.topL_circle} />
         <View style={styles.priceContainer}>
           <Text
-            style={[styles.price, { fontSize: calculateFontSize(price) }]}
-          >{`$${price}`}</Text>
+            style={[styles.price, { fontSize: calculateFontSize(price) }, price === 0 && {fontWeight: "bold"}]}
+          >
+            {price === 0 ? "FREE" : `$${price}`}
+            </Text>
         </View>
         {children}
       </View>
@@ -608,7 +620,7 @@ const styles = StyleSheet.create({
   priceContainer: {
     position: "absolute",
     zIndex: 5,
-    width: "60%",
+    width: "auto",
     height: 0,
     bottom: 0,
     left: -70,
