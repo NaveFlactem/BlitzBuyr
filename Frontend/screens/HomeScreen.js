@@ -18,7 +18,7 @@ import { Image } from "expo-image";
 import * as SecureStore from "expo-secure-store";
 import noWifi from "../components/noWifi";
 import noListings from "../components/noListings";
-import Listing from "../components/Listing.tsx";
+//import Listing from "../components/Listing.tsx";
 import { likedNotification } from '../components/Notifications.js';
 import { PanGestureHandlerProps } from "react-native-gesture-handler";
 import {
