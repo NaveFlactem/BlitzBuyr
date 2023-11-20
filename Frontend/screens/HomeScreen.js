@@ -331,7 +331,8 @@ const HomeScreen = ({ route }) => {
   const onRefresh = React.useCallback(() => {
     console.log("refreshing...");
     setRefreshing(true);
-    fetchListings();
+    if (userLocation) fetchListings();
+    else getUserLocation();
   }, []);
 
   const handleScroll = (event) => {

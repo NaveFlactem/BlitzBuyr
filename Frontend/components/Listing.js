@@ -348,7 +348,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 style={styles.locationPin}
               />
               <Text style={[styles.city, {fontSize: calculateFontSizeLocation(item.City)}]}>{item.City}</Text>
-              <Text style={styles.distance}>{distance} miles</Text>
+              <Text style={styles.distance}>{distance > 0 ? distance + "miles": "Less than 1 mile"} </Text>
             </View>
             <View
               style={[

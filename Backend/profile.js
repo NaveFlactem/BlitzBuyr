@@ -6,7 +6,7 @@
 const express = require("express");
 const router = express.Router();
 var bodyParser = require("body-parser");
-const { combineListingInfo } = require("./listing");
+const { getImagesFromListings } = require("./listing");
 router.use(bodyParser.urlencoded({ extended: true })).use(bodyParser.json());
 const db = require("./db").db;
 const { imageStorage, imageUpload } = require("./listing");
@@ -437,11 +437,11 @@ router.get("/profile", async function (req, res) {
     });
 
     // append the images to both
-    const likedListings = await combineListingInfo(
+    const likedListings = await getImagesFromListings(
       likedListingsResult,
       likedListingsResult
     );
-    const userListings = await combineListingInfo(
+    const userListings = await getImagesFromListings(
       userListingsResult,
       likedListingsResult
     );

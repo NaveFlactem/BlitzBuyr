@@ -27,7 +27,6 @@ import * as ImageManipulator from "expo-image-manipulator";
 import Modal from "react-native-modal";
 
 const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
 
 const EditProfileScreen = ({ navigation, route }) => {
   const isFocused = useIsFocused();
@@ -240,37 +239,41 @@ const EditProfileScreen = ({ navigation, route }) => {
     >
       {/* Edit Profile and Go Back Arrow Column */}
       <View
-        style={{
-          flexDirection: "row",
-          paddingTop: 10,
-        }}
-      >
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 25,
+              flexDirection: "row",
+            }}
+          >
         <TouchableOpacity
           onPress={() => {
             setLoading(true);
             navigation.navigate("BottomNavOverlay");
           }}
-          style={{
-            left: Platform.OS == "ios" ? 15 : 0,
-          }}
+          style={styles.circleContainer}
         >
-          <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
+          <View style={styles.circle}>
+            <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
+          </View>
         </TouchableOpacity>
 
         <Text
-          style={{
-            color: Colors.BB_darkRedPurple,
-            fontSize: 22,
-            fontWeight: "bold",
-            left: screenWidth / 4,
-          }}
-        >
-          Edit Profile
+            style={{
+              position: "absolute",
+              color: Colors.BB_darkRedPurple,
+              fontSize: 22.5,
+              fontWeight: "bold",
+              top: 20,
+            }}
+          >
+            Edit Profile
         </Text>
       </View>
-      <ScrollView>
+
+      <ScrollView style={{ marginTop: 25 }}>
         {/* Edit Cover Photo */}
-        <View style={{ marginTop: 15, width: "100%", position: "relative" }}>
+        <View style={{ marginTop: 25, width: "100%", position: "relative" }}>
           <TouchableOpacity onPress={handleCoverImageSelection}>
             <Image
               source={{
@@ -448,18 +451,22 @@ const EditProfileScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
 
-          {/* SAVE CHANGES BUTTON */}
+          {/* SAVE CHANGES + DELETE ACCOUNT */}
           <View
             style={{
+              top: 10,
               alignItems: "center",
-              flexDirection: "column",
+              justifyContent: "center",
+              marginHorizontal: 15,
+              flexDirection: "row",
             }}
           >
-            <View style={{ flex: 1, top: 15 }}>
+            {/* SAVE CHANGES BUTTON */}
+            <View style={{ flex: 1 }}>
               <TouchableOpacity
                 onPress={saveChanges}
                 style={{
-                  width: 150,
+                  width: 130,
                   height: 50,
                   alignItems: "center",
                   justifyContent: "center",
@@ -482,56 +489,57 @@ const EditProfileScreen = ({ navigation, route }) => {
                 </Text>
               </TouchableOpacity>
             </View>
+            {/* DELETE ACCOUNT BUTTON */}
+            <View
+              style={{
+                flex: 1,
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => setConfirmationModalVisible(true)}
+                style={{
+                  width: 130,
+                  height: 50,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: Colors.BB_darkRedPurple,
+                  borderRadius: 10,
+                  borderWidth: 2,
+                  borderColor: Colors.black,
+                  marginVertical: 20,
+                }}
+              >
+                <Text
+                  style={{
+                    fontStyle: "normal",
+                    color: Colors.white,
+                    fontWeight: "500",
+                    fontSize: 15,
+                  }}
+                >
+                  Delete Account
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </ScrollView>
 
-      {/* DELETE ACCOUNT BUTTON */}
-      <View
-        style={{
-          position: "absolute",
-          bottom: 20,
-          left: 20,
-          zIndex: 999,
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => setConfirmationModalVisible(true)}
-          style={{
-            width: 100,
-            height: 40,
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "red",
-            borderRadius: 10,
-            borderWidth: 2,
-            borderColor: Colors.black,
-          }}
-        >
-          <Text
-            style={{
-              fontStyle: "normal",
-              color: Colors.white,
-              fontWeight: "500",
-              fontSize: 12,
-            }}
-          >
-            Delete Account
-          </Text>
-        </TouchableOpacity>
-      </View>
-
       <Modal isVisible={isConfirmationModalVisible}>
         <View style={styles.modalContainer}>
-          <Text>
-            Confirm your Username and Password to delete your account:
+          <Text style={styles.modalHeader}>Delete Account</Text>
+          <Text style={styles.modalTitle}>
+            Deleting your account will also delete all your account data. Enter
+            your information to confirm deletion of your account.
           </Text>
           <TextInput
+            style={styles.input}
             placeholder="Username"
             value={confirmUsername}
             onChangeText={(text) => setConfirmUsername(text)}
           />
           <TextInput
+            style={styles.input}
             placeholder="Password"
             secureTextEntry
             value={confirmPassword}
@@ -539,12 +547,12 @@ const EditProfileScreen = ({ navigation, route }) => {
           />
           <TouchableOpacity onPress={confirmDeletion}>
             <View style={styles.confirmButton}>
-              <Text style={styles.buttonText}>Confirm</Text>
+              <Text style={styles.confirmButtonText}>Delete</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setConfirmationModalVisible(false)}>
             <View style={styles.cancelButton}>
-              <Text style={styles.buttonText}>Cancel</Text>
+              <Text style={styles.cancelButtonText}>Cancel</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -554,12 +562,34 @@ const EditProfileScreen = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
+  modalHeader: {
+    fontSize: 30,
+    textAlign: "center",
+    marginVertical: 5,
+    color: Colors.BB_darkRedPurple,
+  },
   modalContainer: {
-    backgroundColor: "white",
+    backgroundColor: Colors.BB_bone,
     padding: 20,
     borderRadius: 10,
-    borderColor: "black",
-    borderWidth: 2,
+    borderColor: Colors.BB_darkRedPurple,
+    borderWidth: 3,
+  },
+  modalTitle: {
+    fontSize: 12,
+    marginBottom: 10,
+    color: Colors.BB_darkRedPurple,
+    textAlign: "center",
+  },
+  input: {
+    height: 44,
+    width: "100%",
+    borderColor: Colors.BB_darkRedPurple,
+    borderWidth: 1,
+    borderRadius: 6,
+    justifyContent: "center",
+    paddingLeft: 8,
+    marginBottom: 10,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -567,19 +597,36 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   confirmButton: {
-    backgroundColor: "green",
+    backgroundColor: Colors.BB_red,
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
   },
   cancelButton: {
-    backgroundColor: "gray",
     padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
   },
-  buttonText: {
-    color: "white",
+  confirmButtonText: {
+    color: Colors.white,
+    textAlign: "center",
+  },
+  cancelButtonText: {
+    color: Colors.BB_darkRedPurple,
+    textAlign: "center",
+  },
+  circleContainer: {
+    position: "absolute",
+    top: 15,
+    left: Platform.OS == "ios" ? 15 : 0,
+  },
+  circle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "black",
   },
 });
 

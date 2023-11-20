@@ -144,6 +144,9 @@ CREATE TABLE IF NOT EXISTS Listings (
   Username TEXT,
   Description TEXT,
   PostDate TIMESTAMP,
+  Latitude REAL,
+  Longitude REAL,
+  City TEXT,
   FOREIGN KEY (Username) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE
   );`;
 

@@ -44,6 +44,19 @@ const imageUpload = multer({
   },
 }).any(); // Use upload.any() to accept any type of field
 
+const getCityFromCoords = async (latitude, longitude) => {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+    );
+    const data = await response.json();
+    return data.address.city || "Unknown";
+  } catch (error) {
+    console.error("Error getting city:", error);
+    return "Unknown";
+  }
+};
+
 /**
  * POST request endpoint for creating a new listing.
  *
@@ -77,9 +90,11 @@ const imageUpload = multer({
  *     console.log("Error creating listing");
  * }
  */
-router.post("/createListing", imageUpload, function (req, res) {
+router.post("/createListing", imageUpload, async function (req, res) {
   const { price, title, description, username, tags, location } = req.body;
   const { latitude, longitude } = JSON.parse(location);
+  const city = await getCityFromCoords(latitude, longitude);
+  console.log(city);
   const images = req.files;
 
   const sqlTimeStamp = new Date().toISOString().slice(0, 19).replace("T", " ");
@@ -87,8 +102,17 @@ router.post("/createListing", imageUpload, function (req, res) {
   try {
     // Insert the listing into the Listings table
     db.run(
-      "INSERT INTO Listings (price, title, description, userName, postDate, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [price, title, description, username, sqlTimeStamp, latitude, longitude],
+      "INSERT INTO Listings (price, title, description, userName, postDate, latitude, longitude, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [
+        price,
+        title,
+        description,
+        username,
+        sqlTimeStamp,
+        latitude,
+        longitude,
+        city,
+      ],
       function (err) {
         if (err) {
           console.error("Error querying the database:", err);
