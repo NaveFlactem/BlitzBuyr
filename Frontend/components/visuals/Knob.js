@@ -15,7 +15,7 @@ const Knob = memo(() => {
     return (
         <PanGestureHandler {...gestureHandler}>
         <Animated.View style={{ transform: [{ rotate: concat(rotate, 'deg') }] }}>
-            <Image source={require('../assets/icon_background_transparent_upright.png')} />
+            <Image source={require('../../assets/icon_background_transparent_upright.png')} />
         </Animated.View>
         </PanGestureHandler>
     );

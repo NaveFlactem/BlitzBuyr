@@ -27,68 +27,14 @@ import * as SecureStore from "expo-secure-store";
 import { debounce } from 'lodash';
 import NoWifi from "../components/noWifi";
 import NoListings from "../components/noListings";
-import Listing from "../components/Listing.js";
-import BouncePulse from "../components/BouncePulse.js";
+import BouncePulse from "../components/visuals/BouncePulse.js";
 import CustomScrollView  from "../components/CustomScrollView.js";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { getLocationWithRetry } from "../constants/Utilities";
 import TopBar from "../components/TopBarHome.js";
 import TagDrawer from "../components/TagDrawer.js";
-
-
-
-const IOSSwiperComponent = memo(
-  ({ swiperRef, listings, removeListing, userLocation, onIndexChanged }) => {
-    return (
-      <Swiper
-        ref={swiperRef}
-        loop={false}
-        horizontal={false}
-        showsPagination={false}
-        showsButtons={false}
-        onIndexChanged={onIndexChanged}
-      >
-        {listings.map((item) => (
-          <Listing
-            key={item.ListingId}
-            item={item}
-            removeListing={removeListing}
-            userLocation={userLocation}
-          />
-        ))}
-      </Swiper>
-    );
-  }
-);
-
-const AndroidSwiperComponent = memo(
-  ({ swiperRef, listings, refreshControl, removeListing, userLocation, onIndexChanged }) => {
-    return (
-      <Swiper
-        ref={swiperRef}
-        loop={false}
-        horizontal={false}
-        showsPagination={false}
-        showsButtons={false}
-        refreshControl={refreshControl}
-        onIndexChanged={onIndexChanged}
-      >
-        {listings.map((item, listIndex) => {
-          Image.prefetch(item.images);
-          return (
-            <Listing
-              key={item.ListingId}
-              item={item}
-              removeListing={removeListing}
-              userLocation={userLocation}
-            />
-          );
-        })}
-      </Swiper>
-    );
-  }
-);
-
+import IOSSwiperComponent from "../components/swipers/IOSSwiperComponent.js";
+import AndroidSwiperComponent from "../components/swipers/AndroidSwiperComponent.js";
 
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -97,8 +43,6 @@ const HomeScreen = ({ route }) => {
   const [networkConnected, setNetworkConnected] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [userLocation, setUserLocation] = useState(null);
-  const scrollViewRef = useRef(null);
-  const [isScrollEnabled, setIsScrollEnabled] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [tagsData, setTagsData] = useState([
     { name: "Furniture", selected: false },
@@ -293,6 +237,7 @@ const HomeScreen = ({ route }) => {
     } finally {
       setIsLoading(false);
       setRefreshing(false);
+      setScrollY(0);
     }
   };
 
@@ -334,16 +279,50 @@ const HomeScreen = ({ route }) => {
     }
   };
 
+  const [scrollY, setScrollY] = useState(0);
+
+  const refreshThreshold = -100; // Adjust this threshold
+
+useEffect(() => {
+  if (scrollY <= refreshThreshold && !refreshing) {
+    setRefreshing(true);
+    // Trigger your refresh logic here
+  }
+}, [scrollY, refreshing]);
+
+  const calculateOpacity = () => {
+    if (scrollY === 0 || scrollY === undefined){
+      return 0;
+    }
+    let opacity = -scrollY / 100; // Adjust 100 to control the fade speed
+    opacity = Math.max(0, Math.min(opacity, 1)); // Clamp between 0 and 1
+    return opacity;
+  };
+
   const onRefresh = React.useCallback(() => {
     console.log("refreshing...");
     setRefreshing(true);
-    if (userLocation) fetchListings();
+    if (userLocation) debouncedFetchListings();
     else getUserLocation();
   }, []);
 
-  const handleSwiperIndexChange = debounce((index) => {
+  const handleSwiperIndexChange = (index) => {
   setCurrentIndex(index);
-}, 100);
+};
+useEffect(() => {
+  console.log(`Refreshing: ${refreshing}, ScrollY: ${scrollY}`);
+}, [refreshing, scrollY]);
+
+const debouncedFetchListings = useCallback(debounce(() => {
+  fetchListings();
+}, 1000), []); // Adjust debounce time as needed
+
+useEffect(() => {
+  if (scrollY <= refreshThreshold && !refreshing) {
+    setRefreshing(true);
+    debouncedFetchListings();
+  }
+}, [scrollY, refreshing, debouncedFetchListings]);
 
   const LoadingView = memo(() => (
     <View style={styles.loadingContainer}>
@@ -373,12 +352,31 @@ const HomeScreen = ({ route }) => {
             swiperRef.current.scrollTo(0);
           }
         }}
-      />
+        />
 
+        {<BouncePulse opacity={refreshing ? 1 : calculateOpacity()} />}
       {networkConnected ? (
         listings && listings.length > 0 ? (
           Platform.OS === "ios" ? (
-            <CustomScrollView onRefresh={onRefresh}>
+            
+            <ScrollView
+            onScroll={(event) => {
+              const y = event.nativeEvent.contentOffset.y;
+              setScrollY(y);
+            }}
+            horizontal={currentIndex === 0 ? false : true}
+            refreshControl={
+              <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="transparent"
+              colors="transparent"
+              titleColor="transparent"
+                progressViewOffset={50}
+                />
+              }
+              scrollEventThrottle={16}
+              >
 
             <View style={styles.swiperContainer}>
                 <IOSSwiperComponent
@@ -396,7 +394,7 @@ const HomeScreen = ({ route }) => {
                     />
               
               </View>
-                    </CustomScrollView>
+                    </ScrollView>
           ) : (
             <View style={styles.swiperContainer}>
               <AndroidSwiperComponent
@@ -405,7 +403,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId)
+                  prevListings.filter((item) => item.ListingId !== listingId)
                   );
                 }}
                 refreshControl={
@@ -483,6 +481,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: Colors.BB_bone,
     zIndex: 100,
   },
   swipeArea: {

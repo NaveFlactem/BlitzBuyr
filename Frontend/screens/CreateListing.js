@@ -16,11 +16,11 @@ import DraggableGrid from "react-native-draggable-grid";
 import * as ImagePicker from "expo-image-picker";
 import { Image } from "expo-image";
 import Colors from "../constants/Colors";
-import TopBar from "../components/TopBarGeneric.js";
+import TopBar from "../components/visuals/TopBarGeneric.js";
 import * as SecureStore from "expo-secure-store";
 import * as ImageManipulator from "expo-image-manipulator";
 import RNPickerSelect from "react-native-picker-select";
-import BouncePulse from "../components/BouncePulse.js";
+import BouncePulse from "../components/visuals/BouncePulse.js";
 import { getLocationWithRetry } from "../constants/Utilities";
 
 const blurhash = "L5H2EC=PM+yV0g-mq.wG9c010J}I";

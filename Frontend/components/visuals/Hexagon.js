@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { View, StyleSheet } from "react-native";
-import Colors from "../constants/Colors";
+import Colors from "../../constants/Colors";
 
 const Hexagon = memo(() => {
   return (

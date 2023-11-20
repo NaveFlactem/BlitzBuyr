@@ -31,7 +31,7 @@ import { useIsFocused } from "@react-navigation/native";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
-import BouncePulse from "../components/BouncePulse";
+import BouncePulse from "../components/visuals/BouncePulse.js";
 import { getLocationWithRetry } from "../constants/Utilities";
 
 const UserListingsRoute = ({ profileInfo, onPressListing }) => (

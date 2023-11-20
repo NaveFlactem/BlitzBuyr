@@ -1,22 +1,39 @@
 import React, { memo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import Animated, { useAnimatedScrollHandler, useSharedValue, runOnJS } from 'react-native-reanimated';
-import BouncePulse from './BouncePulse'; // Adjust path as necessary
 
-const CustomScrollView = memo(({ children, onRefresh }) => {
+const CustomScrollView = memo(({ children, onRefresh, currentIndex }) => {
   const scrollY = useSharedValue(0);
   const refreshing = useSharedValue(false);
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
-      scrollY.value = event.contentOffset.y;
-      if (scrollY.value < -100 && !refreshing.value) {
-        refreshing.value = true;
-        runOnJS(onRefresh)(); // Ensure onRefresh is called on the JS thread
+      const currentScrollY = event.contentOffset.y;
+
+      if (currentIndex === 0) {
+        if (currentScrollY < 0) {
+          // Allow negative scroll values for pull-to-refresh
+          scrollY.value = currentScrollY;
+
+          // Trigger refresh when scrolled past a certain negative threshold
+          if (currentScrollY < -100 && !refreshing.value) {
+            refreshing.value = true;
+            runOnJS(onRefresh)();
+          }
+        }
+      } else {
+        // When currentIndex is not 0, prevent any scroll updates
+        scrollY.value = 0;
       }
     },
     onEndDrag: (event) => {
+      // Reset the refreshing state when drag ends
       refreshing.value = false;
+
+      // Reset scrollY to 0 if it's negative
+      if (scrollY.value < 0) {
+        scrollY.value = 0;
+      }
     },
   });
 
@@ -26,7 +43,6 @@ const CustomScrollView = memo(({ children, onRefresh }) => {
       scrollEventThrottle={16}
       style={styles.scrollView}
     >
-      {refreshing.value && <BouncePulse />}
       <View style={styles.contentContainer}>
         {children}
       </View>
