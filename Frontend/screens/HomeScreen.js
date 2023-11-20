@@ -237,6 +237,7 @@ const HomeScreen = ({ route }) => {
     } finally {
       setIsLoading(false);
       setRefreshing(false);
+      setHoldStateOfRefresh(false);
       setScrollY(0);
     }
   };
@@ -280,15 +281,25 @@ const HomeScreen = ({ route }) => {
   };
 
   const [scrollY, setScrollY] = useState(0);
+  const [isHoldStateOfRefresh, setHoldStateOfRefresh] = useState(false);
 
   const refreshThreshold = -100; // Adjust this threshold
 
 useEffect(() => {
   if (scrollY <= refreshThreshold && !refreshing) {
     setRefreshing(true);
-    // Trigger your refresh logic here
+  }
+  if (isHoldStateOfRefresh) {
+    setScrollY(-60.5);
   }
 }, [scrollY, refreshing]);
+
+useEffect(() => {
+  if (scrollY > 0) {
+    setScrollY(0);
+  }
+});
+
 
   const calculateOpacity = () => {
     if (scrollY === 0 || scrollY === undefined){
@@ -314,6 +325,7 @@ useEffect(() => {
 }, [refreshing, scrollY]);
 
 const debouncedFetchListings = useCallback(debounce(() => {
+  setHoldStateOfRefresh(true);
   fetchListings();
 }, 1000), []); // Adjust debounce time as needed
 
