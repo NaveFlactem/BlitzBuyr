@@ -115,7 +115,9 @@ const HomeScreen = ({ route }) => {
       },
       body: JSON.stringify(likeData),
     });
-    likedNotification();
+    if(newStarStates[listingId] == true){
+      likedNotification();
+    }
 
     if (likedResponse.status > 201) {
       console.log("Error Liking listing:", listingId, likedResponse.status);
