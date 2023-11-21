@@ -28,11 +28,17 @@ import {
   clearStoredCredentials,
 } from "./auth/Authenticate.js";
 import { useIsFocused } from "@react-navigation/native";
-import { Entypo, MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import {
+  Entypo,
+  MaterialCommunityIcons,
+  AntDesign,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/BouncePulse";
 import { getLocationWithRetry } from "../constants/Utilities";
+import { Linking } from 'react-native';
 
 const UserListingsRoute = ({ profileInfo, onPressListing }) => (
   <View style={{ flex: 1 }}>
@@ -100,32 +106,71 @@ const LikedListingsRoute = ({ profileInfo, onPressListing }) => (
   </View>
 );
 
-const ContactInfoRoute = ({ profileInfo }) => (
+const ContactInfoRoute = ({
+  selfProfile,
+  contactList,
+  setContactList,
+  contactNames,
+}) => (
   <View style={styles.contactInfoContainer}>
-    <TouchableOpacity style = {styles.socialIcons}>
-    <AntDesign name="instagram" size={24} color="black" />
-    <Text style = {styles.socialText}>@alfonsodelr</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style = {styles.socialIcons}>
-    <AntDesign name="twitter" size={24} color="black" />
-    <Text style = {styles.socialText}>@mytwitteraccount</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style = {styles.socialIcons}>
-    <Entypo name="facebook" size={24} color="black" />
-    <Text style = {styles.socialText}>@myfacebook</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style = {styles.socialIcons}>
-    <AntDesign name="phone" size={24} color="black" />
-    <Text style = {styles.socialText}>(213)-214-9702</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style = {styles.socialIcons}>
-    <MaterialCommunityIcons name="email" size={24} color="black" />
-    <Text style = {styles.socialText}>addelros@ucsc.edu</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style = {styles.socialIcons}>
-    <Entypo name="link" size={24} color="black" />
-    <Text style = {styles.socialText}>@linktosomewhere</Text>
-    </TouchableOpacity>
+    <ScrollView>
+      <View>
+        {Object.entries(contactNames).map(
+          ([key, value]) =>
+            (selfProfile ||
+              (!selfProfile && !contactList[`is${key}Hidden`])) && (
+              <View key={key}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  {/* Icon + Handle */}
+                  <TouchableOpacity onPress={() => Linking.openURL(`http://${key}.com`)} style={styles.socialIcons}>
+                    <AntDesign
+                      name={value}
+                      size={24}
+                      color="black"
+                      style={{
+                        opacity: contactList[`is${key}Hidden`] ? 0.25 : 1.0,
+                      }}
+                    />
+                    <Text
+                      style={[
+                        styles.socialText,
+                        { opacity: contactList[`is${key}Hidden`] ? 0.25 : 1.0 },
+                      ]}
+                    >
+                      {[`@my${key}`]}
+                    </Text>
+                  </TouchableOpacity>
+
+                  {/* Visibility */}
+                  {selfProfile && (<TouchableOpacity
+                    onPress={() => {
+                      setContactList((prevState) => ({
+                        ...prevState, // Keep the other values the same
+                        [`is${key}Hidden`]: !prevState[`is${key}Hidden`],
+                      }));
+                    }}
+                    style={[
+                      styles.socialIcons,
+                      { opacity: contactList[`is${key}Hidden`] ? 0.25 : 1.0 },
+                    ]}
+                  >
+                    <MaterialIcons
+                      name="visibility"
+                      size={24}
+                      color={Colors.BB_darkRedPurple}
+                    />
+                  </TouchableOpacity>)}
+                </View>
+              </View>
+            )
+        )}
+      </View>
+    </ScrollView>
   </View>
 );
 
@@ -145,6 +190,28 @@ function ProfileScreen({ navigation, route }) {
   const [selectedListing, setSelectedListing] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [LikeStates, setLikeStates] = useState({});
+
+  {
+    /* Use States for Contact Tab Bar */
+  }
+  const [contactList, setContactList] = useState({
+    isPhoneNumberHidden: false,
+    isFacebookHidden: false,
+    isEmailHidden: false,
+    isLinkedInHidden: false,
+    isTwitterHidden: false,
+    isInstagramHidden: false,
+  });
+
+  const contactNames = {
+    /* (name to contact : string for AntDesign) */
+    PhoneNumber: "phone",
+    Email: "mail",
+    LinkedIn: "linkedin-square",
+    Instagram: "instagram",
+    Facebook: "facebook-square",
+    Twitter: "twitter",
+  };
 
   const onBackPress = () => {
     return true;
@@ -199,13 +266,6 @@ function ProfileScreen({ navigation, route }) {
     if (userLocation && profileInfo) {
       setLoading(false);
     }
-    /*
-    console.log("User's Listings:", profileInfo.userListings);
-    console.log("User's Liked Listings:", profileInfo.likedListings);
-    console.log("User's Ratings:", profileInfo.userRatings);
-    console.log("Profile Picture URL:", profileInfo.profilePicture);
-    console.log("Cover Picture URL:", profileInfo.coverPicture);
-    */
     console.log("All Profile Info: ", profileInfo);
 
     if (selfProfile) {
@@ -215,7 +275,10 @@ function ProfileScreen({ navigation, route }) {
         { key: "third", title: "Contact" },
       ]);
     } else {
-      setRoutes([{ key: "first", title: `${profileName}'s listings` }, {key: "third", title: `${profileName}'s contact`}]);
+      setRoutes([
+        { key: "first", title: `${profileName}'s listings` },
+        { key: "third", title: `${profileName}'s contact` },
+      ]);
     }
   }, [profileInfo, userLocation]);
 
@@ -313,9 +376,7 @@ function ProfileScreen({ navigation, route }) {
               color: Colors.BB_darkRedPurple,
               fontWeight: "bold",
               fontSize: 14,
-              textAlign: "center"
-
-
+              textAlign: "center",
             },
           ]}
         >
@@ -365,18 +426,22 @@ function ProfileScreen({ navigation, route }) {
         />
         {/* Back button */}
         {!selfProfile && (
-  <TouchableOpacity
-    onPress={() => {
-      setLoading(true);
-      navigation.navigate("BottomNavOverlay");
-    }}
-    style={styles.circleContainer}
-  >
-    <View style={styles.circle}>
-      <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
-    </View>
-  </TouchableOpacity>
-)}
+          <TouchableOpacity
+            onPress={() => {
+              setLoading(true);
+              navigation.navigate("BottomNavOverlay");
+            }}
+            style={styles.circleContainer}
+          >
+            <View style={styles.circle}>
+              <MaterialCommunityIcons
+                name="arrow-left"
+                size={30}
+                color="black"
+              />
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* //Profile Picture */}
@@ -604,9 +669,12 @@ function ProfileScreen({ navigation, route }) {
               case "third":
                 return (
                   <ContactInfoRoute
-                    profileInfo={profileInfo}
+                    selfProfile={selfProfile}
+                    contactList={contactList}
+                    setContactList={setContactList}
+                    contactNames={contactNames}
                   />
-                  );
+                );
               default:
                 return null;
             }
@@ -680,23 +748,23 @@ const screenWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
   contactInfoContainer: {
-    flexDirection: "column", 
+    flexDirection: "column",
     paddingVertical: 20,
-    paddingHorizontal: 15
   },
   socialIcons: {
     flexDirection: "row",
     paddingVertical: 5,
     alignContent: "center",
+    paddingHorizontal: 10,
     textAlign: "center",
   },
   socialText: {
-    marginVertical: 1.5, 
+    marginVertical: 1.5,
     marginHorizontal: 10,
     fontWeight: "bold",
     justifyContent: "center",
     alignContent: "center",
-    textAlign: "center"
+    textAlign: "center",
   },
   noListingsText: {
     textAlign: "center",
@@ -751,7 +819,7 @@ const styles = StyleSheet.create({
     }),
   },
   circleContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 15,
     left: 15,
   },
@@ -759,11 +827,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'white',  // Set the background color as needed
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "white", // Set the background color as needed
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 1,
-    borderColor: 'black',  // Set the border color as needed
+    borderColor: "black", // Set the border color as needed
   },
 });
 
