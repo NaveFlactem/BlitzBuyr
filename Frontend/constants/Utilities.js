@@ -1,6 +1,6 @@
 import * as Location from 'expo-location';
 
-const getLocationWithRetry = async function (retries = 5) {
+const getLocationWithRetry = async function (retries = 50) {
   const timeout = new Promise((_, reject) =>
     setTimeout(() => reject(new Error("Timeout exceeded")), 300)
   );
