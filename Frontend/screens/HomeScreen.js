@@ -206,6 +206,7 @@ const HomeScreen = ({ route }) => {
 
         setListings(listingsData);
         console.log("Listings fetched successfully");
+        console.log(listingsData);
       } else {
         console.log("Error fetching listings:", listingsResponse.status);
       }
