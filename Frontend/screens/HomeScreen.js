@@ -57,7 +57,22 @@ const HomeScreen = ({ route }) => {
     { name: "Service", selected: false },
     { name: "Other", selected: false },
   ]);
+  const [conditions, setConditionsData] = useState([
+    { name: "Excellent", selected: false },
+    { name: "Good", selected: false },
+    { name: "Fair", selected: false },
+    { name: "Poor", selected: false },
+    { name: "For Parts", selected: false },
+  ]);
+  const [transactions, setTransactionsData] = useState([
+    { name: "Pickup", selected: false },
+    { name: "Meetup", selected: false },
+    { name: "Delivery", selected: false },
+    { name: "No Preference", selected: false },
+  ]);
   const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedConditions, setSelectedConditions] = useState([]);
+  const [selectedTransactions, setSelectedTransactions] = useState([]);
   const [tags, setTags] = useState(tagsData);
   const translateX = useSharedValue(-screenWidth);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -174,6 +189,65 @@ const HomeScreen = ({ route }) => {
     console.log(selectedTags);
   };
 
+  handleConditionPress = (index) => {
+    //update selectedConditions state
+    const newConditionsData = conditions.map((condition, idx) => {
+      if (idx === index) {
+        return { ...condition, selected: !condition.selected };
+      }
+      return condition;
+    });
+
+    // Update the selectedConditions state
+    const pressedConditionName = newConditionsData[index].name;
+    const isAlreadySelected = selectedConditions.includes(pressedConditionName);
+    let newSelectedConditions;
+    if (isAlreadySelected) {
+      newSelectedConditions = selectedConditions.filter(
+        (conditionName) => conditionName !== pressedConditionName,
+      );
+    } else {
+      newSelectedConditions = [...selectedConditions, pressedConditionName];
+    }
+
+    setConditionsData(newConditionsData);
+    setSelectedConditions(newSelectedConditions);
+    console.log(selectedConditions);
+  };
+
+
+    handleTransactionPress = (index) => {
+    //update selectedTransactions state
+    const newTransactionsData = transactions.map((transaction, idx) => {
+      if (idx === index) {
+        return { ...transaction, selected: !transaction.selected };
+      }
+      return transaction;
+    });
+
+    // Update the selectedTransactions state
+    const pressedTransactionName = newTransactionsData[index].name;
+    const isAlreadySelected = selectedTransactions.includes(pressedTransactionName);
+    let newSelectedTransactions;
+    if (isAlreadySelected) {
+      newSelectedTransactions = selectedTransactions.filter(
+        (transactionName) => transactionName !== pressedTransactionName,
+      );
+    } else {
+      newSelectedTransactions = [...selectedTransactions, pressedTransactionName];
+    }
+    
+    setTransactionsData(newTransactionsData);
+    setSelectedTransactions(newSelectedTransactions);
+    console.log(selectedTransactions);
+  };
+
+
+
+
+
+
+
   const fetchListings = async () => {
     console.log("Fetching listings...");
     console.log("Tags:", selectedTags);
@@ -206,6 +280,7 @@ const HomeScreen = ({ route }) => {
 
         setListings(listingsData);
         console.log("Listings fetched successfully");
+        console.log(listingsData);
       } else {
         console.log("Error fetching listings:", listingsResponse.status);
       }
@@ -465,6 +540,10 @@ const HomeScreen = ({ route }) => {
           <TagDrawer
             tags={tagsData}
             handleTagPress={handleTagPress}
+            conditions={conditions}
+            handleConditionPress={handleConditionPress}
+            transactions={transactions}
+            handleTransactionPress={handleTransactionPress}
             fetchListings={fetchListings}
             handleMenuPress={toggleTagDrawer}
             isDrawerOpen={isDrawerOpen}

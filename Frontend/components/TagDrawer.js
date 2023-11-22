@@ -13,7 +13,17 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 
 const TagDrawer = memo(
-  ({ tags, handleTagPress, fetchListings, handleMenuPress, isDrawerOpen }) => {
+  ({
+    tags,
+    handleTagPress,
+    conditions,
+    handleConditionPress,
+    transactions,
+    handleTransactionPress,
+    fetchListings,
+    handleMenuPress,
+    isDrawerOpen,
+  }) => {
     return (
       <View style={styles.drawerContainer}>
         {isDrawerOpen && (
@@ -32,6 +42,11 @@ const TagDrawer = memo(
             >
               <Text style={styles.applyButtonText}>Apply</Text>
             </TouchableOpacity>
+            <View style={styles.seperationContainer}>
+              <View style={styles.separatorLine} />
+              <Text style={styles.seperationText}>Tags</Text>
+            </View>
+
             {tags.map((tag, tagIndex) => (
               <TouchableOpacity
                 key={tagIndex}
@@ -52,12 +67,66 @@ const TagDrawer = memo(
                 <Text style={styles.tagText}>{tag.name}</Text>
               </TouchableOpacity>
             ))}
+            <View style={styles.seperationContainer}>
+              <View style={styles.separatorLine} />
+              <Text style={styles.seperationText}>Condition</Text>
+            </View>
+            {conditions.map((condition, conditionIndex) => (
+              <TouchableOpacity
+                key={conditionIndex}
+                style={styles.tagContainer}
+                onPress={() => {
+                  handleConditionPress(conditionIndex);
+                }}
+              >
+                <View
+                  style={[
+                    styles.tagSelected,
+                    { opacity: condition.selected ? 1 : 0.3 },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.rhombus,
+                    { opacity: condition.selected ? 0.15 : 0 },
+                  ]}
+                />
+                <Text style={styles.tagText}>{condition.name}</Text>
+              </TouchableOpacity>
+            ))}
+            <View style={styles.seperationContainer}>
+              <View style={styles.separatorLine} />
+              <Text style={styles.seperationText}>Transactions</Text>
+            </View>
+            {transactions.map((transaction, transactionIndex) => (
+              <TouchableOpacity
+                key={transactionIndex}
+                style={styles.tagContainer}
+                onPress={() => {
+                  handleTransactionPress(transactionIndex);
+                }}
+              >
+                <View
+                  style={[
+                    styles.tagSelected,
+                    { opacity: transaction.selected ? 1 : 0.3 },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.rhombus,
+                    { opacity: transaction.selected ? 0.15 : 0 },
+                  ]}
+                />
+                <Text style={styles.tagText}>{transaction.name}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
           <View style={styles.spacer} />
         </ScrollView>
       </View>
     );
-  },
+  }
 );
 
 export default TagDrawer;
@@ -144,7 +213,7 @@ const styles = StyleSheet.create({
   rhombus: {
     alignSelf: "center",
     position: "absolute",
-    width: 0.04 * screenHeight,
+    width: 0.035 * screenHeight,
     aspectRatio: 1,
     backgroundColor: Colors.BB_darkPink,
     opacity: 0.15,
@@ -164,6 +233,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     height: 0.06 * screenHeight,
     width: 0.3 * screenWidth,
+    marginTop: 10,
     marginBottom: 10,
     alignSelf: "center",
     justifyContent: "center",
@@ -194,6 +264,33 @@ const styles = StyleSheet.create({
     height: screenHeight,
     left: 0,
     zIndex: 200,
+  },
+  seperationContainer: {
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 0.06 * screenHeight,
+    width: "90%",
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  seperationText: {
+    color: Colors.white,
+    backgroundColor: Colors.BB_darkerRedPurple,
+    fontSize: 12,
+    fontWeight: "bold",
+    marginTop: 10,
+    marginBottom: 20,
+    width: 85,
+    top: "9%",
+    textAlign: "center",
+  },
+  separatorLine: {
+    position: "absolute",
+    height: 1,
+    backgroundColor: "white",
+    width: "80%",
+    marginTop: 5,
   },
   spacer: {
     position: "relative",

@@ -112,11 +112,46 @@ const calculateFontSizeLocation = (city) => {
   }
 };
 
-const CardOverlay1 = memo(({ children, price }) => {
+const TimeBox = memo(({ time }) => {
+  const calculateTimeSince = () => {
+    const millisecondsPerHour = 3600000;
+    const now = new Date();
+    const past = new Date(time) - 8 * millisecondsPerHour;
+    const timeSince = Math.floor((now - past) / 1000);
+    return timeSince;
+  };
+
+  const [timeSince, setTimeSince] = useState(calculateTimeSince());
+
+  useEffect(() => {
+    setTimeSince(calculateTimeSince());
+  }, [time]);
+
+
+  return (
+    <View style={styles.timeContainer}>
+      <Text style={styles.timeText}>
+        {timeSince < 60
+          ? `${timeSince} seconds ago`
+          : timeSince < 3600
+          ? `${Math.floor(timeSince / 60)} minutes ago`
+          : timeSince < 86400
+          ? `${Math.floor(timeSince / 3600)} hours ago`
+          : timeSince < 604800
+          ? `${Math.floor(timeSince / 86400)} days ago`
+          : `${Math.floor(timeSince / 2419200)} months ago`
+        }
+      </Text>
+    </View>
+  );
+});
+
+
+const CardOverlayFront = memo(({ children, price, time }) => {
   return (
     <View style={styles.card}>
       <View style={styles.cardBackground}>
-      <View style={styles.top_rhombus} />
+        <View style={styles.top_rhombus} />
         <View style={styles.mid_rhombus} />
         <View style={styles.bottom_rhombus} />
         <View style={styles.topR_circle} />
@@ -133,12 +168,13 @@ const CardOverlay1 = memo(({ children, price }) => {
           </Text>
         </View>
         {children}
+        <TimeBox time={time} />
       </View>
     </View>
   );
 });
 
-const CardOverlay2 = memo(({ children, price }) => {
+const CardOverlayBack = memo(({ children, price, time }) => {
   return (
     <View style={styles.card}>
       <View style={styles.cardBackground2}>
@@ -159,6 +195,7 @@ const CardOverlay2 = memo(({ children, price }) => {
           </Text>
         </View>
         {children}
+        <TimeBox time={time} />
       </View>
     </View>
   );
@@ -180,6 +217,7 @@ const CustomItem = memo(
     source,
     scale,
     price,
+    time,
     isLiked,
     onLikePress,
     onDeletePress,
@@ -200,7 +238,7 @@ const CustomItem = memo(
     };
 
     return (
-      <CardOverlay1 price={price}>
+      <CardOverlayFront price={price} time={time}>
         <View>
           <PinchGestureHandler
             onGestureEvent={onZoomEvent}
@@ -218,14 +256,15 @@ const CustomItem = memo(
         </View>
         <LikeButton isLiked={isLiked} onLikePress={onLikePress} />
         {deleteVisible && <DeleteButton onDeletePress={onDeletePress} />}
-      </CardOverlay1>
+      </CardOverlayFront>
     );
-  },
+  }
 );
 
 const Listing = ({ item, origin, removeListing, userLocation }) => {
   const navigation = useNavigation();
   const price = item.Price;
+  const time = item.PostDate;
   const [isLiked, setIsLiked] = useState(item.liked); // Initially KNOWN
   const [distance, setDistance] = useState(
     item.Latitude
@@ -233,13 +272,13 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
           item.Latitude,
           item.Longitude,
           userLocation.latitude,
-          userLocation.longitude,
+          userLocation.longitude
         )
-      : "Unknown",
+      : "Unknown"
   );
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
-    origin == "profile" && item.Username == getStoredUsername(),
+    origin == "profile" && item.Username == getStoredUsername()
   );
 
   const toggleDeleteModal = () => {
@@ -329,6 +368,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 source={item}
                 scale={new AnimatedRN.Value(1)}
                 price={price}
+                time={time}
                 isLiked={isLiked}
                 onLikePress={() => handleLikePress()}
                 onDeletePress={() => toggleDeleteModal()}
@@ -345,12 +385,12 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 parallaxScrollingScale: 1,
                 parallaxAdjacentItemScale: 0.5,
                 parallaxScrollingOffset: 10,
-              },
+              }
             )}
           />
         </View>
 
-        <CardOverlay2 price={item.Price}>
+        <CardOverlayBack price={price} time={time}>
           <Text style={styles.title}>{item.Title}</Text>
           <View style={styles.sellerInfoBox}>
             <View
@@ -433,6 +473,90 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
             </View>
           </View>
 
+          <View style={styles.lowerRow}>
+            <View
+              style={[
+                {
+                  height: "100%",
+                  width: "33%",
+                  alignItems: "center",
+                },
+              ]}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  color: "white",
+                  alignSelf: "center",
+                  top: "10%",
+                }}
+              >
+                Condition:
+              </Text>
+              <Text style={[styles.conditionText]}>
+                {/* {item.Condition} */}
+                Excellent
+              </Text>
+            </View>
+            <View
+              style={[
+                {
+                  height: "100%",
+                  width: "33%",
+                  alignItems: "center",
+                },
+              ]}
+            >
+              <Text
+                style={{
+                  fontSize: 11,
+                  fontWeight: "bold",
+                  color: "white",
+                  alignSelf: "center",
+                  top: "8%",
+                }}
+              >
+                Transaction Preference:
+              </Text>
+              <Text style={styles.transactionText}>
+                Pickup <MaterialCommunityIcons name="check" size={16} color="green" /> {"\n"}{"\n"} 
+                Meetup <Entypo name="cross" size={16} color="red" /> {"\n"}{"\n"} 
+                Delivery <Entypo name="cross" size={16} color="red" />
+              </Text>
+            </View>
+            <View
+              style={[
+                {
+                  height: "100%",
+                  width: "33%",
+                  alignItems: "center",
+                },
+              ]}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  color: "white",
+                  alignSelf: "center",
+                  top: "8%",
+                }}
+              >
+                Tags:
+              </Text>
+              <View style={styles.tagColumn}>
+                {item.tags.map((tag, index) => (
+                  <Text key={index} style={styles.tagText}>
+                    {tag}
+                  </Text>
+                ))  
+                }
+              </View>
+
+            </View>
+          </View>
+
           <ScrollView
             style={styles.descriptionContainer}
             showsVerticalScrollIndicator={true}
@@ -442,7 +566,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
           </ScrollView>
 
           <LikeButton isLiked={isLiked} onLikePress={handleLikePress} />
-        </CardOverlay2>
+        </CardOverlayBack>
       </FlipCard>
 
       {/* Delete Confirmation Modal */}
@@ -659,7 +783,7 @@ const styles = StyleSheet.create({
   title: {
     alignSelf: "center",
     position: "absolute",
-    top: "0%",
+    top: "5.5%",
     fontSize: 25,
     fontWeight: "bold",
     color: "white",
@@ -669,7 +793,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     alignSelf: "center",
     flexDirection: "row",
-    top: "7%",
+    top: "11%",
     width: "90%",
     height: "20%",
     borderRadius: 20,
@@ -740,15 +864,58 @@ const styles = StyleSheet.create({
     left: "20%",
     top: 0.01 * screenHeight,
   },
+  lowerRow: {
+    position: "absolute",
+    alignSelf: "center",
+    flexDirection: "row",
+    width: "90%",
+    height: "20%",
+    top: "31.5%",
+    borderRadius: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+  },
+  conditionText: {
+    top: "35%",
+    fontSize: 14,
+    color: "white",
+    alignSelf: "center",
+    textAlign: "center",
+    width: "70%",
+  },
+  transactionText: {
+    top: "20%",
+    fontSize: 12,
+    color: "white",
+    alignSelf: "center",
+    textAlign: "center",
+    width: "100%",
+  },
+  tagColumn: {
+    position: "absolute",
+    alignSelf: "center",
+    flexDirection: "column",
+    bottom: "0%",
+    width: "100%",
+    height: "80%",
+    justifyContent: "center",    
+  },
+  tagText: {
+    fontSize: 12,
+    color: "white",
+    alignSelf: "center",
+    textAlign: "center",
+    width: "100%",
+    marginBottom: "2%",
+  },
   descriptionContainer: {
     position: "absolute",
     alignSelf: "center",
-    height: "50%",
+    height: "40%",
     width: "90%",
-    bottom: "15%",
-    backgroundColor: "rgba(10, 10, 10, 0.9)",
+    bottom: "8%",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
     padding: 5,
-    borderRadius: 5,
+    borderRadius: 20,
   },
   description: {
     fontSize: 16,
@@ -756,11 +923,26 @@ const styles = StyleSheet.create({
   },
   likeButton: {
     position: "absolute",
-    height: "10%",
-    width: "15%",
-    bottom: "0%",
-    right: "5%",
+    height: 0.15 * screenWidth,
+    width: 0.15 * screenWidth,
+    bottom: "1%",
+    right: "2%",
     zIndex: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.BB_darkRedPurple,
+    ...Platform.select({
+      ios: {
+        shadowColor: "black",
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        shadowOffset: { height: 4, width: 0 },
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+    borderRadius: 80,
   },
   deleteButton: {
     position: "absolute",
@@ -804,5 +986,22 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     textAlign: "center",
+  },
+  timeContainer: {
+    alignContent: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    borderRadius: 20,
+    position: "absolute",
+    right: "1%",
+    top: "0.5%",
+    height: "5%",
+    width: "25%",
+  },
+  timeText: {
+    fontSize: 12,
+    color: "white",
+    fontWeight: "bold",
   },
 });
