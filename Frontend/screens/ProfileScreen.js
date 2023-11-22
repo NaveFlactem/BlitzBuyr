@@ -38,7 +38,8 @@ import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/visuals/BouncePulse.js";
 import { getLocationWithRetry } from "../constants/Utilities";
-import { Linking } from "react-native";
+import { Linking, Alert } from "react-native";
+
 
 const UserListingsRoute = ({ profileInfo, onPressListing }) => (
   <View style={{ flex: 1 }}>
@@ -120,11 +121,35 @@ const handleContactClick = async (key, data) => {
         console.error("Error opening email:", error);
       }
       break;
-    case "PhoneNumber":
+    case "phoneNumber":
       try {
-        //Future: API to call number. Phone number is in data
+        // Assuming `data` is your phone number
+        const phoneNumber = data;
+
+        Alert.alert(
+          "Choose an action",
+          "Would you like to call or text this number?",
+          [
+            {
+              text: "Call",
+              onPress: () => Linking.openURL(`tel:${phoneNumber}`),
+            },
+            {
+              text: "Text",
+              onPress: () => Linking.openURL(`sms:${phoneNumber}`),
+            },
+          ],
+          { cancelable: true }
+        );
       } catch (error) {
         console.error("Error opening phoneNumber:", error);
+      }
+      break;
+    case "linkedIn":
+      try {
+        await Linking.openURL(`http://${key}.com/in/${data}`);
+      } catch (error) {
+        console.error(`Error opening ${key}:`, error);
       }
       break;
     default:
