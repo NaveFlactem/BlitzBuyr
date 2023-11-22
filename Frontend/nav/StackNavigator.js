@@ -9,6 +9,7 @@ import Authenticate from "../screens/auth/Authenticate";
 import BottomNavOverlay from "./BottomNavOverlay";
 import EditProfile from "../screens/EditProfileScreen";
 import RatingScreen from "../screens/RatingScreen";
+import EditContactInfo from "../screens/EditContactInfo";
 
 const Stack = createStackNavigator();
 
@@ -49,7 +50,9 @@ const StackNavigator = () => {
         component={ProfileScreen}
         options={{ gestureEnabled: false }}
       />
+
       <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen name="EditContactInfo" component={EditContactInfo} />
       <Stack.Screen name="RatingScreen" component={RatingScreen} />
     </Stack.Navigator>
   );
