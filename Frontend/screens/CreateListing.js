@@ -785,6 +785,30 @@ class CreateListing extends Component {
                         GBP
                       </Text>
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.handleCurrencySelection('AUD')}>
+                      <Text style={styles.currencyOption}>
+                        {this.state.selectedCurrency === 'AUD' ? '✓ ' : ''}
+                        AUD
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.handleCurrencySelection('BRL')}>
+                      <Text style={styles.currencyOption}>
+                        {this.state.selectedCurrency === 'BRL' ? '✓ ' : ''}
+                        BRL
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.handleCurrencySelection('JPY')}>
+                      <Text style={styles.currencyOption}>
+                        {this.state.selectedCurrency === 'JPY' ? '✓ ' : ''}
+                        JPY
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.handleCurrencySelection('PHP')}>
+                      <Text style={styles.currencyOption}>
+                        {this.state.selectedCurrency === 'PHP' ? '✓ ' : ''}
+                        PHP
+                      </Text>
+                    </TouchableOpacity>
                     {/* Add more currencies as needed */}
                     <TouchableOpacity onPress={() => this.setState({ showCurrencyOptions: false })}>
                       <Text style={styles.closeButton}>Close</Text>
@@ -1192,7 +1216,7 @@ const styles = StyleSheet.create({
   currencyButton: {
     width: 100,
     height: 36,
-    backgroundColor: 'purple',
+    backgroundColor: Colors.BB_darkRedPurple,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
@@ -1207,16 +1231,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: Colors.BB_bone,
   },
   currencyOption: {
     fontSize: 24,
-    color: 'white',
+    color: 'black',
     marginVertical: 10,
   },
   closeButton: {
     fontSize: 24,
-    color: 'white',
+    color: 'black',
     marginTop: 20,
   },
 });
