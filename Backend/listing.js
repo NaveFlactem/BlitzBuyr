@@ -26,7 +26,7 @@ const imageStorage = multer.diskStorage({
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     callback(
       null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname),
     );
   },
 });
@@ -47,7 +47,7 @@ const imageUpload = multer({
 const getCityFromCoords = async (latitude, longitude) => {
   try {
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`,
     );
     const data = await response.json();
     return data.address.city || "Unknown";
@@ -161,11 +161,11 @@ router.post("/createListing", imageUpload, async function (req, res) {
                           .json({ error: "Internal Server Error" });
                       }
                       // Tag associated with the listing successfully
-                    }
+                    },
                   );
-                }
+                },
               );
-            }
+            },
           );
         });
         //END OF TOMMY CODE
@@ -186,7 +186,7 @@ router.post("/createListing", imageUpload, async function (req, res) {
                     .json({ error: "Internal Server Error" });
                 }
                 // console.log(`Inserted image ${image.originalname}`);
-              }
+              },
             );
           });
         }
@@ -194,7 +194,7 @@ router.post("/createListing", imageUpload, async function (req, res) {
           message: "Listing created successfully",
           listingId: listingId,
         });
-      }
+      },
     );
   } catch (err) {
     return res.status(500).json({ error: err });
@@ -401,7 +401,7 @@ router.get("/images", function (req, res) {
           return res.status(500).json({ error: "Internal Server Error" });
         }
         return res.status(200).json({ Images: rows });
-      }
+      },
     );
   } else {
     // If 'listingId' is not provided, retrieve all images.
@@ -504,7 +504,7 @@ router.delete("/deletelisting", async function (req, res) {
             reject(err);
           }
           resolve(row);
-        }
+        },
       );
     });
 
@@ -528,7 +528,7 @@ router.delete("/deletelisting", async function (req, res) {
         return res
           .status(200)
           .json({ message: `Listing ${listingId} deleted` });
-      }
+      },
     );
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
@@ -564,7 +564,7 @@ getImagesFromListings = async (listingsResult, likedListingsResult) => {
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     }
   });
@@ -585,14 +585,14 @@ getImagesFromListings = async (listingsResult, likedListingsResult) => {
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     }
   });
 
   const combinedData = listingsResult.map((listing) => {
     const isLiked = likedListingsResult.some(
-      (likedListing) => likedListing.ListingId === listing.ListingId
+      (likedListing) => likedListing.ListingId === listing.ListingId,
     );
     const matchingImages = imagesResult
       .filter((image) => image.ListingId === listing.ListingId)
