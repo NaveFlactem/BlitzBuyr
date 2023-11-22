@@ -10,6 +10,7 @@ const { getImagesFromListings } = require("./listing");
 router.use(bodyParser.urlencoded({ extended: true })).use(bodyParser.json());
 const db = require("./db").db;
 const { imageStorage, imageUpload } = require("./listing");
+const { authenticateUser } = require("./account"); // FIXME: Use this like, everywhere
 
 /**
  * Handles a user liking a listing.
@@ -353,17 +354,23 @@ router.get("/ratings", function (req, res) {
  * // The 'username' query parameter specifies the user's profile to retrieve.
  */
 router.get("/profile", async function (req, res) {
-  const username = req.query.username;
+  const { username, password, profileName } = req.query;
+  console.log(req.query);
 
-  if (!username)
-    return res.status(409).json({ error: "Username not provided" });
+  if (!(await authenticateUser(username, password)))
+    return res
+      .status(409)
+      .json({ error: "Failed to authenticate with your credentials" });
+
+  if (!profileName)
+    return res.status(409).json({ error: `Profile Name not provided` });
 
   try {
     // check if user exists
     const userResult = await new Promise((resolve, reject) => {
       db.all(
         "SELECT * FROM Accounts WHERE Username = ?",
-        [username],
+        [profileName],
         (err, rows) => {
           if (err) {
             console.error("Error querying the database (first query):", err);
@@ -374,13 +381,13 @@ router.get("/profile", async function (req, res) {
       );
     });
     if (!userResult || userResult.length == 0)
-      return res.status(404).json({ error: `User ${username} not found` });
+      return res.status(404).json({ error: `User ${profileName} not found` });
 
     // get the ratings belonging to the user
     const ratingsResult = await new Promise((resolve, reject) => {
       db.all(
         "SELECT AVG(Rating) AS AverageRating, COUNT(Rating) AS RatingCount FROM Ratings WHERE UserRated = ?",
-        [username],
+        [profileName],
         (err, rows) => {
           if (err) {
             console.error("Error querying the database (second query):", err);
@@ -398,7 +405,7 @@ router.get("/profile", async function (req, res) {
     FROM ContactInfo
     INNER JOIN Settings ON ContactInfo.Username = Settings.Username
     WHERE ContactInfo.Username = ?`,
-        [username], // Replace with the specific username you want to retrieve
+        [profileName], // Replace with the specific username you want to retrieve
         (err, row) => {
           if (err) {
             console.error("Error querying the database:", err);
@@ -412,25 +419,60 @@ router.get("/profile", async function (req, res) {
     if (!contactResult || contactResult.length == 0)
       return res
         .status(404)
-        .json({ error: `Contact info for ${username} not found` });
+        .json({ error: `Contact info for ${profileName} not found` });
 
-    // Parse the result
+    // Parse the result FIXME: make this prettier
     const contactInfo = {
-      phoneNumber: contactResult.HidePhoneNumber
-        ? null
-        : contactResult.PhoneNumber,
-      email: contactResult.HideEmail ? null : contactResult.Email,
-      linkedIn: contactResult.HideLinkedIn ? null : contactResult.LinkedIn,
-      instagram: contactResult.HideInstagram ? null : contactResult.Instagram,
-      facebook: contactResult.HideFacebook ? null : contactResult.Facebook,
-      twitter: contactResult.HideTwitter ? null : contactResult.Twitter,
+      phoneNumber: {
+        data:
+          profileName !== contactResult.Username &&
+          contactResult.HidePhoneNumber
+            ? null
+            : contactResult.PhoneNumber,
+        hidden: contactResult.HidePhoneNumber,
+      },
+      email: {
+        data:
+          profileName !== contactResult.Username && contactResult.HideEmail
+            ? null
+            : contactResult.Email,
+        hidden: contactResult.HideEmail,
+      },
+      linkedIn: {
+        data:
+          profileName !== contactResult.Username && contactResult.HideLinkedIn
+            ? null
+            : contactResult.LinkedIn,
+        hidden: contactResult.HideLinkedIn,
+      },
+      instagram: {
+        data:
+          profileName !== contactResult.Username && contactResult.HideInstagram
+            ? null
+            : contactResult.Instagram,
+        hidden: contactResult.HideInstagram,
+      },
+      facebook: {
+        data:
+          profileName !== contactResult.Username && contactResult.HideFacebook
+            ? null
+            : contactResult.Facebook,
+        hidden: contactResult.HideFacebook,
+      },
+      twitter: {
+        data:
+          profileName !== contactResult.Username && contactResult.HideTwitter
+            ? null
+            : contactResult.Twitter,
+        hidden: contactResult.HideTwitter,
+      },
     };
 
     // Get the profile and cover pictures
     let profilePictureResult = await new Promise((resolve, reject) => {
       db.all(
         "SELECT ProfilePicture, CoverPicture FROM Profiles WHERE Username = ?",
-        [username],
+        [profileName],
         (err, rows) => {
           if (err) {
             console.error("Error querying the database (fourth query):", err);
@@ -445,7 +487,7 @@ router.get("/profile", async function (req, res) {
     const userListingsResult = await new Promise((resolve, reject) => {
       db.all(
         "SELECT * FROM Listings WHERE Username = ? ORDER BY ListingId DESC",
-        [username],
+        [profileName],
         (err, rows) => {
           if (err) {
             console.error("Error querying the database (third query):", err);
@@ -460,7 +502,7 @@ router.get("/profile", async function (req, res) {
     const likedListingsResult = await new Promise((resolve, reject) => {
       db.all(
         "SELECT * FROM Listings WHERE ListingId IN (SELECT ListingId FROM Likes WHERE Username = ?) ORDER BY ListingId DESC",
-        [username],
+        [profileName],
         (err, rows) => {
           if (err) {
             console.error("Error querying the database (fourth query):", err);

@@ -139,17 +139,20 @@ const handleContactClick = async (key, data) => {
 };
 
 const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
-  const hasNonNullValues = Object.values(contactInfo).some(
-    (value) => value.data !== null
+  let displayValues = Object.values(contactInfo).some(
+    (value) => value.data.length > 0
   );
+
+  if (!selfProfile && Object.values(contactInfo).every((value) => value.hidden))
+    displayValues = false;
 
   return (
     <View style={styles.contactInfoContainer}>
       <ScrollView>
         <View>
-          {hasNonNullValues ? (
+          {displayValues ? (
             Object.entries(contactInfo).map(([key, value]) => {
-              if (value.data !== null) {
+              if (value.data.length > 0) {
                 return (
                   (selfProfile || (!selfProfile && !value.hidden)) && (
                     <View key={key}>
@@ -321,12 +324,13 @@ function ProfileScreen({ navigation, route }) {
   const getProfileInfo = async function (username) {
     console.log(`Fetching profile info for ${username}`);
     try {
-      const profileResponse = await fetch(
-        `${serverIp}/api/profile?username=${encodeURIComponent(username)}`,
-        {
-          method: "GET",
-        }
-      );
+      const fetchUrl = `${serverIp}/api/profile?username=${encodeURIComponent(
+        getStoredUsername()
+      )}&password=${getStoredPassword()}&profileName=${username}`;
+      console.log(fetchUrl);
+      const profileResponse = await fetch(fetchUrl, {
+        method: "GET",
+      });
       const profileData = await profileResponse.json();
 
       if (profileResponse.status <= 201) {
@@ -346,11 +350,8 @@ function ProfileScreen({ navigation, route }) {
         // Set the contactInfo state
         const updatedContactInfo = { ...contactInfo };
         for (const key in profileData.contactInfo) {
-          if (profileData.contactInfo[key] === null) {
-            updatedContactInfo[key].hidden = true;
-          }
-
-          updatedContactInfo[key].data = profileData.contactInfo[key];
+          updatedContactInfo[key].hidden = profileData.contactInfo[key].hidden;
+          updatedContactInfo[key].data = profileData.contactInfo[key].data;
         }
         setContactInfo(updatedContactInfo);
 
