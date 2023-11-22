@@ -696,7 +696,6 @@ const styles = StyleSheet.create({
     }),
   },
   circleContainer: {
-    position: "absolute",
     top: 15,
     left: 15,
   },
