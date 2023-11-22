@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   },
   menu: {
     position: "absolute",
-    paddingTop: 29,
+    paddingTop: Platform.OS == "ios" ? 20 : 29,
     paddingLeft: 20,
     paddingBottom: 20,
     paddingRight: 20,
