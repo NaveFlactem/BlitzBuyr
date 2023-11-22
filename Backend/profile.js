@@ -626,5 +626,110 @@ router.post("/editprofile", imageUpload, function (req, res) {
   );
 });
 
+/**
+ * Handles updating a user's contact information.
+ *
+ * @function
+ * @async
+ * @name updateContactInfo
+ *
+ * @param {Object} req - Express.js request object with a JSON body containing 'username' and 'contactInfo'.
+ * @param {Object} res - Express.js response object.
+ *
+ * @example
+ * // Sample HTTP POST request to '/api/editcontactinfo'
+ * const requestPayload = {
+ *   "username": "testuser",
+ *   "contactInfo": {
+ *     "phoneNumber": {
+ *       "data": "123-456-7890",
+ *       "hidden": false
+ *     },
+ *     "email": {
+ *       "data": "test@email.com",
+ *       "hidden": false
+ *     }
+ *   }
+ * };
+ *
+ * @throws {Error} If there's an error updating the database.
+ */
+router.post("/editcontactinfo", async function (req, res) {
+  const { username, contactInfo } = req.body;
+
+  // Check if user exists
+  const userResult = await new Promise((resolve, reject) => {
+    db.all(
+      "SELECT * FROM Accounts WHERE Username = ?",
+      [username],
+      (err, rows) => {
+        if (err) {
+          console.error("Error querying the database (first query):", err);
+          reject(err);
+        }
+        resolve(rows);
+      }
+    );
+  });
+
+  if (!userResult || userResult.length == 0) {
+    return res.status(404).json({ error: `User ${username} not found` });
+  }
+
+  // Update the contact information and hidden values in the database
+  try {
+    await new Promise((resolve, reject) => {
+      db.run(
+        `UPDATE ContactInfo SET PhoneNumber = ?, Email = ?, LinkedIn = ?, Instagram = ?, Facebook = ?, Twitter = ? WHERE Username = ?`,
+        [
+          contactInfo.phoneNumber.data,
+          contactInfo.email.data,
+          contactInfo.linkedIn.data,
+          contactInfo.instagram.data,
+          contactInfo.facebook.data,
+          contactInfo.twitter.data,
+          username,
+        ],
+        function (err) {
+          if (err) {
+            console.error("Error updating contact information:", err);
+            reject(err);
+          }
+          resolve();
+        }
+      );
+    });
+
+    await new Promise((resolve, reject) => {
+      db.run(
+        `UPDATE Settings SET HidePhoneNumber = ?, HideEmail = ?, HideLinkedIn = ?, HideInstagram = ?, HideFacebook = ?, HideTwitter = ? WHERE Username = ?`,
+        [
+          contactInfo.phoneNumber.hidden,
+          contactInfo.email.hidden,
+          contactInfo.linkedIn.hidden,
+          contactInfo.instagram.hidden,
+          contactInfo.facebook.hidden,
+          contactInfo.twitter.hidden,
+          username,
+        ],
+        function (err) {
+          if (err) {
+            console.error("Error updating hidden values:", err);
+            reject(err);
+          }
+          resolve();
+        }
+      );
+    });
+
+    return res
+      .status(200)
+      .json({ message: "Contact information updated successfully" });
+  } catch (error) {
+    console.error("Internal Server Error:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // Export the router
 module.exports = router;
