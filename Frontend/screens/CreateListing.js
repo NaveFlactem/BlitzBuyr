@@ -72,7 +72,7 @@ class CreateListing extends Component {
       isTagInvalid: false,
       isMinorLoading: false,
       isLoading: false,
-      selectedCurrency: "USD",
+      selectedCurrency: "USD $",
       showCurrencyOptions: false,
       tagsData: [
         { name: "Furniture", selected: false },
@@ -738,58 +738,58 @@ class CreateListing extends Component {
               {this.state.showCurrencyOptions && (
                 <Modal visible={this.state.showCurrencyOptions} animationType="slide">
                   <View style={styles.modalContent}>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('USD')}>
+                    <TouchableOpacity onPress={() => this.handleCurrencySelection('USD $')}>
                       <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'USD' ? '✓ ' : ''}
-                        USD
+                        {this.state.selectedCurrency === 'USD $' ? '✓ ' : ''}
+                        USD $
                       </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('EUR')}>
+                    <TouchableOpacity onPress={() => this.handleCurrencySelection('EUR €')}>
                       <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'EUR' ? '✓ ' : ''}
-                        EUR
+                        {this.state.selectedCurrency === 'EUR €' ? '✓ ' : ''}
+                        EUR €
                       </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('MXN')}>
+                    <TouchableOpacity onPress={() => this.handleCurrencySelection('MXN $')}>
                       <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'MXN' ? '✓ ' : ''}
-                        MXN
+                        {this.state.selectedCurrency === 'MXN $' ? '✓ ' : ''}
+                        MXN $
                       </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('CAD')}>
+                    <TouchableOpacity onPress={() => this.handleCurrencySelection('CAD $')}>
                       <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'CAD' ? '✓ ' : ''}
-                        CAD
+                        {this.state.selectedCurrency === 'CAD $' ? '✓ ' : ''}
+                        CAD $
                       </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('GBP')}>
+                    <TouchableOpacity onPress={() => this.handleCurrencySelection('GBP ₤')}>
                       <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'GBP' ? '✓ ' : ''}
-                        GBP
+                        {this.state.selectedCurrency === 'GBP ₤' ? '✓ ' : ''}
+                        GBP ₤
                       </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('AUD')}>
+                    <TouchableOpacity onPress={() => this.handleCurrencySelection('AUD $')}>
                       <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'AUD' ? '✓ ' : ''}
-                        AUD
+                        {this.state.selectedCurrency === 'AUD $' ? '✓ ' : ''}
+                        AUD $
                       </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('BRL')}>
+                    <TouchableOpacity onPress={() => this.handleCurrencySelection('BRL R$')}>
                       <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'BRL' ? '✓ ' : ''}
-                        BRL
+                        {this.state.selectedCurrency === 'BRL R$' ? '✓ ' : ''}
+                        BRL R$
                       </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('JPY')}>
+                    <TouchableOpacity onPress={() => this.handleCurrencySelection('JPY ¥')}>
                       <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'JPY' ? '✓ ' : ''}
-                        JPY
+                        {this.state.selectedCurrency === 'JPY ¥' ? '✓ ' : ''}
+                        JPY ¥
                       </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('PHP')}>
+                    <TouchableOpacity onPress={() => this.handleCurrencySelection('PHP ₱')}>
                       <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'PHP' ? '✓ ' : ''}
-                        PHP
+                        {this.state.selectedCurrency === 'PHP ₱' ? '✓ ' : ''}
+                        PHP ₱
                       </Text>
                     </TouchableOpacity>
                     {/* Add more currencies as needed */}
