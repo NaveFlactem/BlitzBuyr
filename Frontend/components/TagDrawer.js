@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "bold",
     marginTop: 20,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   spacer: {
     position: "relative",
