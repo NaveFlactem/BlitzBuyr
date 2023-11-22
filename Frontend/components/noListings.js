@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 
-const NoListings = memo(({onRetry}) => {
+const NoListings = memo(({ onRetry }) => {
   return (
     <View style={styles.container}>
       <MaterialCommunityIcons
@@ -58,7 +58,7 @@ const styles = {
       android: {
         elevation: 5,
       },
-    }), 
+    }),
   },
 };
 

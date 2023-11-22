@@ -1,9 +1,9 @@
-import React, {memo} from "react";
+import React, { memo } from "react";
 import { View, Text, TouchableOpacity, Image, Dimensions } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 
-const NoWifi = memo(({onRetry}) => {
+const NoWifi = memo(({ onRetry }) => {
   return (
     <View style={styles.noWifiContainer}>
       <Image
@@ -66,7 +66,7 @@ const styles = {
       android: {
         elevation: 5,
       },
-    }), 
+    }),
   },
 };
 

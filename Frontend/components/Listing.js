@@ -85,7 +85,6 @@ const calculateFontSize = (price) => {
     return 24;
   }
 
-
   if (numberOfDigits <= 4) {
     return 20;
   } else if (numberOfDigits <= 6) {
@@ -93,26 +92,24 @@ const calculateFontSize = (price) => {
   } else if (numberOfDigits <= 8) {
     return 16;
   } else if (numberOfDigits <= 10) {
-    return 14
+    return 14;
   } else {
     return 12;
   }
 };
 
 const calculateFontSizeLocation = (city) => {
-    if (city === undefined || city === null) {
-      return 16; // Default font size if price is not provided
-    }
-  
-    if (city.length <= 10) {
-      return 14;
-    } else if (city.length <= 15) {
-      return 12;
-    }
-    else {
-      return 10;
-    }
-    
+  if (city === undefined || city === null) {
+    return 16; // Default font size if price is not provided
+  }
+
+  if (city.length <= 10) {
+    return 14;
+  } else if (city.length <= 15) {
+    return 12;
+  } else {
+    return 10;
+  }
 };
 
 const CardOverlay1 = memo(({ children, price }) => {
@@ -120,11 +117,15 @@ const CardOverlay1 = memo(({ children, price }) => {
     <View style={styles.card}>
       <View style={styles.cardBackground}>
         <View style={styles.priceContainer}>
-        <Text
-            style={[styles.price, { fontSize: calculateFontSize(price) }, price === 0 && {fontWeight: "bold"}]}
+          <Text
+            style={[
+              styles.price,
+              { fontSize: calculateFontSize(price) },
+              price === 0 && { fontWeight: "bold" },
+            ]}
           >
             {price === 0 ? "FREE" : `$${price}`}
-            </Text>
+          </Text>
         </View>
         {children}
       </View>
@@ -143,10 +144,14 @@ const CardOverlay2 = memo(({ children, price }) => {
         <View style={styles.topL_circle} />
         <View style={styles.priceContainer}>
           <Text
-            style={[styles.price, { fontSize: calculateFontSize(price) }, price === 0 && {fontWeight: "bold"}]}
+            style={[
+              styles.price,
+              { fontSize: calculateFontSize(price) },
+              price === 0 && { fontWeight: "bold" },
+            ]}
           >
             {price === 0 ? "FREE" : `$${price}`}
-            </Text>
+          </Text>
         </View>
         {children}
       </View>
@@ -210,7 +215,7 @@ const CustomItem = memo(
         {deleteVisible && <DeleteButton onDeletePress={onDeletePress} />}
       </CardOverlay1>
     );
-  }
+  },
 );
 
 const Listing = ({ item, origin, removeListing, userLocation }) => {
@@ -223,13 +228,13 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
           item.Latitude,
           item.Longitude,
           userLocation.latitude,
-          userLocation.longitude
+          userLocation.longitude,
         )
-      : "Unknown"
+      : "Unknown",
   );
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
-    origin == "profile" && item.Username == getStoredUsername()
+    origin == "profile" && item.Username == getStoredUsername(),
   );
 
   const toggleDeleteModal = () => {
@@ -335,7 +340,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 parallaxScrollingScale: 1,
                 parallaxAdjacentItemScale: 0.5,
                 parallaxScrollingOffset: 10,
-              }
+              },
             )}
           />
         </View>
@@ -359,8 +364,17 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 color="white"
                 style={styles.locationPin}
               />
-              <Text style={[styles.city, {fontSize: calculateFontSizeLocation(item.City)}]}>{item.City}</Text>
-              <Text style={styles.distance}>{distance > 0 ? distance + "miles": "Less than 1 mile"} </Text>
+              <Text
+                style={[
+                  styles.city,
+                  { fontSize: calculateFontSizeLocation(item.City) },
+                ]}
+              >
+                {item.City}
+              </Text>
+              <Text style={styles.distance}>
+                {distance > 0 ? distance + "miles" : "Less than 1 mile"}{" "}
+              </Text>
             </View>
             <View
               style={[

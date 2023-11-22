@@ -24,11 +24,11 @@ import Swiper from "react-native-swiper";
 import Colors from "../constants/Colors";
 import { Image } from "expo-image";
 import * as SecureStore from "expo-secure-store";
-import { debounce } from 'lodash';
+import { debounce } from "lodash";
 import NoWifi from "../components/noWifi";
 import NoListings from "../components/noListings";
 import BouncePulse from "../components/visuals/BouncePulse.js";
-import CustomScrollView  from "../components/CustomScrollView.js";
+import CustomScrollView from "../components/CustomScrollView.js";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import { getLocationWithRetry } from "../constants/Utilities";
 import TopBar from "../components/TopBarHome.js";
@@ -72,7 +72,7 @@ const HomeScreen = ({ route }) => {
         // Detect left swipe
         translateX.value = Math.max(
           -screenWidth,
-          context.startX + event.translationX
+          context.startX + event.translationX,
         );
       }
     },
@@ -80,7 +80,7 @@ const HomeScreen = ({ route }) => {
       const shouldClose = translateX.value < -screenWidth * 0.65;
       translateX.value = withTiming(
         shouldClose ? -screenWidth : -screenWidth * 0.6,
-        { duration: 300 }
+        { duration: 300 },
       );
       if (shouldClose) {
         runOnJS(setIsDrawerOpen)(false);
@@ -104,7 +104,7 @@ const HomeScreen = ({ route }) => {
       const shouldOpen = translateX.value > -screenWidth * 0.9;
       translateX.value = withTiming(
         shouldOpen ? -screenWidth * 0.6 : -screenWidth,
-        { duration: 300 }
+        { duration: 300 },
       );
       if (shouldOpen) {
         runOnJS(setIsDrawerOpen)(true);
@@ -162,7 +162,7 @@ const HomeScreen = ({ route }) => {
     let newSelectedTags;
     if (isAlreadySelected) {
       newSelectedTags = selectedTags.filter(
-        (tagName) => tagName !== pressedTagName
+        (tagName) => tagName !== pressedTagName,
       );
     } else {
       newSelectedTags = [...selectedTags, pressedTagName];
@@ -176,18 +176,18 @@ const HomeScreen = ({ route }) => {
   const filterListings = async () => {
     console.log("Filtering listings...");
     if (selectedTags.length === 0) return fetchListings();
-    
+
     try {
       //make string tags=[]={index0}&tags=[]={index1}...
       const mergedTags = selectedTags.join("&tags[]=");
       console.log(mergedTags);
       const listingsResponse = await fetch(
         `${serverIp}/api/listings?username=${encodeURIComponent(
-          await SecureStore.getItemAsync("username")
+          await SecureStore.getItemAsync("username"),
         )}&tags[]=${mergedTags}`,
         {
           method: "GET",
-        }
+        },
       );
 
       if (listingsResponse.status <= 201) {
@@ -217,11 +217,11 @@ const HomeScreen = ({ route }) => {
       console.log("Longitude:", longitude);
       const listingsResponse = await fetch(
         `${serverIp}/api/listings?username=${encodeURIComponent(
-          await SecureStore.getItemAsync("username")
+          await SecureStore.getItemAsync("username"),
         )}&latitude=${latitude}&longitude=${longitude}&distance=${100}`, // FIXME: Consider encrypting this data. This 1 value needs to be determined by the UI slider
         {
           method: "GET",
-        }
+        },
       );
 
       if (listingsResponse.status <= 201) {
@@ -281,28 +281,29 @@ const HomeScreen = ({ route }) => {
   };
 
   const [scrollY, setScrollY] = useState(0);
+  const [scrollX, setScrollX] = useState(0);
   const [isHoldStateOfRefresh, setHoldStateOfRefresh] = useState(false);
+  const [isHorizontal, setIsHorizontal] = useState(false);
 
   const refreshThreshold = -100; // Adjust this threshold
 
-useEffect(() => {
-  if (scrollY <= refreshThreshold && !refreshing) {
-    setRefreshing(true);
-  }
-  if (isHoldStateOfRefresh) {
-    setScrollY(-60.5);
-  }
-}, [scrollY, refreshing]);
+  useEffect(() => {
+    if (scrollY <= refreshThreshold && !refreshing) {
+      setRefreshing(true);
+    }
+    if (isHoldStateOfRefresh) {
+      setScrollY(-60.5);
+    }
+  }, [scrollY, refreshing]);
 
-useEffect(() => {
-  if (scrollY > 0) {
-    setScrollY(0);
-  }
-});
-
+  useEffect(() => {
+    if (scrollY > 0) {
+      setScrollY(0);
+    }
+  });
 
   const calculateOpacity = () => {
-    if (scrollY === 0 || scrollY === undefined){
+    if (scrollY === 0 || scrollY === undefined) {
       return 0;
     }
     let opacity = -scrollY / 100; // Adjust 100 to control the fade speed
@@ -318,23 +319,28 @@ useEffect(() => {
   }, []);
 
   const handleSwiperIndexChange = (index) => {
-  setCurrentIndex(index);
-};
-useEffect(() => {
-  console.log(`Refreshing: ${refreshing}, ScrollY: ${scrollY}`);
-}, [refreshing, scrollY]);
+    setCurrentIndex(index);
+  };
+  useEffect(() => {
+    console.log(`Refreshing: ${refreshing}, ScrollY: ${scrollY}`);
+  }, [refreshing, scrollY]);
 
-const debouncedFetchListings = useCallback(debounce(() => {
-  setHoldStateOfRefresh(true);
-  fetchListings();
-}, 1000), []); // Adjust debounce time as needed
+  const debouncedFetchListings = useCallback(
+    debounce(() => {
+      setHoldStateOfRefresh(true);
+      fetchListings();
+    }, 1000),
+    [],
+  ); // Adjust debounce time as needed
 
-useEffect(() => {
-  if (scrollY <= refreshThreshold && !refreshing) {
-    setRefreshing(true);
-    debouncedFetchListings();
-  }
-}, [scrollY, refreshing, debouncedFetchListings]);
+  useEffect(() => {
+    if (scrollY <= refreshThreshold && !refreshing) {
+      setRefreshing(true);
+      debouncedFetchListings();
+    }
+  }, [scrollY, refreshing, debouncedFetchListings]);
+
+
 
   const LoadingView = memo(() => (
     <View style={styles.loadingContainer}>
@@ -342,11 +348,10 @@ useEffect(() => {
     </View>
   ));
 
-
   if (isLoading) {
     return (
       <SafeAreaView style={styles.screenfield}>
-        <TopBar handleMenuPress={ toggleTagDrawer }/>
+        <TopBar handleMenuPress={toggleTagDrawer} />
         <LoadingView />
       </SafeAreaView>
     );
@@ -354,7 +359,7 @@ useEffect(() => {
 
   return (
     <SafeAreaView style={styles.screenfield}>
-      <TopBar handleMenuPress = {toggleTagDrawer} />
+      <TopBar handleMenuPress={toggleTagDrawer} />
 
       <View
         style={styles.topTap}
@@ -364,49 +369,48 @@ useEffect(() => {
             swiperRef.current.scrollTo(0);
           }
         }}
-        />
+      />
 
-        {<BouncePulse opacity={refreshing ? 1 : calculateOpacity()} />}
+      {<BouncePulse opacity={refreshing ? 1 : calculateOpacity()} />}
       {networkConnected ? (
         listings && listings.length > 0 ? (
           Platform.OS === "ios" ? (
-            
             <ScrollView
-            onScroll={(event) => {
-              const y = event.nativeEvent.contentOffset.y;
-              setScrollY(y);
-            }}
-            horizontal={currentIndex === 0 ? false : true}
-            refreshControl={
-              <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              tintColor="transparent"
-              colors="transparent"
-              titleColor="transparent"
-                progressViewOffset={50}
+              onScroll={(event) => {
+                const y = event.nativeEvent.contentOffset.y;
+                const x = event.nativeEvent.contentOffset.x;
+                setScrollY(y);
+                setScrollX(x);
+              }}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  tintColor="transparent"
+                  colors="transparent"
+                  titleColor="transparent"
+                  progressViewOffset={50}
                 />
               }
               scrollEventThrottle={16}
-              >
-
-            <View style={styles.swiperContainer}>
+              scrollEnabled={currentIndex === 0 ? true : false}
+            >
+              <View style={styles.swiperContainer}>
                 <IOSSwiperComponent
                   swiperRef={swiperRef}
                   listings={listings}
                   userLocation={userLocation}
                   removeListing={(listingId) => {
                     setListings((prevListings) =>
-                    prevListings.filter(
-                      (item) => item.ListingId !== listingId
-                      )
-                      );
-                    }}
-                    onIndexChanged={handleSwiperIndexChange}
-                    />
-              
+                      prevListings.filter(
+                        (item) => item.ListingId !== listingId,
+                      ),
+                    );
+                  }}
+                  onIndexChanged={handleSwiperIndexChange}
+                />
               </View>
-                    </ScrollView>
+            </ScrollView>
           ) : (
             <View style={styles.swiperContainer}>
               <AndroidSwiperComponent
@@ -415,7 +419,7 @@ useEffect(() => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                  prevListings.filter((item) => item.ListingId !== listingId)
+                    prevListings.filter((item) => item.ListingId !== listingId),
                   );
                 }}
                 refreshControl={

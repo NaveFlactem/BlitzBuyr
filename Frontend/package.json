@@ -39,6 +39,7 @@
     "memoize-state": "^2.0.15",
     "react-native": "^0.72.6",
     "react-native-animatable": "^1.4.0",
+    "react-native-awesome-slider": "^2.4.5",
     "react-native-draggable-grid": "^2.1.8",
     "react-native-eject": "^0.2.0",
     "react-native-fast-image": "^8.6.3",

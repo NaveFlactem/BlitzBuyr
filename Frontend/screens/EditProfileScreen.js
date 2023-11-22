@@ -82,7 +82,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         const manipulateResult = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
         );
         let localUri = manipulateResult.uri;
         let filename = localUri.split("/").pop();
@@ -112,7 +112,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         const manipulateResult = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
         );
         let localUri = manipulateResult.uri;
         let filename = localUri.split("/").pop();
@@ -199,7 +199,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       {
         method: "DELETE",
         timeout: 10000,
-      }
+      },
     );
 
     const responseData = await response.json();
@@ -207,7 +207,7 @@ const EditProfileScreen = ({ navigation, route }) => {
     if (response.ok) {
       console.log(
         `Account ${getStoredUsername} deleted successfully:`,
-        responseData
+        responseData,
       );
       await clearStoredCredentials();
       alert("Account deleted successfully.");
@@ -239,13 +239,13 @@ const EditProfileScreen = ({ navigation, route }) => {
     >
       {/* Edit Profile and Go Back Arrow Column */}
       <View
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: 25,
-              flexDirection: "row",
-            }}
-          >
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: 25,
+          flexDirection: "row",
+        }}
+      >
         <TouchableOpacity
           onPress={() => {
             setLoading(true);
@@ -259,15 +259,15 @@ const EditProfileScreen = ({ navigation, route }) => {
         </TouchableOpacity>
 
         <Text
-            style={{
-              position: "absolute",
-              color: Colors.BB_darkRedPurple,
-              fontSize: 22.5,
-              fontWeight: "bold",
-              top: 20,
-            }}
-          >
-            Edit Profile
+          style={{
+            position: "absolute",
+            color: Colors.BB_darkRedPurple,
+            fontSize: 22.5,
+            fontWeight: "bold",
+            top: 20,
+          }}
+        >
+          Edit Profile
         </Text>
       </View>
 

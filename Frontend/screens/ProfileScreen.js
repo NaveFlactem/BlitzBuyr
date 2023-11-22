@@ -132,7 +132,7 @@ function ProfileScreen({ navigation, route }) {
       const username = getStoredUsername();
       if (route.params?.username) {
         console.log(
-          `Setting username to passed username ${route.params.username}`
+          `Setting username to passed username ${route.params.username}`,
         );
         // we navigated with a username passed as param (i.e. clicking someone's profile)
         setProfileName(route.params.username);
@@ -195,7 +195,7 @@ function ProfileScreen({ navigation, route }) {
         `${serverIp}/api/profile?username=${encodeURIComponent(username)}`,
         {
           method: "GET",
-        }
+        },
       );
       const profileData = await profileResponse.json();
 
@@ -205,7 +205,7 @@ function ProfileScreen({ navigation, route }) {
           userListings: profileData.userListings,
           userRatings: profileData.ratings.reduce(
             (acc, rating) => ({ ...acc, ...rating }),
-            {}
+            {},
           ),
           profilePicture: profileData.profilePicture,
           coverPicture: profileData.coverPicture,
@@ -213,8 +213,8 @@ function ProfileScreen({ navigation, route }) {
 
         const initialLikeStates = Object.fromEntries(
           [...profileData.likedListings, ...profileData.userListings].map(
-            (listing) => [listing.ListingId, listing.liked]
-          )
+            (listing) => [listing.ListingId, listing.liked],
+          ),
         );
         setLikeStates(initialLikeStates);
 
@@ -223,7 +223,7 @@ function ProfileScreen({ navigation, route }) {
         console.log(
           "Error fetching profile:",
           profileResponse.status,
-          profileData
+          profileData,
         );
       }
     } catch (err) {
@@ -261,7 +261,7 @@ function ProfileScreen({ navigation, route }) {
     console.log(
       `${
         newLikeStates[listingId] ? "Likered" : "UnLikered"
-      } listing ID ${listingId}`
+      } listing ID ${listingId}`,
     );
   };
 
@@ -331,18 +331,22 @@ function ProfileScreen({ navigation, route }) {
         />
         {/* Back button */}
         {!selfProfile && (
-  <TouchableOpacity
-    onPress={() => {
-      setLoading(true);
-      navigation.navigate("BottomNavOverlay");
-    }}
-    style={styles.circleContainer}
-  >
-    <View style={styles.circle}>
-      <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
-    </View>
-  </TouchableOpacity>
-)}
+          <TouchableOpacity
+            onPress={() => {
+              setLoading(true);
+              navigation.navigate("BottomNavOverlay");
+            }}
+            style={styles.circleContainer}
+          >
+            <View style={styles.circle}>
+              <MaterialCommunityIcons
+                name="arrow-left"
+                size={30}
+                color="black"
+              />
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* //Profile Picture */}
@@ -612,10 +616,10 @@ function ProfileScreen({ navigation, route }) {
                 setProfileInfo((prevProfileInfo) => ({
                   ...prevProfileInfo,
                   likedListings: prevProfileInfo.likedListings.filter(
-                    (item) => item.ListingId !== listingId
+                    (item) => item.ListingId !== listingId,
                   ),
                   userListings: prevProfileInfo.userListings.filter(
-                    (item) => item.ListingId !== listingId
+                    (item) => item.ListingId !== listingId,
                   ),
                 }));
 
@@ -692,7 +696,7 @@ const styles = StyleSheet.create({
     }),
   },
   circleContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 15,
     left: 15,
   },
@@ -700,11 +704,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'white',  // Set the background color as needed
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "white", // Set the background color as needed
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 1,
-    borderColor: 'black',  // Set the border color as needed
+    borderColor: "black", // Set the border color as needed
   },
 });
 

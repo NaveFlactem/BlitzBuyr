@@ -1,6 +1,10 @@
-import React, { memo } from 'react';
-import { View, StyleSheet } from 'react-native';
-import Animated, { useAnimatedScrollHandler, useSharedValue, runOnJS } from 'react-native-reanimated';
+import React, { memo } from "react";
+import { View, StyleSheet } from "react-native";
+import Animated, {
+  useAnimatedScrollHandler,
+  useSharedValue,
+  runOnJS,
+} from "react-native-reanimated";
 
 const CustomScrollView = memo(({ children, onRefresh, currentIndex }) => {
   const scrollY = useSharedValue(0);
@@ -43,9 +47,7 @@ const CustomScrollView = memo(({ children, onRefresh, currentIndex }) => {
       scrollEventThrottle={16}
       style={styles.scrollView}
     >
-      <View style={styles.contentContainer}>
-        {children}
-      </View>
+      <View style={styles.contentContainer}>{children}</View>
     </Animated.ScrollView>
   );
 });

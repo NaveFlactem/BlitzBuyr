@@ -10,7 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Colors from "../../constants/Colors";
 
-const BouncePulse = memo(({opacity}) => {
+const BouncePulse = memo(({ opacity }) => {
   const translateY1 = useSharedValue(0);
   const translateY2 = useSharedValue(0);
   const translateY3 = useSharedValue(0);
@@ -51,7 +51,7 @@ const BouncePulse = memo(({opacity}) => {
   });
 
   return (
-    <View style={[styles.container, {opacity: opacity}]}>
+    <View style={[styles.container, { opacity: opacity }]}>
       <Animated.View style={[styles.dot, animatedStyle1]} />
       <Animated.View style={[styles.dot, animatedStyle2]} />
       <Animated.View style={[styles.dot, animatedStyle3]} />

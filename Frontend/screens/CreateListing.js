@@ -140,17 +140,35 @@ class CreateListing extends Component {
    */
   checkValidListing = () => {
     let stateUpdates = {
-      isPriceInvalid: (this.state.price < 0 || this.state.price.length > 7 || this.state.price === ""),
-      isTitleInvalid: (this.state.title.length === 0 || this.state.title.length > 25),
-      isDescriptionInvalid: (this.state.description.length === 0 || this.state.description.length > 500),
-      isConditionInvalid: !["Excellent", "Good", "Fair", "Poor", "For Parts"].includes(this.state.condition),
-      isTransactionPreferenceInvalid: !["Pickup", "Meetup", "Delivery", "No Preference"].includes(this.state.transactionPreference),
-      isImageInvalid: (this.state.data.length === 0 || this.state.data.length > 9),
-      isTagInvalid: (this.state.selectedTags.length === 0)
+      isPriceInvalid:
+        this.state.price < 0 ||
+        this.state.price.length > 7 ||
+        this.state.price === "",
+      isTitleInvalid:
+        this.state.title.length === 0 || this.state.title.length > 25,
+      isDescriptionInvalid:
+        this.state.description.length === 0 ||
+        this.state.description.length > 500,
+      isConditionInvalid: ![
+        "Excellent",
+        "Good",
+        "Fair",
+        "Poor",
+        "For Parts",
+      ].includes(this.state.condition),
+      isTransactionPreferenceInvalid: ![
+        "Pickup",
+        "Meetup",
+        "Delivery",
+        "No Preference",
+      ].includes(this.state.transactionPreference),
+      isImageInvalid:
+        this.state.data.length === 0 || this.state.data.length > 9,
+      isTagInvalid: this.state.selectedTags.length === 0,
     };
-  
+
     this.setState(stateUpdates);
-  
+
     if (Object.values(stateUpdates).includes(true)) {
       return -1; // Invalid form
     }
@@ -163,7 +181,7 @@ class CreateListing extends Component {
     if (this.state.selectedTags.length === 0) {
       return 3; // No tags selected
     }
-  
+
     return 0; // Valid form
   };
 
@@ -177,67 +195,66 @@ class CreateListing extends Component {
 
     const { title, description, price, selectedTags, data } = this.state; // Destructuring state
 
-  const returnCode = this.checkValidListing();
-  if (returnCode !== 0) {
-    this.setState({ isLoading: false });
-    if (returnCode === -1) {
-      Alert.alert("Error", "Please correct the errors in the form.");
-    } else if (returnCode === 1) {
-      Alert.alert("No images selected", "Please select at least one image.");
-    } else if (returnCode === 2) {
-      Alert.alert("Too many images", "Please select no more than 9 images.");
-    } else if (returnCode === 3) {
-      Alert.alert("No tags selected", "Please select at least one tag.");
+    const returnCode = this.checkValidListing();
+    if (returnCode !== 0) {
+      this.setState({ isLoading: false });
+      if (returnCode === -1) {
+        Alert.alert("Error", "Please correct the errors in the form.");
+      } else if (returnCode === 1) {
+        Alert.alert("No images selected", "Please select at least one image.");
+      } else if (returnCode === 2) {
+        Alert.alert("Too many images", "Please select no more than 9 images.");
+      } else if (returnCode === 3) {
+        Alert.alert("No tags selected", "Please select at least one tag.");
+      }
+      return;
     }
-    return;
-  }
-
 
     try {
-        const formData = new FormData();
+      const formData = new FormData();
 
-        data.forEach((image, index) => {
-          // Append each image as a file
-          formData.append(`image_${index}`, {
-            uri: image.uri, // The URI of the image file
-            name: `image_${index}.jpg`, // The desired file name
-            type: "image/jpeg", // The content type of the file
-          });
+      data.forEach((image, index) => {
+        // Append each image as a file
+        formData.append(`image_${index}`, {
+          uri: image.uri, // The URI of the image file
+          name: `image_${index}.jpg`, // The desired file name
+          type: "image/jpeg", // The content type of the file
         });
+      });
 
-        let location = await getLocationWithRetry();
-        const { latitude, longitude } = location.coords;
+      let location = await getLocationWithRetry();
+      const { latitude, longitude } = location.coords;
 
-        // Convert location to a JSON string
-        const locationString = JSON.stringify({ latitude, longitude });
+      // Convert location to a JSON string
+      const locationString = JSON.stringify({ latitude, longitude });
 
-        // Append the location to the formData
-        formData.append("location", locationString);
+      // Append the location to the formData
+      formData.append("location", locationString);
 
-        console.log("Location:", latitude, longitude);
+      console.log("Location:", latitude, longitude);
 
-        formData.append("price", price);
-        formData.append("title", title);
-        formData.append("description", description);
-        formData.append("tags", JSON.stringify(selectedTags));
-        formData.append("username", await SecureStore.getItemAsync("username"));
+      formData.append("price", price);
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("tags", JSON.stringify(selectedTags));
+      formData.append("username", await SecureStore.getItemAsync("username"));
 
-        console.log("FormData:", formData);
-        const response = await fetch(`${serverIp}/api/createlisting`, {
-          method: "POST",
-          body: formData,
-          timeout: 10000,
-        });
+      console.log("FormData:", formData);
+      const response = await fetch(`${serverIp}/api/createlisting`, {
+        method: "POST",
+        body: formData,
+        timeout: 10000,
+      });
 
-        if (response.status <= 201) {
-          const responseData = await response.json();
-          console.log("Listing created successfully:", responseData);
-          this.destructor();
-          this.props.navigation.navigate("Home", { refresh: true });
-        } else {
-          console.error("HTTP error! Status: ", response.status);
-          Alert.alert("Error", "Failed to create listing.");
-        }
+      if (response.status <= 201) {
+        const responseData = await response.json();
+        console.log("Listing created successfully:", responseData);
+        this.destructor();
+        this.props.navigation.navigate("Home", { refresh: true });
+      } else {
+        console.error("HTTP error! Status: ", response.status);
+        Alert.alert("Error", "Failed to create listing.");
+      }
     } catch (error) {
       console.error("Error creating listing:", error);
       Alert.alert("Error", "An unexpected error occurred.");
@@ -297,7 +314,7 @@ class CreateListing extends Component {
           style: "cancel",
         },
       ],
-      { cancelable: true }
+      { cancelable: true },
     );
   };
 
@@ -363,7 +380,7 @@ class CreateListing extends Component {
   processSelectedImages = async (assets) => {
     // Process multiple images
     const processedImages = await Promise.all(
-      assets.map(async (asset) => this.manipulateImage(asset.uri))
+      assets.map(async (asset) => this.manipulateImage(asset.uri)),
     );
     this.setState((prevState) => ({
       data: [...prevState.data, ...processedImages.filter(Boolean)],
@@ -515,7 +532,7 @@ class CreateListing extends Component {
       if (isAlreadySelected) {
         // If already selected, remove it from the array
         newSelectedTags = prevState.selectedTags.filter(
-          (tagName) => tagName !== pressedTagName
+          (tagName) => tagName !== pressedTagName,
         );
       } else {
         // If not selected, add it to the array
@@ -569,8 +586,8 @@ class CreateListing extends Component {
           <TopBar />
           <MinorLoadingView />
         </SafeAreaView>
-      )};
-
+      );
+    }
 
     const rowsOfTags = this.groupTagsIntoRows(this.state.tagsData, 3);
     return (
@@ -595,8 +612,8 @@ class CreateListing extends Component {
                       {this.state.title == ""
                         ? "Title is required"
                         : this.state.title.length > 25
-                        ? "Title too long"
-                        : "Must enter a valid title"}
+                          ? "Title too long"
+                          : "Must enter a valid title"}
                     </Text>
                   </View>
                 ) : (
@@ -631,8 +648,8 @@ class CreateListing extends Component {
                       {this.state.description.length > 500
                         ? "Description too long"
                         : this.state.description.length === 0
-                        ? "Description is required"
-                        : "Must enter a valid description"}
+                          ? "Description is required"
+                          : "Must enter a valid description"}
                     </Text>
                   </View>
                 )}
@@ -674,10 +691,10 @@ class CreateListing extends Component {
                     {this.state.price == ""
                       ? "Price is required"
                       : this.state.price < 0
-                      ? "Invalid price"
-                      : this.state.price.length > 7
-                      ? "Price too long"
-                      : "Must enter a valid price"}
+                        ? "Invalid price"
+                        : this.state.price.length > 7
+                          ? "Price too long"
+                          : "Must enter a valid price"}
                   </Text>
                 </View>
               ) : (
@@ -721,8 +738,7 @@ class CreateListing extends Component {
                 onValueChange={(itemValue, itemIndex) => {
                   this.setState({ condition: itemValue });
                   this.setState({ isConditionInvalid: false });
-                }
-                }
+                }}
                 items={[
                   { label: "Excellent", value: "Excellent" },
                   { label: "Good", value: "Good" },
@@ -752,9 +768,7 @@ class CreateListing extends Component {
                 onValueChange={(itemValue, itemIndex) => {
                   this.setState({ transactionPreference: itemValue });
                   this.setState({ isTransactionPreferenceInvalid: false });
-                }
-                }
-                
+                }}
                 items={[
                   { label: "Pickup", value: "Pickup" },
                   { label: "Meetup", value: "Meetup" },
@@ -1147,7 +1161,6 @@ const styles = StyleSheet.create({
     width: "40%",
     color: Colors.white,
     justifyContent: "center",
-
   },
   button: {
     width: 150,
