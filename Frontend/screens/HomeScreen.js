@@ -214,6 +214,7 @@ const HomeScreen = ({ route }) => {
     } finally {
       setIsLoading(false);
       setRefreshing(false);
+      swiperRef.current?.scrollTo(0);
       setHoldStateOfRefresh(false);
       setScrollY(0);
     }
@@ -331,9 +332,7 @@ const HomeScreen = ({ route }) => {
     else getUserLocation();
   }, []);
 
-  const handleSwiperIndexChange = (index) => {
-    setCurrentIndex(index);
-  };
+
   useEffect(() => {
     console.log(`Refreshing: ${refreshing}, ScrollY: ${scrollY}`);
   }, [refreshing, scrollY]);
@@ -385,7 +384,7 @@ const HomeScreen = ({ route }) => {
         }}
       />
 
-      {<BouncePulse opacity={refreshing ? 1 : calculateOpacity()} />}
+      {Platform.OS === "ios" && <BouncePulse opacity={refreshing ? 1 : calculateOpacity()} />}
       {networkConnected ? (
         listings && listings.length > 0 ? (
           Platform.OS === "ios" ? (
@@ -418,7 +417,6 @@ const HomeScreen = ({ route }) => {
                       ),
                     );
                   }}
-                  //onIndexChanged={handleSwiperIndexChange}
                 />
               </View>
             </ScrollView>
@@ -440,7 +438,6 @@ const HomeScreen = ({ route }) => {
                     progressViewOffset={50}
                   />
                 }
-                //onIndexChanged={handleSwiperIndexChange}
               />
             </View>
           )
@@ -525,8 +522,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: Colors.BB_bone,
-    zIndex: 100,
+    backgroundColor: Colors.BB_pink,
   },
   swipeArea: {
     position: "absolute",
