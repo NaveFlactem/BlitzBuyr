@@ -96,7 +96,7 @@ router.post("/login", function (req, res) {
       } else {
         return res.status(401).json({ error: "Incorrect password" });
       }
-    }
+    },
   );
 });
 
@@ -171,7 +171,7 @@ router.post("/register", (req, res) => {
               console.error("Error registering the account:", err);
               return res.status(500).json({ error: "Internal Server Error" });
             }
-          }
+          },
         );
 
         // create new profile for the account
@@ -187,10 +187,10 @@ router.post("/register", (req, res) => {
               message: "Account created",
               username: username,
             });
-          }
+          },
         );
       }
-    }
+    },
   );
 });
 
@@ -260,7 +260,7 @@ router.delete("/deleteaccount", function (req, res) {
       } else {
         return res.status(401).json({ error: "Incorrect password" });
       }
-    }
+    },
   );
 });
 

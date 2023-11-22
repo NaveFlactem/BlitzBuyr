@@ -43,7 +43,7 @@ function createOrUpdateTable(db, tableDefinition) {
   db.serialize(() => {
     // Extract table name from the definition
     const tableName = tableDefinition.match(
-      /CREATE TABLE IF NOT EXISTS (\w+)/i
+      /CREATE TABLE IF NOT EXISTS (\w+)/i,
     )[1];
 
     // Check if the table already exists
@@ -67,7 +67,7 @@ function createOrUpdateTable(db, tableDefinition) {
             areTableDefinitionsEqual(existingTableDefinition, tableDefinition)
           ) {
             console.log(
-              `Table '${tableName}' structure is already up to date.`
+              `Table '${tableName}' structure is already up to date.`,
             );
           } else {
             // If the table structures are different, alter it
@@ -77,7 +77,7 @@ function createOrUpdateTable(db, tableDefinition) {
             db.run(
               tableDefinition.replace(
                 new RegExp(tableName, "g"),
-                tempTableName
+                tempTableName,
               ),
               (err) => {
                 if (err) {
@@ -111,18 +111,18 @@ function createOrUpdateTable(db, tableDefinition) {
                           }
 
                           console.log(
-                            `Table '${tableName}' altered successfully.`
+                            `Table '${tableName}' altered successfully.`,
                           );
-                        }
+                        },
                       );
                     });
-                  }
+                  },
                 );
-              }
+              },
             );
           }
         }
-      }
+      },
     );
   });
 }

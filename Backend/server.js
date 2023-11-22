@@ -16,7 +16,7 @@ app.use(
   "/img",
   express.static(path.join(__dirname, "./img"), {
     enableBrotli: true, // Enable Brotli compression
-  })
+  }),
 );
 
 /**

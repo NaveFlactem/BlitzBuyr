@@ -8,9 +8,9 @@ import Animated, {
   useAnimatedStyle,
   withDelay,
 } from "react-native-reanimated";
-import Colors from "../constants/Colors";
+import Colors from "../../constants/Colors";
 
-const BouncePulse = memo(() => {
+const BouncePulse = memo(({ opacity }) => {
   const translateY1 = useSharedValue(0);
   const translateY2 = useSharedValue(0);
   const translateY3 = useSharedValue(0);
@@ -51,7 +51,7 @@ const BouncePulse = memo(() => {
   });
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { opacity: opacity }]}>
       <Animated.View style={[styles.dot, animatedStyle1]} />
       <Animated.View style={[styles.dot, animatedStyle2]} />
       <Animated.View style={[styles.dot, animatedStyle3]} />
@@ -64,6 +64,7 @@ const screenHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
   container: {
+    position: "absolute",
     flexDirection: "row",
     alignItems: "center",
     alignSelf: "center",
@@ -71,6 +72,7 @@ const styles = StyleSheet.create({
     height: 0.1 * screenHeight,
   },
   dot: {
+    top: 0.08 * screenHeight,
     backgroundColor: Colors.BB_darkRedPurple,
     width: 20,
     height: 20,

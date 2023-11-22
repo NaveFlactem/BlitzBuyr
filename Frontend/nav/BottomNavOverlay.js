@@ -8,7 +8,7 @@ import {
   Dimensions,
   Platform,
 } from "react-native";
-import Icon, { Icons } from "../components/Icons";
+import Icon, { Icons } from "../components/visuals/Icons";
 import Colors from "../constants/Colors";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
