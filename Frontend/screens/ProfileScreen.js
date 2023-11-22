@@ -28,11 +28,17 @@ import {
   clearStoredCredentials,
 } from "./auth/Authenticate.js";
 import { useIsFocused } from "@react-navigation/native";
-import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  Entypo,
+  MaterialCommunityIcons,
+  AntDesign,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
-import BouncePulse from "../components/BouncePulse";
+import BouncePulse from "../components/visuals/BouncePulse.js";
 import { getLocationWithRetry } from "../constants/Utilities";
+import { Linking } from "react-native";
 
 const UserListingsRoute = ({ profileInfo, onPressListing }) => (
   <View style={{ flex: 1 }}>
@@ -100,6 +106,114 @@ const LikedListingsRoute = ({ profileInfo, onPressListing }) => (
   </View>
 );
 
+const handleContactClick = async (key, data) => {
+  switch (key) {
+    case "Email":
+      console.log("Email");
+      try {
+        await Linking.openURL(
+          `mailto:${data}?subject=${encodeURIComponent(
+            "BlitzBuyr"
+          )}&body=${encodeURIComponent("")}`
+        );
+      } catch (error) {
+        console.error("Error opening email:", error);
+      }
+      break;
+    case "PhoneNumber":
+      try {
+        //Future: API to call number. Phone number is in data
+      } catch (error) {
+        console.error("Error opening phoneNumber:", error);
+      }
+      break;
+    default:
+      console.log("default");
+      try {
+        await Linking.openURL(`http://${key}.com/${data}`);
+      } catch (error) {
+        console.error(`Error opening ${key}:`, error);
+      }
+      break;
+  }
+};
+
+const ContactInfoRoute = ({
+  selfProfile,
+  contactInfo,
+  setContactInfo,
+}) => (
+  <View style={styles.contactInfoContainer}>
+    <ScrollView>
+      <View>
+        {Object.entries(contactInfo).map(
+          ([key, value]) =>
+            (selfProfile ||
+              (!selfProfile && !value.hidden)) && (
+              <View key={key}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  {/* Icon + Handle */}
+                  <TouchableOpacity
+                    onPress={() => handleContactClick(key, value.data)}
+                    style={styles.socialIcons}
+                  >
+                    <AntDesign
+                      name={value.icon}
+                      size={24}
+                      color="black"
+                      style={{
+                        opacity: value.hidden ? 0.25 : 1.0,
+                      }}
+                    />
+                    <Text
+                      style={[
+                        styles.socialText,
+                        { opacity: value.hidden ? 0.25 : 1.0 },
+                      ]}
+                    >
+                      {value.data}
+                    </Text>
+                  </TouchableOpacity>
+
+                  {/* Visibility */}
+                  {selfProfile && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setContactInfo((prevContactInfo) => ({
+                          ...prevContactInfo,
+                          [key]: {
+                            ...prevContactInfo[key],
+                            hidden: !prevContactInfo[key].hidden,
+                            // This is where the contact hidden table should be changed
+                          },
+                        }));
+                      }}
+                      style={[
+                        styles.socialIcons,
+                        { opacity: value.hidden ? 0.25 : 1.0 },
+                      ]}
+                    >
+                      <MaterialIcons
+                        name="visibility"
+                        size={24}
+                        color={Colors.BB_darkRedPurple}
+                      />
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </View>
+            )
+        )}
+      </View>
+    </ScrollView>
+  </View>
+);
+
 function ProfileScreen({ navigation, route }) {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
@@ -117,6 +231,16 @@ function ProfileScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState(null);
   const [LikeStates, setLikeStates] = useState({});
 
+  //Use states for contact info
+  const [contactInfo, setContactInfo] = useState({
+    PhoneNumber: { data: "2132149702", hidden: false, icon: "phone" },
+    Email: { data: "Email", hidden: false, icon: "mail" },
+    LinkedIn: { data: "LinkedIn", hidden: false, icon: "linkedin-square" },
+    Instagram: { data: "Instagram", hidden: false, icon: "instagram" },
+    Facebook: { data: "Facebook", hidden: false, icon: "facebook-square" },
+    Twitter: { data: "Twitter", hidden: false, icon: "twitter"} 
+  });
+
   const onBackPress = () => {
     return true;
   };
@@ -132,7 +256,7 @@ function ProfileScreen({ navigation, route }) {
       const username = getStoredUsername();
       if (route.params?.username) {
         console.log(
-          `Setting username to passed username ${route.params.username}`
+          `Setting username to passed username ${route.params.username}`,
         );
         // we navigated with a username passed as param (i.e. clicking someone's profile)
         setProfileName(route.params.username);
@@ -170,21 +294,18 @@ function ProfileScreen({ navigation, route }) {
     if (userLocation && profileInfo) {
       setLoading(false);
     }
-    /*
-    console.log("User's Listings:", profileInfo.userListings);
-    console.log("User's Liked Listings:", profileInfo.likedListings);
-    console.log("User's Ratings:", profileInfo.userRatings);
-    console.log("Profile Picture URL:", profileInfo.profilePicture);
-    console.log("Cover Picture URL:", profileInfo.coverPicture);
-    */
 
     if (selfProfile) {
       setRoutes([
         { key: "first", title: "My Listings" },
-        { key: "second", title: "Liked Listings" },
+        { key: "second", title: "Liked" },
+        { key: "third", title: "Contact" },
       ]);
     } else {
-      setRoutes([{ key: "first", title: `${profileName}'s listings` }]);
+      setRoutes([
+        { key: "first", title: `${profileName}'s listings` },
+        { key: "third", title: `${profileName}'s contact` },
+      ]);
     }
   }, [profileInfo, userLocation]);
 
@@ -195,7 +316,7 @@ function ProfileScreen({ navigation, route }) {
         `${serverIp}/api/profile?username=${encodeURIComponent(username)}`,
         {
           method: "GET",
-        }
+        },
       );
       const profileData = await profileResponse.json();
 
@@ -205,7 +326,7 @@ function ProfileScreen({ navigation, route }) {
           userListings: profileData.userListings,
           userRatings: profileData.ratings.reduce(
             (acc, rating) => ({ ...acc, ...rating }),
-            {}
+            {},
           ),
           profilePicture: profileData.profilePicture,
           coverPicture: profileData.coverPicture,
@@ -213,8 +334,8 @@ function ProfileScreen({ navigation, route }) {
 
         const initialLikeStates = Object.fromEntries(
           [...profileData.likedListings, ...profileData.userListings].map(
-            (listing) => [listing.ListingId, listing.liked]
-          )
+            (listing) => [listing.ListingId, listing.liked],
+          ),
         );
         setLikeStates(initialLikeStates);
 
@@ -223,7 +344,7 @@ function ProfileScreen({ navigation, route }) {
         console.log(
           "Error fetching profile:",
           profileResponse.status,
-          profileData
+          profileData,
         );
       }
     } catch (err) {
@@ -261,7 +382,7 @@ function ProfileScreen({ navigation, route }) {
     console.log(
       `${
         newLikeStates[listingId] ? "Likered" : "UnLikered"
-      } listing ID ${listingId}`
+      } listing ID ${listingId}`,
     );
   };
 
@@ -282,6 +403,7 @@ function ProfileScreen({ navigation, route }) {
               color: Colors.BB_darkRedPurple,
               fontWeight: "bold",
               fontSize: 14,
+              textAlign: "center",
             },
           ]}
         >
@@ -331,18 +453,26 @@ function ProfileScreen({ navigation, route }) {
         />
         {/* Back button */}
         {!selfProfile && (
-  <TouchableOpacity
-    onPress={() => {
-      setLoading(true);
-      navigation.navigate("BottomNavOverlay");
-    }}
-    style={styles.circleContainer}
-  >
-    <View style={styles.circle}>
-      <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
-    </View>
-  </TouchableOpacity>
-)}
+                  <TouchableOpacity
+                    onPress={() => {
+                      setLoading(true);
+                      navigation.navigate("BottomNavOverlay");
+                    }}
+                    style={styles.circleContainer}
+                  >
+                    <View style={styles.circle}>
+                      <MaterialCommunityIcons
+               
+                name="arrow-left"
+               
+                size={30}
+               
+                color="black"
+             
+              />
+                    </View>
+                  </TouchableOpacity>
+                )}
       </View>
 
       {/* //Profile Picture */}
@@ -567,6 +697,14 @@ function ProfileScreen({ navigation, route }) {
                     onPressListing={onPressListing}
                   />
                 );
+              case "third":
+                return (
+                  <ContactInfoRoute
+                    selfProfile={selfProfile}
+                    contactInfo={contactInfo}
+                    setContactInfo={setContactInfo}
+                  />
+                );
               default:
                 return null;
             }
@@ -612,10 +750,10 @@ function ProfileScreen({ navigation, route }) {
                 setProfileInfo((prevProfileInfo) => ({
                   ...prevProfileInfo,
                   likedListings: prevProfileInfo.likedListings.filter(
-                    (item) => item.ListingId !== listingId
+                    (item) => item.ListingId !== listingId,
                   ),
                   userListings: prevProfileInfo.userListings.filter(
-                    (item) => item.ListingId !== listingId
+                    (item) => item.ListingId !== listingId,
                   ),
                 }));
 
@@ -639,6 +777,25 @@ const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
+  contactInfoContainer: {
+    flexDirection: "column",
+    paddingVertical: 20,
+  },
+  socialIcons: {
+    flexDirection: "row",
+    paddingVertical: 5,
+    alignContent: "center",
+    paddingHorizontal: 10,
+    textAlign: "center",
+  },
+  socialText: {
+    marginVertical: 1.5,
+    marginHorizontal: 10,
+    fontWeight: "bold",
+    justifyContent: "center",
+    alignContent: "center",
+    textAlign: "center",
+  },
   noListingsText: {
     textAlign: "center",
     marginTop: 110,
@@ -692,7 +849,6 @@ const styles = StyleSheet.create({
     }),
   },
   circleContainer: {
-    position: 'absolute',
     top: 15,
     left: 15,
   },
@@ -700,11 +856,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'white',  // Set the background color as needed
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "white", // Set the background color as needed
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 1,
-    borderColor: 'black',  // Set the border color as needed
+    borderColor: "black", // Set the border color as needed
   },
 });
 

@@ -53,7 +53,7 @@ router.post("/like", function (req, res) {
       return res.status(200).json({
         message: `${username} successfully liked listing ${listingId}`,
       });
-    }
+    },
   );
 });
 
@@ -99,7 +99,7 @@ router.delete("/like", function (req, res) {
       return res.status(200).json({
         message: `${username} successfully unliked listing ${listingId}`,
       });
-    }
+    },
   );
 });
 
@@ -205,7 +205,7 @@ router.post("/rate", async function (req, res) {
           reject(err);
         }
         resolve(row);
-      }
+      },
     );
   });
 
@@ -222,7 +222,7 @@ router.post("/rate", async function (req, res) {
         return res.status(200).json({
           message: `${username} updated the rating for ${userRated} to ${rating}`,
         });
-      }
+      },
     );
   } else {
     // User has not rated, insert a new rating
@@ -237,7 +237,7 @@ router.post("/rate", async function (req, res) {
         return res.status(200).json({
           message: `${username} successfully rated ${userRated} with ${rating}`,
         });
-      }
+      },
     );
   }
 });
@@ -274,7 +274,7 @@ router.delete("/rate", function (req, res) {
       return res.status(200).json({
         message: `${username} successfully removed their rating of ${userRated}`,
       });
-    }
+    },
   );
 });
 
@@ -320,7 +320,7 @@ router.get("/ratings", function (req, res) {
           AverageRating: row.AverageRating,
           RatingCount: row.RatingCount,
         });
-      }
+      },
     );
   } else {
     // If no username was provided, return all ratings in the db
@@ -370,7 +370,7 @@ router.get("/profile", async function (req, res) {
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     });
     if (!userResult)
@@ -387,7 +387,7 @@ router.get("/profile", async function (req, res) {
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     });
 
@@ -402,7 +402,7 @@ router.get("/profile", async function (req, res) {
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     });
 
@@ -417,7 +417,7 @@ router.get("/profile", async function (req, res) {
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     });
 
@@ -432,18 +432,18 @@ router.get("/profile", async function (req, res) {
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     });
 
     // append the images to both
     const likedListings = await getImagesFromListings(
       likedListingsResult,
-      likedListingsResult
+      likedListingsResult,
     );
     const userListings = await getImagesFromListings(
       userListingsResult,
-      likedListingsResult
+      likedListingsResult,
     );
 
     return res.status(200).json({
@@ -498,7 +498,7 @@ router.get("/pfp", function (req, res) {
 
       // return the image in the result's URI
       res.redirect(row.ProfilePicture);
-    }
+    },
   );
 });
 
@@ -534,11 +534,11 @@ router.post("/editprofile", imageUpload, function (req, res) {
   const { username, contactInfo, profileName, password } = req.body;
 
   const profilePicture = req.files.find(
-    (file) => file.fieldname === "profilePicture"
+    (file) => file.fieldname === "profilePicture",
   );
 
   const coverPicture = req.files.find(
-    (file) => file.fieldname === "coverPicture"
+    (file) => file.fieldname === "coverPicture",
   );
 
   const newProfilePicture = profilePicture
@@ -581,11 +581,11 @@ router.post("/editprofile", imageUpload, function (req, res) {
 
           // Respond with success
           res.status(200).json({ message: "Profile updated successfully" });
-        }
+        },
       );
 
       console.log("Rows affected:", this.changes);
-    }
+    },
   );
 });
 
