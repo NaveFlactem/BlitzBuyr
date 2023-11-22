@@ -178,20 +178,25 @@ const HomeScreen = ({ route }) => {
   const fetchListings = async () => {
     console.log("Fetching listings...");
     console.log("Tags:", selectedTags);
-    console.log("Distance:", distance);
+    console.log("Distance:", distance < 510? distance: "No Limit");
     if (route.params?.refresh) route.params.refresh = false;
 
     try {
       const { latitude, longitude } = userLocation;
-      const mergedTags = selectedTags.join("&tags[]=");
+      const mergedTags = "&tags[]=" + selectedTags.join("&tags[]=");
+      console.log(mergedTags);
       console.log("User Location:", userLocation);
       console.log("Latitude:", latitude);
       console.log("Longitude:", longitude);
       const username = encodeURIComponent(
         await SecureStore.getItemAsync("username"),
       );
+      let fetchUrl = `${serverIp}/api/listings?username=${username}&latitude=${latitude}&longitude=${longitude}`;
+      if (distance < 510) fetchUrl += `&distance=${distance}`; // don't add distance on unlimited
+      if (selectedTags.length > 0) fetchUrl += `&${mergedTags}`;
+      console.log(fetchUrl);
       const listingsResponse = await fetch(
-        `${serverIp}/api/listings?username=${username}&latitude=${latitude}&longitude=${longitude}&distance=${distance}&${mergedTags}`,
+        fetchUrl,
         {
           method: "GET",
         },
