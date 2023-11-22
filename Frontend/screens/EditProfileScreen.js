@@ -82,7 +82,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         const manipulateResult = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
         );
         let localUri = manipulateResult.uri;
         let filename = localUri.split("/").pop();
@@ -112,7 +112,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         const manipulateResult = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
         );
         let localUri = manipulateResult.uri;
         let filename = localUri.split("/").pop();
@@ -188,6 +188,15 @@ const EditProfileScreen = ({ navigation, route }) => {
   const [confirmUsername, setConfirmUsername] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const [contactInfo, setContactInfo] = useState({
+    PhoneNumber: { data: "2132149702", icon: "phone" },
+    Email: { data: "Email", icon: "mail" },
+    LinkedIn: { data: "LinkedIn", icon: "linkedin-square" },
+    Instagram: { data: "Instagram", icon: "instagram" },
+    Facebook: { data: "Facebook", icon: "facebook-square" },
+    Twitter: { data: "Twitter", icon: "twitter" },
+  });
+
   const confirmDeletion = () => {
     deleteAccount(confirmUsername, confirmPassword);
     setConfirmationModalVisible(false);
@@ -199,7 +208,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       {
         method: "DELETE",
         timeout: 10000,
-      },
+      }
     );
 
     const responseData = await response.json();
@@ -207,7 +216,7 @@ const EditProfileScreen = ({ navigation, route }) => {
     if (response.ok) {
       console.log(
         `Account ${getStoredUsername} deleted successfully:`,
-        responseData,
+        responseData
       );
       await clearStoredCredentials();
       alert("Account deleted successfully.");

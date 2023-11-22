@@ -153,7 +153,6 @@ const handleContactClick = async (key, data) => {
       }
       break;
     default:
-      console.log("default");
       try {
         await Linking.openURL(`http://${key}.com/${data}`);
       } catch (error) {
@@ -497,7 +496,7 @@ function ProfileScreen({ navigation, route }) {
             borderWidth: 1,
             borderColor: Colors.BB_darkRedPurple,
             position: "absolute",
-          }}
+          }}  
         />
         {/* Back button */}
         {!selfProfile && (
@@ -665,9 +664,11 @@ function ProfileScreen({ navigation, route }) {
               marginBottom: -100,
             }}
           >
+            {/* Logout */}
             <TouchableOpacity onPress={handleLogout} style={styles.button}>
               <Text style={styles.buttonText}>Logout</Text>
             </TouchableOpacity>
+            {/* Edit Profile */}
             <TouchableOpacity
               onPress={() => {
                 setLoading(true);
@@ -680,6 +681,13 @@ function ProfileScreen({ navigation, route }) {
               style={{ ...styles.button, width: 114 }}
             >
               <Text style={styles.buttonText}>Edit Profile</Text>
+            </TouchableOpacity>
+            {/* Edit Contact */}
+            <TouchableOpacity onPress={() => {
+                setLoading(true);
+                navigation.navigate("EditContactInfo");
+              }} style={styles.button}>
+              <Text style={styles.buttonText}>Edit Contact</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -855,7 +863,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 10,
-    marginHorizontal: 10,
+    marginHorizontal: 2,
     ...Platform.select({
       ios: {
         shadowColor: Colors.black,
