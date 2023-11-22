@@ -422,7 +422,7 @@ const HomeScreen = ({ route }) => {
                       ),
                     );
                   }}
-                  onIndexChanged={handleSwiperIndexChange}
+                  //onIndexChanged={handleSwiperIndexChange}
                 />
               </View>
             </ScrollView>
@@ -444,7 +444,7 @@ const HomeScreen = ({ route }) => {
                     progressViewOffset={50}
                   />
                 }
-                onIndexChanged={handleSwiperIndexChange}
+                //onIndexChanged={handleSwiperIndexChange}
               />
             </View>
           )
