@@ -38,7 +38,7 @@ import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/BouncePulse";
 import { getLocationWithRetry } from "../constants/Utilities";
-import { Linking } from 'react-native';
+import { Linking } from "react-native";
 
 const UserListingsRoute = ({ profileInfo, onPressListing }) => (
   <View style={{ flex: 1 }}>
@@ -106,19 +106,50 @@ const LikedListingsRoute = ({ profileInfo, onPressListing }) => (
   </View>
 );
 
+const handleContactClick = async (key, data) => {
+  switch (key) {
+    case "Email":
+      console.log("Email");
+      try {
+        await Linking.openURL(
+          `mailto:${data}?subject=${encodeURIComponent(
+            "BlitzBuyr"
+          )}&body=${encodeURIComponent("")}`
+        );
+      } catch (error) {
+        console.error("Error opening email:", error);
+      }
+      break;
+    case "PhoneNumber":
+      try {
+        //Future: API to call number. Phone number is in data
+      } catch (error) {
+        console.error("Error opening phoneNumber:", error);
+      }
+      break;
+    default:
+      console.log("default");
+      try {
+        await Linking.openURL(`http://${key}.com/${data}`);
+      } catch (error) {
+        console.error(`Error opening ${key}:`, error);
+      }
+      break;
+  }
+};
+
 const ContactInfoRoute = ({
   selfProfile,
-  contactList,
-  setContactList,
-  contactNames,
+  contactInfo,
+  setContactInfo,
 }) => (
   <View style={styles.contactInfoContainer}>
     <ScrollView>
       <View>
-        {Object.entries(contactNames).map(
+        {Object.entries(contactInfo).map(
           ([key, value]) =>
             (selfProfile ||
-              (!selfProfile && !contactList[`is${key}Hidden`])) && (
+              (!selfProfile && !value.hidden)) && (
               <View key={key}>
                 <View
                   style={{
@@ -127,44 +158,53 @@ const ContactInfoRoute = ({
                   }}
                 >
                   {/* Icon + Handle */}
-                  <TouchableOpacity onPress={() => Linking.openURL(`http://${key}.com`)} style={styles.socialIcons}>
+                  <TouchableOpacity
+                    onPress={() => handleContactClick(key, value.data)}
+                    style={styles.socialIcons}
+                  >
                     <AntDesign
-                      name={value}
+                      name={value.icon}
                       size={24}
                       color="black"
                       style={{
-                        opacity: contactList[`is${key}Hidden`] ? 0.25 : 1.0,
+                        opacity: value.hidden ? 0.25 : 1.0,
                       }}
                     />
                     <Text
                       style={[
                         styles.socialText,
-                        { opacity: contactList[`is${key}Hidden`] ? 0.25 : 1.0 },
+                        { opacity: value.hidden ? 0.25 : 1.0 },
                       ]}
                     >
-                      {[`@my${key}`]}
+                      {value.data}
                     </Text>
                   </TouchableOpacity>
 
                   {/* Visibility */}
-                  {selfProfile && (<TouchableOpacity
-                    onPress={() => {
-                      setContactList((prevState) => ({
-                        ...prevState, // Keep the other values the same
-                        [`is${key}Hidden`]: !prevState[`is${key}Hidden`],
-                      }));
-                    }}
-                    style={[
-                      styles.socialIcons,
-                      { opacity: contactList[`is${key}Hidden`] ? 0.25 : 1.0 },
-                    ]}
-                  >
-                    <MaterialIcons
-                      name="visibility"
-                      size={24}
-                      color={Colors.BB_darkRedPurple}
-                    />
-                  </TouchableOpacity>)}
+                  {selfProfile && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setContactInfo((prevContactInfo) => ({
+                          ...prevContactInfo,
+                          [key]: {
+                            ...prevContactInfo[key],
+                            hidden: !prevContactInfo[key].hidden,
+                            // This is where the contact hidden table should be changed
+                          },
+                        }));
+                      }}
+                      style={[
+                        styles.socialIcons,
+                        { opacity: value.hidden ? 0.25 : 1.0 },
+                      ]}
+                    >
+                      <MaterialIcons
+                        name="visibility"
+                        size={24}
+                        color={Colors.BB_darkRedPurple}
+                      />
+                    </TouchableOpacity>
+                  )}
                 </View>
               </View>
             )
@@ -191,34 +231,15 @@ function ProfileScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState(null);
   const [LikeStates, setLikeStates] = useState({});
 
-  {
-    /* Use States for Contact Tab Bar */
-  }
-  const [contactList, setContactList] = useState({
-    isPhoneNumberHidden: false,
-    isFacebookHidden: false,
-    isEmailHidden: false,
-    isLinkedInHidden: false,
-    isTwitterHidden: false,
-    isInstagramHidden: false,
+  //Use states for contact info
+  const [contactInfo, setContactInfo] = useState({
+    PhoneNumber: { data: "2132149702", hidden: false, icon: "phone" },
+    Email: { data: "Email", hidden: false, icon: "mail" },
+    LinkedIn: { data: "LinkedIn", hidden: false, icon: "linkedin-square" },
+    Instagram: { data: "Instagram", hidden: false, icon: "instagram" },
+    Facebook: { data: "Facebook", hidden: false, icon: "facebook-square" },
+    Twitter: { data: "Twitter", hidden: false, icon: "twitter"} 
   });
-
-  const [userHandle, setUserHandle] = useState({
-    PhoneNumber: 0,
-    Email: 'temp@gmail.com',
-    LinkedIn: '@tempLinkedIn',
-    
-  });
-
-  const contactNames = {
-    /* (name to contact : string for AntDesign) */
-    PhoneNumber: "phone",
-    Email: "mail",
-    LinkedIn: "linkedin-square",
-    Instagram: "instagram",
-    Facebook: "facebook-square",
-    Twitter: "twitter",
-  };
 
   const onBackPress = () => {
     return true;
@@ -273,7 +294,6 @@ function ProfileScreen({ navigation, route }) {
     if (userLocation && profileInfo) {
       setLoading(false);
     }
-    console.log("All Profile Info: ", profileInfo);
 
     if (selfProfile) {
       setRoutes([
@@ -677,9 +697,8 @@ function ProfileScreen({ navigation, route }) {
                 return (
                   <ContactInfoRoute
                     selfProfile={selfProfile}
-                    contactList={contactList}
-                    setContactList={setContactList}
-                    contactNames={contactNames}
+                    contactInfo={contactInfo}
+                    setContactInfo={setContactInfo}
                   />
                 );
               default:
