@@ -203,6 +203,13 @@ function ProfileScreen({ navigation, route }) {
     isInstagramHidden: false,
   });
 
+  const [userHandle, setUserHandle] = useState({
+    PhoneNumber: 0,
+    Email: 'temp@gmail.com',
+    LinkedIn: '@tempLinkedIn',
+    
+  });
+
   const contactNames = {
     /* (name to contact : string for AntDesign) */
     PhoneNumber: "phone",
