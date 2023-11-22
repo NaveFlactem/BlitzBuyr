@@ -57,6 +57,7 @@
     "react-native-redash": "^18.1.1",
     "react-native-screens": "~3.22.0",
     "react-native-shimmer-kit": "^0.3.1",
+    "react-native-slider": "^0.11.0",
     "react-native-svg": "13.9.0",
     "react-native-swiper": "^1.6.0",
     "react-native-tab-view": "^3.5.2",
