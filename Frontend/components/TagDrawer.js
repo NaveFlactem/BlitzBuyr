@@ -13,9 +13,17 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 
 const TagDrawer = memo(
-  ({ tags, handleTagPress, conditions, handleConditionPress, transactions, handleTransactionPress, fetchListings, handleMenuPress, isDrawerOpen }) => {
-    
-    
+  ({
+    tags,
+    handleTagPress,
+    conditions,
+    handleConditionPress,
+    transactions,
+    handleTransactionPress,
+    fetchListings,
+    handleMenuPress,
+    isDrawerOpen,
+  }) => {
     return (
       <View style={styles.drawerContainer}>
         {isDrawerOpen && (
@@ -34,8 +42,11 @@ const TagDrawer = memo(
             >
               <Text style={styles.applyButtonText}>Apply</Text>
             </TouchableOpacity>
-            <Text style={styles.seperationText}>---- Tags ----</Text>
-            
+            <View style={styles.seperationContainer}>
+              <View style={styles.separatorLine} />
+              <Text style={styles.seperationText}>Tags</Text>
+            </View>
+
             {tags.map((tag, tagIndex) => (
               <TouchableOpacity
                 key={tagIndex}
@@ -56,7 +67,10 @@ const TagDrawer = memo(
                 <Text style={styles.tagText}>{tag.name}</Text>
               </TouchableOpacity>
             ))}
-            <Text style={styles.seperationText}>---- Condition ----</Text>
+            <View style={styles.seperationContainer}>
+              <View style={styles.separatorLine} />
+              <Text style={styles.seperationText}>Condition</Text>
+            </View>
             {conditions.map((condition, conditionIndex) => (
               <TouchableOpacity
                 key={conditionIndex}
@@ -80,7 +94,10 @@ const TagDrawer = memo(
                 <Text style={styles.tagText}>{condition.name}</Text>
               </TouchableOpacity>
             ))}
-            <Text style={styles.seperationText}>---- Transaction ----</Text>
+            <View style={styles.seperationContainer}>
+              <View style={styles.separatorLine} />
+              <Text style={styles.seperationText}>Transactions</Text>
+            </View>
             {transactions.map((transaction, transactionIndex) => (
               <TouchableOpacity
                 key={transactionIndex}
@@ -109,7 +126,7 @@ const TagDrawer = memo(
         </ScrollView>
       </View>
     );
-  },
+  }
 );
 
 export default TagDrawer;
@@ -216,6 +233,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     height: 0.06 * screenHeight,
     width: 0.3 * screenWidth,
+    marginTop: 10,
     marginBottom: 10,
     alignSelf: "center",
     justifyContent: "center",
@@ -247,12 +265,32 @@ const styles = StyleSheet.create({
     left: 0,
     zIndex: 200,
   },
+  seperationContainer: {
+    alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 0.06 * screenHeight,
+    width: "90%",
+    marginTop: 10,
+    marginBottom: 10,
+  },
   seperationText: {
     color: Colors.white,
-    fontSize: 10,
+    backgroundColor: Colors.BB_darkerRedPurple,
+    fontSize: 12,
     fontWeight: "bold",
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 20,
+    width: 85,
+    top: "9%",
+    textAlign: "center",
+  },
+  separatorLine: {
+    position: "absolute",
+    height: 1,
+    backgroundColor: "white",
+    width: "80%",
+    marginTop: 5,
   },
   spacer: {
     position: "relative",
