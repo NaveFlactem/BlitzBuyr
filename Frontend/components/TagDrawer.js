@@ -69,9 +69,9 @@ const styles = StyleSheet.create({
   drawerContainer: {
     position: "absolute",
     height: screenHeight,
-    width: 0.4 * screenWidth,
+    width: 0.3 * screenWidth,
     zIndex: 110,
-    left: 0.6 * screenWidth,
+    left: 0.55 * screenWidth,
     backgroundColor: Colors.BB_darkRedPurple,
   },
   drawerScroll: {
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     justifyContent: "center",
     textAlign: "center",
-    height: 0.06 * screenHeight,
+    height: 0.055 * screenHeight,
     width: 0.3 * screenWidth,
     zIndex: 120,
     ...Platform.select({
