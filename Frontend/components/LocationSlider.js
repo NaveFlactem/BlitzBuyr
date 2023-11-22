@@ -8,7 +8,10 @@ import {
   Platform,
 } from "react-native";
 import Colors from "../constants/Colors";
-import Slider from "@react-native-community/slider";
+const Slider =
+  Platform.OS == "ios"
+    ? require("@react-native-community/slider").default
+    : require("react-native-slider").default;
 
 const LocationSlider = memo(({ distance, setDistance, distanceChanged }) => {
   const [sliderValue, setSliderValue] = useState(30);
@@ -43,7 +46,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.BB_darkRedPurple,
     position: "absolute",
     right: 0 * screenWidth,
-    bottom: 0.67 * screenHeight,
+    bottom: Platform.OS == "ios" ? screenHeight * 0.67 : screenHeight * 0.75,
     width: screenWidth * 0.7,
     height: screenHeight * 0.07,
     borderRadius: 80,
