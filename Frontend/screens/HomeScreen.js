@@ -248,6 +248,7 @@ const HomeScreen = ({ route }) => {
   const locationSliderStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateY: locationSliderHeight.value }],
+      bottom: 0.085 * screenHeight,
     };
   });
 

@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   },
   menu: {
     position: "absolute",
-    paddingTop: 20,
+    paddingTop: 29,
     paddingLeft: 20,
     paddingBottom: 20,
     paddingRight: 20,
