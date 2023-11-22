@@ -44,7 +44,6 @@ const HomeScreen = ({ route }) => {
   const [networkConnected, setNetworkConnected] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [userLocation, setUserLocation] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [tagsData, setTagsData] = useState([
     { name: "Furniture", selected: false },
     { name: "Electronics", selected: false },
@@ -297,9 +296,7 @@ const HomeScreen = ({ route }) => {
   };
 
   const [scrollY, setScrollY] = useState(0);
-  const [scrollX, setScrollX] = useState(0);
   const [isHoldStateOfRefresh, setHoldStateOfRefresh] = useState(false);
-  const [isHorizontal, setIsHorizontal] = useState(false);
 
   const refreshThreshold = -100; // Adjust this threshold
 
@@ -408,7 +405,6 @@ const HomeScreen = ({ route }) => {
                 />
               }
               scrollEventThrottle={16}
-              scrollEnabled={currentIndex === 0 ? true : false}
             >
               <View style={styles.swiperContainer}>
                 <IOSSwiperComponent
@@ -512,7 +508,7 @@ const screenHeight = Dimensions.get("window").height;
 const styles = StyleSheet.create({
   screenfield: {
     flex: 1,
-    backgroundColor: Colors.BB_bone,
+    backgroundColor: Colors.BB_pink,
   },
   swiperContainer: {
     height: screenHeight,

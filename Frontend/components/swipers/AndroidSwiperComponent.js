@@ -11,7 +11,6 @@ const AndroidSwiperComponent = memo(
     refreshControl,
     removeListing,
     userLocation,
-    onIndexChanged,
   }) => {
     return (
       <Swiper
@@ -21,7 +20,6 @@ const AndroidSwiperComponent = memo(
         showsPagination={false}
         showsButtons={false}
         refreshControl={refreshControl}
-        onIndexChanged={onIndexChanged}
       >
         {listings.map((item, listIndex) => {
           Image.prefetch(item.images);

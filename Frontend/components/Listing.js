@@ -116,6 +116,11 @@ const CardOverlay1 = memo(({ children, price }) => {
   return (
     <View style={styles.card}>
       <View style={styles.cardBackground}>
+      <View style={styles.top_rhombus} />
+        <View style={styles.mid_rhombus} />
+        <View style={styles.bottom_rhombus} />
+        <View style={styles.topR_circle} />
+        <View style={styles.topL_circle} />
         <View style={styles.priceContainer}>
           <Text
             style={[

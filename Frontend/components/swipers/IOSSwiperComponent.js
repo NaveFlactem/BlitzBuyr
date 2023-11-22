@@ -4,7 +4,7 @@ import { memo } from "react";
 import Listing from "../Listing";
 
 const IOSSwiperComponent = memo(
-  ({ swiperRef, listings, removeListing, userLocation, onIndexChanged }) => {
+  ({ swiperRef, listings, removeListing, userLocation}) => {
     return (
       <Swiper
         ref={swiperRef}
@@ -12,7 +12,6 @@ const IOSSwiperComponent = memo(
         horizontal={false}
         showsPagination={false}
         showsButtons={false}
-        onIndexChanged={onIndexChanged}
       >
         {listings.map((item) => (
           <Listing
