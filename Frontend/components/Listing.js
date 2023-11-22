@@ -923,11 +923,26 @@ const styles = StyleSheet.create({
   },
   likeButton: {
     position: "absolute",
-    height: "10%",
-    width: "15%",
-    bottom: "-2%",
-    right: "5%",
+    height: 0.15 * screenWidth,
+    width: 0.15 * screenWidth,
+    bottom: "1%",
+    right: "2%",
     zIndex: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.BB_darkRedPurple,
+    ...Platform.select({
+      ios: {
+        shadowColor: "black",
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        shadowOffset: { height: 4, width: 0 },
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+    borderRadius: 80,
   },
   deleteButton: {
     position: "absolute",
