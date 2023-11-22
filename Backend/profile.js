@@ -53,7 +53,7 @@ router.post("/like", function (req, res) {
       return res.status(200).json({
         message: `${username} successfully liked listing ${listingId}`,
       });
-    },
+    }
   );
 });
 
@@ -99,7 +99,7 @@ router.delete("/like", function (req, res) {
       return res.status(200).json({
         message: `${username} successfully unliked listing ${listingId}`,
       });
-    },
+    }
   );
 });
 
@@ -205,7 +205,7 @@ router.post("/rate", async function (req, res) {
           reject(err);
         }
         resolve(row);
-      },
+      }
     );
   });
 
@@ -222,7 +222,7 @@ router.post("/rate", async function (req, res) {
         return res.status(200).json({
           message: `${username} updated the rating for ${userRated} to ${rating}`,
         });
-      },
+      }
     );
   } else {
     // User has not rated, insert a new rating
@@ -237,7 +237,7 @@ router.post("/rate", async function (req, res) {
         return res.status(200).json({
           message: `${username} successfully rated ${userRated} with ${rating}`,
         });
-      },
+      }
     );
   }
 });
@@ -274,7 +274,7 @@ router.delete("/rate", function (req, res) {
       return res.status(200).json({
         message: `${username} successfully removed their rating of ${userRated}`,
       });
-    },
+    }
   );
 });
 
@@ -320,7 +320,7 @@ router.get("/ratings", function (req, res) {
           AverageRating: row.AverageRating,
           RatingCount: row.RatingCount,
         });
-      },
+      }
     );
   } else {
     // If no username was provided, return all ratings in the db
@@ -370,10 +370,10 @@ router.get("/profile", async function (req, res) {
             reject(err);
           }
           resolve(rows);
-        },
+        }
       );
     });
-    if (!userResult)
+    if (!userResult || userResult.length == 0)
       return res.status(404).json({ error: `User ${username} not found` });
 
     // get the ratings belonging to the user
@@ -387,9 +387,44 @@ router.get("/profile", async function (req, res) {
             reject(err);
           }
           resolve(rows);
-        },
+        }
       );
     });
+
+    // get the user's contact info and settings
+    const contactResult = await new Promise((resolve, reject) => {
+      db.get(
+        `SELECT ContactInfo.*, Settings.HidePhoneNumber, Settings.HideEmail, Settings.HideLinkedIn, Settings.HideInstagram, Settings.HideFacebook, Settings.HideTwitter
+    FROM ContactInfo
+    INNER JOIN Settings ON ContactInfo.Username = Settings.Username
+    WHERE ContactInfo.Username = ?`,
+        [username], // Replace with the specific username you want to retrieve
+        (err, row) => {
+          if (err) {
+            console.error("Error querying the database:", err);
+            reject(err);
+          }
+          resolve(row);
+        }
+      );
+    });
+
+    if (!contactResult || contactResult.length == 0)
+      return res
+        .status(404)
+        .json({ error: `Contact info for ${username} not found` });
+
+    // Parse the result
+    const contactInfo = {
+      phoneNumber: contactResult.HidePhoneNumber
+        ? null
+        : contactResult.PhoneNumber,
+      email: contactResult.HideEmail ? null : contactResult.Email,
+      linkedIn: contactResult.HideLinkedIn ? null : contactResult.LinkedIn,
+      instagram: contactResult.HideInstagram ? null : contactResult.Instagram,
+      facebook: contactResult.HideFacebook ? null : contactResult.Facebook,
+      twitter: contactResult.HideTwitter ? null : contactResult.Twitter,
+    };
 
     // Get the profile and cover pictures
     let profilePictureResult = await new Promise((resolve, reject) => {
@@ -402,7 +437,7 @@ router.get("/profile", async function (req, res) {
             reject(err);
           }
           resolve(rows);
-        },
+        }
       );
     });
 
@@ -417,7 +452,7 @@ router.get("/profile", async function (req, res) {
             reject(err);
           }
           resolve(rows);
-        },
+        }
       );
     });
 
@@ -432,18 +467,18 @@ router.get("/profile", async function (req, res) {
             reject(err);
           }
           resolve(rows);
-        },
+        }
       );
     });
 
     // append the images to both
     const likedListings = await getImagesFromListings(
       likedListingsResult,
-      likedListingsResult,
+      likedListingsResult
     );
     const userListings = await getImagesFromListings(
       userListingsResult,
-      likedListingsResult,
+      likedListingsResult
     );
 
     return res.status(200).json({
@@ -452,6 +487,8 @@ router.get("/profile", async function (req, res) {
       ratings: ratingsResult,
       profilePicture: profilePictureResult[0].ProfilePicture,
       coverPicture: profilePictureResult[0].CoverPicture,
+      email: userResult.Email,
+      contactInfo: contactInfo,
     });
   } catch (error) {
     console.error(error);
@@ -498,7 +535,7 @@ router.get("/pfp", function (req, res) {
 
       // return the image in the result's URI
       res.redirect(row.ProfilePicture);
-    },
+    }
   );
 });
 
@@ -534,11 +571,11 @@ router.post("/editprofile", imageUpload, function (req, res) {
   const { username, contactInfo, profileName, password } = req.body;
 
   const profilePicture = req.files.find(
-    (file) => file.fieldname === "profilePicture",
+    (file) => file.fieldname === "profilePicture"
   );
 
   const coverPicture = req.files.find(
-    (file) => file.fieldname === "coverPicture",
+    (file) => file.fieldname === "coverPicture"
   );
 
   const newProfilePicture = profilePicture
@@ -581,11 +618,11 @@ router.post("/editprofile", imageUpload, function (req, res) {
 
           // Respond with success
           res.status(200).json({ message: "Profile updated successfully" });
-        },
+        }
       );
 
       console.log("Rows affected:", this.changes);
-    },
+    }
   );
 });
 

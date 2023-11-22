@@ -43,7 +43,7 @@ function createOrUpdateTable(db, tableDefinition) {
   db.serialize(() => {
     // Extract table name from the definition
     const tableName = tableDefinition.match(
-      /CREATE TABLE IF NOT EXISTS (\w+)/i,
+      /CREATE TABLE IF NOT EXISTS (\w+)/i
     )[1];
 
     // Check if the table already exists
@@ -67,7 +67,7 @@ function createOrUpdateTable(db, tableDefinition) {
             areTableDefinitionsEqual(existingTableDefinition, tableDefinition)
           ) {
             console.log(
-              `Table '${tableName}' structure is already up to date.`,
+              `Table '${tableName}' structure is already up to date.`
             );
           } else {
             // If the table structures are different, alter it
@@ -77,7 +77,7 @@ function createOrUpdateTable(db, tableDefinition) {
             db.run(
               tableDefinition.replace(
                 new RegExp(tableName, "g"),
-                tempTableName,
+                tempTableName
               ),
               (err) => {
                 if (err) {
@@ -111,18 +111,18 @@ function createOrUpdateTable(db, tableDefinition) {
                           }
 
                           console.log(
-                            `Table '${tableName}' altered successfully.`,
+                            `Table '${tableName}' altered successfully.`
                           );
-                        },
+                        }
                       );
                     });
-                  },
+                  }
                 );
-              },
+              }
             );
           }
         }
-      },
+      }
     );
   });
 }
@@ -191,12 +191,39 @@ CREATE TABLE IF NOT EXISTS Ratings (
 const profile = `
 CREATE TABLE IF NOT EXISTS Profiles (
   Username TEXT,
-  ContactInfo TEXT,
   ProfilePicture TEXT DEFAULT "http://blitzbuyr.lol/img/profile_default.png",
   CoverPicture TEXT DEFAULT "http://blitzbuyr.lol/img/cover_default.jpg",
   PRIMARY KEY (Username),
   FOREIGN KEY (Username) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE
   );`;
+
+// Contact Info Table
+const contactInfo = `
+CREATE TABLE IF NOT EXISTS ContactInfo (
+  Username TEXT,
+  PhoneNumber TEXT,
+  Email TEXT,
+  LinkedIn TEXT,
+  Instagram TEXT,
+  Facebook TEXT,
+  Twitter TEXT,
+  PRIMARY KEY (Username),
+  FOREIGN KEY (Username) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE
+);`;
+
+// Settings
+const settings = `
+CREATE TABLE IF NOT EXISTS Settings (
+  Username TEXT,
+  HidePhoneNumber BOOLEAN DEFAULT True,
+  HideEmail BOOLEAN DEFAULT True,
+  HideLinkedIn BOOLEAN DEFAULT True,
+  HideInstagram BOOLEAN DEFAULT True,
+  HideFacebook BOOLEAN DEFAULT True,
+  HideTwitter BOOLEAN DEFAULT True,
+  PRIMARY KEY (Username),
+  FOREIGN KEY (Username) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE
+);`;
 
 // Likes Table //
 const likes = `
@@ -218,6 +245,8 @@ const tables = [
   { sql: likes, name: "Likes" },
   { sql: tagTable, name: "TagTable" },
   { sql: tagDetails, name: "TagDetails" },
+  { sql: contactInfo, name: "ContactInfo" },
+  { sql: settings, name: "Settings" },
 ];
 
 /**
