@@ -9,12 +9,10 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
-import LocationSlider from "./LocationSlider";
 
-const TopBar = memo(({ handleMenuPress }) => {
-  const [distance, setDistance] = useState(0);
-  const [sliderVisible, setSliderVisible] = useState(false);
-
+const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
+  
+  
   return (
     <View style={styles.topBar}>
       <TouchableOpacity style={styles.menu} onPress={handleMenuPress}>
@@ -27,7 +25,7 @@ const TopBar = memo(({ handleMenuPress }) => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.location}
-        onPress={() => setSliderVisible(!sliderVisible)}
+        onPress={handleLocationPress}
       >
         <MaterialCommunityIcons
           name="map-marker"
@@ -39,7 +37,6 @@ const TopBar = memo(({ handleMenuPress }) => {
         style={styles.logo}
         source={require("../assets/blitzbuyr_name_logo.png")}
       />
-      {sliderVisible && <LocationSlider distance={distance} setDistance={setDistance} />}
     </View>
   );
 });
@@ -126,13 +123,5 @@ const styles = StyleSheet.create({
       },
     }),
     zIndex: 10,
-  },
-  locationslide: {
-    position: "absolute",
-    height: "auto",
-    width: "auto",
-    bottom: "8%",
-    right: "20%",
-    zIndex: 11,
   },
 });

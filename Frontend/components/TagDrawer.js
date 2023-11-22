@@ -13,7 +13,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 
 const TagDrawer = memo(
-  ({ tags, handleTagPress, filterListings, handleMenuPress, isDrawerOpen }) => {
+  ({ tags, handleTagPress, fetchListings, handleMenuPress, isDrawerOpen }) => {
     return (
       <View style={styles.drawerContainer}>
         {isDrawerOpen && (
@@ -26,7 +26,7 @@ const TagDrawer = memo(
             <TouchableOpacity
               style={styles.applyButton}
               onPress={() => {
-                filterListings();
+                fetchListings();
                 handleMenuPress();
               }}
             >
