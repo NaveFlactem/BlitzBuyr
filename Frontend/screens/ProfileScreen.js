@@ -138,81 +138,93 @@ const handleContactClick = async (key, data) => {
   }
 };
 
-const ContactInfoRoute = ({
-  selfProfile,
-  contactInfo,
-  setContactInfo,
-}) => (
-  <View style={styles.contactInfoContainer}>
-    <ScrollView>
-      <View>
-        {Object.entries(contactInfo).map(
-          ([key, value]) =>
-            (selfProfile ||
-              (!selfProfile && !value.hidden)) && (
-              <View key={key}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  {/* Icon + Handle */}
-                  <TouchableOpacity
-                    onPress={() => handleContactClick(key, value.data)}
-                    style={styles.socialIcons}
-                  >
-                    <AntDesign
-                      name={value.icon}
-                      size={24}
-                      color="black"
-                      style={{
-                        opacity: value.hidden ? 0.25 : 1.0,
-                      }}
-                    />
-                    <Text
-                      style={[
-                        styles.socialText,
-                        { opacity: value.hidden ? 0.25 : 1.0 },
-                      ]}
-                    >
-                      {value.data}
-                    </Text>
-                  </TouchableOpacity>
+const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
+  let displayValues = Object.values(contactInfo).some(
+    (value) => value.data.length > 0
+  );
 
-                  {/* Visibility */}
-                  {selfProfile && (
-                    <TouchableOpacity
-                      onPress={() => {
-                        setContactInfo((prevContactInfo) => ({
-                          ...prevContactInfo,
-                          [key]: {
-                            ...prevContactInfo[key],
-                            hidden: !prevContactInfo[key].hidden,
-                            // This is where the contact hidden table should be changed
-                          },
-                        }));
-                      }}
-                      style={[
-                        styles.socialIcons,
-                        { opacity: value.hidden ? 0.25 : 1.0 },
-                      ]}
-                    >
-                      <MaterialIcons
-                        name="visibility"
-                        size={24}
-                        color={Colors.BB_darkRedPurple}
-                      />
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </View>
-            )
-        )}
-      </View>
-    </ScrollView>
-  </View>
-);
+  if (!selfProfile && Object.values(contactInfo).every((value) => value.hidden))
+    displayValues = false;
+
+  return (
+    <View style={styles.contactInfoContainer}>
+      <ScrollView>
+        <View>
+          {displayValues ? (
+            Object.entries(contactInfo).map(([key, value]) => {
+              if (value.data.length > 0) {
+                return (
+                  (selfProfile || (!selfProfile && !value.hidden)) && (
+                    <View key={key}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        {/* Icon + Handle */}
+                        <TouchableOpacity
+                          onPress={() => handleContactClick(key, value.data)}
+                          style={styles.socialIcons}
+                        >
+                          <AntDesign
+                            name={value.icon}
+                            size={24}
+                            color="black"
+                            style={{
+                              opacity: value.hidden ? 0.25 : 1.0,
+                            }}
+                          />
+                          <Text
+                            style={[
+                              styles.socialText,
+                              { opacity: value.hidden ? 0.25 : 1.0 },
+                            ]}
+                          >
+                            {value.data}
+                          </Text>
+                        </TouchableOpacity>
+                        {/* Visibility */}
+                        {selfProfile && (
+                          <TouchableOpacity
+                            onPress={() => {
+                              setContactInfo((prevContactInfo) => ({
+                                ...prevContactInfo,
+                                [key]: {
+                                  ...prevContactInfo[key],
+                                  hidden: !prevContactInfo[key].hidden,
+                                  // This is where the contact hidden table should be changed
+                                },
+                              }));
+                            }}
+                            style={[
+                              styles.socialIcons,
+                              { opacity: value.hidden ? 0.25 : 1.0 },
+                            ]}
+                          >
+                            <MaterialIcons
+                              name="visibility"
+                              size={24}
+                              color={Colors.BB_darkRedPurple}
+                            />
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  )
+                );
+              }
+            })
+          ) : (
+            <Text style={styles.noListingsText}>
+              No Contact Information Available.
+            </Text>
+          )}
+        </View>
+      </ScrollView>
+    </View>
+  );
+};
 
 function ProfileScreen({ navigation, route }) {
   const layout = useWindowDimensions();
@@ -231,14 +243,14 @@ function ProfileScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState(null);
   const [LikeStates, setLikeStates] = useState({});
 
-  //Use states for contact info
+  // Use states for contact info
   const [contactInfo, setContactInfo] = useState({
-    PhoneNumber: { data: "2132149702", hidden: false, icon: "phone" },
-    Email: { data: "Email", hidden: false, icon: "mail" },
-    LinkedIn: { data: "LinkedIn", hidden: false, icon: "linkedin-square" },
-    Instagram: { data: "Instagram", hidden: false, icon: "instagram" },
-    Facebook: { data: "Facebook", hidden: false, icon: "facebook-square" },
-    Twitter: { data: "Twitter", hidden: false, icon: "twitter"} 
+    phoneNumber: { data: "2132149702", hidden: false, icon: "phone" },
+    email: { data: "Email", hidden: false, icon: "mail" },
+    linkedIn: { data: "LinkedIn", hidden: false, icon: "linkedin-square" },
+    instagram: { data: "Instagram", hidden: false, icon: "instagram" },
+    facebook: { data: "Facebook", hidden: false, icon: "facebook-square" },
+    twitter: { data: "Twitter", hidden: false, icon: "twitter" },
   });
 
   const onBackPress = () => {
@@ -256,7 +268,7 @@ function ProfileScreen({ navigation, route }) {
       const username = getStoredUsername();
       if (route.params?.username) {
         console.log(
-          `Setting username to passed username ${route.params.username}`,
+          `Setting username to passed username ${route.params.username}`
         );
         // we navigated with a username passed as param (i.e. clicking someone's profile)
         setProfileName(route.params.username);
@@ -312,12 +324,13 @@ function ProfileScreen({ navigation, route }) {
   const getProfileInfo = async function (username) {
     console.log(`Fetching profile info for ${username}`);
     try {
-      const profileResponse = await fetch(
-        `${serverIp}/api/profile?username=${encodeURIComponent(username)}`,
-        {
-          method: "GET",
-        },
-      );
+      const fetchUrl = `${serverIp}/api/profile?username=${encodeURIComponent(
+        getStoredUsername()
+      )}&password=${getStoredPassword()}&profileName=${username}`;
+      console.log(fetchUrl);
+      const profileResponse = await fetch(fetchUrl, {
+        method: "GET",
+      });
       const profileData = await profileResponse.json();
 
       if (profileResponse.status <= 201) {
@@ -326,16 +339,26 @@ function ProfileScreen({ navigation, route }) {
           userListings: profileData.userListings,
           userRatings: profileData.ratings.reduce(
             (acc, rating) => ({ ...acc, ...rating }),
-            {},
+            {}
           ),
           profilePicture: profileData.profilePicture,
           coverPicture: profileData.coverPicture,
         });
+        console.log(contactInfo);
+        console.log(profileData.contactInfo);
+
+        // Set the contactInfo state
+        const updatedContactInfo = { ...contactInfo };
+        for (const key in profileData.contactInfo) {
+          updatedContactInfo[key].hidden = profileData.contactInfo[key].hidden;
+          updatedContactInfo[key].data = profileData.contactInfo[key].data;
+        }
+        setContactInfo(updatedContactInfo);
 
         const initialLikeStates = Object.fromEntries(
           [...profileData.likedListings, ...profileData.userListings].map(
-            (listing) => [listing.ListingId, listing.liked],
-          ),
+            (listing) => [listing.ListingId, listing.liked]
+          )
         );
         setLikeStates(initialLikeStates);
 
@@ -344,7 +367,7 @@ function ProfileScreen({ navigation, route }) {
         console.log(
           "Error fetching profile:",
           profileResponse.status,
-          profileData,
+          profileData
         );
       }
     } catch (err) {
@@ -382,7 +405,7 @@ function ProfileScreen({ navigation, route }) {
     console.log(
       `${
         newLikeStates[listingId] ? "Likered" : "UnLikered"
-      } listing ID ${listingId}`,
+      } listing ID ${listingId}`
     );
   };
 
@@ -453,26 +476,22 @@ function ProfileScreen({ navigation, route }) {
         />
         {/* Back button */}
         {!selfProfile && (
-                  <TouchableOpacity
-                    onPress={() => {
-                      setLoading(true);
-                      navigation.navigate("BottomNavOverlay");
-                    }}
-                    style={styles.circleContainer}
-                  >
-                    <View style={styles.circle}>
-                      <MaterialCommunityIcons
-               
+          <TouchableOpacity
+            onPress={() => {
+              setLoading(true);
+              navigation.navigate("BottomNavOverlay");
+            }}
+            style={styles.circleContainer}
+          >
+            <View style={styles.circle}>
+              <MaterialCommunityIcons
                 name="arrow-left"
-               
                 size={30}
-               
                 color="black"
-             
               />
-                    </View>
-                  </TouchableOpacity>
-                )}
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* //Profile Picture */}
@@ -750,10 +769,10 @@ function ProfileScreen({ navigation, route }) {
                 setProfileInfo((prevProfileInfo) => ({
                   ...prevProfileInfo,
                   likedListings: prevProfileInfo.likedListings.filter(
-                    (item) => item.ListingId !== listingId,
+                    (item) => item.ListingId !== listingId
                   ),
                   userListings: prevProfileInfo.userListings.filter(
-                    (item) => item.ListingId !== listingId,
+                    (item) => item.ListingId !== listingId
                   ),
                 }));
 

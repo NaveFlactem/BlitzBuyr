@@ -11,6 +11,51 @@ const db = require("./db").db;
 const validator = require("validator");
 
 /**
+ * Authenticates a user by checking if they are registered.
+ *
+ * @function
+ * @async
+ * @name authenticateUser
+ *
+ * @param {string} username - The username to authenticate.
+ *
+ * @returns {Promise<boolean>} A promise that resolves to true if the user is registered, and false otherwise.
+ *
+ * @example
+ * // Usage
+ * const isAuthenticated = await authenticateUser("testuser");
+ * if (isAuthenticated) {
+ *   console.log("User is registered");
+ * } else {
+ *   console.log("User is not registered");
+ * }
+ */
+async function authenticateUser(username, password) {
+  try {
+    // Check if user exists in the database
+    const userResult = await new Promise((resolve, reject) => {
+      db.get(
+        "SELECT * FROM Accounts WHERE Username = ? AND Password = ?",
+        [username, password],
+        (err, row) => {
+          if (err) {
+            console.error("Error querying the database:", err);
+            reject(err);
+          }
+          resolve(row);
+        }
+      );
+    });
+
+    // Return true if the user exists, and false otherwise
+    return !!userResult;
+  } catch (error) {
+    console.error("Internal Server Error:", error);
+    return false;
+  }
+}
+
+/**
  * GET request endpoint at /api/accounts for retrieving a list of accounts.
  *
  * @function
@@ -96,7 +141,7 @@ router.post("/login", function (req, res) {
       } else {
         return res.status(401).json({ error: "Incorrect password" });
       }
-    },
+    }
   );
 });
 
@@ -171,7 +216,7 @@ router.post("/register", (req, res) => {
               console.error("Error registering the account:", err);
               return res.status(500).json({ error: "Internal Server Error" });
             }
-          },
+          }
         );
 
         // create new profile for the account
@@ -187,10 +232,10 @@ router.post("/register", (req, res) => {
               message: "Account created",
               username: username,
             });
-          },
+          }
         );
       }
-    },
+    }
   );
 });
 
@@ -260,9 +305,9 @@ router.delete("/deleteaccount", function (req, res) {
       } else {
         return res.status(401).json({ error: "Incorrect password" });
       }
-    },
+    }
   );
 });
 
 // Export the router
-module.exports = router;
+module.exports = { router, authenticateUser };
