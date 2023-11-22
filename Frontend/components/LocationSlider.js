@@ -8,7 +8,7 @@ import {
   Platform,
 } from "react-native";
 import Colors from "../constants/Colors";
-import Slider from "@react-native-community/slider";
+import Slider from "react-native-slider";
 
 const LocationSlider = memo(({ distance, setDistance, distanceChanged }) => {
   const [sliderValue, setSliderValue] = useState(30);
