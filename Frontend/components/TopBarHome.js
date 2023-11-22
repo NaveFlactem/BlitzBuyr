@@ -11,8 +11,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 
 const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
-  
-  
   return (
     <View style={styles.topBar}>
       <TouchableOpacity style={styles.menu} onPress={handleMenuPress}>
@@ -23,17 +21,14 @@ const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
           style={(alignSelf = "center")}
         />
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.location}
-        onPress={handleLocationPress}
-      >
+      <TouchableOpacity style={styles.location} onPress={handleLocationPress}>
         <MaterialCommunityIcons
           name="map-marker"
           size={30}
           color={Colors.BB_bone}
         />
       </TouchableOpacity>
-      <Image  
+      <Image
         style={styles.logo}
         source={require("../assets/blitzbuyr_name_logo.png")}
       />

@@ -74,7 +74,7 @@ const HomeScreen = ({ route }) => {
         // Detect left swipe
         translateX.value = Math.max(
           -screenWidth,
-          context.startX + event.translationX
+          context.startX + event.translationX,
         );
       }
     },
@@ -82,7 +82,7 @@ const HomeScreen = ({ route }) => {
       const shouldClose = translateX.value < -screenWidth * 0.65;
       translateX.value = withTiming(
         shouldClose ? -screenWidth : -screenWidth * 0.6,
-        { duration: 300 }
+        { duration: 300 },
       );
       if (shouldClose) {
         runOnJS(setIsDrawerOpen)(false);
@@ -106,7 +106,7 @@ const HomeScreen = ({ route }) => {
       const shouldOpen = translateX.value > -screenWidth * 0.9;
       translateX.value = withTiming(
         shouldOpen ? -screenWidth * 0.6 : -screenWidth,
-        { duration: 300 }
+        { duration: 300 },
       );
       if (shouldOpen) {
         runOnJS(setIsDrawerOpen)(true);
@@ -164,7 +164,7 @@ const HomeScreen = ({ route }) => {
     let newSelectedTags;
     if (isAlreadySelected) {
       newSelectedTags = selectedTags.filter(
-        (tagName) => tagName !== pressedTagName
+        (tagName) => tagName !== pressedTagName,
       );
     } else {
       newSelectedTags = [...selectedTags, pressedTagName];
@@ -188,13 +188,13 @@ const HomeScreen = ({ route }) => {
       console.log("Latitude:", latitude);
       console.log("Longitude:", longitude);
       const username = encodeURIComponent(
-        await SecureStore.getItemAsync("username")
+        await SecureStore.getItemAsync("username"),
       );
       const listingsResponse = await fetch(
         `${serverIp}/api/listings?username=${username}&latitude=${latitude}&longitude=${longitude}&distance=${distance}&${mergedTags}`,
         {
           method: "GET",
-        }
+        },
       );
 
       if (listingsResponse.status <= 201) {
@@ -340,7 +340,7 @@ const HomeScreen = ({ route }) => {
       setHoldStateOfRefresh(true);
       fetchListings();
     }, 1000),
-    []
+    [],
   ); // Adjust debounce time as needed
 
   useEffect(() => {
@@ -412,8 +412,8 @@ const HomeScreen = ({ route }) => {
                   removeListing={(listingId) => {
                     setListings((prevListings) =>
                       prevListings.filter(
-                        (item) => item.ListingId !== listingId
-                      )
+                        (item) => item.ListingId !== listingId,
+                      ),
                     );
                   }}
                   onIndexChanged={handleSwiperIndexChange}
@@ -428,7 +428,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId)
+                    prevListings.filter((item) => item.ListingId !== listingId),
                   );
                 }}
                 refreshControl={

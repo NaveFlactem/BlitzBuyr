@@ -1,31 +1,36 @@
 import React, { useState, memo } from "react";
-import { View, StyleSheet, Dimensions, TouchableOpacity, Text, Platform } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  Text,
+  Platform,
+} from "react-native";
 import Colors from "../constants/Colors";
 import Slider from "@react-native-community/slider";
 
 const LocationSlider = memo(({ distance, setDistance, distanceChanged }) => {
   const [sliderValue, setSliderValue] = useState(30);
 
-
-
   return (
-      <View style={styles.box}>
-        <Text style={styles.valueText}>
-          {(sliderValue <= 500) ? sliderValue + " miles" : "No Limit"}
-        </Text>
-        <Slider
-          style={{ width: "90%", height: 40, top: "10%"}}
-          minimumValue={10}
-          maximumValue={510}
-          step={10}
-          value={sliderValue}
-          onValueChange={(value) => setSliderValue(value)}
-          minimumTrackTintColor={Colors.BB_pink}
-          maximumTrackTintColor="#000000"
-          thumbImage={require("../assets/icon_transparent_background_filled_upright_mini.png")}
-          onSlidingComplete={(value) => setDistance(value)}
-        />
-      </View>
+    <View style={styles.box}>
+      <Text style={styles.valueText}>
+        {sliderValue <= 500 ? sliderValue + " miles" : "No Limit"}
+      </Text>
+      <Slider
+        style={{ width: "90%", height: 40, top: "10%" }}
+        minimumValue={10}
+        maximumValue={510}
+        step={10}
+        value={sliderValue}
+        onValueChange={(value) => setSliderValue(value)}
+        minimumTrackTintColor={Colors.BB_pink}
+        maximumTrackTintColor="#000000"
+        thumbImage={require("../assets/icon_transparent_background_filled_upright_mini.png")}
+        onSlidingComplete={(value) => setDistance(value)}
+      />
+    </View>
   );
 });
 const screenWidth = Dimensions.get("window").width;
