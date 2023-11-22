@@ -16,7 +16,7 @@ app.use(
   "/img",
   express.static(path.join(__dirname, "./img"), {
     enableBrotli: true, // Enable Brotli compression
-  }),
+  })
 );
 
 /**
@@ -42,7 +42,7 @@ app.use(function (req, res, next) {
 // Server routes and settings
 app
   .use("/api", require("./listing").router)
-  .use("/api", require("./account"))
+  .use("/api", require("./account").router)
   .use("/api", require("./profile"))
   .use(favicon(path.join(__dirname, "../favicon.ico")));
 
