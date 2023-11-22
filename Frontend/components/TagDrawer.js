@@ -13,7 +13,9 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 
 const TagDrawer = memo(
-  ({ tags, handleTagPress, fetchListings, handleMenuPress, isDrawerOpen }) => {
+  ({ tags, handleTagPress, conditions, handleConditionPress, transactions, handleTransactionPress, fetchListings, handleMenuPress, isDrawerOpen }) => {
+    
+    
     return (
       <View style={styles.drawerContainer}>
         {isDrawerOpen && (
@@ -32,6 +34,8 @@ const TagDrawer = memo(
             >
               <Text style={styles.applyButtonText}>Apply</Text>
             </TouchableOpacity>
+            <Text style={styles.seperationText}>---- Tags ----</Text>
+            
             {tags.map((tag, tagIndex) => (
               <TouchableOpacity
                 key={tagIndex}
@@ -50,6 +54,54 @@ const TagDrawer = memo(
                   style={[styles.rhombus, { opacity: tag.selected ? 0.15 : 0 }]}
                 />
                 <Text style={styles.tagText}>{tag.name}</Text>
+              </TouchableOpacity>
+            ))}
+            <Text style={styles.seperationText}>---- Condition ----</Text>
+            {conditions.map((condition, conditionIndex) => (
+              <TouchableOpacity
+                key={conditionIndex}
+                style={styles.tagContainer}
+                onPress={() => {
+                  handleConditionPress(conditionIndex);
+                }}
+              >
+                <View
+                  style={[
+                    styles.tagSelected,
+                    { opacity: condition.selected ? 1 : 0.3 },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.rhombus,
+                    { opacity: condition.selected ? 0.15 : 0 },
+                  ]}
+                />
+                <Text style={styles.tagText}>{condition.name}</Text>
+              </TouchableOpacity>
+            ))}
+            <Text style={styles.seperationText}>---- Transaction ----</Text>
+            {transactions.map((transaction, transactionIndex) => (
+              <TouchableOpacity
+                key={transactionIndex}
+                style={styles.tagContainer}
+                onPress={() => {
+                  handleTransactionPress(transactionIndex);
+                }}
+              >
+                <View
+                  style={[
+                    styles.tagSelected,
+                    { opacity: transaction.selected ? 1 : 0.3 },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.rhombus,
+                    { opacity: transaction.selected ? 0.15 : 0 },
+                  ]}
+                />
+                <Text style={styles.tagText}>{transaction.name}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -144,7 +196,7 @@ const styles = StyleSheet.create({
   rhombus: {
     alignSelf: "center",
     position: "absolute",
-    width: 0.04 * screenHeight,
+    width: 0.035 * screenHeight,
     aspectRatio: 1,
     backgroundColor: Colors.BB_darkPink,
     opacity: 0.15,
@@ -194,6 +246,13 @@ const styles = StyleSheet.create({
     height: screenHeight,
     left: 0,
     zIndex: 200,
+  },
+  seperationText: {
+    color: Colors.white,
+    fontSize: 10,
+    fontWeight: "bold",
+    marginTop: 20,
+    marginBottom: 10,
   },
   spacer: {
     position: "relative",
