@@ -38,7 +38,8 @@ import Listing from "../components/Listing.js";
 import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/visuals/BouncePulse.js";
 import { getLocationWithRetry } from "../constants/Utilities";
-import { Linking } from "react-native";
+import { Linking, Alert } from "react-native";
+
 
 const UserListingsRoute = ({ profileInfo, onPressListing }) => (
   <View style={{ flex: 1 }}>
@@ -120,15 +121,38 @@ const handleContactClick = async (key, data) => {
         console.error("Error opening email:", error);
       }
       break;
-    case "PhoneNumber":
+    case "phone":
       try {
-        //Future: API to call number. Phone number is in data
+        // Assuming `data` is your phone number
+        const phoneNumber = data;
+
+        Alert.alert(
+          "Choose an action",
+          "Would you like to call or text this number?",
+          [
+            {
+              text: "Call",
+              onPress: () => Linking.openURL(`tel:${phoneNumber}`),
+            },
+            {
+              text: "Text",
+              onPress: () => Linking.openURL(`sms:${phoneNumber}`),
+            },
+          ],
+          { cancelable: true }
+        );
       } catch (error) {
         console.error("Error opening phoneNumber:", error);
       }
       break;
+    case "linkedIn":
+      try {
+        await Linking.openURL(`http://${key}.com/in/${data}`);
+      } catch (error) {
+        console.error(`Error opening ${key}:`, error);
+      }
+      break;
     default:
-      console.log("default");
       try {
         await Linking.openURL(`http://${key}.com/${data}`);
       } catch (error) {
@@ -245,7 +269,7 @@ function ProfileScreen({ navigation, route }) {
 
   // Use states for contact info
   const [contactInfo, setContactInfo] = useState({
-    phoneNumber: { data: "2132149702", hidden: false, icon: "phone" },
+    phone: { data: "2132149702", hidden: false, icon: "phone" },
     email: { data: "Email", hidden: false, icon: "mail" },
     linkedIn: { data: "LinkedIn", hidden: false, icon: "linkedin-square" },
     instagram: { data: "Instagram", hidden: false, icon: "instagram" },
@@ -472,7 +496,7 @@ function ProfileScreen({ navigation, route }) {
             borderWidth: 1,
             borderColor: Colors.BB_darkRedPurple,
             position: "absolute",
-          }}
+          }}  
         />
         {/* Back button */}
         {!selfProfile && (
@@ -640,9 +664,11 @@ function ProfileScreen({ navigation, route }) {
               marginBottom: -100,
             }}
           >
+            {/* Logout */}
             <TouchableOpacity onPress={handleLogout} style={styles.button}>
               <Text style={styles.buttonText}>Logout</Text>
             </TouchableOpacity>
+            {/* Edit Profile */}
             <TouchableOpacity
               onPress={() => {
                 setLoading(true);
@@ -655,6 +681,15 @@ function ProfileScreen({ navigation, route }) {
               style={{ ...styles.button, width: 114 }}
             >
               <Text style={styles.buttonText}>Edit Profile</Text>
+            </TouchableOpacity>
+            {/* Edit Contact */}
+            <TouchableOpacity onPress={() => {
+                setLoading(true);
+                navigation.navigate("EditContactInfo", {
+                  prevContactInfo: contactInfo
+                });
+              }} style={styles.button}>
+              <Text style={styles.buttonText}>Edit Contact</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -830,7 +865,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 10,
-    marginHorizontal: 10,
+    marginHorizontal: 2,
     ...Platform.select({
       ios: {
         shadowColor: Colors.black,
