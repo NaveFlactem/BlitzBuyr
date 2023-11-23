@@ -782,7 +782,7 @@ function ProfileScreen({ navigation, route }) {
           </View>
           <TouchableOpacity
             onPress={() => setSelectedListing(null)}
-            style={{ ...styles.button, bottom: 0.05 * screenHeight }}
+            style={{ ...styles.button, bottom: "4%" }}
           >
             <Text style={styles.buttonText}>Close</Text>
           </TouchableOpacity>

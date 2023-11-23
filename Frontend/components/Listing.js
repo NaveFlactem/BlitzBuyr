@@ -919,7 +919,7 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 20,
   },
-  description: {
+  description: { 
     fontSize: 16,
     color: "white",
   },
@@ -932,7 +932,7 @@ const styles = StyleSheet.create({
     zIndex: 50,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.BB_darkerRedPurple,
+    backgroundColor: Colors.BB_darkRedPurple,
     ...Platform.select({
       ios: {
         shadowColor: "black",
