@@ -108,7 +108,6 @@ const EditContactInfo = ({ navigation, route }) => {
               <TextInput
                 style={styles.data}
                 value={contactInfo[key].data}
-                editable={!contactInfo[key].hidden}
                 onChangeText={(value) => handleInputChange(key, value)}
               />
             </View>
