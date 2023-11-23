@@ -10,17 +10,12 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
+import { getStoredUsername } from "./auth/Authenticate";
+import { serverIp } from "../config";
 
-const EditContactInfo = ({ navigation }) => {
+const EditContactInfo = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
-  const [contactInfo, setContactInfo] = useState({
-    phoneNumber: { data: "N/A", hidden: false, icon: "phone" },
-    email: { data: "N/A", hidden: false, icon: "mail" },
-    linkedIn: { data: "N/A", hidden: false, icon: "linkedin-square" },
-    instagram: { data: "N/A", hidden: false, icon: "instagram" },
-    facebook: { data: "N/A", hidden: false, icon: "facebook-square" },
-    twitter: { data: "N/A", hidden: false, icon: "twitter" },
-  });
+  const [contactInfo, setContactInfo] = useState(route.params?.prevContactInfo);
 
   const handleInputChange = (key, value) => {
     setContactInfo((prevContactInfo) => ({
@@ -29,7 +24,40 @@ const EditContactInfo = ({ navigation }) => {
     }));
   };
 
-  const saveChanges = async () => {};
+  const saveChanges = async () => {
+    try {
+      let username = getStoredUsername();
+      const response = await fetch(`${serverIp}/api/editcontactinfo`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          contactInfo: contactInfo,
+        }),
+      });
+
+      const data = await response.json();
+      console.log(data);
+
+      if (response.ok) {
+        // update the profile page's profile name
+        navigation.setOptions({
+          params: { profileName: username },
+        });
+
+        // go back to profile page, WIP MAYBE INCLUDE A SUCCESS MESSAGE OR SOMETHING
+        navigation.goBack();
+      } else {
+        console.log(response);
+        // handle error
+        alert("error");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   return (
     <SafeAreaView
@@ -39,7 +67,6 @@ const EditContactInfo = ({ navigation }) => {
         paddingHorizontal: 22,
       }}
     >
-
       <View
         style={{
           alignItems: "center",
@@ -77,7 +104,7 @@ const EditContactInfo = ({ navigation }) => {
         <View style={styles.container}>
           {Object.keys(contactInfo).map((key) => (
             <View key={key} style={styles.itemContainer}>
-              <Text style={styles.title}>{key}</Text>
+              <Text style={styles.title}>{key.charAt(0).toUpperCase() + key.substring(1)}</Text>
               <TextInput
                 style={styles.data}
                 value={contactInfo[key].data}

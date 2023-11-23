@@ -201,7 +201,7 @@ CREATE TABLE IF NOT EXISTS Profiles (
 const contactInfo = `
 CREATE TABLE IF NOT EXISTS ContactInfo (
   Username TEXT,
-  PhoneNumber TEXT,
+  Phone TEXT,
   Email TEXT,
   LinkedIn TEXT,
   Instagram TEXT,
@@ -215,7 +215,7 @@ CREATE TABLE IF NOT EXISTS ContactInfo (
 const settings = `
 CREATE TABLE IF NOT EXISTS Settings (
   Username TEXT,
-  HidePhoneNumber BOOLEAN DEFAULT True,
+  HidePhone BOOLEAN DEFAULT True,
   HideEmail BOOLEAN DEFAULT True,
   HideLinkedIn BOOLEAN DEFAULT True,
   HideInstagram BOOLEAN DEFAULT True,

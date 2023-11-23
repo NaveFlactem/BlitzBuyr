@@ -188,14 +188,6 @@ const EditProfileScreen = ({ navigation, route }) => {
   const [confirmUsername, setConfirmUsername] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [contactInfo, setContactInfo] = useState({
-    PhoneNumber: { data: "2132149702", icon: "phone" },
-    Email: { data: "Email", icon: "mail" },
-    LinkedIn: { data: "LinkedIn", icon: "linkedin-square" },
-    Instagram: { data: "Instagram", icon: "instagram" },
-    Facebook: { data: "Facebook", icon: "facebook-square" },
-    Twitter: { data: "Twitter", icon: "twitter" },
-  });
 
   const confirmDeletion = () => {
     deleteAccount(confirmUsername, confirmPassword);

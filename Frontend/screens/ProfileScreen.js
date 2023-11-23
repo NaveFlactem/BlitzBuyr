@@ -121,7 +121,7 @@ const handleContactClick = async (key, data) => {
         console.error("Error opening email:", error);
       }
       break;
-    case "phoneNumber":
+    case "phone":
       try {
         // Assuming `data` is your phone number
         const phoneNumber = data;
@@ -269,7 +269,7 @@ function ProfileScreen({ navigation, route }) {
 
   // Use states for contact info
   const [contactInfo, setContactInfo] = useState({
-    phoneNumber: { data: "2132149702", hidden: false, icon: "phone" },
+    phone: { data: "2132149702", hidden: false, icon: "phone" },
     email: { data: "Email", hidden: false, icon: "mail" },
     linkedIn: { data: "LinkedIn", hidden: false, icon: "linkedin-square" },
     instagram: { data: "Instagram", hidden: false, icon: "instagram" },
@@ -685,7 +685,9 @@ function ProfileScreen({ navigation, route }) {
             {/* Edit Contact */}
             <TouchableOpacity onPress={() => {
                 setLoading(true);
-                navigation.navigate("EditContactInfo");
+                navigation.navigate("EditContactInfo", {
+                  prevContactInfo: contactInfo
+                });
               }} style={styles.button}>
               <Text style={styles.buttonText}>Edit Contact</Text>
             </TouchableOpacity>

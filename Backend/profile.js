@@ -401,7 +401,7 @@ router.get("/profile", async function (req, res) {
     // get the user's contact info and settings
     const contactResult = await new Promise((resolve, reject) => {
       db.get(
-        `SELECT ContactInfo.*, Settings.HidePhoneNumber, Settings.HideEmail, Settings.HideLinkedIn, Settings.HideInstagram, Settings.HideFacebook, Settings.HideTwitter
+        `SELECT ContactInfo.*, Settings.HidePhone, Settings.HideEmail, Settings.HideLinkedIn, Settings.HideInstagram, Settings.HideFacebook, Settings.HideTwitter
     FROM ContactInfo
     INNER JOIN Settings ON ContactInfo.Username = Settings.Username
     WHERE ContactInfo.Username = ?`,
@@ -423,13 +423,13 @@ router.get("/profile", async function (req, res) {
 
     // Parse the result FIXME: make this prettier
     const contactInfo = {
-      phoneNumber: {
+      phone: {
         data:
           profileName !== contactResult.Username &&
-          contactResult.HidePhoneNumber
+          contactResult.HidePhone
             ? null
-            : contactResult.PhoneNumber,
-        hidden: contactResult.HidePhoneNumber,
+            : contactResult.Phone,
+        hidden: contactResult.HidePhone,
       },
       email: {
         data:
@@ -611,6 +611,7 @@ router.get("/pfp", function (req, res) {
  */
 router.post("/editprofile", imageUpload, function (req, res) {
   const { username, contactInfo, profileName, password } = req.body;
+  console.log(req.body);
 
   const profilePicture = req.files.find(
     (file) => file.fieldname === "profilePicture"
@@ -683,7 +684,7 @@ router.post("/editprofile", imageUpload, function (req, res) {
  * const requestPayload = {
  *   "username": "testuser",
  *   "contactInfo": {
- *     "phoneNumber": {
+ *     "phone": {
  *       "data": "123-456-7890",
  *       "hidden": false
  *     },
@@ -698,7 +699,8 @@ router.post("/editprofile", imageUpload, function (req, res) {
  */
 router.post("/editcontactinfo", async function (req, res) {
   const { username, contactInfo } = req.body;
-
+  console.log("username:", username);
+  console.log("contact info:", contactInfo);
   // Check if user exists
   const userResult = await new Promise((resolve, reject) => {
     db.all(
@@ -722,9 +724,9 @@ router.post("/editcontactinfo", async function (req, res) {
   try {
     await new Promise((resolve, reject) => {
       db.run(
-        `UPDATE ContactInfo SET PhoneNumber = ?, Email = ?, LinkedIn = ?, Instagram = ?, Facebook = ?, Twitter = ? WHERE Username = ?`,
+        `UPDATE ContactInfo SET Phone = ?, Email = ?, LinkedIn = ?, Instagram = ?, Facebook = ?, Twitter = ? WHERE Username = ?`,
         [
-          contactInfo.phoneNumber.data,
+          contactInfo.phone.data,
           contactInfo.email.data,
           contactInfo.linkedIn.data,
           contactInfo.instagram.data,
@@ -744,9 +746,9 @@ router.post("/editcontactinfo", async function (req, res) {
 
     await new Promise((resolve, reject) => {
       db.run(
-        `UPDATE Settings SET HidePhoneNumber = ?, HideEmail = ?, HideLinkedIn = ?, HideInstagram = ?, HideFacebook = ?, HideTwitter = ? WHERE Username = ?`,
+        `UPDATE Settings SET HidePhone = ?, HideEmail = ?, HideLinkedIn = ?, HideInstagram = ?, HideFacebook = ?, HideTwitter = ? WHERE Username = ?`,
         [
-          contactInfo.phoneNumber.hidden,
+          contactInfo.phone.hidden,
           contactInfo.email.hidden,
           contactInfo.linkedIn.hidden,
           contactInfo.instagram.hidden,
