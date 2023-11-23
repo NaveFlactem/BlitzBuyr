@@ -108,8 +108,8 @@ const LikedListingsRoute = ({ profileInfo, onPressListing }) => (
 
 const handleContactClick = async (key, data) => {
   switch (key) {
-    case "Email":
-      console.log("Email");
+    case "email":
+      console.log("email");
       try {
         await Linking.openURL(
           `mailto:${data}?subject=${encodeURIComponent(

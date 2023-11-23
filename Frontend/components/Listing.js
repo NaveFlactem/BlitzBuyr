@@ -546,11 +546,13 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 Tags:
               </Text>
               <View style={styles.tagColumn}>
-                {item.tags.map((tag, index) => (
-                  <Text key={index} style={styles.tagText}>
-                    {tag}
-                  </Text>
-                ))  
+
+                {item.tags &&
+                  item.tags.map((tag, index) => (
+                    <Text key={index} style={styles.tagText}>
+                      {tag}
+                    </Text>
+                  ))  
                 }
               </View>
 
@@ -930,7 +932,7 @@ const styles = StyleSheet.create({
     zIndex: 50,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.BB_darkRedPurple,
+    backgroundColor: Colors.BB_darkerRedPurple,
     ...Platform.select({
       ios: {
         shadowColor: "black",
