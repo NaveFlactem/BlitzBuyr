@@ -281,9 +281,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 10,
     marginBottom: 20,
-    width: 85,
+    width: "auto",
     top: "9%",
     textAlign: "center",
+    marginLeft: 10,
+    marginRight: 10,
   },
   separatorLine: {
     position: "absolute",

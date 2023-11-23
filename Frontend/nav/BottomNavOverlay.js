@@ -18,8 +18,10 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
   withTiming,
+  useDerivedValue,
 } from "react-native-reanimated";
 import useBackButtonHandler from "../hooks/DisableBackButton";
+
 
 const TabArr = [
   {
@@ -53,9 +55,17 @@ const Tab = createBottomTabNavigator();
 const TabButton = memo((props) => {
   const { item, onPress, accessibilityState } = props;
   const focused = accessibilityState.selected;
-  const scale = useSharedValue(focused ? 1.5 : 1);
-  const rotate = useSharedValue(focused ? "360deg" : "0deg");
 
+  // Shared values for scale and rotate
+  const scale = useSharedValue(1);
+  const rotate = useSharedValue("0deg");
+
+  // Derived value to trigger animations based on the focused state
+  const focusedValue = useDerivedValue(() => {
+    return focused ? 1 : 0; // 1 for focused, 0 for not focused
+  }, [focused]);
+
+  // Animated style based on scale and rotate values
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: scale.value }, { rotate: rotate.value }],
@@ -63,9 +73,16 @@ const TabButton = memo((props) => {
   });
 
   useEffect(() => {
-    scale.value = withSpring(focused ? 1.5 : 1);
-    rotate.value = withTiming(focused ? "360deg" : "0deg", { duration: 500 });
-  }, [focused, scale, rotate]);
+    // Animation logic
+    scale.value = withSpring(focusedValue.value ? 1.5 : 1);
+    rotate.value = withTiming(focusedValue.value ? "360deg" : "0deg", { duration: 500 });
+
+    // Cleanup function to allow ongoing animation to complete
+    return () => {
+      scale.value = withSpring(1);
+      rotate.value = withTiming("0deg", { duration: 500 });
+    };
+  }, [focusedValue]);
 
   const onBackPress = () => {
     return true;

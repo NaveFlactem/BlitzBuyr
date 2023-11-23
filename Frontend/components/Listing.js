@@ -131,15 +131,15 @@ const TimeBox = memo(({ time }) => {
   return (
     <View style={styles.timeContainer}>
       <Text style={styles.timeText}>
-        {timeSince < 60
+        {timeSince < 30
+          ? "Just now"
+          : timeSince < 60
           ? `${timeSince} seconds ago`
           : timeSince < 3600
           ? `${Math.floor(timeSince / 60)} minutes ago`
           : timeSince < 86400
           ? `${Math.floor(timeSince / 3600)} hours ago`
-          : timeSince < 604800
-          ? `${Math.floor(timeSince / 86400)} days ago`
-          : `${Math.floor(timeSince / 2419200)} months ago`
+          : `${Math.floor(timeSince / 86400)} days ago`
         }
       </Text>
     </View>
@@ -999,11 +999,13 @@ const styles = StyleSheet.create({
     right: "1%",
     top: "0.5%",
     height: "5%",
-    width: "25%",
+    width: "auto",
   },
   timeText: {
     fontSize: 12,
     color: "white",
     fontWeight: "bold",
+    marginRight: "2%",
+    marginLeft: "2%",
   },
 });
