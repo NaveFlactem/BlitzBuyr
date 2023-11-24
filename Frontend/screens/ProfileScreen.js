@@ -248,6 +248,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
           )}
         </View>
       </ScrollView>
+      
     </View>
   );
 };
@@ -486,7 +487,7 @@ function ProfileScreen({ navigation, route }) {
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: Colors.bone,
+        backgroundColor: Colors.BB_bone,
       }}
     >
       <StatusBar backgroundColor={"black"} />
@@ -701,6 +702,13 @@ function ProfileScreen({ navigation, route }) {
             >
               <Text style={styles.buttonText}>Edit Contact</Text>
             </TouchableOpacity>
+            {/* Settings Button */}
+          <TouchableOpacity onPress={() => {
+              setLoading(true);
+              navigation.navigate("SettingsPage");
+            }}>
+            <Text>Settings</Text>
+          </TouchableOpacity>
           </View>
         )}
         {/* Rate User Button */}

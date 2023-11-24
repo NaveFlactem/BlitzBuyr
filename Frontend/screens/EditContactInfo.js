@@ -63,7 +63,7 @@ const EditContactInfo = ({ navigation, route }) => {
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: "white",
+        backgroundColor: Colors.BB_bone,
         paddingHorizontal: 22,
       }}
     >
