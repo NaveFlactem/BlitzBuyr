@@ -21,13 +21,9 @@ import RNPickerSelect from "react-native-picker-select";
 import BouncePulse from "../components/visuals/BouncePulse.js";
 import { getLocationWithRetry } from "../constants/Utilities";
 import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
-import {
-  tagOptions,
-  conditionOptions,
-  transactionOptions,
-  currencies,
-} from "../constants/ListingData.js";
+import { tagOptions, currencies } from "../constants/ListingData.js";
 import { getStoredUsername } from "./auth/Authenticate.js";
+import * as FileSystem from "expo-file-system";
 
 const blurhash = "L5H2EC=PM+yV0g-mq.wG9c010J}I";
 
@@ -77,7 +73,7 @@ class CreateListing extends Component {
       isTagInvalid: false,
       isMinorLoading: false,
       isLoading: false,
-      selectedCurrency: "USD $",
+      selectedCurrency: "USD",
       selectedCurrencySymbol: "$",
       showCurrencyOptions: false,
       tagsData: [...tagOptions],
@@ -105,7 +101,7 @@ class CreateListing extends Component {
       transactionPreference: "",
       data: [],
       selectedTags: [],
-      selectedCurrency: "USD $",
+      selectedCurrency: "USD",
       selectedCurrencySymbol: "$",
       tagsData: [...tagOptions],
       currencies: [...currencies],
@@ -237,12 +233,10 @@ class CreateListing extends Component {
       formData.append("description", description);
       formData.append("tags", JSON.stringify(selectedTags));
       formData.append("username", getStoredUsername());
-      formData.append("condition:", condition);
-      formData.append("transactionPreference:", transactionPreference);
-      formData.append("currency:", {
-        name: selectedCurrency,
-        symbol: selectedCurrencySymbol,
-      });
+      formData.append("condition", condition);
+      formData.append("transactionPreference", transactionPreference);
+      formData.append("currency", selectedCurrency);
+      formData.append("currencySymbol", selectedCurrencySymbol);
 
       console.log("Listing Data:", formData);
       const response = await fetch(`${serverIp}/api/createlisting`, {
@@ -400,10 +394,26 @@ class CreateListing extends Component {
    */
   manipulateImage = async (uri) => {
     try {
+      const originalSize = await FileSystem.getInfoAsync(uri);
       const manipulateResult = await ImageManipulator.manipulateAsync(uri, [], {
         compress: 0.4,
         format: ImageManipulator.SaveFormat.JPEG,
       });
+      const compressedSize = await FileSystem.getInfoAsync(
+        manipulateResult.uri
+      );
+      const savedData = originalSize.size - compressedSize.size;
+
+      console.log(
+        `Original File Size for ${uri}:`,
+        (originalSize.size / (1024 * 1024)).toFixed(2),
+        "MB",
+        `compressed to :`,
+        (compressedSize.size / (1024 * 1024)).toFixed(2),
+        "MB",
+        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`
+      );
+
       return {
         name: manipulateResult.uri.split("/").pop(),
         key: String(Date.now()),
@@ -724,8 +734,8 @@ class CreateListing extends Component {
                       ? "Price is required"
                       : this.state.price < 0
                       ? "Invalid price"
-                      : this.state.price.length > 7
-                      ? "Price too long"
+                      : this.state.price.length >= 7
+                      ? "Price too large"
                       : "Must enter a valid price"}
                   </Text>
                 </View>
@@ -747,7 +757,7 @@ class CreateListing extends Component {
                 >
                   <View style={styles.currencyButton}>
                     <Text style={styles.currencyButtonText}>
-                      {this.state.selectedCurrency}
+                      {this.state.selectedCurrency} {this.state.selectedCurrencySymbol}
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -791,65 +801,69 @@ class CreateListing extends Component {
             </View>
 
             {/* TRANSACTION PREFERENCE*/}
-              <View style={styles.rowContainer}>
-                <Text style={{...styles.label, marginBottom: 0}}>Transaction Preference</Text>
-                {isTransactionPreferenceInvalid ? (
-                  <View style={styles.rowContainer}>
-                    <Text style={styles.asterisk}> *</Text>
-                    <Text style={styles.errorMessage}>
-                      Must select a preference
-                    </Text>
-                  </View>
-                ) : (
-                  ""
-                )}
-              </View>
-              <View style={styles.pickerStyle}>
-                <RNPickerSelect
-                  selectedValue={this.state.transactionPreference}
-                  onValueChange={(itemValue, itemIndex) => {
-                    this.setState({ transactionPreference: itemValue });
-                    this.setState({ isTransactionPreferenceInvalid: false });
-                  }}
-                  items={[
-                    { label: "Pickup", value: "Pickup" },
-                    { label: "Meetup", value: "Meetup" },
-                    { label: "Delivery", value: "Delivery" },
-                    { label: "No Preference", value: "No Preference" },
-                  ]}
-                />
-              </View>
-            
+            <View style={styles.rowContainer}>
+              <Text style={{ ...styles.label, marginBottom: 0 }}>
+                Transaction Preference
+              </Text>
+              {isTransactionPreferenceInvalid ? (
+                <View style={styles.rowContainer}>
+                  <Text style={styles.asterisk}> *</Text>
+                  <Text style={styles.errorMessage}>
+                    Must select a preference
+                  </Text>
+                </View>
+              ) : (
+                ""
+              )}
+            </View>
+            <View style={styles.pickerStyle}>
+              <RNPickerSelect
+                selectedValue={this.state.transactionPreference}
+                onValueChange={(itemValue, itemIndex) => {
+                  this.setState({ transactionPreference: itemValue });
+                  this.setState({ isTransactionPreferenceInvalid: false });
+                }}
+                items={[
+                  { label: "Pickup", value: "Pickup" },
+                  { label: "Meetup", value: "Meetup" },
+                  { label: "Delivery", value: "Delivery" },
+                  { label: "No Preference", value: "No Preference" },
+                ]}
+              />
+            </View>
+
             {/* ITEM CONDITON */}
-              <View style={styles.rowContainer}>
-                <Text style={{...styles.label, marginTop: 10, marginBottom: 0}}>Condition</Text>
-                {isConditionInvalid ? (
-                  <View style={styles.rowContainer}>
-                    <Text style={styles.asterisk}> *</Text>
-                    <Text style={styles.errorMessage}>
-                      Must select a condition
-                    </Text>
-                  </View>
-                ) : (
-                  ""
-                )}
-              </View>
-              <View style={{...styles.pickerStyle}}>
-                <RNPickerSelect
-                  selectedValue={this.state.condition}
-                  onValueChange={(itemValue, itemIndex) => {
-                    this.setState({ condition: itemValue });
-                    this.setState({ isConditionInvalid: false });
-                  }}
-                  items={[
-                    { label: "Excellent", value: "Excellent" },
-                    { label: "Good", value: "Good" },
-                    { label: "Fair", value: "Fair" },
-                    { label: "Poor", value: "Poor" },
-                    { label: "For Parts", value: "For Parts" },
-                  ]}
-                />
-              </View>
+            <View style={styles.rowContainer}>
+              <Text style={{ ...styles.label, marginTop: 10, marginBottom: 0 }}>
+                Condition
+              </Text>
+              {isConditionInvalid ? (
+                <View style={styles.rowContainer}>
+                  <Text style={styles.asterisk}> *</Text>
+                  <Text style={styles.errorMessage}>
+                    Must select a condition
+                  </Text>
+                </View>
+              ) : (
+                ""
+              )}
+            </View>
+            <View style={{ ...styles.pickerStyle }}>
+              <RNPickerSelect
+                selectedValue={this.state.condition}
+                onValueChange={(itemValue, itemIndex) => {
+                  this.setState({ condition: itemValue });
+                  this.setState({ isConditionInvalid: false });
+                }}
+                items={[
+                  { label: "Excellent", value: "Excellent" },
+                  { label: "Good", value: "Good" },
+                  { label: "Fair", value: "Fair" },
+                  { label: "Poor", value: "Poor" },
+                  { label: "For Parts", value: "For Parts" },
+                ]}
+              />
+            </View>
 
             <TouchableOpacity
               onPress={this.handleImagePick}

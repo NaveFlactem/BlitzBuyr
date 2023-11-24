@@ -91,31 +91,46 @@ const getCityFromCoords = async (latitude, longitude) => {
  * }
  */
 router.post("/createListing", imageUpload, async function (req, res) {
-  const { price, title, description, username, tags, location } = req.body;
+  const {
+    price,
+    title,
+    description,
+    username,
+    tags,
+    location,
+    condition,
+    transactionPreference,
+    currency,
+    currencySymbol,
+  } = req.body;
   const { latitude, longitude } = JSON.parse(location);
   const city = await getCityFromCoords(latitude, longitude);
-  console.log(city);
   const images = req.files;
-
   const sqlTimeStamp = new Date().toISOString().slice(0, 19).replace("T", " ");
+
+  console.log(`Create Listing: ${JSON.stringify(req.body)}`);
 
   try {
     // Insert the listing into the Listings table
     db.run(
-      "INSERT INTO Listings (price, title, description, userName, postDate, latitude, longitude, city) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-      [
-        price,
-        title,
-        description,
-        username,
-        sqlTimeStamp,
-        latitude,
-        longitude,
-        city,
-      ],
+      `INSERT INTO Listings 
+      (price, title, description, userName, postDate, latitude, longitude, city, condition, transactionPreference, currency, currencySymbol) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      price,
+      title,
+      description,
+      username,
+      sqlTimeStamp,
+      latitude,
+      longitude,
+      city,
+      condition,
+      transactionPreference,
+      currency,
+      currencySymbol,
       function (err) {
         if (err) {
-          console.error("Error querying the database:", err);
+          console.log("Error querying the database:", err);
           return res.status(500).json({ error: "Internal Server Error" });
         }
 
@@ -197,6 +212,7 @@ router.post("/createListing", imageUpload, async function (req, res) {
       }
     );
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ error: err });
   }
 });

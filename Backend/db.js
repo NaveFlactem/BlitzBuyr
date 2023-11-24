@@ -147,6 +147,10 @@ CREATE TABLE IF NOT EXISTS Listings (
   Latitude REAL,
   Longitude REAL,
   City TEXT,
+  Condition TEXT DEFAULT "Excellent",
+  TransactionPreference TEXT DEFAULT "Pickup",
+  Currency TEXT DEFAULT "USD",
+  CurrencySymbol TEXT DEFAULT "$",
   FOREIGN KEY (Username) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE
   );`;
 
@@ -261,6 +265,16 @@ async function createTables() {
       createOrUpdateTable(db, table.sql);
     }
     db.run("PRAGMA foreign_keys=ON");
+    db.run(`CREATE TRIGGER IF NOT EXISTS accounts_after_insert 
+    AFTER INSERT ON Accounts
+    FOR EACH ROW
+    BEGIN
+      INSERT INTO Profiles (Username, Email) VALUES (NEW.Username, NEW.Email);
+      
+      INSERT INTO ContactInfo (Username) VALUES (NEW.Username);
+       
+      INSERT INTO Settings (Username) VALUES (NEW.Username);
+    END;`);
   } catch (err) {
     console.log("error:", err);
   }

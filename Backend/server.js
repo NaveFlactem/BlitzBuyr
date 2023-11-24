@@ -8,6 +8,7 @@ const express = require("express");
 var favicon = require("serve-favicon");
 const app = express();
 const path = require("path");
+var bodyParser = require("body-parser");
 //const compressionMiddleware = require('./imageCompression');
 
 // Static pages
@@ -19,6 +20,8 @@ app.use(
   })
 );
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 /**
  * Middleware for logging request information.
  *
@@ -35,7 +38,7 @@ app.use(function (req, res, next) {
     Endpoint: ${req.url}
     Method: ${req.method}
     Query Parameters: ${JSON.stringify(req.query)}
-    Request Body: ${req.body}`);
+    Request Body: ${JSON.stringify(req.body)}`);
   next();
 });
 

@@ -137,57 +137,61 @@ const TimeBox = memo(({ timeSince }) => {
   );
 });
 
-const CardOverlayFront = memo(({ children, price, timeSince }) => {
-  return (
-    <View style={styles.card}>
-      <View style={styles.cardBackground}>
-        <Image
-          source={require("../assets/card_background.png")}
-          style={styles.backgroundImage}
-        />
-        <View style={styles.priceContainer}>
-          <Text
-            style={[
-              styles.price,
-              { fontSize: calculateFontSize(price) },
-              price === 0 && { fontWeight: "bold" },
-            ]}
-          >
-            {price === 0 ? "FREE" : `$${price}`}
-          </Text>
+const CardOverlayFront = memo(
+  ({ children, currencySymbol, price, timeSince }) => {
+    return (
+      <View style={styles.card}>
+        <View style={styles.cardBackground}>
+          <Image
+            source={require("../assets/card_background.png")}
+            style={styles.backgroundImage}
+          />
+          <View style={styles.priceContainer}>
+            <Text
+              style={[
+                styles.price,
+                { fontSize: calculateFontSize(price) },
+                price === 0 && { fontWeight: "bold" },
+              ]}
+            >
+              {price === 0 ? "FREE" : `${currencySymbol}${price}`}
+            </Text>
+          </View>
+          {children}
+          <TimeBox timeSince={timeSince} />
         </View>
-        {children}
-        <TimeBox timeSince={timeSince} />
       </View>
-    </View>
-  );
-});
+    );
+  }
+);
 
-const CardOverlayBack = memo(({ children, price, timeSince }) => {
-  return (
-    <View style={styles.card}>
-      <View style={styles.cardBackground2}>
-        <Image
-          source={require("../assets/card_background.png")}
-          style={styles.backgroundImage}
-        />
-        <View style={styles.priceContainer}>
-          <Text
-            style={[
-              styles.price,
-              { fontSize: calculateFontSize(price) },
-              price === 0 && { fontWeight: "bold" },
-            ]}
-          >
-            {price === 0 ? "FREE" : `$${price}`}
-          </Text>
+const CardOverlayBack = memo(
+  ({ children, currencySymbol, price, timeSince }) => {
+    return (
+      <View style={styles.card}>
+        <View style={styles.cardBackground2}>
+          <Image
+            source={require("../assets/card_background.png")}
+            style={styles.backgroundImage}
+          />
+          <View style={styles.priceContainer}>
+            <Text
+              style={[
+                styles.price,
+                { fontSize: calculateFontSize(price) },
+                price === 0 && { fontWeight: "bold" },
+              ]}
+            >
+              {price === 0 ? "FREE" : `${currencySymbol}${price}`}
+            </Text>
+          </View>
+          {children}
+          <TimeBox timeSince={timeSince} />
         </View>
-        {children}
-        <TimeBox timeSince={timeSince} />
       </View>
-    </View>
-  );
-});
+    );
+  }
+);
 
 const MemoizedImage = memo(({ source, style, contentFit, transition }) => {
   return (
@@ -204,6 +208,7 @@ const CustomItem = memo(
   ({
     source,
     scale,
+    currencySymbol,
     price,
     timeSince,
     isLiked,
@@ -226,7 +231,11 @@ const CustomItem = memo(
     };
 
     return (
-      <CardOverlayFront price={price} timeSince={timeSince}>
+      <CardOverlayFront
+        price={price}
+        currencySymbol={currencySymbol}
+        timeSince={timeSince}
+      >
         <View>
           <PinchGestureHandler
             onGestureEvent={onZoomEvent}
@@ -252,6 +261,7 @@ const CustomItem = memo(
 const Listing = ({ item, origin, removeListing, userLocation }) => {
   const navigation = useNavigation();
   const price = item.Price;
+  const currencySymbol = item.CurrencySymbol;
   const [timeSince, setTimeSince] = useState(item.TimeSince);
   useEffect(() => {
     setTimeSince(item.TimeSince);
@@ -359,6 +369,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 source={item}
                 scale={new AnimatedRN.Value(1)}
                 price={price}
+                currencySymbol={currencySymbol}
                 timeSince={timeSince}
                 isLiked={isLiked}
                 onLikePress={() => handleLikePress()}
@@ -381,7 +392,11 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
           />
         </View>
 
-        <CardOverlayBack price={price} timeSince={timeSince}>
+        <CardOverlayBack
+          price={price}
+          currencySymbol={currencySymbol}
+          timeSince={timeSince}
+        >
           <Text style={styles.title}>{item.Title}</Text>
           <View style={styles.sellerInfoBox}>
             <View
@@ -486,8 +501,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 Condition:
               </Text>
               <Text style={[styles.conditionText]}>
-                {/* {item.Condition} */}
-                Excellent
+                {item.Condition}
               </Text>
             </View>
             <View
@@ -510,14 +524,8 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
               >
                 Transaction Preference:
               </Text>
-              <Text style={styles.transactionText}>
-                Pickup{" "}
-                <MaterialCommunityIcons name="check" size={16} color="green" />{" "}
-                {"\n"}
-                {"\n"}
-                Meetup <Entypo name="cross" size={16} color="red" /> {"\n"}
-                {"\n"}
-                Delivery <Entypo name="cross" size={16} color="red" />
+              <Text style={{...styles.conditionText, top: "30%"}}>
+                {item.TransactionPreference}
               </Text>
             </View>
             <View

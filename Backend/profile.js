@@ -355,7 +355,6 @@ router.get("/ratings", function (req, res) {
  */
 router.get("/profile", async function (req, res) {
   const { username, password, profileName } = req.query;
-  console.log(req.query);
 
   if (!(await authenticateUser(username, password)))
     return res
@@ -425,8 +424,7 @@ router.get("/profile", async function (req, res) {
     const contactInfo = {
       phone: {
         data:
-          profileName !== contactResult.Username &&
-          contactResult.HidePhone
+          profileName !== contactResult.Username && contactResult.HidePhone
             ? null
             : contactResult.Phone,
         hidden: contactResult.HidePhone,
@@ -611,7 +609,6 @@ router.get("/pfp", function (req, res) {
  */
 router.post("/editprofile", imageUpload, function (req, res) {
   const { username, contactInfo, profileName, password } = req.body;
-  console.log(req.body);
 
   const profilePicture = req.files.find(
     (file) => file.fieldname === "profilePicture"
@@ -628,15 +625,6 @@ router.post("/editprofile", imageUpload, function (req, res) {
   const newCoverPicture = coverPicture
     ? `http://blitzbuyr.lol/img/${coverPicture.filename}`
     : null;
-
-  console.log(req.body);
-  console.log(req.files);
-  console.log("Debug Information:");
-  console.log("Profile Name:", profileName);
-  console.log("Contact Info:", contactInfo);
-  console.log("New Profile Picture:", newProfilePicture);
-  console.log("New Cover Picture:", newCoverPicture);
-  console.log("Existing Username:", username);
 
   // Update the Profiles table
   db.run(
@@ -663,8 +651,6 @@ router.post("/editprofile", imageUpload, function (req, res) {
           res.status(200).json({ message: "Profile updated successfully" });
         }
       );
-
-      console.log("Rows affected:", this.changes);
     }
   );
 });
@@ -699,8 +685,7 @@ router.post("/editprofile", imageUpload, function (req, res) {
  */
 router.post("/editcontactinfo", async function (req, res) {
   const { username, contactInfo } = req.body;
-  console.log("username:", username);
-  console.log("contact info:", contactInfo);
+
   // Check if user exists
   const userResult = await new Promise((resolve, reject) => {
     db.all(
