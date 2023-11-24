@@ -6,10 +6,8 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Dimensions,
   TextInput,
   Alert,
-  ActivityIndicator,
   SafeAreaView,
   Modal,
 } from "react-native";
@@ -18,7 +16,6 @@ import * as ImagePicker from "expo-image-picker";
 import { Image } from "expo-image";
 import Colors from "../constants/Colors";
 import TopBar from "../components/visuals/TopBarGeneric.js";
-import * as SecureStore from "expo-secure-store";
 import * as ImageManipulator from "expo-image-manipulator";
 import RNPickerSelect from "react-native-picker-select";
 import BouncePulse from "../components/visuals/BouncePulse.js";
@@ -30,6 +27,7 @@ import {
   transactionOptions,
   currencies,
 } from "../constants/ListingData.js";
+import { getStoredUsername } from "./auth/Authenticate.js";
 
 const blurhash = "L5H2EC=PM+yV0g-mq.wG9c010J}I";
 
@@ -120,7 +118,6 @@ class CreateListing extends Component {
       isTagInvalid: false,
       isMinorLoading: false,
       isLoading: false,
-      selectedCurrency: false,
     });
   }
 
@@ -185,7 +182,17 @@ class CreateListing extends Component {
   handleCreateListing = async () => {
     this.setState({ isLoading: true });
 
-    const { title, description, price, selectedTags, data } = this.state; // Destructuring state
+    const {
+      title,
+      description,
+      price,
+      selectedTags,
+      data,
+      condition,
+      transactionPreference,
+      selectedCurrency,
+      selectedCurrencySymbol,
+    } = this.state; // Destructuring state
 
     const returnCode = this.checkValidListing();
     if (returnCode !== 0) {
@@ -229,9 +236,15 @@ class CreateListing extends Component {
       formData.append("title", title);
       formData.append("description", description);
       formData.append("tags", JSON.stringify(selectedTags));
-      formData.append("username", await SecureStore.getItemAsync("username"));
+      formData.append("username", getStoredUsername());
+      formData.append("condition:", condition);
+      formData.append("transactionPreference:", transactionPreference);
+      formData.append("currency:", {
+        name: selectedCurrency,
+        symbol: selectedCurrencySymbol,
+      });
 
-      console.log("FormData:", formData);
+      console.log("Listing Data:", formData);
       const response = await fetch(`${serverIp}/api/createlisting`, {
         method: "POST",
         body: formData,
@@ -306,7 +319,7 @@ class CreateListing extends Component {
           style: "cancel",
         },
       ],
-      { cancelable: true },
+      { cancelable: true }
     );
   };
 
@@ -372,7 +385,7 @@ class CreateListing extends Component {
   processSelectedImages = async (assets) => {
     // Process multiple images
     const processedImages = await Promise.all(
-      assets.map(async (asset) => this.manipulateImage(asset.uri)),
+      assets.map(async (asset) => this.manipulateImage(asset.uri))
     );
     this.setState((prevState) => ({
       data: [...prevState.data, ...processedImages.filter(Boolean)],
@@ -524,7 +537,7 @@ class CreateListing extends Component {
       if (isAlreadySelected) {
         // If already selected, remove it from the array
         newSelectedTags = prevState.selectedTags.filter(
-          (tagName) => tagName !== pressedTagName,
+          (tagName) => tagName !== pressedTagName
         );
       } else {
         // If not selected, add it to the array
@@ -613,11 +626,13 @@ class CreateListing extends Component {
 
         <View style={styles.scrollfield}>
           <ScrollView scrollEnabled={this.state.isScrollEnabled}>
+            {/* TOP BUTTON
             <TouchableOpacity onPress={this.handleCreateListing}>
               <View style={styles.createButton}>
                 <Text style={styles.buttonText}>Create Listing</Text>
               </View>
             </TouchableOpacity>
+            */}
 
             <View style={styles.rowContainer}>
               <View style={styles.rowContainer}>
@@ -629,8 +644,8 @@ class CreateListing extends Component {
                       {this.state.title == ""
                         ? "Title is required"
                         : this.state.title.length > 25
-                          ? "Title too long"
-                          : "Must enter a valid title"}
+                        ? "Title too long"
+                        : "Must enter a valid title"}
                     </Text>
                   </View>
                 ) : (
@@ -665,8 +680,8 @@ class CreateListing extends Component {
                       {this.state.description.length > 500
                         ? "Description too long"
                         : this.state.description.length === 0
-                          ? "Description is required"
-                          : "Must enter a valid description"}
+                        ? "Description is required"
+                        : "Must enter a valid description"}
                     </Text>
                   </View>
                 )}
@@ -708,10 +723,10 @@ class CreateListing extends Component {
                     {this.state.price == ""
                       ? "Price is required"
                       : this.state.price < 0
-                        ? "Invalid price"
-                        : this.state.price.length > 7
-                          ? "Price too long"
-                          : "Must enter a valid price"}
+                      ? "Invalid price"
+                      : this.state.price.length > 7
+                      ? "Price too long"
+                      : "Must enter a valid price"}
                   </Text>
                 </View>
               ) : (
@@ -719,109 +734,122 @@ class CreateListing extends Component {
               )}
             </View>
 
-            <TextInput
-              ref={this.priceInput}
-              style={[
-                styles.input,
-                isPriceInvalid ? { borderColor: "red", borderWidth: 1 } : null,
-              ]}
-              value={this.state.price}
-              onChangeText={(text) => {
-                this.setState({ price: text, isPriceInvalid: false });
-                this.handlePriceChange(text);
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginLeft: 20,
               }}
-              keyboardType="numeric"
-              returnKeyType="done"
-              placeholder={`${this.state.selectedCurrencySymbol}0.00`}
-              maxLength={9}
-            />
-            <View style={styles.currencyButtonContainer}>
-              <TouchableOpacity
-                onPress={() => this.setState({ showCurrencyOptions: true })}
-              >
-                <View style={styles.currencyButton}>
-                  <Text style={styles.currencyButtonText}>
-                    {this.state.selectedCurrency}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              {this.state.showCurrencyOptions && (
-                <Modal
-                  visible={this.state.showCurrencyOptions}
-                  animationType="slide"
+            >
+              <View style={{ ...styles.currencyButtonContainer }}>
+                <TouchableOpacity
+                  onPress={() => this.setState({ showCurrencyOptions: true })}
                 >
-                  <View style={styles.modalContent}>
-                    {this.renderCurrencyOptions()}
+                  <View style={styles.currencyButton}>
+                    <Text style={styles.currencyButtonText}>
+                      {this.state.selectedCurrency}
+                    </Text>
                   </View>
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.setState({ showCurrencyOptions: false })
-                    }
+                </TouchableOpacity>
+                {this.state.showCurrencyOptions && (
+                  <Modal
+                    visible={this.state.showCurrencyOptions}
+                    animationType="slide"
                   >
-                    <Text style={styles.closeButton}>Close</Text>
-                  </TouchableOpacity>
-                </Modal>
-              )}
-            </View>
-
-            <View style={styles.rowContainer}>
-              <Text style={styles.label}>Condition</Text>
-              {isConditionInvalid ? (
-                <View style={styles.rowContainer}>
-                  <Text style={styles.asterisk}> *</Text>
-                  <Text style={styles.errorMessage}>
-                    Must select a condition
-                  </Text>
-                </View>
-              ) : (
-                ""
-              )}
-            </View>
-            <View style={styles.pickerStyle}>
-              <RNPickerSelect
-                selectedValue={this.state.condition}
-                onValueChange={(itemValue, itemIndex) => {
-                  this.setState({ condition: itemValue });
-                  this.setState({ isConditionInvalid: false });
-                }}
-                items={[
-                  { label: "Excellent", value: "Excellent" },
-                  { label: "Good", value: "Good" },
-                  { label: "Fair", value: "Fair" },
-                  { label: "Poor", value: "Poor" },
-                  { label: "For Parts", value: "For Parts" },
+                    <View style={styles.modalContent}>
+                      {this.renderCurrencyOptions()}
+                    </View>
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.setState({ showCurrencyOptions: false })
+                      }
+                    >
+                      <Text style={styles.closeButton}>Close</Text>
+                    </TouchableOpacity>
+                  </Modal>
+                )}
+              </View>
+              <TextInput
+                ref={this.priceInput}
+                style={[
+                  styles.input,
+                  { width: "94.5%", marginLeft: -101.5 },
+                  isPriceInvalid
+                    ? { borderColor: "red", borderWidth: 1 }
+                    : null,
                 ]}
+                value={this.state.price}
+                onChangeText={(text) => {
+                  this.setState({ price: text, isPriceInvalid: false });
+                  this.handlePriceChange(text);
+                }}
+                keyboardType="numeric"
+                returnKeyType="done"
+                placeholder={`0.00`}
+                maxLength={9}
               />
             </View>
 
-            <View style={styles.rowContainer}>
-              <Text style={styles.label}>Transaction Preference</Text>
-              {isTransactionPreferenceInvalid ? (
-                <View style={styles.rowContainer}>
-                  <Text style={styles.asterisk}> *</Text>
-                  <Text style={styles.errorMessage}>
-                    Must select a preference
-                  </Text>
-                </View>
-              ) : (
-                ""
-              )}
-            </View>
-            <View style={styles.pickerStyle}>
-              <RNPickerSelect
-                selectedValue={this.state.transactionPreference}
-                onValueChange={(itemValue, itemIndex) => {
-                  this.setState({ transactionPreference: itemValue });
-                  this.setState({ isTransactionPreferenceInvalid: false });
-                }}
-                items={[
-                  { label: "Pickup", value: "Pickup" },
-                  { label: "Meetup", value: "Meetup" },
-                  { label: "Delivery", value: "Delivery" },
-                  { label: "No Preference", value: "No Preference" },
-                ]}
-              />
-            </View>
+            {/* TRANSACTION PREFERENCE*/}
+              <View style={styles.rowContainer}>
+                <Text style={{...styles.label, marginBottom: 0}}>Transaction Preference</Text>
+                {isTransactionPreferenceInvalid ? (
+                  <View style={styles.rowContainer}>
+                    <Text style={styles.asterisk}> *</Text>
+                    <Text style={styles.errorMessage}>
+                      Must select a preference
+                    </Text>
+                  </View>
+                ) : (
+                  ""
+                )}
+              </View>
+              <View style={styles.pickerStyle}>
+                <RNPickerSelect
+                  selectedValue={this.state.transactionPreference}
+                  onValueChange={(itemValue, itemIndex) => {
+                    this.setState({ transactionPreference: itemValue });
+                    this.setState({ isTransactionPreferenceInvalid: false });
+                  }}
+                  items={[
+                    { label: "Pickup", value: "Pickup" },
+                    { label: "Meetup", value: "Meetup" },
+                    { label: "Delivery", value: "Delivery" },
+                    { label: "No Preference", value: "No Preference" },
+                  ]}
+                />
+              </View>
+            
+            {/* ITEM CONDITON */}
+              <View style={styles.rowContainer}>
+                <Text style={{...styles.label, marginTop: 10, marginBottom: 0}}>Condition</Text>
+                {isConditionInvalid ? (
+                  <View style={styles.rowContainer}>
+                    <Text style={styles.asterisk}> *</Text>
+                    <Text style={styles.errorMessage}>
+                      Must select a condition
+                    </Text>
+                  </View>
+                ) : (
+                  ""
+                )}
+              </View>
+              <View style={{...styles.pickerStyle}}>
+                <RNPickerSelect
+                  selectedValue={this.state.condition}
+                  onValueChange={(itemValue, itemIndex) => {
+                    this.setState({ condition: itemValue });
+                    this.setState({ isConditionInvalid: false });
+                  }}
+                  items={[
+                    { label: "Excellent", value: "Excellent" },
+                    { label: "Good", value: "Good" },
+                    { label: "Fair", value: "Fair" },
+                    { label: "Poor", value: "Poor" },
+                    { label: "For Parts", value: "For Parts" },
+                  ]}
+                />
+              </View>
 
             <TouchableOpacity
               onPress={this.handleImagePick}
@@ -1035,7 +1063,7 @@ const styles = StyleSheet.create({
     alignContent: "center",
     justifyContent: "center",
     textAlign: "center",
-    height: 0.08 * screenHeight,
+    height: 0.075 * screenHeight,
     width: 0.3 * screenWidth,
     ...Platform.select({
       ios: {
@@ -1177,7 +1205,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "white",
     opacity: 0.9,
-    marginBottom: 10,
+    //marginBottom: 10,
     width: "90%",
     left: "5%",
     ...Platform.select({
@@ -1198,10 +1226,10 @@ const styles = StyleSheet.create({
     height: 120,
   },
   pickerStyle: {
-    bottomMargin: 10,
+    //bottomMargin: 10,
     height: 50,
     left: 0.05 * screenWidth,
-    width: "40%",
+    width: "45%",
     color: Colors.white,
     justifyContent: "center",
   },
@@ -1258,16 +1286,18 @@ const styles = StyleSheet.create({
   },
   currencyButtonContainer: {
     alignItems: "center",
-    marginTop: 20,
+    zIndex: 2,
+    //marginTop: 20,
   },
   currencyButton: {
     width: 100,
-    height: 36,
+    height: 40,
     backgroundColor: Colors.BB_darkRedPurple,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
     borderColor: "black",
+    //marginTop: -29.5
   },
   currencyButtonText: {
     fontSize: 18,
