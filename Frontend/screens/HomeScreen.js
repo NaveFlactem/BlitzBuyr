@@ -36,6 +36,14 @@ import TagDrawer from "../components/TagDrawer.js";
 import IOSSwiperComponent from "../components/swipers/IOSSwiperComponent.js";
 import AndroidSwiperComponent from "../components/swipers/AndroidSwiperComponent.js";
 import LocationSlider from "../components/LocationSlider.js";
+import { LinearGradient } from "expo-linear-gradient";
+import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
+import * as Settings from "../hooks/UserSettings.js";
+import {
+  tagOptions,
+  conditionOptions,
+  transactionOptions,
+} from "../constants/ListingData.js";
 
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -44,46 +52,43 @@ const HomeScreen = ({ route }) => {
   const [networkConnected, setNetworkConnected] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [userLocation, setUserLocation] = useState(null);
-  const [tagsData, setTagsData] = useState([
-    { name: "Furniture", selected: false },
-    { name: "Electronics", selected: false },
-    { name: "Clothing", selected: false },
-    { name: "Books", selected: false },
-    { name: "Appliances", selected: false },
-    { name: "Sports", selected: false },
-    { name: "Toys", selected: false },
-    { name: "Tools", selected: false },
-    { name: "Vehicles", selected: false },
-    { name: "Service", selected: false },
-    { name: "Other", selected: false },
-  ]);
-  const [conditions, setConditionsData] = useState([
-    { name: "Excellent", selected: false },
-    { name: "Good", selected: false },
-    { name: "Fair", selected: false },
-    { name: "Poor", selected: false },
-    { name: "For Parts", selected: false },
-  ]);
-  const [transactions, setTransactionsData] = useState([
-    { name: "Pickup", selected: false },
-    { name: "Meetup", selected: false },
-    { name: "Delivery", selected: false },
-    { name: "No Preference", selected: false },
-  ]);
+  const [tagsData, setTagsData] = useState([...tagOptions]);
+  const [conditions, setConditionsData] = useState([...conditionOptions]);
+  const [transactions, setTransactionsData] = useState([...transactionOptions]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedConditions, setSelectedConditions] = useState([]);
   const [selectedTransactions, setSelectedTransactions] = useState([]);
-  const [tags, setTags] = useState(tagsData);
   const translateX = useSharedValue(-screenWidth);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [distance, setDistance] = useState(30);
 
-  // Gesture handler for closing the drawer
+  useEffect(() => {
+    const fetchDistance = async () => {
+      const initialDistance = await Settings.getDistance();
+      console.log("Initial distance:", initialDistance);
+      setDistance(initialDistance);
+    };
+
+    fetchDistance();
+  }, []);
+
+  const X_OFFSET_THRESHOLD = 10; // You can adjust this value as needed
+
   const onGestureEvent = useAnimatedGestureHandler({
     onStart: (_, context) => {
       context.startX = translateX.value;
+      if (Platform.OS === "android") {
+        context.hasMovedPastThreshold = false;
+      }
     },
     onActive: (event, context) => {
+      if (Platform.OS === "android" && !context.hasMovedPastThreshold) {
+        if (Math.abs(event.translationX) > X_OFFSET_THRESHOLD) {
+          context.hasMovedPastThreshold = true;
+        }
+        return; // Early return until threshold is passed
+      }
+
       if (event.translationX < 0) {
         // Detect left swipe
         translateX.value = Math.max(
@@ -92,7 +97,11 @@ const HomeScreen = ({ route }) => {
         );
       }
     },
-    onEnd: (_) => {
+    onEnd: (_, context) => {
+      if (Platform.OS === "android" && !context.hasMovedPastThreshold) {
+        return; // Do nothing if the threshold was not passed
+      }
+
       const shouldClose = translateX.value < -screenWidth * 0.65;
       translateX.value = withTiming(
         shouldClose ? -screenWidth : -screenWidth * 0.6,
@@ -215,8 +224,7 @@ const HomeScreen = ({ route }) => {
     console.log(selectedConditions);
   };
 
-
-    handleTransactionPress = (index) => {
+  handleTransactionPress = (index) => {
     //update selectedTransactions state
     const newTransactionsData = transactions.map((transaction, idx) => {
       if (idx === index) {
@@ -227,31 +235,30 @@ const HomeScreen = ({ route }) => {
 
     // Update the selectedTransactions state
     const pressedTransactionName = newTransactionsData[index].name;
-    const isAlreadySelected = selectedTransactions.includes(pressedTransactionName);
+    const isAlreadySelected = selectedTransactions.includes(
+      pressedTransactionName,
+    );
     let newSelectedTransactions;
     if (isAlreadySelected) {
       newSelectedTransactions = selectedTransactions.filter(
         (transactionName) => transactionName !== pressedTransactionName,
       );
     } else {
-      newSelectedTransactions = [...selectedTransactions, pressedTransactionName];
+      newSelectedTransactions = [
+        ...selectedTransactions,
+        pressedTransactionName,
+      ];
     }
-    
+
     setTransactionsData(newTransactionsData);
     setSelectedTransactions(newSelectedTransactions);
     console.log(selectedTransactions);
   };
 
-
-
-
-
-
-
   const fetchListings = async () => {
     console.log("Fetching listings...");
     console.log("Tags:", selectedTags);
-    console.log("Distance:", distance < 510? distance: "No Limit");
+    console.log("Distance:", distance < 510 ? distance : "No Limit");
     if (route.params?.refresh) route.params.refresh = false;
 
     try {
@@ -268,12 +275,9 @@ const HomeScreen = ({ route }) => {
       if (distance < 510) fetchUrl += `&distance=${distance}`; // don't add distance on unlimited
       if (selectedTags.length > 0) fetchUrl += `&${mergedTags}`;
       console.log(fetchUrl);
-      const listingsResponse = await fetch(
-        fetchUrl,
-        {
-          method: "GET",
-        },
-      );
+      const listingsResponse = await fetch(fetchUrl, {
+        method: "GET",
+      });
 
       if (listingsResponse.status <= 201) {
         const listingsData = await listingsResponse.json();
@@ -307,7 +311,6 @@ const HomeScreen = ({ route }) => {
 
   const [isLocationSliderVisible, setIsLocationSliderVisible] = useState(false);
   const locationSliderHeight = useSharedValue(-300); // Start off-screen
-  const distanceChanged = useRef(false);
 
   const handleLocationPress = () => {
     if (isLocationSliderVisible) {
@@ -407,7 +410,6 @@ const HomeScreen = ({ route }) => {
     else getUserLocation();
   }, []);
 
-
   useEffect(() => {
     console.log(`Refreshing: ${refreshing}, ScrollY: ${scrollY}`);
   }, [refreshing, scrollY]);
@@ -436,7 +438,10 @@ const HomeScreen = ({ route }) => {
   if (isLoading) {
     return (
       <SafeAreaView style={styles.screenfield}>
-        <TopBar handleMenuPress={toggleTagDrawer} />
+        <TopBar
+          handleMenuPress={toggleTagDrawer}
+          handleLocationPress={handleLocationPress}
+        />
         <LoadingView />
       </SafeAreaView>
     );
@@ -459,7 +464,9 @@ const HomeScreen = ({ route }) => {
         }}
       />
 
-      {Platform.OS === "ios" && <BouncePulse opacity={refreshing ? 1 : calculateOpacity()} />}
+      {Platform.OS === "ios" && (
+        <BouncePulse opacity={refreshing ? 1 : calculateOpacity()} />
+      )}
       {networkConnected ? (
         listings && listings.length > 0 ? (
           Platform.OS === "ios" ? (
@@ -564,11 +571,7 @@ const HomeScreen = ({ route }) => {
 
       <PanGestureHandler onGestureEvent={onSwipeUpLocationSlider}>
         <Animated.View style={locationSliderStyle}>
-          <LocationSlider
-            distance={distance}
-            setDistance={setDistance}
-            distanceChanged={distanceChanged}
-          />
+          <LocationSlider setDistance={setDistance} />
         </Animated.View>
       </PanGestureHandler>
     </SafeAreaView>
@@ -576,9 +579,6 @@ const HomeScreen = ({ route }) => {
 };
 
 export default HomeScreen;
-
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
 
 //////////////////////////////////////////////////////////////////////////////////////
 const styles = StyleSheet.create({

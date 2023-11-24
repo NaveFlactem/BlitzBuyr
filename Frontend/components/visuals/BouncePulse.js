@@ -9,6 +9,7 @@ import Animated, {
   withDelay,
 } from "react-native-reanimated";
 import Colors from "../../constants/Colors";
+import { screenWidth, screenHeight } from "../../constants/ScreenDimensions.js";
 
 const BouncePulse = memo(({ opacity }) => {
   const translateY1 = useSharedValue(0);
@@ -58,9 +59,6 @@ const BouncePulse = memo(({ opacity }) => {
     </View>
   );
 });
-
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
   container: {

@@ -27,7 +27,9 @@ const getLocationWithRetry = async function (retries = 20) {
       if (!lastKnownLocation) {
         throw error;
       }
-      console.log("Failed to get current location, using last known location instead.");
+      console.log(
+        "Failed to get current location, using last known location instead.",
+      );
       return lastKnownLocation;
     }
   }

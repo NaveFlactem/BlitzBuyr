@@ -2,9 +2,7 @@ import React from "react";
 import { View, Image, Dimensions, StyleSheet, Platform } from "react-native";
 import { memo } from "react";
 import Colors from "../../constants/Colors";
-
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
+import { screenWidth, screenHeight } from "../../constants/ScreenDimensions.js";
 
 const styles = StyleSheet.create({
   logo: {

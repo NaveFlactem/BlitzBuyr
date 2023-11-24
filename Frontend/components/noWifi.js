@@ -2,6 +2,7 @@ import React, { memo } from "react";
 import { View, Text, TouchableOpacity, Image, Dimensions } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
+import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
 
 const NoWifi = memo(({ onRetry }) => {
   return (
@@ -17,9 +18,6 @@ const NoWifi = memo(({ onRetry }) => {
     </View>
   );
 });
-
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
 
 const styles = {
   noWifiContainer: {

@@ -5,6 +5,7 @@ import { StyleSheet } from "react-native";
 import Colors from "../../constants/Colors";
 import { View, Image } from "react-native";
 import { Asset } from "expo-asset";
+import * as Settings from "../../hooks/UserSettings.js";
 
 const assetsToPreload = [
   require("../../assets/blitzbuyr_name_logo.png"),
@@ -21,6 +22,7 @@ const assetsToPreload = [
   require("../../assets/icon_transparent.png"),
   require("../../assets/icon.png"),
   require("../../assets/no_wifi_icon_transparent.png"),
+  require("../../assets/card_background.png"),
 ];
 
 let storedUsername;
@@ -60,6 +62,11 @@ const AuthenticateScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
+    const loadSettings = async () => {
+      const settings = await Settings.getUserSettings();
+      console.log("User settings:", settings);
+    };
+
     const checkStoredCredentials = async () => {
       storedUsername = await SecureStore.getItemAsync("username");
       storedPassword = await SecureStore.getItemAsync("password");
@@ -82,6 +89,7 @@ const AuthenticateScreen = ({ navigation }) => {
         let responseData = await response.json();
 
         if (response.status <= 201) {
+          loadSettings();
           console.log("Response data:", responseData);
           navigation.navigate("BottomNavOverlay");
         } else {

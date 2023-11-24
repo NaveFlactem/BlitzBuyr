@@ -1,9 +1,7 @@
 import React from "react";
 import { StyleSheet, View, Image, Dimensions } from "react-native";
 import { memo } from "react";
-
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
+import { screenHeight, screenWidth } from "../../constants/ScreenDimensions";
 
 const styles = StyleSheet.create({
   bottomBar: {

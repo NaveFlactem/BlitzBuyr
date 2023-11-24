@@ -2,6 +2,7 @@ import React, { memo } from "react";
 import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
+import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
 
 const NoListings = memo(({ onRetry }) => {
   return (
@@ -18,9 +19,6 @@ const NoListings = memo(({ onRetry }) => {
     </View>
   );
 });
-
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
 
 const styles = {
   container: {

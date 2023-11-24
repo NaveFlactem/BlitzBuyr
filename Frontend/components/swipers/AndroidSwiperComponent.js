@@ -5,13 +5,7 @@ import { Image } from "expo-image";
 import Listing from "../Listing";
 
 const AndroidSwiperComponent = memo(
-  ({
-    swiperRef,
-    listings,
-    refreshControl,
-    removeListing,
-    userLocation,
-  }) => {
+  ({ swiperRef, listings, refreshControl, removeListing, userLocation }) => {
     return (
       <Swiper
         ref={swiperRef}

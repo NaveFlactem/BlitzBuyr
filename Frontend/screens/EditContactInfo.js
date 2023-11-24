@@ -104,7 +104,9 @@ const EditContactInfo = ({ navigation, route }) => {
         <View style={styles.container}>
           {Object.keys(contactInfo).map((key) => (
             <View key={key} style={styles.itemContainer}>
-              <Text style={styles.title}>{key.charAt(0).toUpperCase() + key.substring(1)}</Text>
+              <Text style={styles.title}>
+                {key.charAt(0).toUpperCase() + key.substring(1)}
+              </Text>
               <TextInput
                 style={styles.data}
                 value={contactInfo[key].data}

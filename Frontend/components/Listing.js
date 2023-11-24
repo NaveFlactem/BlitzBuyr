@@ -27,6 +27,7 @@ import {
   getStoredPassword,
   getStoredUsername,
 } from "../screens/auth/Authenticate.js";
+import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
 
 const blurhash =
   "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
@@ -127,35 +128,37 @@ const TimeBox = memo(({ time }) => {
     setTimeSince(calculateTimeSince());
   }, [time]);
 
-
   return (
     <View style={styles.timeContainer}>
       <Text style={styles.timeText}>
         {timeSince < 30
           ? "Just now"
           : timeSince < 60
-          ? `${timeSince} seconds ago`
-          : timeSince < 3600
-          ? `${Math.floor(timeSince / 60)} minutes ago`
-          : timeSince < 86400
-          ? `${Math.floor(timeSince / 3600)} hours ago`
-          : `${Math.floor(timeSince / 86400)} days ago`
-        }
+            ? `${timeSince} seconds ago`
+            : timeSince < 120
+              ? `1 minute ago`
+              : timeSince < 3600
+                ? `${Math.floor(timeSince / 60)} minutes ago`
+                : timeSince < 7200
+                  ? `1 hour ago`
+                  : timeSince < 86400
+                    ? `${Math.floor(timeSince / 3600)} hours ago`
+                    : timeSince < 172800
+                      ? `1 day ago`
+                      : `${Math.floor(timeSince / 86400)} days ago`}
       </Text>
     </View>
   );
 });
 
-
 const CardOverlayFront = memo(({ children, price, time }) => {
   return (
     <View style={styles.card}>
       <View style={styles.cardBackground}>
-        <View style={styles.top_rhombus} />
-        <View style={styles.mid_rhombus} />
-        <View style={styles.bottom_rhombus} />
-        <View style={styles.topR_circle} />
-        <View style={styles.topL_circle} />
+        <Image
+          source={require("../assets/card_background.png")}
+          style={styles.backgroundImage}
+        />
         <View style={styles.priceContainer}>
           <Text
             style={[
@@ -178,11 +181,10 @@ const CardOverlayBack = memo(({ children, price, time }) => {
   return (
     <View style={styles.card}>
       <View style={styles.cardBackground2}>
-        <View style={styles.top_rhombus} />
-        <View style={styles.mid_rhombus} />
-        <View style={styles.bottom_rhombus} />
-        <View style={styles.topR_circle} />
-        <View style={styles.topL_circle} />
+        <Image
+          source={require("../assets/card_background.png")}
+          style={styles.backgroundImage}
+        />
         <View style={styles.priceContainer}>
           <Text
             style={[
@@ -258,7 +260,7 @@ const CustomItem = memo(
         {deleteVisible && <DeleteButton onDeletePress={onDeletePress} />}
       </CardOverlayFront>
     );
-  }
+  },
 );
 
 const Listing = ({ item, origin, removeListing, userLocation }) => {
@@ -272,13 +274,13 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
           item.Latitude,
           item.Longitude,
           userLocation.latitude,
-          userLocation.longitude
+          userLocation.longitude,
         )
-      : "Unknown"
+      : "Unknown",
   );
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
-    origin == "profile" && item.Username == getStoredUsername()
+    origin == "profile" && item.Username == getStoredUsername(),
   );
 
   const toggleDeleteModal = () => {
@@ -385,7 +387,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 parallaxScrollingScale: 1,
                 parallaxAdjacentItemScale: 0.5,
                 parallaxScrollingOffset: 10,
-              }
+              },
             )}
           />
         </View>
@@ -520,8 +522,12 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 Transaction Preference:
               </Text>
               <Text style={styles.transactionText}>
-                Pickup <MaterialCommunityIcons name="check" size={16} color="green" /> {"\n"}{"\n"} 
-                Meetup <Entypo name="cross" size={16} color="red" /> {"\n"}{"\n"} 
+                Pickup{" "}
+                <MaterialCommunityIcons name="check" size={16} color="green" />{" "}
+                {"\n"}
+                {"\n"}
+                Meetup <Entypo name="cross" size={16} color="red" /> {"\n"}
+                {"\n"}
                 Delivery <Entypo name="cross" size={16} color="red" />
               </Text>
             </View>
@@ -546,16 +552,13 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 Tags:
               </Text>
               <View style={styles.tagColumn}>
-
                 {item.tags &&
                   item.tags.map((tag, index) => (
                     <Text key={index} style={styles.tagText}>
                       {tag}
                     </Text>
-                  ))  
-                }
+                  ))}
               </View>
-
             </View>
           </View>
 
@@ -604,8 +607,6 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
 
 export default Listing;
 
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
 const PAGE_WIDTH = screenWidth / 2;
 //////////////////////////////////////////////////////////////////////////////////////
 const styles = StyleSheet.create({
@@ -620,7 +621,7 @@ const styles = StyleSheet.create({
     height: 0.79 * screenHeight,
     backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 20,
-    borderWidth: 0.01 * screenHeight,
+    borderWidth: 0.005 * screenHeight,
     justifyContent: "center",
     overflow: "hidden",
     borderColor: Colors.BB_darkerRedPurple,
@@ -665,8 +666,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     aspectRatio: 1,
-    backgroundColor: Colors.BB_darkPink,
-    opacity: 0.2,
+    backgroundColor: Colors.BB_darkerRedPurple,
+    opacity: 0.6,
     transform: [{ rotate: "45deg" }],
     ...Platform.select({
       ios: {
@@ -685,8 +686,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "70%",
     aspectRatio: 1,
-    backgroundColor: Colors.BB_darkPink,
-    opacity: 0.1,
+    backgroundColor: Colors.BB_darkerRedPurple,
+    opacity: 0.6,
     transform: [{ rotate: "45deg" }],
     ...Platform.select({
       ios: {
@@ -705,8 +706,28 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "35%",
     aspectRatio: 1,
-    backgroundColor: Colors.BB_darkPink,
-    opacity: 0.2,
+    backgroundColor: Colors.BB_darkerRedPurple,
+    opacity: 0.6,
+    transform: [{ rotate: "45deg" }],
+    ...Platform.select({
+      ios: {
+        shadowColor: "black",
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        shadowOffset: { height: 4, width: 0 },
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+  },
+  base_rhombus: {
+    alignSelf: "center",
+    position: "absolute",
+    width: 0.55 * screenHeight,
+    aspectRatio: 1,
+    backgroundColor: Colors.BB_darkerRedPurple,
+    opacity: 0.6,
     transform: [{ rotate: "45deg" }],
     ...Platform.select({
       ios: {
@@ -899,7 +920,7 @@ const styles = StyleSheet.create({
     bottom: "0%",
     width: "100%",
     height: "80%",
-    justifyContent: "center",    
+    justifyContent: "center",
   },
   tagText: {
     fontSize: 12,
@@ -919,7 +940,7 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 20,
   },
-  description: { 
+  description: {
     fontSize: 16,
     color: "white",
   },
@@ -1007,5 +1028,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginRight: "2%",
     marginLeft: "2%",
+  },
+  backgroundImage: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    opacity: 0.1,
   },
 });

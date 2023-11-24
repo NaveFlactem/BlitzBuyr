@@ -4,7 +4,7 @@ import { memo } from "react";
 import Listing from "../Listing";
 
 const IOSSwiperComponent = memo(
-  ({ swiperRef, listings, removeListing, userLocation}) => {
+  ({ swiperRef, listings, removeListing, userLocation }) => {
     return (
       <Swiper
         ref={swiperRef}

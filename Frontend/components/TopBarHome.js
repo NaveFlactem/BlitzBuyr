@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
+import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
 
 const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
   return (
@@ -37,9 +38,6 @@ const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
 });
 
 export default TopBar;
-
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
   logo: {

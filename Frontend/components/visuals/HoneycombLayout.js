@@ -1,6 +1,7 @@
 import React, { useState, memo } from "react";
 import { View, StyleSheet, Dimensions } from "react-native";
 import Hexagon from "./Hexagon"; // Assuming Hexagon is in the same folder
+import { screenWidth, screenHeight } from "../../constants/ScreenDimensions.js";
 
 const HoneycombLayout = memo(() => {
   const [layout, setLayout] = useState({ width: 0, height: 0 });

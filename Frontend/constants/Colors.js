@@ -1,4 +1,5 @@
 import { Platform } from "react-native";
+import * as Settings from "../hooks/UserSettings";
 
 export default {
   primary: "#637aff",
@@ -34,4 +35,15 @@ export default {
   BB_darkerRedPurple: Platform.OS == "ios" ? "#402030" : "#301520",
   BB_bone: "#F5F5F5",
   BB_red: "#CC3514",
+};
+
+export const themes = {
+  light: {},
+
+  dark: {},
+};
+
+export const getCurrentThemeColors = async () => {
+  const currentTheme = await Settings.getColorMode();
+  return themes[currentTheme] || themes.light; // Default to light theme if undefined
 };

@@ -11,7 +11,7 @@ import {
   Alert,
   ActivityIndicator,
   SafeAreaView,
-  Modal
+  Modal,
 } from "react-native";
 import DraggableGrid from "react-native-draggable-grid";
 import * as ImagePicker from "expo-image-picker";
@@ -23,6 +23,13 @@ import * as ImageManipulator from "expo-image-manipulator";
 import RNPickerSelect from "react-native-picker-select";
 import BouncePulse from "../components/visuals/BouncePulse.js";
 import { getLocationWithRetry } from "../constants/Utilities";
+import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
+import {
+  tagOptions,
+  conditionOptions,
+  transactionOptions,
+  currencies,
+} from "../constants/ListingData.js";
 
 const blurhash = "L5H2EC=PM+yV0g-mq.wG9c010J}I";
 
@@ -73,20 +80,10 @@ class CreateListing extends Component {
       isMinorLoading: false,
       isLoading: false,
       selectedCurrency: "USD $",
+      selectedCurrencySymbol: "$",
       showCurrencyOptions: false,
-      tagsData: [
-        { name: "Furniture", selected: false },
-        { name: "Electronics", selected: false },
-        { name: "Clothing", selected: false },
-        { name: "Books", selected: false },
-        { name: "Appliances", selected: false },
-        { name: "Sports", selected: false },
-        { name: "Toys", selected: false },
-        { name: "Tools", selected: false },
-        { name: "Vehicles", selected: false },
-        { name: "Service", selected: false },
-        { name: "Other", selected: false },
-      ],
+      tagsData: [...tagOptions],
+      currencies: [...currencies],
     };
     this.titleInput = React.createRef();
     this.descriptionInput = React.createRef();
@@ -110,19 +107,10 @@ class CreateListing extends Component {
       transactionPreference: "",
       data: [],
       selectedTags: [],
-      tagsData: [
-        { name: "Furniture", selected: false },
-        { name: "Electronics", selected: false },
-        { name: "Clothing", selected: false },
-        { name: "Books", selected: false },
-        { name: "Appliances", selected: false },
-        { name: "Sports", selected: false },
-        { name: "Toys", selected: false },
-        { name: "Tools", selected: false },
-        { name: "Vehicles", selected: false },
-        { name: "Service", selected: false },
-        { name: "Other", selected: false },
-      ],
+      selectedCurrency: "USD $",
+      selectedCurrencySymbol: "$",
+      tagsData: [...tagOptions],
+      currencies: [...currencies],
       isTitleInvalid: false,
       isDescriptionInvalid: false,
       isPriceInvalid: false,
@@ -492,7 +480,7 @@ class CreateListing extends Component {
    * @description - handles when the user enters a price
    */
   handlePriceChange = (text) => {
-    const regex = /^(\d{0,6}(\.\d{0,2})?)$/;
+    const regex = /^(\d{0,6}(\.\d{2})?)$/;
 
     if (regex.test(text) || text === "") {
       // If text matches the format (4 digits before decimal, 2 after) or is empty
@@ -563,9 +551,29 @@ class CreateListing extends Component {
       return rows;
     }, []);
   };
-  handleCurrencySelection = (currency) => {
-    // Logic to update selectedCurrency based on user selection
-    this.setState({ selectedCurrency: currency, showCurrencyOptions: false });
+
+  handleCurrencySelection = (currencyName, currencySymbol) => {
+    this.setState({
+      selectedCurrency: currencyName,
+      selectedCurrencySymbol: currencySymbol,
+      showCurrencyOptions: false,
+    });
+  };
+
+  renderCurrencyOptions = () => {
+    return this.state.currencies.map((currency) => (
+      <TouchableOpacity
+        key={currency.symbol}
+        onPress={() =>
+          this.handleCurrencySelection(currency.name, currency.symbol)
+        }
+      >
+        <Text style={styles.currencyOption}>
+          {this.state.selectedCurrency === currency.name ? "✓ " : ""}
+          {currency.name}
+        </Text>
+      </TouchableOpacity>
+    ));
   };
 
   render() {
@@ -589,7 +597,6 @@ class CreateListing extends Component {
       );
     }
 
-
     if (this.state.isMinorLoading) {
       return (
         <SafeAreaView>
@@ -598,7 +605,6 @@ class CreateListing extends Component {
         </SafeAreaView>
       );
     }
-
 
     const rowsOfTags = this.groupTagsIntoRows(this.state.tagsData, 3);
     return (
@@ -726,81 +732,37 @@ class CreateListing extends Component {
               }}
               keyboardType="numeric"
               returnKeyType="done"
-              placeholder="$000000.00"
+              placeholder={`${this.state.selectedCurrencySymbol}0.00`}
               maxLength={9}
             />
             <View style={styles.currencyButtonContainer}>
-              <TouchableOpacity onPress={() => this.setState({ showCurrencyOptions: true })}>
+              <TouchableOpacity
+                onPress={() => this.setState({ showCurrencyOptions: true })}
+              >
                 <View style={styles.currencyButton}>
-                  <Text style={styles.currencyButtonText}>{this.state.selectedCurrency}</Text>
+                  <Text style={styles.currencyButtonText}>
+                    {this.state.selectedCurrency}
+                  </Text>
                 </View>
               </TouchableOpacity>
               {this.state.showCurrencyOptions && (
-                <Modal visible={this.state.showCurrencyOptions} animationType="slide">
+                <Modal
+                  visible={this.state.showCurrencyOptions}
+                  animationType="slide"
+                >
                   <View style={styles.modalContent}>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('USD $')}>
-                      <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'USD $' ? '✓ ' : ''}
-                        USD $
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('EUR €')}>
-                      <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'EUR €' ? '✓ ' : ''}
-                        EUR €
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('MXN $')}>
-                      <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'MXN $' ? '✓ ' : ''}
-                        MXN $
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('CAD $')}>
-                      <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'CAD $' ? '✓ ' : ''}
-                        CAD $
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('GBP ₤')}>
-                      <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'GBP ₤' ? '✓ ' : ''}
-                        GBP ₤
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('AUD $')}>
-                      <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'AUD $' ? '✓ ' : ''}
-                        AUD $
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('BRL R$')}>
-                      <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'BRL R$' ? '✓ ' : ''}
-                        BRL R$
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('JPY ¥')}>
-                      <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'JPY ¥' ? '✓ ' : ''}
-                        JPY ¥
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.handleCurrencySelection('PHP ₱')}>
-                      <Text style={styles.currencyOption}>
-                        {this.state.selectedCurrency === 'PHP ₱' ? '✓ ' : ''}
-                        PHP ₱
-                      </Text>
-                    </TouchableOpacity>
-                    {/* Add more currencies as needed */}
-                    <TouchableOpacity onPress={() => this.setState({ showCurrencyOptions: false })}>
-                      <Text style={styles.closeButton}>Close</Text>
-                    </TouchableOpacity>
+                    {this.renderCurrencyOptions()}
                   </View>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.setState({ showCurrencyOptions: false })
+                    }
+                  >
+                    <Text style={styles.closeButton}>Close</Text>
+                  </TouchableOpacity>
                 </Modal>
               )}
             </View>
-            
 
             <View style={styles.rowContainer}>
               <Text style={styles.label}>Condition</Text>
@@ -967,8 +929,6 @@ class CreateListing extends Component {
 export default CreateListing;
 
 //////////////////////////////////////////////////////////////////////////////////////////
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -1297,37 +1257,38 @@ const styles = StyleSheet.create({
     height: 0.15 * screenHeight,
   },
   currencyButtonContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   currencyButton: {
     width: 100,
     height: 36,
     backgroundColor: Colors.BB_darkRedPurple,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 10,
-    borderColor: 'black',
+    borderColor: "black",
   },
   currencyButtonText: {
     fontSize: 18,
-    color: 'white',
-    alignSelf: 'center',
+    color: "white",
+    alignSelf: "center",
   },
   modalContent: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: Colors.BB_bone,
   },
   currencyOption: {
     fontSize: 24,
-    color: 'black',
+    color: "black",
     marginVertical: 10,
   },
   closeButton: {
     fontSize: 24,
-    color: 'black',
-    marginTop: 20,
+    color: "black",
+    bottom: 0.1 * screenHeight,
+    textAlign: "center",
   },
 });

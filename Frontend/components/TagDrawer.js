@@ -9,8 +9,8 @@ import {
   Text,
   ScrollView,
 } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
+import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
 
 const TagDrawer = memo(
   ({
@@ -126,13 +126,10 @@ const TagDrawer = memo(
         </ScrollView>
       </View>
     );
-  }
+  },
 );
 
 export default TagDrawer;
-
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
   drawerContainer: {

@@ -39,7 +39,9 @@ import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/visuals/BouncePulse.js";
 import { getLocationWithRetry } from "../constants/Utilities";
 import { Linking, Alert } from "react-native";
-
+import * as Settings from "../hooks/UserSettings.js";
+import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
+import ColorMode from "../components/visuals/ColorMode.js";
 
 const UserListingsRoute = ({ profileInfo, onPressListing }) => (
   <View style={{ flex: 1 }}>
@@ -114,8 +116,8 @@ const handleContactClick = async (key, data) => {
       try {
         await Linking.openURL(
           `mailto:${data}?subject=${encodeURIComponent(
-            "BlitzBuyr"
-          )}&body=${encodeURIComponent("")}`
+            "BlitzBuyr",
+          )}&body=${encodeURIComponent("")}`,
         );
       } catch (error) {
         console.error("Error opening email:", error);
@@ -139,7 +141,7 @@ const handleContactClick = async (key, data) => {
               onPress: () => Linking.openURL(`sms:${phoneNumber}`),
             },
           ],
-          { cancelable: true }
+          { cancelable: true },
         );
       } catch (error) {
         console.error("Error opening phoneNumber:", error);
@@ -164,7 +166,7 @@ const handleContactClick = async (key, data) => {
 
 const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
   let displayValues = Object.values(contactInfo).some(
-    (value) => value.data.length > 0
+    (value) => value.data.length > 0,
   );
 
   if (!selfProfile && Object.values(contactInfo).every((value) => value.hidden))
@@ -266,6 +268,7 @@ function ProfileScreen({ navigation, route }) {
   const [selectedListing, setSelectedListing] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [LikeStates, setLikeStates] = useState({});
+  const [showColorMode, setShowColorMode] = useState(false);
 
   // Use states for contact info
   const [contactInfo, setContactInfo] = useState({
@@ -292,7 +295,7 @@ function ProfileScreen({ navigation, route }) {
       const username = getStoredUsername();
       if (route.params?.username) {
         console.log(
-          `Setting username to passed username ${route.params.username}`
+          `Setting username to passed username ${route.params.username}`,
         );
         // we navigated with a username passed as param (i.e. clicking someone's profile)
         setProfileName(route.params.username);
@@ -349,7 +352,7 @@ function ProfileScreen({ navigation, route }) {
     console.log(`Fetching profile info for ${username}`);
     try {
       const fetchUrl = `${serverIp}/api/profile?username=${encodeURIComponent(
-        getStoredUsername()
+        getStoredUsername(),
       )}&password=${getStoredPassword()}&profileName=${username}`;
       console.log(fetchUrl);
       const profileResponse = await fetch(fetchUrl, {
@@ -363,7 +366,7 @@ function ProfileScreen({ navigation, route }) {
           userListings: profileData.userListings,
           userRatings: profileData.ratings.reduce(
             (acc, rating) => ({ ...acc, ...rating }),
-            {}
+            {},
           ),
           profilePicture: profileData.profilePicture,
           coverPicture: profileData.coverPicture,
@@ -381,8 +384,8 @@ function ProfileScreen({ navigation, route }) {
 
         const initialLikeStates = Object.fromEntries(
           [...profileData.likedListings, ...profileData.userListings].map(
-            (listing) => [listing.ListingId, listing.liked]
-          )
+            (listing) => [listing.ListingId, listing.liked],
+          ),
         );
         setLikeStates(initialLikeStates);
 
@@ -391,7 +394,7 @@ function ProfileScreen({ navigation, route }) {
         console.log(
           "Error fetching profile:",
           profileResponse.status,
-          profileData
+          profileData,
         );
       }
     } catch (err) {
@@ -429,7 +432,7 @@ function ProfileScreen({ navigation, route }) {
     console.log(
       `${
         newLikeStates[listingId] ? "Likered" : "UnLikered"
-      } listing ID ${listingId}`
+      } listing ID ${listingId}`,
     );
   };
 
@@ -475,6 +478,10 @@ function ProfileScreen({ navigation, route }) {
     );
   }
 
+  const showColorModal = () => {
+    setShowColorMode(!showColorMode);
+  };
+
   return (
     <SafeAreaView
       style={{
@@ -496,7 +503,7 @@ function ProfileScreen({ navigation, route }) {
             borderWidth: 1,
             borderColor: Colors.BB_darkRedPurple,
             position: "absolute",
-          }}  
+          }}
         />
         {/* Back button */}
         {!selfProfile && (
@@ -683,12 +690,15 @@ function ProfileScreen({ navigation, route }) {
               <Text style={styles.buttonText}>Edit Profile</Text>
             </TouchableOpacity>
             {/* Edit Contact */}
-            <TouchableOpacity onPress={() => {
+            <TouchableOpacity
+              onPress={() => {
                 setLoading(true);
                 navigation.navigate("EditContactInfo", {
-                  prevContactInfo: contactInfo
+                  prevContactInfo: contactInfo,
                 });
-              }} style={styles.button}>
+              }}
+              style={styles.button}
+            >
               <Text style={styles.buttonText}>Edit Contact</Text>
             </TouchableOpacity>
           </View>
@@ -804,10 +814,10 @@ function ProfileScreen({ navigation, route }) {
                 setProfileInfo((prevProfileInfo) => ({
                   ...prevProfileInfo,
                   likedListings: prevProfileInfo.likedListings.filter(
-                    (item) => item.ListingId !== listingId
+                    (item) => item.ListingId !== listingId,
                   ),
                   userListings: prevProfileInfo.userListings.filter(
-                    (item) => item.ListingId !== listingId
+                    (item) => item.ListingId !== listingId,
                   ),
                 }));
 
@@ -823,12 +833,41 @@ function ProfileScreen({ navigation, route }) {
           </TouchableOpacity>
         </View>
       )}
+
+      {/* Testing with Dark Mode
+<TouchableOpacity onPress={showColorModal} style={{
+          position: "absolute",
+          top: 0.25 * screenHeight,
+          left: 0.1 * screenWidth,
+          width: 30,
+          height: 30,
+          backgroundColor: Colors.BB_darkRedPurple,
+          borderRadius: 80,
+        }}>
+
+      <View
+        
+        >
+        <Text
+          style={
+            {
+              top: "25%",
+              textAlign: "center",
+              fontStyle: "normal",
+              fontWeight: "bold",
+              fontSize: 8,
+              color: Colors.white,
+            }}
+        >
+          Temp
+        </Text>
+      </View>
+      </TouchableOpacity>
+      
+      { showColorMode && <ColorMode />} */}
     </SafeAreaView>
   );
 }
-
-const screenHeight = Dimensions.get("window").height;
-const screenWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
   contactInfoContainer: {

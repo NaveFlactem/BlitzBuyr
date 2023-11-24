@@ -4,7 +4,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Vie,
+  View,
   Dimensions,
   Platform,
 } from "react-native";
@@ -18,10 +18,9 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
   withTiming,
-  useDerivedValue,
 } from "react-native-reanimated";
 import useBackButtonHandler from "../hooks/DisableBackButton";
-
+import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
 
 const TabArr = [
   {
@@ -56,16 +55,10 @@ const TabButton = memo((props) => {
   const { item, onPress, accessibilityState } = props;
   const focused = accessibilityState.selected;
 
-  // Shared values for scale and rotate
+  // Local shared values for scale and rotate
   const scale = useSharedValue(1);
   const rotate = useSharedValue("0deg");
 
-  // Derived value to trigger animations based on the focused state
-  const focusedValue = useDerivedValue(() => {
-    return focused ? 1 : 0; // 1 for focused, 0 for not focused
-  }, [focused]);
-
-  // Animated style based on scale and rotate values
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: scale.value }, { rotate: rotate.value }],
@@ -73,16 +66,10 @@ const TabButton = memo((props) => {
   });
 
   useEffect(() => {
-    // Animation logic
-    scale.value = withSpring(focusedValue.value ? 1.5 : 1);
-    rotate.value = withTiming(focusedValue.value ? "360deg" : "0deg", { duration: 500 });
-
-    // Cleanup function to allow ongoing animation to complete
-    return () => {
-      scale.value = withSpring(1);
-      rotate.value = withTiming("0deg", { duration: 500 });
-    };
-  }, [focusedValue]);
+    // Animations are triggered based on the focused state of this specific TabButton
+    scale.value = withSpring(focused ? 1.5 : 1);
+    rotate.value = withTiming(focused ? "360deg" : "0deg", { duration: 500 });
+  }, [focused]);
 
   const onBackPress = () => {
     return true;
@@ -104,6 +91,8 @@ const TabButton = memo((props) => {
           size={20}
         />
       </Animated.View>
+      <View style={styles.outerRhombus} />
+      <View style={styles.innerRhombus} />
     </TouchableOpacity>
   );
 });
@@ -144,6 +133,7 @@ function BottomNavOverlay() {
 const styles = StyleSheet.create({
   tabButtonContainer: {
     flex: 1,
+    overflow: "hidden",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.BB_darkRedPurple,
@@ -158,6 +148,48 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     bottom: Platform.OS === "ios" ? "25%" : null,
+  },
+  outerRhombus: {
+    alignSelf: "center",
+    position: "absolute",
+    width: "85%",
+    aspectRatio: 1,
+    backgroundColor: Colors.BB_darkPink,
+    opacity: 0.1,
+    transform: [{ rotate: "45deg" }],
+    ...Platform.select({
+      ios: {
+        bottom: 0,
+        shadowColor: "black",
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        shadowOffset: { height: 4, width: 0 },
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+  },
+  innerRhombus: {
+    alignSelf: "center",
+    position: "absolute",
+    width: "45%",
+    aspectRatio: 1,
+    backgroundColor: Colors.BB_darkPink,
+    opacity: 0.1,
+    transform: [{ rotate: "45deg" }],
+    ...Platform.select({
+      ios: {
+        bottom: 0.03 * screenHeight,
+        shadowColor: "black",
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        shadowOffset: { height: 4, width: 0 },
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
 });
 

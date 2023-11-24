@@ -1,4 +1,4 @@
-import React, { useState, memo } from "react";
+import React, { useState, memo, useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -8,13 +8,25 @@ import {
   Platform,
 } from "react-native";
 import Colors from "../constants/Colors";
+import * as Settings from "../hooks/UserSettings.js";
+import { screenHeight, screenWidth } from "../constants/ScreenDimensions";
 const Slider =
   Platform.OS == "ios"
     ? require("@react-native-community/slider").default
     : require("react-native-slider").default;
 
-const LocationSlider = memo(({ distance, setDistance, distanceChanged }) => {
+const LocationSlider = memo(({ setDistance }) => {
   const [sliderValue, setSliderValue] = useState(30);
+
+  useEffect(() => {
+    const fetchDistance = async () => {
+      const initialDistance = await Settings.getDistance();
+      console.log("Initial distance:", initialDistance);
+      setSliderValue(initialDistance);
+    };
+
+    fetchDistance();
+  }, []);
 
   return (
     <View style={styles.box}>
@@ -31,13 +43,14 @@ const LocationSlider = memo(({ distance, setDistance, distanceChanged }) => {
         minimumTrackTintColor={Colors.BB_pink}
         maximumTrackTintColor="#000000"
         thumbImage={require("../assets/icon_transparent_background_filled_upright_mini.png")}
-        onSlidingComplete={(value) => setDistance(value)}
+        onSlidingComplete={(value) => {
+          setDistance(value);
+          Settings.updateDistance(value);
+        }}
       />
     </View>
   );
 });
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
   box: {

@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 import { View, StyleSheet } from "react-native";
 import Colors from "../../constants/Colors";
+import { screenWidth, screenHeight } from "../../constants/ScreenDimensions.js";
 
 const Hexagon = memo(() => {
   return (
