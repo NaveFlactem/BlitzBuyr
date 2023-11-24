@@ -1,7 +1,7 @@
-import React from "react";
-import Swiper from "react-native-swiper";
-import { memo } from "react";
-import Listing from "../Listing";
+import React from 'react';
+import Swiper from 'react-native-swiper';
+import { memo } from 'react';
+import Listing from '../Listing';
 
 const IOSSwiperComponent = memo(
   ({ swiperRef, listings, removeListing, userLocation }) => {

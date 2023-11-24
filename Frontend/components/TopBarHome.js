@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useState } from 'react';
 import {
   View,
   Image,
@@ -6,10 +6,10 @@ import {
   StyleSheet,
   Platform,
   TouchableOpacity,
-} from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Colors from "../constants/Colors";
-import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
+} from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Colors from '../constants/Colors';
+import { screenWidth, screenHeight } from '../constants/ScreenDimensions.js';
 
 const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
   return (
@@ -19,7 +19,7 @@ const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
           name="menu"
           size={30}
           color={Colors.BB_bone}
-          style={(alignSelf = "center")}
+          style={(alignSelf = 'center')}
         />
       </TouchableOpacity>
       <TouchableOpacity style={styles.location} onPress={handleLocationPress}>
@@ -31,7 +31,7 @@ const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
       </TouchableOpacity>
       <Image
         style={styles.logo}
-        source={require("../assets/blitzbuyr_name_logo.png")}
+        source={require('../assets/blitzbuyr_name_logo.png')}
       />
     </View>
   );
@@ -55,37 +55,37 @@ const styles = StyleSheet.create({
     }),
   },
   menu: {
-    position: "absolute",
-    paddingTop: Platform.OS == "ios" ? 20 : 29,
+    position: 'absolute',
+    paddingTop: Platform.OS == 'ios' ? 20 : 29,
     paddingLeft: 20,
     paddingBottom: 20,
     paddingRight: 20,
-    height: "auto",
-    width: "auto",
-    alignContent: "center",
-    justifyContent: "center",
+    height: 'auto',
+    width: 'auto',
+    alignContent: 'center',
+    justifyContent: 'center',
     borderRadius: 80,
-    left: "1%",
+    left: '1%',
     zIndex: 11,
     ...Platform.select({
       ios: {
-        top: "28%",
+        top: '28%',
         shadowColor: Colors.black,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.5,
         shadowRadius: 5,
       },
       android: {
-        top: "12%",
+        top: '12%',
       },
     }),
   },
   location: {
-    position: "absolute",
-    height: "auto",
-    width: "auto",
-    bottom: "8%",
-    right: "5%",
+    position: 'absolute',
+    height: 'auto',
+    width: 'auto',
+    bottom: '8%',
+    right: '5%',
     zIndex: 11,
     ...Platform.select({
       ios: {
@@ -97,16 +97,16 @@ const styles = StyleSheet.create({
     }),
   },
   topBar: {
-    position: "absolute",
+    position: 'absolute',
     height: 0.09 * screenHeight,
     width: screenWidth,
     backgroundColor: Colors.BB_darkRedPurple,
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
     borderBottomWidth: 3,
     borderColor:
-      Platform.OS == "ios" ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.3)",
+      Platform.OS == 'ios' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.3)',
     ...Platform.select({
       ios: {
         shadowColor: Colors.black,

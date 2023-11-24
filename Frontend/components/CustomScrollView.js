@@ -1,11 +1,11 @@
-import React, { memo } from "react";
-import { View, StyleSheet } from "react-native";
+import React, { memo } from 'react';
+import { View, StyleSheet } from 'react-native';
 import Animated, {
   useAnimatedScrollHandler,
   useSharedValue,
   runOnJS,
-} from "react-native-reanimated";
-import { screenHeight, screenWidth } from "../constants/ScreenDimensions";
+} from 'react-native-reanimated';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions';
 
 const CustomScrollView = memo(({ children, onRefresh, currentIndex }) => {
   const scrollY = useSharedValue(0);

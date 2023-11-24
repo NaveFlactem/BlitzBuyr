@@ -1,7 +1,7 @@
-import React, { memo } from "react";
-import { View, StyleSheet } from "react-native";
-import Colors from "../../constants/Colors";
-import { screenWidth, screenHeight } from "../../constants/ScreenDimensions.js";
+import React, { memo } from 'react';
+import { View, StyleSheet } from 'react-native';
+import Colors from '../../constants/Colors';
+import { screenWidth, screenHeight } from '../../constants/ScreenDimensions.js';
 
 const Hexagon = memo(() => {
   return (
@@ -17,44 +17,44 @@ const styles = StyleSheet.create({
   hexagon: {
     width: 80,
     height: 40,
-    backgroundColor: "yellow",
+    backgroundColor: 'yellow',
   },
   hexagonInner: {
     width: 80,
     height: 40,
-    backgroundColor: "yellow",
+    backgroundColor: 'yellow',
   },
   hexagonBefore: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     width: 0,
     height: 0,
-    borderStyle: "solid",
+    borderStyle: 'solid',
     borderRightWidth: 40,
-    borderRightColor: "transparent",
+    borderRightColor: 'transparent',
     borderBottomWidth: 20,
-    borderBottomColor: "yellow",
+    borderBottomColor: 'yellow',
     borderLeftWidth: 40,
-    borderLeftColor: "transparent",
-    backgroundColor: "yellow",
-    transform: [{ rotate: "-30deg" }],
+    borderLeftColor: 'transparent',
+    backgroundColor: 'yellow',
+    transform: [{ rotate: '-30deg' }],
   },
   hexagonAfter: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     width: 0,
     height: 0,
-    borderStyle: "solid",
+    borderStyle: 'solid',
     borderRightWidth: 40,
-    borderRightColor: "transparent",
+    borderRightColor: 'transparent',
     borderTopWidth: 20,
-    borderTopColor: "yellow",
+    borderTopColor: 'yellow',
     borderLeftWidth: 40,
-    borderLeftColor: "transparent",
-    backgroundColor: "yellow",
-    transform: [{ rotate: "30deg" }],
+    borderLeftColor: 'transparent',
+    backgroundColor: 'yellow',
+    transform: [{ rotate: '30deg' }],
   },
 });
 

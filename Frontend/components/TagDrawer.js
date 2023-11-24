@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo } from 'react';
 import {
   View,
   Image,
@@ -8,9 +8,9 @@ import {
   TouchableOpacity,
   Text,
   ScrollView,
-} from "react-native";
-import Colors from "../constants/Colors";
-import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
+} from 'react-native';
+import Colors from '../constants/Colors';
+import { screenWidth, screenHeight } from '../constants/ScreenDimensions.js';
 
 const TagDrawer = memo(
   ({
@@ -133,7 +133,7 @@ export default TagDrawer;
 
 const styles = StyleSheet.create({
   drawerContainer: {
-    position: "absolute",
+    position: 'absolute',
     height: screenHeight,
     width: 0.3 * screenWidth,
     zIndex: 110,
@@ -143,21 +143,21 @@ const styles = StyleSheet.create({
   drawerScroll: {
     top: 0.08 * screenHeight,
     width: 0.4 * screenWidth,
-    height: "100%",
+    height: '100%',
     backgroundColor: Colors.BB_darkRedPurple,
     borderRightWidth: 2,
     borderRightColor: Colors.BB_orange,
   },
   drawer: {
-    alignSelf: "center",
-    left: "5%",
+    alignSelf: 'center',
+    left: '5%',
     borderRadius: 20,
     paddingTop: 20,
-    height: "auto",
-    width: "auto",
-    backgroundColor: "#fff",
-    justifyContent: "center",
-    alignItems: "center",
+    height: 'auto',
+    width: 'auto',
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
     zIndex: 12,
     backgroundColor: Colors.BB_darkerRedPurple,
     ...Platform.select({
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     }),
   },
   outsideDrawer: {
-    position: "absolute",
+    position: 'absolute',
     height: screenHeight,
     width: screenWidth,
     zIndex: 11,
@@ -183,15 +183,15 @@ const styles = StyleSheet.create({
     marginRight: 10,
     marginBottom: 10,
     borderRadius: 20,
-    alignContent: "center",
-    justifyContent: "center",
-    textAlign: "center",
+    alignContent: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
     height: 0.055 * screenHeight,
     width: 0.3 * screenWidth,
     zIndex: 120,
     ...Platform.select({
       ios: {
-        shadowColor: "white",
+        shadowColor: 'white',
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity: 0.2,
         shadowRadius: 2,
@@ -204,25 +204,25 @@ const styles = StyleSheet.create({
   tagText: {
     color: Colors.white,
     fontSize: 18,
-    alignSelf: "center",
-    fontWeight: "bold",
+    alignSelf: 'center',
+    fontWeight: 'bold',
   },
   rhombus: {
-    alignSelf: "center",
-    position: "absolute",
+    alignSelf: 'center',
+    position: 'absolute',
     width: 0.035 * screenHeight,
     aspectRatio: 1,
     backgroundColor: Colors.BB_darkPink,
     opacity: 0.15,
-    transform: [{ rotate: "45deg" }],
+    transform: [{ rotate: '45deg' }],
   },
   tagSelected: {
-    alignSelf: "center",
+    alignSelf: 'center',
     backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 20,
-    height: "100%",
-    width: "100%",
-    position: "absolute",
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
     borderColor: Colors.BB_bone,
     borderWidth: 1,
   },
@@ -232,9 +232,9 @@ const styles = StyleSheet.create({
     width: 0.3 * screenWidth,
     marginTop: 10,
     marginBottom: 10,
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: Colors.BB_pink,
     borderColor: Colors.BB_bone,
     borderWidth: 1,
@@ -253,21 +253,21 @@ const styles = StyleSheet.create({
   applyButtonText: {
     color: Colors.white,
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   swipeArea: {
-    position: "absolute",
+    position: 'absolute',
     width: 0.05 * screenWidth,
     height: screenHeight,
     left: 0,
     zIndex: 200,
   },
   seperationContainer: {
-    alignSelf: "center",
-    alignItems: "center",
-    justifyContent: "center",
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
     height: 0.06 * screenHeight,
-    width: "90%",
+    width: '90%',
     marginTop: 10,
     marginBottom: 10,
   },
@@ -275,24 +275,24 @@ const styles = StyleSheet.create({
     color: Colors.white,
     backgroundColor: Colors.BB_darkerRedPurple,
     fontSize: 12,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginTop: 10,
     marginBottom: 20,
-    width: "auto",
-    top: "9%",
-    textAlign: "center",
+    width: 'auto',
+    top: '9%',
+    textAlign: 'center',
     marginLeft: 10,
     marginRight: 10,
   },
   separatorLine: {
-    position: "absolute",
+    position: 'absolute',
     height: 1,
-    backgroundColor: "white",
-    width: "80%",
+    backgroundColor: 'white',
+    width: '80%',
     marginTop: 5,
   },
   spacer: {
-    position: "relative",
+    position: 'relative',
     height: 0.2 * screenHeight,
   },
 });

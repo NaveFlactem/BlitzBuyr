@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,11 +7,11 @@ import {
   SafeAreaView,
   ScrollView,
   Platform,
-} from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Colors from "../constants/Colors";
-import { getStoredUsername } from "./auth/Authenticate";
-import { serverIp } from "../config";
+} from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Colors from '../constants/Colors';
+import { getStoredUsername } from './auth/Authenticate';
+import { serverIp } from '../config';
 
 const EditContactInfo = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
@@ -28,9 +28,9 @@ const EditContactInfo = ({ navigation, route }) => {
     try {
       let username = getStoredUsername();
       const response = await fetch(`${serverIp}/api/editcontactinfo`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           username: username,
@@ -52,10 +52,10 @@ const EditContactInfo = ({ navigation, route }) => {
       } else {
         console.log(response);
         // handle error
-        alert("error");
+        alert('error');
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error('Error:', error);
     }
   };
 
@@ -63,22 +63,22 @@ const EditContactInfo = ({ navigation, route }) => {
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: "white",
+        backgroundColor: 'white',
         paddingHorizontal: 22,
       }}
     >
       <View
         style={{
-          alignItems: "center",
-          justifyContent: "center",
+          alignItems: 'center',
+          justifyContent: 'center',
           marginBottom: 25,
-          flexDirection: "row",
+          flexDirection: 'row',
         }}
       >
         <TouchableOpacity
           onPress={() => {
             setLoading(true);
-            navigation.navigate("BottomNavOverlay");
+            navigation.navigate('BottomNavOverlay');
           }}
           style={styles.circleContainer}
         >
@@ -89,10 +89,10 @@ const EditContactInfo = ({ navigation, route }) => {
 
         <Text
           style={{
-            position: "absolute",
+            position: 'absolute',
             color: Colors.BB_darkRedPurple,
             fontSize: 22.5,
-            fontWeight: "bold",
+            fontWeight: 'bold',
             top: 20,
           }}
         >
@@ -123,8 +123,8 @@ const EditContactInfo = ({ navigation, route }) => {
             style={{
               width: 130,
               height: 50,
-              alignItems: "center",
-              justifyContent: "center",
+              alignItems: 'center',
+              justifyContent: 'center',
               backgroundColor: Colors.BB_darkRedPurple,
               borderRadius: 10,
               borderWidth: 2,
@@ -134,9 +134,9 @@ const EditContactInfo = ({ navigation, route }) => {
           >
             <Text
               style={{
-                fontStyle: "normal",
+                fontStyle: 'normal',
                 color: Colors.white,
-                fontWeight: "500",
+                fontWeight: '500',
                 fontSize: 15,
               }}
             >
@@ -158,30 +158,30 @@ const styles = {
   },
   title: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 8,
   },
   data: {
     fontSize: 16,
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: 'gray',
     borderRadius: 6,
     padding: 8,
   },
   circleContainer: {
-    position: "absolute",
+    position: 'absolute',
     top: 15,
-    left: Platform.OS == "ios" ? 15 : 0,
+    left: Platform.OS == 'ios' ? 15 : 0,
   },
   circle: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "white",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 1,
-    borderColor: "black",
+    borderColor: 'black',
   },
 };
 

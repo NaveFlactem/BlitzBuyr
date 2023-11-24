@@ -1,3 +1,3 @@
-import images from "../screens/images";
+import images from '../screens/images';
 
 export const photos = [images.profile];

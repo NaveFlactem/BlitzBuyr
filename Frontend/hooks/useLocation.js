@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { getLocationWithRetry } from "../constants/Utilities";
+import { useState, useEffect } from 'react';
+import { getLocationWithRetry } from '../constants/Utilities';
 
 const useLocation = () => {
   const [userLocation, setUserLocation] = useState(null);
@@ -10,7 +10,7 @@ const useLocation = () => {
       const { latitude, longitude } = location.coords;
       setUserLocation({ latitude, longitude });
     } catch (error) {
-      console.error("Error getting location:", error);
+      console.error('Error getting location:', error);
       // Handle the error appropriately
     }
   };

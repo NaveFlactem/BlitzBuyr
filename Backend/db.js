@@ -4,7 +4,7 @@
  */
 
 //required modules
-const sqlite3 = require("sqlite3").verbose();
+const sqlite3 = require('sqlite3').verbose();
 
 /**
  * Initializing database connection.
@@ -15,19 +15,19 @@ const sqlite3 = require("sqlite3").verbose();
  * @param {string} filename - This is a required parameter and represents the name of the SQLite database file, including the path if necessary.
  * @param {function} callback - This is a callback function that will be executed once the connection to the database is established.
  */
-const db = new sqlite3.Database("./blitzbuyr.db", (err) => {
+const db = new sqlite3.Database('./blitzbuyr.db', (err) => {
   if (err) {
     console.error(err.message);
   } else {
-    console.log("Connected to the database.");
+    console.log('Connected to the database.');
   }
 });
 
 function extractColumnsFromDefinition(definition) {
   const matchResult = definition.match(/\(([\s\S]+)\)/);
   return matchResult
-    ? matchResult[1].replace(/\s+/g, " ").toLowerCase().trim()
-    : "";
+    ? matchResult[1].replace(/\s+/g, ' ').toLowerCase().trim()
+    : '';
 }
 
 function areTableDefinitionsEqual(definition1, definition2) {
@@ -43,7 +43,7 @@ function createOrUpdateTable(db, tableDefinition) {
   db.serialize(() => {
     // Extract table name from the definition
     const tableName = tableDefinition.match(
-      /CREATE TABLE IF NOT EXISTS (\w+)/i
+      /CREATE TABLE IF NOT EXISTS (\w+)/i,
     )[1];
 
     // Check if the table already exists
@@ -67,7 +67,7 @@ function createOrUpdateTable(db, tableDefinition) {
             areTableDefinitionsEqual(existingTableDefinition, tableDefinition)
           ) {
             console.log(
-              `Table '${tableName}' structure is already up to date.`
+              `Table '${tableName}' structure is already up to date.`,
             );
           } else {
             // If the table structures are different, alter it
@@ -76,8 +76,8 @@ function createOrUpdateTable(db, tableDefinition) {
             // Create a temporary table with the new structure
             db.run(
               tableDefinition.replace(
-                new RegExp(tableName, "g"),
-                tempTableName
+                new RegExp(tableName, 'g'),
+                tempTableName,
               ),
               (err) => {
                 if (err) {
@@ -111,18 +111,18 @@ function createOrUpdateTable(db, tableDefinition) {
                           }
 
                           console.log(
-                            `Table '${tableName}' altered successfully.`
+                            `Table '${tableName}' altered successfully.`,
                           );
-                        }
+                        },
                       );
                     });
-                  }
+                  },
                 );
-              }
+              },
             );
           }
         }
-      }
+      },
     );
   });
 }
@@ -241,16 +241,16 @@ CREATE TABLE IF NOT EXISTS Likes (
 
 // Create tables using Promises
 const tables = [
-  { sql: accountsTable, name: "Accounts" },
-  { sql: listingsTable, name: "Listings" },
-  { sql: images, name: "Images" },
-  { sql: rating, name: "Ratings" },
-  { sql: profile, name: "Profiles" },
-  { sql: likes, name: "Likes" },
-  { sql: tagTable, name: "TagTable" },
-  { sql: tagDetails, name: "TagDetails" },
-  { sql: contactInfo, name: "ContactInfo" },
-  { sql: settings, name: "Settings" },
+  { sql: accountsTable, name: 'Accounts' },
+  { sql: listingsTable, name: 'Listings' },
+  { sql: images, name: 'Images' },
+  { sql: rating, name: 'Ratings' },
+  { sql: profile, name: 'Profiles' },
+  { sql: likes, name: 'Likes' },
+  { sql: tagTable, name: 'TagTable' },
+  { sql: tagDetails, name: 'TagDetails' },
+  { sql: contactInfo, name: 'ContactInfo' },
+  { sql: settings, name: 'Settings' },
 ];
 
 /**
@@ -264,7 +264,7 @@ async function createTables() {
     for (const table of tables) {
       createOrUpdateTable(db, table.sql);
     }
-    db.run("PRAGMA foreign_keys=ON");
+    db.run('PRAGMA foreign_keys=ON');
     db.run(`CREATE TRIGGER IF NOT EXISTS accounts_after_insert 
     AFTER INSERT ON Accounts
     FOR EACH ROW
@@ -276,7 +276,7 @@ async function createTables() {
       INSERT INTO Settings (Username) VALUES (NEW.Username);
     END;`);
   } catch (err) {
-    console.log("error:", err);
+    console.log('error:', err);
   }
 }
 

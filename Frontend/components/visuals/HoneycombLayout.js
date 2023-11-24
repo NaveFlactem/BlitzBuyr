@@ -1,7 +1,7 @@
-import React, { useState, memo } from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
-import Hexagon from "./Hexagon"; // Assuming Hexagon is in the same folder
-import { screenWidth, screenHeight } from "../../constants/ScreenDimensions.js";
+import React, { useState, memo } from 'react';
+import { View, StyleSheet, Dimensions } from 'react-native';
+import Hexagon from './Hexagon'; // Assuming Hexagon is in the same folder
+import { screenWidth, screenHeight } from '../../constants/ScreenDimensions.js';
 
 const HoneycombLayout = memo(() => {
   const [layout, setLayout] = useState({ width: 0, height: 0 });
@@ -46,9 +46,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   row: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

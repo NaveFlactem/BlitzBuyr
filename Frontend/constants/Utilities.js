@@ -1,14 +1,14 @@
-import * as Location from "expo-location";
+import * as Location from 'expo-location';
 
 const getLocationWithRetry = async function (retries = 20) {
   const timeout = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error("Timeout exceeded")), 300),
+    setTimeout(() => reject(new Error('Timeout exceeded')), 300),
   );
   try {
     // Request location permission
     let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.error("Location permission not granted");
+    if (status !== 'granted') {
+      console.error('Location permission not granted');
       // FIXME: Handle location permission not granted
       return;
     }
@@ -28,7 +28,7 @@ const getLocationWithRetry = async function (retries = 20) {
         throw error;
       }
       console.log(
-        "Failed to get current location, using last known location instead.",
+        'Failed to get current location, using last known location instead.',
       );
       return lastKnownLocation;
     }

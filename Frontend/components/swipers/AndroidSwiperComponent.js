@@ -1,8 +1,8 @@
-import React from "react";
-import Swiper from "react-native-swiper";
-import { memo } from "react";
-import { Image } from "expo-image";
-import Listing from "../Listing";
+import React from 'react';
+import Swiper from 'react-native-swiper';
+import { memo } from 'react';
+import { Image } from 'expo-image';
+import Listing from '../Listing';
 
 const AndroidSwiperComponent = memo(
   ({ swiperRef, listings, refreshControl, removeListing, userLocation }) => {

@@ -1,15 +1,15 @@
-import { createStackNavigator } from "@react-navigation/stack";
+import { createStackNavigator } from '@react-navigation/stack';
 
-import CreateAccountScreen from "../screens/auth/CreateAccountScreen";
-import LoginScreen from "../screens/auth/LoginScreen";
-import HomeScreen from "../screens/HomeScreen";
-import ProfileScreen from "../screens/ProfileScreen";
-import CreateListing from "../screens/CreateListing";
-import Authenticate from "../screens/auth/Authenticate";
-import BottomNavOverlay from "./BottomNavOverlay";
-import EditProfile from "../screens/EditProfileScreen";
-import RatingScreen from "../screens/RatingScreen";
-import EditContactInfo from "../screens/EditContactInfo";
+import CreateAccountScreen from '../screens/auth/CreateAccountScreen';
+import LoginScreen from '../screens/auth/LoginScreen';
+import HomeScreen from '../screens/HomeScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import CreateListing from '../screens/CreateListing';
+import Authenticate from '../screens/auth/Authenticate';
+import BottomNavOverlay from './BottomNavOverlay';
+import EditProfile from '../screens/EditProfileScreen';
+import RatingScreen from '../screens/RatingScreen';
+import EditContactInfo from '../screens/EditContactInfo';
 
 const Stack = createStackNavigator();
 

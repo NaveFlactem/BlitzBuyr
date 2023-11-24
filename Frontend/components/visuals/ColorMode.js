@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,16 +6,16 @@ import {
   Platform,
   Text,
   TouchableOpacity,
-} from "react-native";
-import Colors from "../../constants/Colors";
-import { screenWidth, screenHeight } from "../../constants/ScreenDimensions.js";
-import * as Settings from "../../hooks/UserSettings.js";
+} from 'react-native';
+import Colors from '../../constants/Colors';
+import { screenWidth, screenHeight } from '../../constants/ScreenDimensions.js';
+import * as Settings from '../../hooks/UserSettings.js';
 
 const ColorMode = (props) => {
-  const [colorMode, setColorMode] = useState("light");
+  const [colorMode, setColorMode] = useState('light');
 
   const toggleColorMode = useCallback(async () => {
-    const mode = colorMode === "light" ? "dark" : "light";
+    const mode = colorMode === 'light' ? 'dark' : 'light';
     setColorMode(mode);
     await Settings.updateColorMode(mode);
   }, [colorMode]);
@@ -42,8 +42,8 @@ export default ColorMode;
 const styles = StyleSheet.create({
   modalContent: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: Colors.BB_bone,
   },
 });

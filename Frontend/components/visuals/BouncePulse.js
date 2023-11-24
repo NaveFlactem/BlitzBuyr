@@ -1,5 +1,5 @@
-import React, { useEffect, memo } from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import React, { useEffect, memo } from 'react';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import Animated, {
   useSharedValue,
   withTiming,
@@ -7,9 +7,9 @@ import Animated, {
   withSequence,
   useAnimatedStyle,
   withDelay,
-} from "react-native-reanimated";
-import Colors from "../../constants/Colors";
-import { screenWidth, screenHeight } from "../../constants/ScreenDimensions.js";
+} from 'react-native-reanimated';
+import Colors from '../../constants/Colors';
+import { screenWidth, screenHeight } from '../../constants/ScreenDimensions.js';
 
 const BouncePulse = memo(({ opacity }) => {
   const translateY1 = useSharedValue(0);
@@ -62,11 +62,11 @@ const BouncePulse = memo(({ opacity }) => {
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "center",
-    justifyContent: "center",
+    position: 'absolute',
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
     height: 0.1 * screenHeight,
   },
   dot: {

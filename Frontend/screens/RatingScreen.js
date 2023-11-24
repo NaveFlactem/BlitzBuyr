@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,10 +6,10 @@ import {
   StyleSheet,
   Image,
   Button,
-} from "react-native"; // Import the Button component
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { getStoredUsername } from "./auth/Authenticate.js";
-import { serverIp } from "../config.js";
+} from 'react-native'; // Import the Button component
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { getStoredUsername } from './auth/Authenticate.js';
+import { serverIp } from '../config.js';
 
 const RatingScreen = ({ navigation, route }) => {
   const [selectedRating, setSelectedRating] = useState(0);
@@ -32,9 +32,9 @@ const RatingScreen = ({ navigation, route }) => {
 
     // Make a POST request to your backend API to submit the rating
     fetch(`${serverIp}/api/rate`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(ratingPayload),
     })
@@ -47,7 +47,7 @@ const RatingScreen = ({ navigation, route }) => {
         navigation.goBack();
       })
       .catch((error) => {
-        console.error("Error submitting rating:", error);
+        console.error('Error submitting rating:', error);
       });
   };
 
@@ -103,36 +103,36 @@ const RatingScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
     fontSize: 24,
-    marginBottom: "5%",
+    marginBottom: '5%',
   },
   profilePic: {
     width: 100,
     height: 100,
     borderRadius: 50,
-    marginBottom: "5%",
+    marginBottom: '5%',
   },
   ratingContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginBottom: 20, // Add margin to move the button down
   },
   starButton: {
     width: 60,
     height: 60,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   starMargin: {
     marginRight: 4,
   },
   backButton: {
-    position: "absolute",
-    top: "7%",
-    left: "7%",
+    position: 'absolute',
+    top: '7%',
+    left: '7%',
   },
 });
 

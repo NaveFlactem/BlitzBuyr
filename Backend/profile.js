@@ -3,14 +3,14 @@
  * @module API
  */
 
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-var bodyParser = require("body-parser");
-const { getImagesFromListings } = require("./listing");
+var bodyParser = require('body-parser');
+const { getImagesFromListings } = require('./listing');
 router.use(bodyParser.urlencoded({ extended: true })).use(bodyParser.json());
-const db = require("./db").db;
-const { imageStorage, imageUpload } = require("./listing");
-const { authenticateUser } = require("./account"); // FIXME: Use this like, everywhere
+const db = require('./db').db;
+const { imageStorage, imageUpload } = require('./listing');
+const { authenticateUser } = require('./account'); // FIXME: Use this like, everywhere
 
 /**
  * Handles a user liking a listing.
@@ -39,22 +39,22 @@ const { authenticateUser } = require("./account"); // FIXME: Use this like, ever
  *     console.log("Error Liking listing:", 1, likedResponse.status);
  * }
  */
-router.post("/like", function (req, res) {
+router.post('/like', function (req, res) {
   const { username, listingId } = req.body;
 
   db.run(
-    "INSERT INTO Likes (Username, ListingId) VALUES (?, ?)",
+    'INSERT INTO Likes (Username, ListingId) VALUES (?, ?)',
     [username, listingId],
     (err, row) => {
       if (err) {
-        console.error("Error querying the database:", err);
-        return res.status(500).json({ error: "Internal Server Error" });
+        console.error('Error querying the database:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
       }
 
       return res.status(200).json({
         message: `${username} successfully liked listing ${listingId}`,
       });
-    }
+    },
   );
 });
 
@@ -85,22 +85,22 @@ router.post("/like", function (req, res) {
  *     console.log("Error Unliking listing:", 1, unlikedResponse.status);
  * }
  */
-router.delete("/like", function (req, res) {
+router.delete('/like', function (req, res) {
   const { username, listingId } = req.body;
 
   db.run(
-    "DELETE FROM Likes WHERE (Username, ListingId) = (?, ?)",
+    'DELETE FROM Likes WHERE (Username, ListingId) = (?, ?)',
     [username, listingId],
     (err) => {
       if (err) {
-        console.error("Error querying the database:", err);
-        return res.status(500).json({ error: "Internal Server Error" });
+        console.error('Error querying the database:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
       }
 
       return res.status(200).json({
         message: `${username} successfully unliked listing ${listingId}`,
       });
-    }
+    },
   );
 });
 
@@ -127,12 +127,12 @@ router.delete("/like", function (req, res) {
  *     console.log("List of Likes:", likesData.Likes);
  * }
  */
-router.get("/likes", function (req, res) {
+router.get('/likes', function (req, res) {
   // Query the database for a list of likes
-  db.all("SELECT * FROM Likes", (err, rows) => {
+  db.all('SELECT * FROM Likes', (err, rows) => {
     if (err) {
-      console.error("Error querying the database:", err);
-      return res.status(500).json({ error: "Internal Server Error" });
+      console.error('Error querying the database:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
 
     // Respond with a JSON array of likes
@@ -163,14 +163,14 @@ router.get("/likes", function (req, res) {
  *     console.log("All likes deleted. Message:", result.message);
  * }
  */
-router.delete("/likes", function (req, res) {
-  db.run("DELETE FROM Likes", (err) => {
+router.delete('/likes', function (req, res) {
+  db.run('DELETE FROM Likes', (err) => {
     if (err) {
-      console.error("Error deleting all likes:", err);
-      return res.status(500).json({ error: "Internal Server Error" });
+      console.error('Error deleting all likes:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
 
-    return res.status(200).json({ message: "All likes deleted" });
+    return res.status(200).json({ message: 'All likes deleted' });
   });
 });
 
@@ -192,53 +192,53 @@ router.delete("/likes", function (req, res) {
  *   "rating": 4.5
  * };
  */
-router.post("/rate", async function (req, res) {
+router.post('/rate', async function (req, res) {
   const { username, userRated, rating } = req.body;
 
   // Check if user is already rated
   const ratingResult = await new Promise((resolve, reject) => {
     db.get(
-      "SELECT * FROM Ratings WHERE Username = ? AND UserRated = ?",
+      'SELECT * FROM Ratings WHERE Username = ? AND UserRated = ?',
       [username, userRated],
       (err, row) => {
         if (err) {
-          console.error("Error querying the database (check if rated):", err);
+          console.error('Error querying the database (check if rated):', err);
           reject(err);
         }
         resolve(row);
-      }
+      },
     );
   });
 
   if (ratingResult) {
     // User has already rated, update the rating
     db.run(
-      "UPDATE Ratings SET Rating = ? WHERE Username = ? AND UserRated = ?",
+      'UPDATE Ratings SET Rating = ? WHERE Username = ? AND UserRated = ?',
       [rating, username, userRated],
       (err) => {
         if (err) {
-          console.error("Error updating the rating:", err);
-          return res.status(500).json({ error: "Internal Server Error" });
+          console.error('Error updating the rating:', err);
+          return res.status(500).json({ error: 'Internal Server Error' });
         }
         return res.status(200).json({
           message: `${username} updated the rating for ${userRated} to ${rating}`,
         });
-      }
+      },
     );
   } else {
     // User has not rated, insert a new rating
     db.run(
-      "INSERT INTO Ratings (Username, UserRated, Rating) VALUES (?, ?, ?)",
+      'INSERT INTO Ratings (Username, UserRated, Rating) VALUES (?, ?, ?)',
       [username, userRated, rating],
       (err, row) => {
         if (err) {
-          console.error("Error inserting the rating:", err);
-          return res.status(500).json({ error: "Internal Server Error" });
+          console.error('Error inserting the rating:', err);
+          return res.status(500).json({ error: 'Internal Server Error' });
         }
         return res.status(200).json({
           message: `${username} successfully rated ${userRated} with ${rating}`,
         });
-      }
+      },
     );
   }
 });
@@ -260,22 +260,22 @@ router.post("/rate", async function (req, res) {
  *   "userRated": "ratedUser"
  * };
  */
-router.delete("/rate", function (req, res) {
+router.delete('/rate', function (req, res) {
   const { username, userRated } = req.body;
 
   db.run(
-    "DELETE FROM Ratings WHERE (Username, UserRated) = (?, ?)",
+    'DELETE FROM Ratings WHERE (Username, UserRated) = (?, ?)',
     [username, userRated],
     (err, row) => {
       if (err) {
-        console.error("Error querying the database:", err);
-        return res.status(500).json({ error: "Internal Server Error" });
+        console.error('Error querying the database:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
       }
 
       return res.status(200).json({
         message: `${username} successfully removed their rating of ${userRated}`,
       });
-    }
+    },
   );
 });
 
@@ -302,34 +302,34 @@ router.delete("/rate", function (req, res) {
  *     console.log("List of Ratings:", ratingsData.Ratings);
  * }
  */
-router.get("/ratings", function (req, res) {
+router.get('/ratings', function (req, res) {
   const { username } = req.query;
 
   if (username) {
     // If a username was provided in the query, return the AverageRating and RatingCount of the user's Profile
     // Query the database for the user's ratings
     db.get(
-      "SELECT AVG(Rating) AS AverageRating, COUNT(*) AS RatingCount FROM Ratings WHERE UserRated = ?",
+      'SELECT AVG(Rating) AS AverageRating, COUNT(*) AS RatingCount FROM Ratings WHERE UserRated = ?',
       [username],
       (err, row) => {
         if (err) {
-          console.error("Error querying the database:", err);
-          return res.status(500).json({ error: "Internal Server Error" });
+          console.error('Error querying the database:', err);
+          return res.status(500).json({ error: 'Internal Server Error' });
         }
         // Respond with the user's ratings data
         return res.status(200).json({
           AverageRating: row.AverageRating,
           RatingCount: row.RatingCount,
         });
-      }
+      },
     );
   } else {
     // If no username was provided, return all ratings in the db
     // Query the database for a list of all ratings
-    db.all("SELECT * FROM Ratings", (err, rows) => {
+    db.all('SELECT * FROM Ratings', (err, rows) => {
       if (err) {
-        console.error("Error querying the database:", err);
-        return res.status(500).json({ error: "Internal Server Error" });
+        console.error('Error querying the database:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
       }
       // Respond with a JSON array of all ratings
       return res.status(200).json({ Ratings: rows });
@@ -353,13 +353,13 @@ router.get("/ratings", function (req, res) {
  * // Sample HTTP GET request to '/api/profile?username=currentUser'
  * // The 'username' query parameter specifies the user's profile to retrieve.
  */
-router.get("/profile", async function (req, res) {
+router.get('/profile', async function (req, res) {
   const { username, password, profileName } = req.query;
 
   if (!(await authenticateUser(username, password)))
     return res
       .status(409)
-      .json({ error: "Failed to authenticate with your credentials" });
+      .json({ error: 'Failed to authenticate with your credentials' });
 
   if (!profileName)
     return res.status(409).json({ error: `Profile Name not provided` });
@@ -368,15 +368,15 @@ router.get("/profile", async function (req, res) {
     // check if user exists
     const userResult = await new Promise((resolve, reject) => {
       db.all(
-        "SELECT * FROM Accounts WHERE Username = ?",
+        'SELECT * FROM Accounts WHERE Username = ?',
         [profileName],
         (err, rows) => {
           if (err) {
-            console.error("Error querying the database (first query):", err);
+            console.error('Error querying the database (first query):', err);
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     });
     if (!userResult || userResult.length == 0)
@@ -385,15 +385,15 @@ router.get("/profile", async function (req, res) {
     // get the ratings belonging to the user
     const ratingsResult = await new Promise((resolve, reject) => {
       db.all(
-        "SELECT AVG(Rating) AS AverageRating, COUNT(Rating) AS RatingCount FROM Ratings WHERE UserRated = ?",
+        'SELECT AVG(Rating) AS AverageRating, COUNT(Rating) AS RatingCount FROM Ratings WHERE UserRated = ?',
         [profileName],
         (err, rows) => {
           if (err) {
-            console.error("Error querying the database (second query):", err);
+            console.error('Error querying the database (second query):', err);
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     });
 
@@ -407,11 +407,11 @@ router.get("/profile", async function (req, res) {
         [profileName], // Replace with the specific username you want to retrieve
         (err, row) => {
           if (err) {
-            console.error("Error querying the database:", err);
+            console.error('Error querying the database:', err);
             reject(err);
           }
           resolve(row);
-        }
+        },
       );
     });
 
@@ -469,56 +469,56 @@ router.get("/profile", async function (req, res) {
     // Get the profile and cover pictures
     let profilePictureResult = await new Promise((resolve, reject) => {
       db.all(
-        "SELECT ProfilePicture, CoverPicture FROM Profiles WHERE Username = ?",
+        'SELECT ProfilePicture, CoverPicture FROM Profiles WHERE Username = ?',
         [profileName],
         (err, rows) => {
           if (err) {
-            console.error("Error querying the database (fourth query):", err);
+            console.error('Error querying the database (fourth query):', err);
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     });
 
     // get the user's posted listings
     const userListingsResult = await new Promise((resolve, reject) => {
       db.all(
-        "SELECT * FROM Listings WHERE Username = ? ORDER BY ListingId DESC",
+        'SELECT * FROM Listings WHERE Username = ? ORDER BY ListingId DESC',
         [profileName],
         (err, rows) => {
           if (err) {
-            console.error("Error querying the database (third query):", err);
+            console.error('Error querying the database (third query):', err);
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     });
 
     // get the user's liked listings
     const likedListingsResult = await new Promise((resolve, reject) => {
       db.all(
-        "SELECT * FROM Listings WHERE ListingId IN (SELECT ListingId FROM Likes WHERE Username = ?) ORDER BY ListingId DESC",
+        'SELECT * FROM Listings WHERE ListingId IN (SELECT ListingId FROM Likes WHERE Username = ?) ORDER BY ListingId DESC',
         [profileName],
         (err, rows) => {
           if (err) {
-            console.error("Error querying the database (fourth query):", err);
+            console.error('Error querying the database (fourth query):', err);
             reject(err);
           }
           resolve(rows);
-        }
+        },
       );
     });
 
     // append the images to both
     const likedListings = await getImagesFromListings(
       likedListingsResult,
-      likedListingsResult
+      likedListingsResult,
     );
     const userListings = await getImagesFromListings(
       userListingsResult,
-      likedListingsResult
+      likedListingsResult,
     );
 
     return res.status(200).json({
@@ -532,7 +532,7 @@ router.get("/profile", async function (req, res) {
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
@@ -559,23 +559,23 @@ router.get("/profile", async function (req, res) {
  *     console.log("Profile Picture:", pfpResponse.url);
  * }
  */
-router.get("/pfp", function (req, res) {
+router.get('/pfp', function (req, res) {
   const username = req.query.username;
-  if (!username) return res.status(400).json({ error: "Missing username" });
+  if (!username) return res.status(400).json({ error: 'Missing username' });
 
   // Query the database for a list of ratings
   db.get(
-    "SELECT ProfilePicture FROM Profiles WHERE Username = ?",
+    'SELECT ProfilePicture FROM Profiles WHERE Username = ?',
     [username],
     (err, row) => {
       if (err || !row) {
-        console.error("Error fetching the pfp:", err);
-        return res.status(500).json({ error: "Internal Server Error" });
+        console.error('Error fetching the pfp:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
       }
 
       // return the image in the result's URI
       res.redirect(row.ProfilePicture);
-    }
+    },
   );
 });
 
@@ -607,15 +607,15 @@ router.get("/pfp", function (req, res) {
  *     console.log("Profile updated successfully");
  * }
  */
-router.post("/editprofile", imageUpload, function (req, res) {
+router.post('/editprofile', imageUpload, function (req, res) {
   const { username, contactInfo, profileName, password } = req.body;
 
   const profilePicture = req.files.find(
-    (file) => file.fieldname === "profilePicture"
+    (file) => file.fieldname === 'profilePicture',
   );
 
   const coverPicture = req.files.find(
-    (file) => file.fieldname === "coverPicture"
+    (file) => file.fieldname === 'coverPicture',
   );
 
   const newProfilePicture = profilePicture
@@ -633,25 +633,25 @@ router.post("/editprofile", imageUpload, function (req, res) {
     [contactInfo, newProfilePicture, newCoverPicture, username],
     function (err) {
       if (err) {
-        console.error("Error updating the Profiles table:", err);
-        return res.status(500).json({ error: "Internal Server Error" });
+        console.error('Error updating the Profiles table:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
       }
 
       // Update the Accounts table
       db.run(
-        "UPDATE Accounts SET Password = COALESCE(?, Password), Username = COALESCE(?, Username) WHERE Username = ?",
+        'UPDATE Accounts SET Password = COALESCE(?, Password), Username = COALESCE(?, Username) WHERE Username = ?',
         [password, profileName, username],
         function (err) {
           if (err) {
-            console.error("Error updating the Accounts table:", err);
-            return res.status(500).json({ error: "Internal Server Error" });
+            console.error('Error updating the Accounts table:', err);
+            return res.status(500).json({ error: 'Internal Server Error' });
           }
 
           // Respond with success
-          res.status(200).json({ message: "Profile updated successfully" });
-        }
+          res.status(200).json({ message: 'Profile updated successfully' });
+        },
       );
-    }
+    },
   );
 });
 
@@ -683,21 +683,21 @@ router.post("/editprofile", imageUpload, function (req, res) {
  *
  * @throws {Error} If there's an error updating the database.
  */
-router.post("/editcontactinfo", async function (req, res) {
+router.post('/editcontactinfo', async function (req, res) {
   const { username, contactInfo } = req.body;
 
   // Check if user exists
   const userResult = await new Promise((resolve, reject) => {
     db.all(
-      "SELECT * FROM Accounts WHERE Username = ?",
+      'SELECT * FROM Accounts WHERE Username = ?',
       [username],
       (err, rows) => {
         if (err) {
-          console.error("Error querying the database (first query):", err);
+          console.error('Error querying the database (first query):', err);
           reject(err);
         }
         resolve(rows);
-      }
+      },
     );
   });
 
@@ -721,11 +721,11 @@ router.post("/editcontactinfo", async function (req, res) {
         ],
         function (err) {
           if (err) {
-            console.error("Error updating contact information:", err);
+            console.error('Error updating contact information:', err);
             reject(err);
           }
           resolve();
-        }
+        },
       );
     });
 
@@ -743,20 +743,20 @@ router.post("/editcontactinfo", async function (req, res) {
         ],
         function (err) {
           if (err) {
-            console.error("Error updating hidden values:", err);
+            console.error('Error updating hidden values:', err);
             reject(err);
           }
           resolve();
-        }
+        },
       );
     });
 
     return res
       .status(200)
-      .json({ message: "Contact information updated successfully" });
+      .json({ message: 'Contact information updated successfully' });
   } catch (error) {
-    console.error("Internal Server Error:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    console.error('Internal Server Error:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 

@@ -1,10 +1,10 @@
 // userSettings.js
-import * as SecureStore from "expo-secure-store";
+import * as SecureStore from 'expo-secure-store';
 
-const USER_SETTINGS_KEY = "USER_SETTINGS";
+const USER_SETTINGS_KEY = 'USER_SETTINGS';
 
 const defaultSettings = {
-  colorMode: "light",
+  colorMode: 'light',
   distance: 30,
 };
 
@@ -17,7 +17,7 @@ export const saveUserSettings = async (settings) => {
   try {
     await SecureStore.setItemAsync(USER_SETTINGS_KEY, JSON.stringify(settings));
   } catch (error) {
-    console.error("Error saving user settings:", error);
+    console.error('Error saving user settings:', error);
   }
 };
 
@@ -26,7 +26,7 @@ export const getUserSettings = async () => {
     const settings = await SecureStore.getItemAsync(USER_SETTINGS_KEY);
     return settings ? JSON.parse(settings) : setDefaultUserSettings();
   } catch (error) {
-    console.error("Error retrieving user settings:", error);
+    console.error('Error retrieving user settings:', error);
     return defaultSettings;
   }
 };
@@ -35,7 +35,7 @@ export const clearUserSettings = async () => {
   try {
     await SecureStore.deleteItemAsync(USER_SETTINGS_KEY);
   } catch (error) {
-    console.error("Error clearing user settings:", error);
+    console.error('Error clearing user settings:', error);
   }
 };
 
@@ -46,9 +46,9 @@ export const updateDistance = async (userDistance) => {
 
 export const getDistance = async () => {
   const settings = await getUserSettings();
-  console.log("Settings object:", JSON.stringify(settings));
+  console.log('Settings object:', JSON.stringify(settings));
   const distance = settings.distance;
-  console.log("Distance is now:", distance);
+  console.log('Distance is now:', distance);
   return distance;
 };
 

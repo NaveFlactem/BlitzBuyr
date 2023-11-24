@@ -1,8 +1,8 @@
-import React, { memo } from "react";
-import { View, Text, TouchableOpacity, Dimensions } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Colors from "../constants/Colors";
-import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
+import React, { memo } from 'react';
+import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Colors from '../constants/Colors';
+import { screenWidth, screenHeight } from '../constants/ScreenDimensions.js';
 
 const NoListings = memo(({ onRetry }) => {
   return (
@@ -23,29 +23,29 @@ const NoListings = memo(({ onRetry }) => {
 const styles = {
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   text: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: Colors.BB_darkRedPurple,
-    textAlign: "center",
+    textAlign: 'center',
   },
   buttonText: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     color: Colors.BB_bone,
-    textAlign: "center",
+    textAlign: 'center',
   },
   retryButton: {
     marginTop: 20,
-    justifyContent: "center",
+    justifyContent: 'center',
     backgroundColor: Colors.BB_darkRedPurple,
     padding: 10,
     borderRadius: 40,
-    width: "20%",
-    height: "7%",
+    width: '20%',
+    height: '7%',
     ...Platform.select({
       ios: {
         shadowColor: Colors.black,

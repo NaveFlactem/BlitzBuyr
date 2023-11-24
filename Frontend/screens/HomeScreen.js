@@ -1,5 +1,5 @@
-import { serverIp } from "../config.js";
-import React, { useEffect, useRef, useState, useCallback, memo } from "react";
+import { serverIp } from '../config.js';
+import React, { useEffect, useRef, useState, useCallback, memo } from 'react';
 import {
   View,
   StyleSheet,
@@ -11,39 +11,39 @@ import {
   Platform,
   TouchableOpacity,
   Text,
-} from "react-native";
-import NetInfo from "@react-native-community/netinfo";
+} from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
   useAnimatedGestureHandler,
   runOnJS,
-} from "react-native-reanimated";
-import Swiper from "react-native-swiper";
-import Colors from "../constants/Colors";
-import { Image } from "expo-image";
-import * as SecureStore from "expo-secure-store";
-import { debounce } from "lodash";
-import NoWifi from "../components/noWifi";
-import NoListings from "../components/noListings";
-import BouncePulse from "../components/visuals/BouncePulse.js";
-import CustomScrollView from "../components/CustomScrollView.js";
-import { PanGestureHandler, State } from "react-native-gesture-handler";
-import { getLocationWithRetry } from "../constants/Utilities";
-import TopBar from "../components/TopBarHome.js";
-import TagDrawer from "../components/TagDrawer.js";
-import IOSSwiperComponent from "../components/swipers/IOSSwiperComponent.js";
-import AndroidSwiperComponent from "../components/swipers/AndroidSwiperComponent.js";
-import LocationSlider from "../components/LocationSlider.js";
-import { LinearGradient } from "expo-linear-gradient";
-import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
-import * as Settings from "../hooks/UserSettings.js";
+} from 'react-native-reanimated';
+import Swiper from 'react-native-swiper';
+import Colors from '../constants/Colors';
+import { Image } from 'expo-image';
+import * as SecureStore from 'expo-secure-store';
+import { debounce } from 'lodash';
+import NoWifi from '../components/noWifi';
+import NoListings from '../components/noListings';
+import BouncePulse from '../components/visuals/BouncePulse.js';
+import CustomScrollView from '../components/CustomScrollView.js';
+import { PanGestureHandler, State } from 'react-native-gesture-handler';
+import { getLocationWithRetry } from '../constants/Utilities';
+import TopBar from '../components/TopBarHome.js';
+import TagDrawer from '../components/TagDrawer.js';
+import IOSSwiperComponent from '../components/swipers/IOSSwiperComponent.js';
+import AndroidSwiperComponent from '../components/swipers/AndroidSwiperComponent.js';
+import LocationSlider from '../components/LocationSlider.js';
+import { LinearGradient } from 'expo-linear-gradient';
+import { screenWidth, screenHeight } from '../constants/ScreenDimensions.js';
+import * as Settings from '../hooks/UserSettings.js';
 import {
   tagOptions,
   conditionOptions,
   transactionOptions,
-} from "../constants/ListingData.js";
+} from '../constants/ListingData.js';
 
 const calculateTimeSince = (time) => {
   const millisecondsPerHour = 3600000;
@@ -73,7 +73,7 @@ const HomeScreen = ({ route }) => {
   useEffect(() => {
     const fetchDistance = async () => {
       const initialDistance = await Settings.getDistance();
-      console.log("Initial distance:", initialDistance);
+      console.log('Initial distance:', initialDistance);
       setDistance(initialDistance);
     };
 
@@ -85,12 +85,12 @@ const HomeScreen = ({ route }) => {
   const onGestureEvent = useAnimatedGestureHandler({
     onStart: (_, context) => {
       context.startX = translateX.value;
-      if (Platform.OS === "android") {
+      if (Platform.OS === 'android') {
         context.hasMovedPastThreshold = false;
       }
     },
     onActive: (event, context) => {
-      if (Platform.OS === "android" && !context.hasMovedPastThreshold) {
+      if (Platform.OS === 'android' && !context.hasMovedPastThreshold) {
         if (Math.abs(event.translationX) > X_OFFSET_THRESHOLD) {
           context.hasMovedPastThreshold = true;
         }
@@ -101,19 +101,19 @@ const HomeScreen = ({ route }) => {
         // Detect left swipe
         translateX.value = Math.max(
           -screenWidth,
-          context.startX + event.translationX
+          context.startX + event.translationX,
         );
       }
     },
     onEnd: (_, context) => {
-      if (Platform.OS === "android" && !context.hasMovedPastThreshold) {
+      if (Platform.OS === 'android' && !context.hasMovedPastThreshold) {
         return; // Do nothing if the threshold was not passed
       }
 
       const shouldClose = translateX.value < -screenWidth * 0.65;
       translateX.value = withTiming(
         shouldClose ? -screenWidth : -screenWidth * 0.6,
-        { duration: 300 }
+        { duration: 300 },
       );
       if (shouldClose) {
         runOnJS(setIsDrawerOpen)(false);
@@ -137,7 +137,7 @@ const HomeScreen = ({ route }) => {
       const shouldOpen = translateX.value > -screenWidth * 0.9;
       translateX.value = withTiming(
         shouldOpen ? -screenWidth * 0.6 : -screenWidth,
-        { duration: 300 }
+        { duration: 300 },
       );
       if (shouldOpen) {
         runOnJS(setIsDrawerOpen)(true);
@@ -175,7 +175,7 @@ const HomeScreen = ({ route }) => {
       const { latitude, longitude } = location.coords;
       setUserLocation({ latitude, longitude });
     } catch (error) {
-      console.error("Error getting location:", error);
+      console.error('Error getting location:', error);
       // FIXME: Handle the error appropriately
     }
   };
@@ -195,7 +195,7 @@ const HomeScreen = ({ route }) => {
     let newSelectedTags;
     if (isAlreadySelected) {
       newSelectedTags = selectedTags.filter(
-        (tagName) => tagName !== pressedTagName
+        (tagName) => tagName !== pressedTagName,
       );
     } else {
       newSelectedTags = [...selectedTags, pressedTagName];
@@ -221,7 +221,7 @@ const HomeScreen = ({ route }) => {
     let newSelectedConditions;
     if (isAlreadySelected) {
       newSelectedConditions = selectedConditions.filter(
-        (conditionName) => conditionName !== pressedConditionName
+        (conditionName) => conditionName !== pressedConditionName,
       );
     } else {
       newSelectedConditions = [...selectedConditions, pressedConditionName];
@@ -244,12 +244,12 @@ const HomeScreen = ({ route }) => {
     // Update the selectedTransactions state
     const pressedTransactionName = newTransactionsData[index].name;
     const isAlreadySelected = selectedTransactions.includes(
-      pressedTransactionName
+      pressedTransactionName,
     );
     let newSelectedTransactions;
     if (isAlreadySelected) {
       newSelectedTransactions = selectedTransactions.filter(
-        (transactionName) => transactionName !== pressedTransactionName
+        (transactionName) => transactionName !== pressedTransactionName,
       );
     } else {
       newSelectedTransactions = [
@@ -264,27 +264,27 @@ const HomeScreen = ({ route }) => {
   };
 
   const fetchListings = async () => {
-    console.log("Fetching listings...");
-    console.log("Tags:", selectedTags);
-    console.log("Distance:", distance < 510 ? distance : "No Limit");
+    console.log('Fetching listings...');
+    console.log('Tags:', selectedTags);
+    console.log('Distance:', distance < 510 ? distance : 'No Limit');
     if (route.params?.refresh) route.params.refresh = false;
 
     try {
       const { latitude, longitude } = userLocation;
-      const mergedTags = "&tags[]=" + selectedTags.join("&tags[]=");
+      const mergedTags = '&tags[]=' + selectedTags.join('&tags[]=');
       console.log(mergedTags);
-      console.log("User Location:", userLocation);
-      console.log("Latitude:", latitude);
-      console.log("Longitude:", longitude);
+      console.log('User Location:', userLocation);
+      console.log('Latitude:', latitude);
+      console.log('Longitude:', longitude);
       const username = encodeURIComponent(
-        await SecureStore.getItemAsync("username")
+        await SecureStore.getItemAsync('username'),
       );
       let fetchUrl = `${serverIp}/api/listings?username=${username}&latitude=${latitude}&longitude=${longitude}`;
       if (distance < 510) fetchUrl += `&distance=${distance}`; // don't add distance on unlimited
       if (selectedTags.length > 0) fetchUrl += `&${mergedTags}`;
       console.log(fetchUrl);
       const listingsResponse = await fetch(fetchUrl, {
-        method: "GET",
+        method: 'GET',
       });
 
       if (listingsResponse.status <= 201) {
@@ -296,14 +296,14 @@ const HomeScreen = ({ route }) => {
               ...listing,
               TimeSince: timeSince,
             };
-          })
+          }),
         );
-        console.log("Listings fetched successfully");
+        console.log('Listings fetched successfully');
       } else {
-        console.log("Error fetching listings:", listingsResponse.status);
+        console.log('Error fetching listings:', listingsResponse.status);
       }
     } catch (err) {
-      console.log("Error:", err);
+      console.log('Error:', err);
     } finally {
       setIsLoading(false);
       setRefreshing(false);
@@ -418,7 +418,7 @@ const HomeScreen = ({ route }) => {
   };
 
   const onRefresh = React.useCallback(() => {
-    console.log("refreshing...");
+    console.log('refreshing...');
     setRefreshing(true);
     if (userLocation) debouncedFetchListings();
     else getUserLocation();
@@ -433,7 +433,7 @@ const HomeScreen = ({ route }) => {
       setHoldStateOfRefresh(true);
       fetchListings();
     }, 1000),
-    []
+    [],
   ); // Adjust debounce time as needed
 
   useEffect(() => {
@@ -478,12 +478,12 @@ const HomeScreen = ({ route }) => {
         }}
       />
 
-      {Platform.OS === "ios" && (
+      {Platform.OS === 'ios' && (
         <BouncePulse opacity={refreshing ? 1 : calculateOpacity()} />
       )}
       {networkConnected ? (
         listings && listings.length > 0 ? (
-          Platform.OS === "ios" ? (
+          Platform.OS === 'ios' ? (
             <ScrollView
               onScroll={(event) => {
                 const y = event.nativeEvent.contentOffset.y;
@@ -509,8 +509,8 @@ const HomeScreen = ({ route }) => {
                   removeListing={(listingId) => {
                     setListings((prevListings) =>
                       prevListings.filter(
-                        (item) => item.ListingId !== listingId
-                      )
+                        (item) => item.ListingId !== listingId,
+                      ),
                     );
                   }}
                 />
@@ -524,7 +524,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId)
+                    prevListings.filter((item) => item.ListingId !== listingId),
                   );
                 }}
                 refreshControl={
@@ -548,7 +548,7 @@ const HomeScreen = ({ route }) => {
         <Animated.View
           style={[
             {
-              position: "absolute",
+              position: 'absolute',
               left: 0,
               top: 0,
               bottom: 0,
@@ -605,7 +605,7 @@ const styles = StyleSheet.create({
     width: screenWidth,
   },
   topTap: {
-    position: "absolute",
+    position: 'absolute',
     top: 0.08 * screenHeight,
     width: screenWidth,
     height: 0.05 * screenHeight,
@@ -613,12 +613,12 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: Colors.BB_pink,
   },
   swipeArea: {
-    position: "absolute",
+    position: 'absolute',
     width: 0.05 * screenWidth,
     height: screenHeight,
     left: 0,
@@ -628,6 +628,6 @@ const styles = StyleSheet.create({
     flex: 1,
     height: screenHeight,
     width: screenWidth,
-    position: "absolute",
+    position: 'absolute',
   },
 });
