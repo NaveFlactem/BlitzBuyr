@@ -41,7 +41,7 @@ import BouncePulse from "../components/visuals/BouncePulse.js";
 import { getLocationWithRetry } from "../constants/Utilities";
 import { Linking, Alert } from "react-native";
 import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
-
+import { useThemeContext } from "../components/visuals/ThemeProvider.js";
 
 const UserListingsRoute = ({ profileInfo, onPressListing }) => (
   <View style={{ flex: 1 }}>
@@ -264,7 +264,7 @@ function ProfileScreen({ navigation, route }) {
   const [selectedListing, setSelectedListing] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [LikeStates, setLikeStates] = useState({});
-  const [showColorMode, setShowColorMode] = useState(false);
+  const { toggleTheme } = useThemeContext();
 
   // Use states for contact info
   const [contactInfo, setContactInfo] = useState({
@@ -830,37 +830,22 @@ function ProfileScreen({ navigation, route }) {
         </View>
       )}
 
-      {/* Testing with Dark Mode
-<TouchableOpacity onPress={showColorModal} style={{
+      {/* Theme Toggle */}
+      <TouchableOpacity
+        onPress={toggleTheme}
+        style={{
           position: "absolute",
-          top: 0.25 * screenHeight,
-          left: 0.1 * screenWidth,
-          width: 30,
-          height: 30,
-          backgroundColor: Colors.BB_darkRedPurple,
-          borderRadius: 80,
-        }}>
-
-      <View
-        
-        >
-        <Text
-          style={
-            {
-              top: "25%",
-              textAlign: "center",
-              fontStyle: "normal",
-              fontWeight: "bold",
-              fontSize: 8,
-              color: Colors.white,
-            }}
-        >
-          Temp
-        </Text>
-      </View>
+          top: 0.03 * screenHeight,
+          right: 0.03 * screenHeight,
+        }}
+      >
+        <MaterialCommunityIcons
+          name="theme-light-dark"
+          size={30}
+          color="black"
+        />
       </TouchableOpacity>
-      
-      { showColorMode && <ColorMode />} */}
+
     </SafeAreaView>
   );
 }
