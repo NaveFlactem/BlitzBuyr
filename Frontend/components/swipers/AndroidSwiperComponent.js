@@ -1,7 +1,6 @@
-import React from 'react';
-import Swiper from 'react-native-swiper';
-import { memo } from 'react';
 import { Image } from 'expo-image';
+import React, { memo } from 'react';
+import Swiper from 'react-native-swiper';
 import Listing from '../Listing';
 
 const AndroidSwiperComponent = memo(
@@ -28,7 +27,7 @@ const AndroidSwiperComponent = memo(
         })}
       </Swiper>
     );
-  },
+  }
 );
 
 export default AndroidSwiperComponent;

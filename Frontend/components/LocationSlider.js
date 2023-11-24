@@ -1,15 +1,8 @@
-import React, { useState, memo, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  Text,
-  Platform,
-} from 'react-native';
+import React, { memo, useEffect, useState } from 'react';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import Colors from '../constants/Colors';
-import * as Settings from '../hooks/UserSettings.js';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions';
+import * as Settings from '../hooks/UserSettings.js';
 const Slider =
   Platform.OS == 'ios'
     ? require('@react-native-community/slider').default

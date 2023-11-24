@@ -1,5 +1,5 @@
-import { Extrapolate, interpolate } from "react-native-reanimated";
-import type { IComputedDirectionTypes } from "react-native-reanimated-carousel";
+import { Extrapolate, interpolate } from 'react-native-reanimated';
+import type { IComputedDirectionTypes } from 'react-native-reanimated-carousel';
 
 interface TBaseConfig {
   size: number;
@@ -28,13 +28,13 @@ export type TParallaxModeProps = IComputedDirectionTypes<{
   /**
    * Carousel Animated transitions.
    */
-  mode?: "parallax";
+  mode?: 'parallax';
   modeConfig?: ILayoutConfig;
 }>;
 
 export function parallaxLayout(
   baseConfig: TBaseConfig,
-  modeConfig: ILayoutConfig = {},
+  modeConfig: ILayoutConfig = {}
 ) {
   const { size, vertical } = baseConfig;
   const {
@@ -44,18 +44,18 @@ export function parallaxLayout(
   } = modeConfig;
 
   return (value: number) => {
-    "worklet";
+    'worklet';
     const translate = interpolate(
       value,
       [-1, 0, 1],
-      [-size + parallaxScrollingOffset, 0, size - parallaxScrollingOffset],
+      [-size + parallaxScrollingOffset, 0, size - parallaxScrollingOffset]
     );
 
     const zIndex = interpolate(
       value,
       [-1, 0, 1],
       [0, size, 0],
-      Extrapolate.CLAMP,
+      Extrapolate.CLAMP
     );
 
     const scale = interpolate(
@@ -66,7 +66,7 @@ export function parallaxLayout(
         parallaxScrollingScale,
         parallaxAdjacentItemScale,
       ],
-      Extrapolate.CLAMP,
+      Extrapolate.CLAMP
     );
 
     return {

@@ -1,31 +1,33 @@
-import React, { useEffect, useState, memo } from 'react';
-import { serverIp } from '../config.js';
 import {
-  View,
-  Text,
-  SafeAreaView,
-  Image,
-  StyleSheet,
-  Dimensions,
-  ActivityIndicator,
-  TouchableOpacity,
-  Platform,
-} from 'react-native';
-import Colors from '../constants/Colors';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { ScrollView, TextInput } from 'react-native-gesture-handler';
-import {
-  getStoredUsername,
-  getStoredPassword,
-  setStoredCredentials,
-  clearStoredCredentials,
-} from './auth/Authenticate.js';
+  Feather,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
-import { Feather, Entypo } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
+import * as ImagePicker from 'expo-image-picker';
+import React, { memo, useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  Image,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
-import { screenWidth, screenHeight } from '../constants/ScreenDimensions.js';
+import { serverIp } from '../config.js';
+import Colors from '../constants/Colors';
+import { screenWidth } from '../constants/ScreenDimensions.js';
+import {
+  clearStoredCredentials,
+  getStoredPassword,
+  getStoredUsername,
+  setStoredCredentials,
+} from './auth/Authenticate.js';
 
 const EditProfileScreen = ({ navigation, route }) => {
   const isFocused = useIsFocused();
@@ -81,7 +83,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         const manipulateResult = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
         );
         let localUri = manipulateResult.uri;
         let filename = localUri.split('/').pop();
@@ -111,7 +113,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         const manipulateResult = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
         );
         let localUri = manipulateResult.uri;
         let filename = localUri.split('/').pop();
@@ -198,7 +200,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       {
         method: 'DELETE',
         timeout: 10000,
-      },
+      }
     );
 
     const responseData = await response.json();
@@ -206,7 +208,7 @@ const EditProfileScreen = ({ navigation, route }) => {
     if (response.ok) {
       console.log(
         `Account ${getStoredUsername} deleted successfully:`,
-        responseData,
+        responseData
       );
       await clearStoredCredentials();
       alert('Account deleted successfully.');

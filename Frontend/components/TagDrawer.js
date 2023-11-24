@@ -1,16 +1,14 @@
 import React, { memo } from 'react';
 import {
-  View,
-  Image,
-  Dimensions,
-  StyleSheet,
   Platform,
-  TouchableOpacity,
-  Text,
   ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Colors from '../constants/Colors';
-import { screenWidth, screenHeight } from '../constants/ScreenDimensions.js';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 
 const TagDrawer = memo(
   ({
@@ -126,7 +124,7 @@ const TagDrawer = memo(
         </ScrollView>
       </View>
     );
-  },
+  }
 );
 
 export default TagDrawer;

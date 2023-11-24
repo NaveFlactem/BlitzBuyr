@@ -43,7 +43,7 @@ async function authenticateUser(username, password) {
             reject(err);
           }
           resolve(row);
-        },
+        }
       );
     });
 
@@ -141,7 +141,7 @@ router.post('/login', function (req, res) {
       } else {
         return res.status(401).json({ error: 'Incorrect password' });
       }
-    },
+    }
   );
 });
 
@@ -216,7 +216,7 @@ router.post('/register', (req, res) => {
               console.error('Error registering the account:', err);
               return res.status(500).json({ error: 'Internal Server Error' });
             }
-          },
+          }
         );
 
         return res.status(201).json({
@@ -224,7 +224,7 @@ router.post('/register', (req, res) => {
           username: username,
         });
       }
-    },
+    }
   );
 });
 
@@ -294,7 +294,7 @@ router.delete('/deleteaccount', function (req, res) {
       } else {
         return res.status(401).json({ error: 'Incorrect password' });
       }
-    },
+    }
   );
 });
 

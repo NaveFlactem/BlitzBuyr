@@ -1,29 +1,29 @@
-import { serverIp } from '../config.js';
+import * as FileSystem from 'expo-file-system';
+import { Image } from 'expo-image';
+import * as ImageManipulator from 'expo-image-manipulator';
+import * as ImagePicker from 'expo-image-picker';
 import React, { Component, memo } from 'react';
 import {
-  View,
+  Alert,
+  Modal,
+  SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  ScrollView,
   TextInput,
-  Alert,
-  SafeAreaView,
-  Modal,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import DraggableGrid from 'react-native-draggable-grid';
-import * as ImagePicker from 'expo-image-picker';
-import { Image } from 'expo-image';
-import Colors from '../constants/Colors';
-import TopBar from '../components/visuals/TopBarGeneric.js';
-import * as ImageManipulator from 'expo-image-manipulator';
 import RNPickerSelect from 'react-native-picker-select';
 import BouncePulse from '../components/visuals/BouncePulse.js';
+import TopBar from '../components/visuals/TopBarGeneric.js';
+import { serverIp } from '../config.js';
+import Colors from '../constants/Colors';
+import { currencies, tagOptions } from '../constants/ListingData.js';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import { getLocationWithRetry } from '../constants/Utilities';
-import { screenWidth, screenHeight } from '../constants/ScreenDimensions.js';
-import { tagOptions, currencies } from '../constants/ListingData.js';
 import { getStoredUsername } from './auth/Authenticate.js';
-import * as FileSystem from 'expo-file-system';
 
 const blurhash = 'L5H2EC=PM+yV0g-mq.wG9c010J}I';
 
@@ -313,7 +313,7 @@ class CreateListing extends Component {
           style: 'cancel',
         },
       ],
-      { cancelable: true },
+      { cancelable: true }
     );
   };
 
@@ -379,7 +379,7 @@ class CreateListing extends Component {
   processSelectedImages = async (assets) => {
     // Process multiple images
     const processedImages = await Promise.all(
-      assets.map(async (asset) => this.manipulateImage(asset.uri)),
+      assets.map(async (asset) => this.manipulateImage(asset.uri))
     );
     this.setState((prevState) => ({
       data: [...prevState.data, ...processedImages.filter(Boolean)],
@@ -400,7 +400,7 @@ class CreateListing extends Component {
         format: ImageManipulator.SaveFormat.JPEG,
       });
       const compressedSize = await FileSystem.getInfoAsync(
-        manipulateResult.uri,
+        manipulateResult.uri
       );
       const savedData = originalSize.size - compressedSize.size;
 
@@ -411,7 +411,7 @@ class CreateListing extends Component {
         `compressed to :`,
         (compressedSize.size / (1024 * 1024)).toFixed(2),
         'MB',
-        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`,
+        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`
       );
 
       return {
@@ -547,7 +547,7 @@ class CreateListing extends Component {
       if (isAlreadySelected) {
         // If already selected, remove it from the array
         newSelectedTags = prevState.selectedTags.filter(
-          (tagName) => tagName !== pressedTagName,
+          (tagName) => tagName !== pressedTagName
         );
       } else {
         // If not selected, add it to the array

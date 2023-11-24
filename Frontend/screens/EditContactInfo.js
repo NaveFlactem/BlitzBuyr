@@ -1,17 +1,17 @@
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import {
-  View,
+  Platform,
+  SafeAreaView,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
-  ScrollView,
-  Platform,
+  View,
 } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { serverIp } from '../config';
 import Colors from '../constants/Colors';
 import { getStoredUsername } from './auth/Authenticate';
-import { serverIp } from '../config';
 
 const EditContactInfo = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);

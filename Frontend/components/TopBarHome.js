@@ -1,15 +1,14 @@
-import React, { memo, useState } from 'react';
-import {
-  View,
-  Image,
-  Dimensions,
-  StyleSheet,
-  Platform,
-  TouchableOpacity,
-} from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { memo } from 'react';
+import {
+  Image,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Colors from '../constants/Colors';
-import { screenWidth, screenHeight } from '../constants/ScreenDimensions.js';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 
 const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
   return (

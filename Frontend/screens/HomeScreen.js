@@ -1,49 +1,42 @@
-import { serverIp } from '../config.js';
-import React, { useEffect, useRef, useState, useCallback, memo } from 'react';
-import {
-  View,
-  StyleSheet,
-  SafeAreaView,
-  Dimensions,
-  RefreshControl,
-  ActivityIndicator,
-  ScrollView,
-  Platform,
-  TouchableOpacity,
-  Text,
-} from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  useAnimatedGestureHandler,
-  runOnJS,
-} from 'react-native-reanimated';
-import Swiper from 'react-native-swiper';
-import Colors from '../constants/Colors';
-import { Image } from 'expo-image';
 import * as SecureStore from 'expo-secure-store';
 import { debounce } from 'lodash';
-import NoWifi from '../components/noWifi';
-import NoListings from '../components/noListings';
-import BouncePulse from '../components/visuals/BouncePulse.js';
-import CustomScrollView from '../components/CustomScrollView.js';
-import { PanGestureHandler, State } from 'react-native-gesture-handler';
-import { getLocationWithRetry } from '../constants/Utilities';
-import TopBar from '../components/TopBarHome.js';
-import TagDrawer from '../components/TagDrawer.js';
-import IOSSwiperComponent from '../components/swipers/IOSSwiperComponent.js';
-import AndroidSwiperComponent from '../components/swipers/AndroidSwiperComponent.js';
-import LocationSlider from '../components/LocationSlider.js';
-import { LinearGradient } from 'expo-linear-gradient';
-import { screenWidth, screenHeight } from '../constants/ScreenDimensions.js';
-import * as Settings from '../hooks/UserSettings.js';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import {
-  tagOptions,
+  Platform,
+  RefreshControl,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { PanGestureHandler } from 'react-native-gesture-handler';
+import Animated, {
+  runOnJS,
+  useAnimatedGestureHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import LocationSlider from '../components/LocationSlider.js';
+import NoListings from '../components/noListings';
+import NoWifi from '../components/noWifi';
+import AndroidSwiperComponent from '../components/swipers/AndroidSwiperComponent.js';
+import IOSSwiperComponent from '../components/swipers/IOSSwiperComponent.js';
+import TagDrawer from '../components/TagDrawer.js';
+import TopBar from '../components/TopBarHome.js';
+import BouncePulse from '../components/visuals/BouncePulse.js';
+import { serverIp } from '../config.js';
+import Colors from '../constants/Colors';
+import {
   conditionOptions,
+  tagOptions,
   transactionOptions,
 } from '../constants/ListingData.js';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
+import { getLocationWithRetry } from '../constants/Utilities';
+import * as Settings from '../hooks/UserSettings.js';
 
 const calculateTimeSince = (time) => {
   const millisecondsPerHour = 3600000;
@@ -101,7 +94,7 @@ const HomeScreen = ({ route }) => {
         // Detect left swipe
         translateX.value = Math.max(
           -screenWidth,
-          context.startX + event.translationX,
+          context.startX + event.translationX
         );
       }
     },
@@ -113,7 +106,7 @@ const HomeScreen = ({ route }) => {
       const shouldClose = translateX.value < -screenWidth * 0.65;
       translateX.value = withTiming(
         shouldClose ? -screenWidth : -screenWidth * 0.6,
-        { duration: 300 },
+        { duration: 300 }
       );
       if (shouldClose) {
         runOnJS(setIsDrawerOpen)(false);
@@ -137,7 +130,7 @@ const HomeScreen = ({ route }) => {
       const shouldOpen = translateX.value > -screenWidth * 0.9;
       translateX.value = withTiming(
         shouldOpen ? -screenWidth * 0.6 : -screenWidth,
-        { duration: 300 },
+        { duration: 300 }
       );
       if (shouldOpen) {
         runOnJS(setIsDrawerOpen)(true);
@@ -195,7 +188,7 @@ const HomeScreen = ({ route }) => {
     let newSelectedTags;
     if (isAlreadySelected) {
       newSelectedTags = selectedTags.filter(
-        (tagName) => tagName !== pressedTagName,
+        (tagName) => tagName !== pressedTagName
       );
     } else {
       newSelectedTags = [...selectedTags, pressedTagName];
@@ -221,7 +214,7 @@ const HomeScreen = ({ route }) => {
     let newSelectedConditions;
     if (isAlreadySelected) {
       newSelectedConditions = selectedConditions.filter(
-        (conditionName) => conditionName !== pressedConditionName,
+        (conditionName) => conditionName !== pressedConditionName
       );
     } else {
       newSelectedConditions = [...selectedConditions, pressedConditionName];
@@ -244,12 +237,12 @@ const HomeScreen = ({ route }) => {
     // Update the selectedTransactions state
     const pressedTransactionName = newTransactionsData[index].name;
     const isAlreadySelected = selectedTransactions.includes(
-      pressedTransactionName,
+      pressedTransactionName
     );
     let newSelectedTransactions;
     if (isAlreadySelected) {
       newSelectedTransactions = selectedTransactions.filter(
-        (transactionName) => transactionName !== pressedTransactionName,
+        (transactionName) => transactionName !== pressedTransactionName
       );
     } else {
       newSelectedTransactions = [
@@ -277,7 +270,7 @@ const HomeScreen = ({ route }) => {
       console.log('Latitude:', latitude);
       console.log('Longitude:', longitude);
       const username = encodeURIComponent(
-        await SecureStore.getItemAsync('username'),
+        await SecureStore.getItemAsync('username')
       );
       let fetchUrl = `${serverIp}/api/listings?username=${username}&latitude=${latitude}&longitude=${longitude}`;
       if (distance < 510) fetchUrl += `&distance=${distance}`; // don't add distance on unlimited
@@ -296,7 +289,7 @@ const HomeScreen = ({ route }) => {
               ...listing,
               TimeSince: timeSince,
             };
-          }),
+          })
         );
         console.log('Listings fetched successfully');
       } else {
@@ -433,7 +426,7 @@ const HomeScreen = ({ route }) => {
       setHoldStateOfRefresh(true);
       fetchListings();
     }, 1000),
-    [],
+    []
   ); // Adjust debounce time as needed
 
   useEffect(() => {
@@ -509,8 +502,8 @@ const HomeScreen = ({ route }) => {
                   removeListing={(listingId) => {
                     setListings((prevListings) =>
                       prevListings.filter(
-                        (item) => item.ListingId !== listingId,
-                      ),
+                        (item) => item.ListingId !== listingId
+                      )
                     );
                   }}
                 />
@@ -524,7 +517,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId),
+                    prevListings.filter((item) => item.ListingId !== listingId)
                   );
                 }}
                 refreshControl={

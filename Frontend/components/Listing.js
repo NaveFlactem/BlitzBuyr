@@ -1,33 +1,32 @@
-import { serverIp } from '../config.js';
-import React, { useState, memo, useCallback, useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { Image } from 'expo-image';
+import * as SecureStore from 'expo-secure-store';
+import React, { memo, useEffect, useState } from 'react';
 import {
-  StyleSheet,
-  View,
-  Dimensions,
-  Text,
-  ScrollView,
-  TouchableOpacity,
   Animated as AnimatedRN,
-  TouchableWithoutFeedback,
+  Modal,
   Platform,
   SafeAreaView,
-  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
-import Carousel from 'react-native-reanimated-carousel';
-import { parallaxLayout } from './parallax.ts';
-import { Image } from 'expo-image';
-import Colors from '../constants/Colors.js';
 import FlipCard from 'react-native-flip-card';
+import { PinchGestureHandler } from 'react-native-gesture-handler';
+import Carousel from 'react-native-reanimated-carousel';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { PinchGestureHandler } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
-import * as SecureStore from 'expo-secure-store';
+import { serverIp } from '../config.js';
+import Colors from '../constants/Colors.js';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import {
   getStoredPassword,
   getStoredUsername,
 } from '../screens/auth/Authenticate.js';
-import { screenWidth, screenHeight } from '../constants/ScreenDimensions.js';
+import { parallaxLayout } from './parallax.ts';
 
 const blurhash =
   '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
@@ -162,7 +161,7 @@ const CardOverlayFront = memo(
         </View>
       </View>
     );
-  },
+  }
 );
 
 const CardOverlayBack = memo(
@@ -190,7 +189,7 @@ const CardOverlayBack = memo(
         </View>
       </View>
     );
-  },
+  }
 );
 
 const MemoizedImage = memo(({ source, style, contentFit, transition }) => {
@@ -255,7 +254,7 @@ const CustomItem = memo(
         {deleteVisible && <DeleteButton onDeletePress={onDeletePress} />}
       </CardOverlayFront>
     );
-  },
+  }
 );
 
 const Listing = ({ item, origin, removeListing, userLocation }) => {
@@ -273,13 +272,13 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
           item.Latitude,
           item.Longitude,
           userLocation.latitude,
-          userLocation.longitude,
+          userLocation.longitude
         )
-      : 'Unknown',
+      : 'Unknown'
   );
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
-    origin == 'profile' && item.Username == getStoredUsername(),
+    origin == 'profile' && item.Username == getStoredUsername()
   );
 
   const toggleDeleteModal = () => {
@@ -387,7 +386,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 parallaxScrollingScale: 1,
                 parallaxAdjacentItemScale: 0.5,
                 parallaxScrollingOffset: 10,
-              },
+              }
             )}
           />
         </View>

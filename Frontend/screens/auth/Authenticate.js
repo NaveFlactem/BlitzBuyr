@@ -1,10 +1,9 @@
-import { serverIp } from '../../config.js';
-import { useEffect } from 'react';
-import * as SecureStore from 'expo-secure-store';
-import { StyleSheet } from 'react-native';
-import Colors from '../../constants/Colors';
-import { View, Image } from 'react-native';
 import { Asset } from 'expo-asset';
+import * as SecureStore from 'expo-secure-store';
+import { useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { serverIp } from '../../config.js';
+import Colors from '../../constants/Colors';
 import * as Settings from '../../hooks/UserSettings.js';
 
 const assetsToPreload = [
@@ -53,7 +52,7 @@ const AuthenticateScreen = ({ navigation }) => {
     // Load and cache the assets when the component mounts
     async function loadAssetsAsync() {
       const assetPromises = assetsToPreload.map((asset) =>
-        Asset.fromModule(asset).downloadAsync(),
+        Asset.fromModule(asset).downloadAsync()
       );
       await Promise.all(assetPromises);
     }

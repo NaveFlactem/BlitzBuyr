@@ -1,15 +1,15 @@
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import {
-  View,
+  Button,
+  Image,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  Image,
-  Button,
+  View,
 } from 'react-native'; // Import the Button component
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { getStoredUsername } from './auth/Authenticate.js';
 import { serverIp } from '../config.js';
+import { getStoredUsername } from './auth/Authenticate.js';
 
 const RatingScreen = ({ navigation, route }) => {
   const [selectedRating, setSelectedRating] = useState(0);
@@ -75,7 +75,7 @@ const RatingScreen = ({ navigation, route }) => {
               color="black"
             />
           )}
-        </TouchableOpacity>,
+        </TouchableOpacity>
       );
     }
     return starIcons;

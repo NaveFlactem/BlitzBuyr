@@ -5,7 +5,7 @@ const useBackButtonHandler = (handler) => {
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      handler,
+      handler
     );
 
     return () => backHandler.remove();

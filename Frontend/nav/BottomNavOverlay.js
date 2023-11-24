@@ -1,26 +1,25 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React, { useEffect, useRef, memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
   Dimensions,
   Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import Icon, { Icons } from '../components/visuals/Icons';
-import Colors from '../constants/Colors';
-import HomeScreen from '../screens/HomeScreen';
-import ProfileScreen from '../screens/ProfileScreen';
-import CreateListing from '../screens/CreateListing';
 import Animated, {
-  useSharedValue,
   useAnimatedStyle,
+  useSharedValue,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
+import Icon, { Icons } from '../components/visuals/Icons';
+import Colors from '../constants/Colors';
+import { screenHeight } from '../constants/ScreenDimensions.js';
 import useBackButtonHandler from '../hooks/DisableBackButton';
-import { screenWidth, screenHeight } from '../constants/ScreenDimensions.js';
+import CreateListing from '../screens/CreateListing';
+import HomeScreen from '../screens/HomeScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const TabArr = [
   {

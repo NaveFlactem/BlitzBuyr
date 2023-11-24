@@ -1,23 +1,17 @@
-import { serverIp } from '../../config.js';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  View,
+  Alert,
+  Dimensions,
+  Image,
+  StyleSheet,
   Text,
   TextInput,
-  Button,
-  StyleSheet,
   TouchableOpacity,
-  Alert,
-  Image,
-  Dimensions,
+  View,
 } from 'react-native';
+import { serverIp } from '../../config.js';
 import Colors from '../../constants/Colors';
-import * as SecureStore from 'expo-secure-store';
-import {
-  getStoredUsername,
-  getStoredPassword,
-  setStoredCredentials,
-} from './Authenticate.js';
+import { setStoredCredentials } from './Authenticate.js';
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');

@@ -1,8 +1,7 @@
-import React, { memo } from 'react';
-import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { memo } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
 import Colors from '../constants/Colors';
-import { screenWidth, screenHeight } from '../constants/ScreenDimensions.js';
 
 const NoListings = memo(({ onRetry }) => {
   return (

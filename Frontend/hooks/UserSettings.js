@@ -1,4 +1,3 @@
-// userSettings.js
 import * as SecureStore from 'expo-secure-store';
 
 const USER_SETTINGS_KEY = 'USER_SETTINGS';
