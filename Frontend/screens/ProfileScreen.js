@@ -12,6 +12,7 @@ import {
   useFocusEffect,
   TouchableOpacity,
   Dimensions,
+  useColorScheme,
 } from "react-native";
 import Colors from "../constants/Colors";
 import {
@@ -39,9 +40,8 @@ import useBackButtonHandler from "../hooks/DisableBackButton.js";
 import BouncePulse from "../components/visuals/BouncePulse.js";
 import { getLocationWithRetry } from "../constants/Utilities";
 import { Linking, Alert } from "react-native";
-import * as Settings from "../hooks/UserSettings.js";
 import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
-import ColorMode from "../components/visuals/ColorMode.js";
+
 
 const UserListingsRoute = ({ profileInfo, onPressListing }) => (
   <View style={{ flex: 1 }}>
