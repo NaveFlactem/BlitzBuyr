@@ -255,11 +255,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
 function ProfileScreen({ navigation, route }) {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
-  const [profileInfo, setProfileInfo] = useState({
-    likedListings: [],
-    userListings: [],
-    userRatings: {},
-  });
+  const [profileInfo, setProfileInfo] = useState(null);
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(true);
   const [profileName, setProfileName] = useState("");
