@@ -113,45 +113,31 @@ const calculateFontSizeLocation = (city) => {
   }
 };
 
-const TimeBox = memo(({ time }) => {
-  const calculateTimeSince = () => {
-    const millisecondsPerHour = 3600000;
-    const now = new Date();
-    const past = new Date(time) - 8 * millisecondsPerHour;
-    const timeSince = Math.floor((now - past) / 1000);
-    return timeSince;
-  };
-
-  const [timeSince, setTimeSince] = useState(calculateTimeSince());
-
-  useEffect(() => {
-    setTimeSince(calculateTimeSince());
-  }, [time]);
-
+const TimeBox = memo(({ timeSince }) => {
   return (
-    <View style={styles.timeContainer}>
-      <Text style={styles.timeText}>
+    <View style={styles.timeSinceContainer}>
+      <Text style={styles.timeSinceText}>
         {timeSince < 30
           ? "Just now"
           : timeSince < 60
-            ? `${timeSince} seconds ago`
-            : timeSince < 120
-              ? `1 minute ago`
-              : timeSince < 3600
-                ? `${Math.floor(timeSince / 60)} minutes ago`
-                : timeSince < 7200
-                  ? `1 hour ago`
-                  : timeSince < 86400
-                    ? `${Math.floor(timeSince / 3600)} hours ago`
-                    : timeSince < 172800
-                      ? `1 day ago`
-                      : `${Math.floor(timeSince / 86400)} days ago`}
+          ? `${timeSince} seconds ago`
+          : timeSince < 120
+          ? `1 minute ago`
+          : timeSince < 3600
+          ? `${Math.floor(timeSince / 60)} minutes ago`
+          : timeSince < 7200
+          ? `1 hour ago`
+          : timeSince < 86400
+          ? `${Math.floor(timeSince / 3600)} hours ago`
+          : timeSince < 172800
+          ? `1 day ago`
+          : `${Math.floor(timeSince / 86400)} days ago`}
       </Text>
     </View>
   );
 });
 
-const CardOverlayFront = memo(({ children, price, time }) => {
+const CardOverlayFront = memo(({ children, price, timeSince }) => {
   return (
     <View style={styles.card}>
       <View style={styles.cardBackground}>
@@ -171,13 +157,13 @@ const CardOverlayFront = memo(({ children, price, time }) => {
           </Text>
         </View>
         {children}
-        <TimeBox time={time} />
+        <TimeBox timeSince={timeSince} />
       </View>
     </View>
   );
 });
 
-const CardOverlayBack = memo(({ children, price, time }) => {
+const CardOverlayBack = memo(({ children, price, timeSince }) => {
   return (
     <View style={styles.card}>
       <View style={styles.cardBackground2}>
@@ -197,7 +183,7 @@ const CardOverlayBack = memo(({ children, price, time }) => {
           </Text>
         </View>
         {children}
-        <TimeBox time={time} />
+        <TimeBox timeSince={timeSince} />
       </View>
     </View>
   );
@@ -219,7 +205,7 @@ const CustomItem = memo(
     source,
     scale,
     price,
-    time,
+    timeSince,
     isLiked,
     onLikePress,
     onDeletePress,
@@ -240,7 +226,7 @@ const CustomItem = memo(
     };
 
     return (
-      <CardOverlayFront price={price} time={time}>
+      <CardOverlayFront price={price} timeSince={timeSince}>
         <View>
           <PinchGestureHandler
             onGestureEvent={onZoomEvent}
@@ -260,13 +246,16 @@ const CustomItem = memo(
         {deleteVisible && <DeleteButton onDeletePress={onDeletePress} />}
       </CardOverlayFront>
     );
-  },
+  }
 );
 
 const Listing = ({ item, origin, removeListing, userLocation }) => {
   const navigation = useNavigation();
   const price = item.Price;
-  const time = item.PostDate;
+  const [timeSince, setTimeSince] = useState(item.TimeSince);
+  useEffect(() => {
+    setTimeSince(item.TimeSince);
+  }, [item.TimeSince]);
   const [isLiked, setIsLiked] = useState(item.liked); // Initially KNOWN
   const [distance, setDistance] = useState(
     item.Latitude
@@ -274,13 +263,13 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
           item.Latitude,
           item.Longitude,
           userLocation.latitude,
-          userLocation.longitude,
+          userLocation.longitude
         )
-      : "Unknown",
+      : "Unknown"
   );
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
-    origin == "profile" && item.Username == getStoredUsername(),
+    origin == "profile" && item.Username == getStoredUsername()
   );
 
   const toggleDeleteModal = () => {
@@ -370,7 +359,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 source={item}
                 scale={new AnimatedRN.Value(1)}
                 price={price}
-                time={time}
+                timeSince={timeSince}
                 isLiked={isLiked}
                 onLikePress={() => handleLikePress()}
                 onDeletePress={() => toggleDeleteModal()}
@@ -387,12 +376,12 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 parallaxScrollingScale: 1,
                 parallaxAdjacentItemScale: 0.5,
                 parallaxScrollingOffset: 10,
-              },
+              }
             )}
           />
         </View>
 
-        <CardOverlayBack price={price} time={time}>
+        <CardOverlayBack price={price} timeSince={timeSince}>
           <Text style={styles.title}>{item.Title}</Text>
           <View style={styles.sellerInfoBox}>
             <View
@@ -1010,7 +999,7 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
   },
-  timeContainer: {
+  timeSinceContainer: {
     alignContent: "center",
     alignItems: "center",
     justifyContent: "center",
@@ -1022,7 +1011,7 @@ const styles = StyleSheet.create({
     height: "5%",
     width: "auto",
   },
-  timeText: {
+  timeSinceText: {
     fontSize: 12,
     color: "white",
     fontWeight: "bold",

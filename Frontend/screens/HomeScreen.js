@@ -45,6 +45,14 @@ import {
   transactionOptions,
 } from "../constants/ListingData.js";
 
+const calculateTimeSince = (time) => {
+  const millisecondsPerHour = 3600000;
+  const now = new Date();
+  const past = new Date(time) - 8 * millisecondsPerHour;
+  const timeSince = Math.floor((now - past) / 1000);
+  return timeSince;
+};
+
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [listings, setListings] = useState([]);
@@ -93,7 +101,7 @@ const HomeScreen = ({ route }) => {
         // Detect left swipe
         translateX.value = Math.max(
           -screenWidth,
-          context.startX + event.translationX,
+          context.startX + event.translationX
         );
       }
     },
@@ -105,7 +113,7 @@ const HomeScreen = ({ route }) => {
       const shouldClose = translateX.value < -screenWidth * 0.65;
       translateX.value = withTiming(
         shouldClose ? -screenWidth : -screenWidth * 0.6,
-        { duration: 300 },
+        { duration: 300 }
       );
       if (shouldClose) {
         runOnJS(setIsDrawerOpen)(false);
@@ -129,7 +137,7 @@ const HomeScreen = ({ route }) => {
       const shouldOpen = translateX.value > -screenWidth * 0.9;
       translateX.value = withTiming(
         shouldOpen ? -screenWidth * 0.6 : -screenWidth,
-        { duration: 300 },
+        { duration: 300 }
       );
       if (shouldOpen) {
         runOnJS(setIsDrawerOpen)(true);
@@ -187,7 +195,7 @@ const HomeScreen = ({ route }) => {
     let newSelectedTags;
     if (isAlreadySelected) {
       newSelectedTags = selectedTags.filter(
-        (tagName) => tagName !== pressedTagName,
+        (tagName) => tagName !== pressedTagName
       );
     } else {
       newSelectedTags = [...selectedTags, pressedTagName];
@@ -213,7 +221,7 @@ const HomeScreen = ({ route }) => {
     let newSelectedConditions;
     if (isAlreadySelected) {
       newSelectedConditions = selectedConditions.filter(
-        (conditionName) => conditionName !== pressedConditionName,
+        (conditionName) => conditionName !== pressedConditionName
       );
     } else {
       newSelectedConditions = [...selectedConditions, pressedConditionName];
@@ -236,12 +244,12 @@ const HomeScreen = ({ route }) => {
     // Update the selectedTransactions state
     const pressedTransactionName = newTransactionsData[index].name;
     const isAlreadySelected = selectedTransactions.includes(
-      pressedTransactionName,
+      pressedTransactionName
     );
     let newSelectedTransactions;
     if (isAlreadySelected) {
       newSelectedTransactions = selectedTransactions.filter(
-        (transactionName) => transactionName !== pressedTransactionName,
+        (transactionName) => transactionName !== pressedTransactionName
       );
     } else {
       newSelectedTransactions = [
@@ -269,7 +277,7 @@ const HomeScreen = ({ route }) => {
       console.log("Latitude:", latitude);
       console.log("Longitude:", longitude);
       const username = encodeURIComponent(
-        await SecureStore.getItemAsync("username"),
+        await SecureStore.getItemAsync("username")
       );
       let fetchUrl = `${serverIp}/api/listings?username=${username}&latitude=${latitude}&longitude=${longitude}`;
       if (distance < 510) fetchUrl += `&distance=${distance}`; // don't add distance on unlimited
@@ -281,10 +289,16 @@ const HomeScreen = ({ route }) => {
 
       if (listingsResponse.status <= 201) {
         const listingsData = await listingsResponse.json();
-
-        setListings(listingsData);
+        setListings(
+          listingsData.map((listing) => {
+            const timeSince = calculateTimeSince(listing.PostDate);
+            return {
+              ...listing,
+              TimeSince: timeSince,
+            };
+          })
+        );
         console.log("Listings fetched successfully");
-        console.log(listingsData);
       } else {
         console.log("Error fetching listings:", listingsResponse.status);
       }
@@ -419,7 +433,7 @@ const HomeScreen = ({ route }) => {
       setHoldStateOfRefresh(true);
       fetchListings();
     }, 1000),
-    [],
+    []
   ); // Adjust debounce time as needed
 
   useEffect(() => {
@@ -495,8 +509,8 @@ const HomeScreen = ({ route }) => {
                   removeListing={(listingId) => {
                     setListings((prevListings) =>
                       prevListings.filter(
-                        (item) => item.ListingId !== listingId,
-                      ),
+                        (item) => item.ListingId !== listingId
+                      )
                     );
                   }}
                 />
@@ -510,7 +524,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId),
+                    prevListings.filter((item) => item.ListingId !== listingId)
                   );
                 }}
                 refreshControl={
