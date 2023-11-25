@@ -519,7 +519,7 @@ const HomeScreen = ({ route }) => {
                   <RefreshControl
                     refreshing={refreshing}
                     onRefresh={onRefresh}
-                    progressViewOffset={50}
+                    progressViewOffset={60}
                   />
                 }
               />
