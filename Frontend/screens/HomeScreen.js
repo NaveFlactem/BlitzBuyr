@@ -405,7 +405,6 @@ const HomeScreen = ({ route }) => {
   };
 
   let scrollY = useSharedValue(0);
-  refreshThreshold = 0.06 * screenHeight;
 
   const onScroll = (event) => {
     scrollY.value = event.nativeEvent.contentOffset.y;
@@ -434,7 +433,7 @@ const HomeScreen = ({ route }) => {
   const onRefresh = React.useCallback(() => {
     console.log('refreshing...');
     setRefreshing(true);
-    if (userLocation) debouncedFetchListings();
+    if (userLocation) fetchListings();
     else getUserLocation();
   }, []);
 
