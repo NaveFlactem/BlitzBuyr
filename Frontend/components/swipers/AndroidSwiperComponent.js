@@ -1,31 +1,35 @@
-import { Image } from 'expo-image';
 import React, { memo } from 'react';
-import Swiper from 'react-native-swiper';
+import { FlatList } from 'react-native';
 import Listing from '../Listing';
+import BouncePulse from '../visuals/BouncePulse';
 
 const AndroidSwiperComponent = memo(
   ({ swiperRef, listings, refreshControl, removeListing, userLocation }) => {
+    const renderItem = ({ item }) => (
+      <Listing
+        item={item}
+        removeListing={removeListing}
+        userLocation={userLocation}
+      />
+    );
+
     return (
-      <Swiper
-        ref={swiperRef}
-        loop={false}
-        horizontal={false}
-        showsPagination={false}
-        showsButtons={false}
+      <FlatList
+        initialNumToRender={1}
+        maxToRenderPerBatch={1}
+        windowSize={2}
+        decelerationRate="normal"
+        disableIntervalMomentum={true}
+        pagingEnabled={true}
+        removeClippedSubviews={true}
+        data={listings}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.ListingId}
         refreshControl={refreshControl}
-      >
-        {listings.map((item, listIndex) => {
-          Image.prefetch(item.images);
-          return (
-            <Listing
-              key={item.ListingId}
-              item={item}
-              removeListing={removeListing}
-              userLocation={userLocation}
-            />
-          );
-        })}
-      </Swiper>
+        //snapToAlignment="start"
+        //snapToInterval={Dimensions.get('window').height}
+        ListEmptyComponent={<BouncePulse />}
+      />
     );
   }
 );

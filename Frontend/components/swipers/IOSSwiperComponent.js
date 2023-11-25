@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import Swiper from 'react-native-swiper';
 import Listing from '../Listing';
+import BouncePulse from '../visuals/BouncePulse';
 
 const IOSSwiperComponent = memo(
   ({ swiperRef, listings, removeListing, userLocation }) => {
@@ -11,6 +12,9 @@ const IOSSwiperComponent = memo(
         horizontal={false}
         showsPagination={false}
         showsButtons={false}
+        loadMinimal={true}
+        loadMinimalSize={3}
+        loadMinimalLoader={<BouncePulse />}
       >
         {listings.map((item) => (
           <Listing
