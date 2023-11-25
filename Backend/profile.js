@@ -388,6 +388,7 @@ router.get('/profile', async function (req, res) {
         GROUP_CONCAT(DISTINCT Tags.TagName) AS tags,
         GROUP_CONCAT(DISTINCT Images.ImageURI) AS images,
         GROUP_CONCAT(DISTINCT Images.BlurHash) AS blurhashes,
+        Profiles.ProfilePicture,
         COALESCE((
           SELECT 1 
           FROM Likes 
@@ -408,6 +409,7 @@ router.get('/profile', async function (req, res) {
       LEFT JOIN ListingTags ON Listings.ListingId = ListingTags.ListingId
       LEFT JOIN Tags ON ListingTags.TagId = Tags.TagId
       LEFT JOIN Images ON Listings.ListingId = Images.ListingId
+      LEFT JOIN Profiles ON Profiles.Username = Listings.Username
       WHERE (Listings.ListingId IN (
         SELECT ListingId
         FROM Likes

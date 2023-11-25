@@ -17,7 +17,6 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import FlipCard from 'react-native-flip-card';
@@ -447,7 +446,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 },
               ]}
             >
-              <TouchableWithoutFeedback
+              <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('Profile', {
                     username: item.Username,
@@ -458,8 +457,8 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                   source={item.ProfilePicture}
                   style={styles.sellerPic}
                 />
-              </TouchableWithoutFeedback>
-              <Text style={styles.sellerName}> {item.Username}</Text>
+              </TouchableOpacity>
+              <Text style={styles.sellerName}>{item.Username}</Text>
             </View>
             <View
               style={[
@@ -830,21 +829,20 @@ const styles = StyleSheet.create({
   },
   sellerPic: {
     alignSelf: 'center',
-    width: '90%',
-    height: '70%',
+    height: '80%',
+    bottom: -10,
     aspectRatio: 1,
     borderRadius: 20,
-    marginBottom: '2%',
   },
   sellerName: {
     alignSelf: 'center',
     alignContent: 'center',
     textAlign: 'center',
-    marginTop: '4%',
     width: '300%',
-    fontSize: 10,
+    fontSize: 15,
     fontWeight: 'bold',
     color: 'white',
+    bottom: 5,
   },
   locationPin: {
     position: 'absolute',
