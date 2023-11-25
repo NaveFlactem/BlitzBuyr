@@ -12,8 +12,8 @@ import {
   Animated as AnimatedRN,
   Modal,
   Platform,
+  Pressable,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -21,7 +21,7 @@ import {
   View,
 } from 'react-native';
 import FlipCard from 'react-native-flip-card';
-import { PinchGestureHandler } from 'react-native-gesture-handler';
+import { PinchGestureHandler, ScrollView } from 'react-native-gesture-handler';
 import Carousel from 'react-native-reanimated-carousel';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -128,29 +128,29 @@ const TimeBox = memo(({ timeSince }) => {
           {timeSince < 30
             ? 'Just now'
             : timeSince < 60
-              ? `${timeSince} seconds ago`
-              : timeSince < 120
-                ? `1 minute ago`
-                : timeSince < 3600
-                  ? `${Math.floor(timeSince / 60)} minutes ago`
-                  : timeSince < 7200
-                    ? `1 hour ago`
-                    : timeSince < 86400
-                      ? `${Math.floor(timeSince / 3600)} hours ago`
-                      : timeSince < 172800
-                        ? `1 day ago`
-                        : `${Math.floor(timeSince / 86400)} days ago`}
+            ? `${timeSince} seconds ago`
+            : timeSince < 120
+            ? `1 minute ago`
+            : timeSince < 3600
+            ? `${Math.floor(timeSince / 60)} minutes ago`
+            : timeSince < 7200
+            ? `1 hour ago`
+            : timeSince < 86400
+            ? `${Math.floor(timeSince / 3600)} hours ago`
+            : timeSince < 172800
+            ? `1 day ago`
+            : `${Math.floor(timeSince / 86400)} days ago`}
         </Text>
       </View>
     </React.Fragment>
   );
 });
 
-const CardOverlayFront = memo(
-  ({ children, currencySymbol, price, timeSince }) => {
+const CardOverlay = memo(
+  ({ children, currencySymbol, price, timeSince, cardStyle }) => {
     return (
       <View style={styles.card}>
-        <View style={styles.cardBackground}>
+        <View style={cardStyle}>
           <Image
             source={require('../assets/card_background.png')}
             style={styles.backgroundImage}
@@ -171,35 +171,7 @@ const CardOverlayFront = memo(
         </View>
       </View>
     );
-  },
-);
-
-const CardOverlayBack = memo(
-  ({ children, currencySymbol, price, timeSince }) => {
-    return (
-      <View style={styles.card}>
-        <View style={styles.cardBackground2}>
-          <Image
-            source={require('../assets/card_background.png')}
-            style={styles.backgroundImage}
-          />
-          <View style={styles.priceContainer}>
-            <Text
-              style={[
-                styles.price,
-                { fontSize: calculateFontSize(price) },
-                price === 0 && { fontWeight: 'bold' },
-              ]}
-            >
-              {price === 0 ? 'FREE' : `${currencySymbol}${price}`}
-            </Text>
-          </View>
-          {children}
-          <TimeBox timeSince={timeSince} />
-        </View>
-      </View>
-    );
-  },
+  }
 );
 
 const MemoizedImage = memo(({ source, style, contentFit, transition }) => {
@@ -227,13 +199,12 @@ const CustomItem = memo(
     onLikePress,
     onDeletePress,
     deleteVisible,
-    origin,
   }) => {
     const onZoomEvent = useCallback(
       AnimatedRN.event([{ nativeEvent: { scale: scale } }], {
         useNativeDriver: true,
       }),
-      [],
+      []
     );
 
     const onZoomStateChange = (event) => {
@@ -245,11 +216,13 @@ const CustomItem = memo(
       }
     };
 
+    /*FRONT CARD*/
     return (
-      <CardOverlayFront
+      <CardOverlay
         price={price}
         currencySymbol={currencySymbol}
         timeSince={timeSince}
+        cardStyle={styles.cardBackground}
       >
         <View>
           <PinchGestureHandler
@@ -268,13 +241,14 @@ const CustomItem = memo(
         </View>
         <LikeButton isLiked={isLiked} onLikePress={onLikePress} />
         {deleteVisible && <DeleteButton onDeletePress={onDeletePress} />}
-      </CardOverlayFront>
+      </CardOverlay>
     );
-  },
+  }
 );
 
-const Listing = ({ item, origin, removeListing, userLocation }) => {
+const Listing = ({ item, origin, removeListing, userLocation, swiperRef }) => {
   //console.log(item);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const prevItemRef = useRef();
   useEffect(() => {
     if (prevItemRef.current === item) {
@@ -296,7 +270,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
       item.Latitude,
       item.Longitude,
       userLocation.latitude,
-      userLocation.longitude,
+      userLocation.longitude
     );
   }, [
     item.Latitude,
@@ -307,7 +281,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
 
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
-    origin == 'profile' && item.Username == getStoredUsername(),
+    origin == 'profile' && item.Username == getStoredUsername()
   );
 
   const toggleDeleteModal = useCallback(() => {
@@ -365,6 +339,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
   }, [isLiked]);
 
   const images = React.useMemo(() => item.images, [item.images]);
+  const carouselRef = useRef(null);
 
   return (
     <SafeAreaView>
@@ -376,8 +351,11 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
         flip={false}
         clickable={true}
       >
+        {/*FACE SIDE*/}
         <View style={styles.card}>
           <Carousel
+            ref={carouselRef}
+            current
             pagingEnabled={true}
             removeClippedSubviews={true}
             initialNumToRender={1}
@@ -394,7 +372,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
             windowSize={2}
             mode="parallax"
             scrollAnimationDuration={400}
-            renderItem={({ item, index, animationValue }) => (
+            renderItem={({ item }) => (
               <CustomItem
                 source={item}
                 scale={new AnimatedRN.Value(1)}
@@ -417,15 +395,17 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 parallaxScrollingScale: 1,
                 parallaxAdjacentItemScale: 0.5,
                 parallaxScrollingOffset: 10,
-              },
+              }
             )}
           />
         </View>
 
-        <CardOverlayBack
+        {/*BACK SIDE*/}
+        <CardOverlay
           price={price}
           currencySymbol={currencySymbol}
           timeSince={timeSince}
+          cardStyle={styles.cardBackground2}
         >
           <Text style={styles.title}>{item.Title}</Text>
           <View style={styles.sellerInfoBox}>
@@ -576,14 +556,16 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
               >
                 Tags:
               </Text>
-              <View style={styles.tagColumn}>
-                {item.tags &&
-                  item.tags.map((tag, index) => (
-                    <Text key={index} style={styles.tagText}>
-                      {tag}
-                    </Text>
-                  ))}
-              </View>
+              <ScrollView style={styles.tagColumn}>
+                <Pressable>
+                  {item.tags &&
+                    item.tags.map((tag, index) => (
+                      <Text key={index} style={styles.tagText}>
+                        {tag}
+                      </Text>
+                    ))}
+                </Pressable>
+              </ScrollView>
             </View>
           </View>
 
@@ -596,7 +578,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
           </ScrollView>
 
           <LikeButton isLiked={isLiked} onLikePress={handleLikePress} />
-        </CardOverlayBack>
+        </CardOverlay>
       </FlipCard>
 
       {/* Delete Confirmation Modal */}
@@ -944,8 +926,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     bottom: '0%',
     width: '100%',
-    height: '80%',
-    justifyContent: 'center',
+    height: '70%',
   },
   tagText: {
     fontSize: 12,

@@ -1,11 +1,11 @@
 import { memo } from 'react';
-import BouncePulse from './BouncePulse';
+import { StyleSheet } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   withTiming,
 } from 'react-native-reanimated';
-import { StyleSheet } from 'react-native';
 import { screenHeight } from '../../constants/ScreenDimensions.js';
+import BouncePulse from './BouncePulse';
 
 export const CustomRefreshControl = memo(({ refreshing, scrollY }) => {
   const bouncePulseStyle = useAnimatedStyle(() => {

@@ -10,16 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Animated, {
-  runOnJS,
-  useAnimatedGestureHandler,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
-import LocationSlider, {
-  handleLocationPress,
-} from '../components/LocationSlider';
+import { useSharedValue, withTiming } from 'react-native-reanimated';
+import LocationSlider from '../components/LocationSlider';
 import NoListings from '../components/noListings';
 import NoWifi from '../components/noWifi';
 import AndroidSwiperComponent from '../components/swipers/AndroidSwiperComponent.js';
@@ -27,6 +19,7 @@ import IOSSwiperComponent from '../components/swipers/IOSSwiperComponent.js';
 import TagDrawer, { SwipeArea } from '../components/TagDrawer.js';
 import TopBar from '../components/TopBarHome.js';
 import BouncePulse from '../components/visuals/BouncePulse.js';
+import { CustomRefreshControl } from '../components/visuals/CustomRefreshControl';
 import { serverIp } from '../config.js';
 import Colors from '../constants/Colors';
 import {
@@ -40,7 +33,6 @@ import {
   getLocationWithRetry,
 } from '../constants/Utilities';
 import * as Settings from '../hooks/UserSettings.js';
-import { CustomRefreshControl } from '../components/visuals/CustomRefreshControl';
 
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);

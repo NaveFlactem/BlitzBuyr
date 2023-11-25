@@ -3,12 +3,20 @@ import { FlatList } from 'react-native';
 import Listing from '../Listing';
 
 const AndroidSwiperComponent = memo(
-  ({swiperRef, listings, refreshControl, removeListing, userLocation, onScroll }) => {
+  ({
+    swiperRef,
+    listings,
+    refreshControl,
+    removeListing,
+    userLocation,
+    onScroll,
+  }) => {
     const renderItem = ({ item }) => (
       <Listing
         item={item}
         removeListing={removeListing}
         userLocation={userLocation}
+        swiperRef={swiperRef}
       />
     );
 
@@ -31,7 +39,7 @@ const AndroidSwiperComponent = memo(
         refreshControl={refreshControl}
       />
     );
-  },
+  }
 );
 
 export default AndroidSwiperComponent;
