@@ -1,17 +1,17 @@
-import React, { useEffect, memo } from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import React, { memo, useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
 import Animated, {
+  useAnimatedStyle,
   useSharedValue,
-  withTiming,
+  withDelay,
   withRepeat,
   withSequence,
-  useAnimatedStyle,
-  withDelay,
-} from "react-native-reanimated";
-import Colors from "../../constants/Colors";
-import { screenWidth, screenHeight } from "../../constants/ScreenDimensions.js";
+  withTiming,
+} from 'react-native-reanimated';
+import Colors from '../../constants/Colors';
+import { screenHeight } from '../../constants/ScreenDimensions.js';
 
-const BouncePulse = memo(({ opacity }) => {
+const BouncePulse = memo((props) => {
   const translateY1 = useSharedValue(0);
   const translateY2 = useSharedValue(0);
   const translateY3 = useSharedValue(0);
@@ -20,10 +20,10 @@ const BouncePulse = memo(({ opacity }) => {
     animatedValue.value = withRepeat(
       withSequence(
         withDelay(delay, withTiming(1, { duration: 300 })),
-        withTiming(0, { duration: 300 }),
+        withTiming(0, { duration: 300 })
       ),
       -1, // infinite repeats
-      true, // reverse the animation on every second iteration
+      true // reverse the animation on every second iteration
     );
   };
 
@@ -52,7 +52,7 @@ const BouncePulse = memo(({ opacity }) => {
   });
 
   return (
-    <View style={[styles.container, { opacity: opacity }]}>
+    <View style={[styles.container, { opacity: props.opacity }]}>
       <Animated.View style={[styles.dot, animatedStyle1]} />
       <Animated.View style={[styles.dot, animatedStyle2]} />
       <Animated.View style={[styles.dot, animatedStyle3]} />
@@ -62,11 +62,11 @@ const BouncePulse = memo(({ opacity }) => {
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
-    flexDirection: "row",
-    alignItems: "center",
-    alignSelf: "center",
-    justifyContent: "center",
+    position: 'absolute',
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center',
     height: 0.1 * screenHeight,
   },
   dot: {

@@ -1,33 +1,32 @@
-/**
- * Express application for serving static files and handling API requests.
- * @module API
+/** API endpoints related to user Accounts.
+ * @module API/Accounts
  */
 
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-var bodyParser = require("body-parser");
+var bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({ extended: true })).use(bodyParser.json());
-const db = require("./db").db;
-const validator = require("validator");
+const db = require('./db').db;
+const validator = require('validator');
 
-/**
- * Authenticates a user by checking if they are registered.
+/** Authenticates a user by checking if they are registered.
  *
  * @function
  * @async
  * @name authenticateUser
  *
  * @param {string} username - The username to authenticate.
+ * @param {string} password - The password to authenticate.
  *
- * @returns {Promise<boolean>} A promise that resolves to true if the user is registered, and false otherwise.
+ * @returns {Promise<boolean>} A promise that resolves to true if the user is registered and the password is correct, and false otherwise.
  *
  * @example
  * // Usage
- * const isAuthenticated = await authenticateUser("testuser");
+ * const isAuthenticated = await authenticateUser("testuser", "password123");
  * if (isAuthenticated) {
  *   console.log("User is registered");
  * } else {
- *   console.log("User is not registered");
+ *   console.log("User is not registered or password is incorrect");
  * }
  */
 async function authenticateUser(username, password) {
@@ -35,11 +34,11 @@ async function authenticateUser(username, password) {
     // Check if user exists in the database
     const userResult = await new Promise((resolve, reject) => {
       db.get(
-        "SELECT * FROM Accounts WHERE Username = ? AND Password = ?",
+        'SELECT * FROM Accounts WHERE Username = ? AND Password = ?',
         [username, password],
         (err, row) => {
           if (err) {
-            console.error("Error querying the database:", err);
+            console.error('Error querying the database:', err);
             reject(err);
           }
           resolve(row);
@@ -50,13 +49,12 @@ async function authenticateUser(username, password) {
     // Return true if the user exists, and false otherwise
     return !!userResult;
   } catch (error) {
-    console.error("Internal Server Error:", error);
+    console.error('Internal Server Error:', error);
     return false;
   }
 }
 
-/**
- * GET request endpoint at /api/accounts for retrieving a list of accounts.
+/** GET request endpoint at /api/accounts for retrieving a list of accounts.
  *
  * @function
  * @name getAccounts
@@ -78,12 +76,12 @@ async function authenticateUser(username, password) {
  *     console.log("List of Accounts:", accountsData.Accounts);
  * }
  */
-router.get("/accounts", function (req, res) {
+router.get('/accounts', function (req, res) {
   // Query the database for a list of accounts
-  db.all("SELECT * FROM Accounts", (err, rows) => {
+  db.all('SELECT * FROM Accounts', (err, rows) => {
     if (err) {
-      console.error("Error querying the database:", err);
-      return res.status(500).json({ error: "Internal Server Error" });
+      console.error('Error querying the database:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
 
     // Respond with a JSON array of accounts
@@ -91,8 +89,7 @@ router.get("/accounts", function (req, res) {
   });
 });
 
-/**
- * Handles login requests and performs authentication.
+/** Handles login requests and performs authentication.
  *
  * @function
  * @name handleLoginRequest
@@ -120,33 +117,32 @@ router.get("/accounts", function (req, res) {
  *     console.log("Authentication failed");
  * }
  */
-router.post("/login", function (req, res) {
+router.post('/login', function (req, res) {
   const { username, password } = req.body;
 
   db.get(
-    "SELECT Username, Password FROM Accounts WHERE Username = ?",
+    'SELECT Username, Password FROM Accounts WHERE Username = ?',
     [username],
     (err, row) => {
       if (err) {
-        console.error("Error querying the database:", err);
-        return res.status(500).json({ error: "Internal Server Error" });
+        console.error('Error querying the database:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
       }
 
       if (!row) {
-        return res.status(401).json({ error: "Username not found" }); // 401 = Unauthorized
+        return res.status(401).json({ error: 'Username not found' }); // 401 = Unauthorized
       }
 
       if (password === row.Password) {
-        return res.status(200).json({ message: "Login successful" });
+        return res.status(200).json({ message: 'Login successful' });
       } else {
-        return res.status(401).json({ error: "Incorrect password" });
+        return res.status(401).json({ error: 'Incorrect password' });
       }
     }
   );
 });
 
-/**
- * Handles user registration requests and account creation.
+/** Handles user registration requests and account creation.
  *
  * @function
  * @name handleRegistrationRequest
@@ -176,71 +172,59 @@ router.post("/login", function (req, res) {
  *     console.log("Username or email already exists");
  * }
  */
-router.post("/register", (req, res) => {
+router.post('/register', (req, res) => {
   const { username, password, confirmPassword, email } = req.body;
 
   // Check if password and confirmPassword match
   if (confirmPassword !== password) {
     return res
       .status(400)
-      .json({ error: "Password and confirm password are not equal" });
+      .json({ error: 'Password and confirm password are not equal' });
   }
 
   // Validate an email address
   if (!validator.isEmail(email)) {
-    return res.status(400).json({ error: "Email is not valid" });
+    return res.status(400).json({ error: 'Email is not valid' });
   }
 
   db.get(
-    "SELECT Username, Email FROM Accounts WHERE Username = ? OR Email = ?",
+    'SELECT Username, Email FROM Accounts WHERE Username = ? OR Email = ?',
     [username, email],
     (err, row) => {
       if (err) {
-        console.error("Error checking username availability:", err);
-        return res.status(500).json({ error: "Internal Server Error" });
+        console.error('Error checking username availability:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
       }
 
       if (row) {
         return res.status(409).json({
           error: `${
-            row.Username == username ? "Username" : "Email"
+            row.Username == username ? 'Username' : 'Email'
           } already exists`,
         }); // 409 = Conflict
       } else {
         // WIP: Consider hashing and/or salting the password for security.
         db.run(
-          "INSERT INTO Accounts (Username, Password, Email) VALUES (?, ?, ?)",
+          'INSERT INTO Accounts (Username, Password, Email) VALUES (?, ?, ?)',
           [username, password, email],
           (err) => {
             if (err) {
-              console.error("Error registering the account:", err);
-              return res.status(500).json({ error: "Internal Server Error" });
+              console.error('Error registering the account:', err);
+              return res.status(500).json({ error: 'Internal Server Error' });
             }
           }
         );
 
-        // create new profile for the account
-        db.run(
-          "INSERT INTO Profiles (Username) VALUES (?)",
-          [username],
-          (err) => {
-            if (err) {
-              console.error("Error creating a new profile:", err);
-              return res.status(500).json({ error: "Internal Server Error" });
-            }
-            return res.status(201).json({
-              message: "Account created",
-              username: username,
-            });
-          }
-        );
+        return res.status(201).json({
+          message: 'Account created',
+          username: username,
+        });
       }
     }
   );
 });
 
-/**
- * Handles deleting of accounts.
+/** Handles deleting of accounts.
  *
  * @function
  * @name handleDeleteAccounts
@@ -266,36 +250,36 @@ router.post("/register", (req, res) => {
  *     console.log("Error deleting account");
  * }
  */
-router.delete("/deleteaccount", function (req, res) {
+router.delete('/deleteaccount', function (req, res) {
   const { username, password } = req.query;
 
   // Check if both username and password are provided
   if (!username || !password) {
     return res
       .status(400)
-      .json({ error: "Both username and password are required" });
+      .json({ error: 'Both username and password are required' });
   }
 
   // Validate the username and password
   db.get(
-    "SELECT Username, Password FROM Accounts WHERE Username = ?",
+    'SELECT Username, Password FROM Accounts WHERE Username = ?',
     [username],
     (err, row) => {
       if (err) {
-        console.error("Error querying the database:", err);
-        return res.status(500).json({ error: "Internal Server Error" });
+        console.error('Error querying the database:', err);
+        return res.status(500).json({ error: 'Internal Server Error' });
       }
 
       if (!row) {
-        return res.status(401).json({ error: "Username not found" }); // 401 = Unauthorized
+        return res.status(401).json({ error: 'Username not found' }); // 401 = Unauthorized
       }
 
       if (password === row.Password) {
         // If the password matches, delete the account
-        db.run("DELETE FROM Accounts WHERE Username = ?", [username], (err) => {
+        db.run('DELETE FROM Accounts WHERE Username = ?', [username], (err) => {
           if (err) {
             console.error(`Error deleting account ${username}:`, err);
-            return res.status(500).json({ error: "Internal Server Error" });
+            return res.status(500).json({ error: 'Internal Server Error' });
           }
 
           return res
@@ -303,7 +287,7 @@ router.delete("/deleteaccount", function (req, res) {
             .json({ message: `${username} account deleted` });
         });
       } else {
-        return res.status(401).json({ error: "Incorrect password" });
+        return res.status(401).json({ error: 'Incorrect password' });
       }
     }
   );

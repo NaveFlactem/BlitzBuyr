@@ -1,37 +1,31 @@
-import { serverIp } from "../config.js";
-import React, { Component, memo } from "react";
+import * as FileSystem from 'expo-file-system';
+import { Image } from 'expo-image';
+import * as ImageManipulator from 'expo-image-manipulator';
+import * as ImagePicker from 'expo-image-picker';
+import React, { Component, memo } from 'react';
 import {
-  View,
+  Alert,
+  Modal,
+  SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  ScrollView,
-  Dimensions,
   TextInput,
-  Alert,
-  ActivityIndicator,
-  SafeAreaView,
-  Modal,
-} from "react-native";
-import DraggableGrid from "react-native-draggable-grid";
-import * as ImagePicker from "expo-image-picker";
-import { Image } from "expo-image";
-import Colors from "../constants/Colors";
-import TopBar from "../components/visuals/TopBarGeneric.js";
-import * as SecureStore from "expo-secure-store";
-import * as ImageManipulator from "expo-image-manipulator";
-import RNPickerSelect from "react-native-picker-select";
-import BouncePulse from "../components/visuals/BouncePulse.js";
-import { getLocationWithRetry } from "../constants/Utilities";
-import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
-import {
-  tagOptions,
-  conditionOptions,
-  transactionOptions,
-  currencies,
-} from "../constants/ListingData.js";
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import DraggableGrid from 'react-native-draggable-grid';
+import RNPickerSelect from 'react-native-picker-select';
+import BouncePulse from '../components/visuals/BouncePulse.js';
+import TopBar from '../components/visuals/TopBarGeneric.js';
+import { serverIp } from '../config.js';
+import Colors from '../constants/Colors';
+import { currencies, tagOptions } from '../constants/ListingData.js';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
+import { getLocationWithRetry } from '../constants/Utilities';
+import { getStoredUsername } from './auth/Authenticate.js';
 
-const blurhash = "L5H2EC=PM+yV0g-mq.wG9c010J}I";
+const blurhash = 'L5H2EC=PM+yV0g-mq.wG9c010J}I';
 
 const LoadingView = memo(() => (
   <View style={styles.loading}>
@@ -62,11 +56,11 @@ class CreateListing extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: "",
-      description: "",
-      price: "",
-      condition: "",
-      transactionPreference: "",
+      title: '',
+      description: '',
+      price: '',
+      condition: '',
+      transactionPreference: '',
       data: [],
       selectedTags: [],
       isScrollEnabled: true,
@@ -79,8 +73,8 @@ class CreateListing extends Component {
       isTagInvalid: false,
       isMinorLoading: false,
       isLoading: false,
-      selectedCurrency: "USD $",
-      selectedCurrencySymbol: "$",
+      selectedCurrency: 'USD',
+      selectedCurrencySymbol: '$',
       showCurrencyOptions: false,
       tagsData: [...tagOptions],
       currencies: [...currencies],
@@ -100,15 +94,15 @@ class CreateListing extends Component {
    */
   destructor() {
     this.setState({
-      title: "",
-      description: "",
-      price: "",
-      condition: "",
-      transactionPreference: "",
+      title: '',
+      description: '',
+      price: '',
+      condition: '',
+      transactionPreference: '',
       data: [],
       selectedTags: [],
-      selectedCurrency: "USD $",
-      selectedCurrencySymbol: "$",
+      selectedCurrency: 'USD',
+      selectedCurrencySymbol: '$',
       tagsData: [...tagOptions],
       currencies: [...currencies],
       isTitleInvalid: false,
@@ -120,7 +114,6 @@ class CreateListing extends Component {
       isTagInvalid: false,
       isMinorLoading: false,
       isLoading: false,
-      selectedCurrency: false,
     });
   }
 
@@ -135,24 +128,24 @@ class CreateListing extends Component {
       isPriceInvalid:
         this.state.price < 0 ||
         this.state.price.length > 7 ||
-        this.state.price === "",
+        this.state.price === '',
       isTitleInvalid:
         this.state.title.length === 0 || this.state.title.length > 25,
       isDescriptionInvalid:
         this.state.description.length === 0 ||
         this.state.description.length > 500,
       isConditionInvalid: ![
-        "Excellent",
-        "Good",
-        "Fair",
-        "Poor",
-        "For Parts",
+        'Excellent',
+        'Good',
+        'Fair',
+        'Poor',
+        'For Parts',
       ].includes(this.state.condition),
       isTransactionPreferenceInvalid: ![
-        "Pickup",
-        "Meetup",
-        "Delivery",
-        "No Preference",
+        'Pickup',
+        'Meetup',
+        'Delivery',
+        'No Preference',
       ].includes(this.state.transactionPreference),
       isImageInvalid:
         this.state.data.length === 0 || this.state.data.length > 9,
@@ -185,19 +178,29 @@ class CreateListing extends Component {
   handleCreateListing = async () => {
     this.setState({ isLoading: true });
 
-    const { title, description, price, selectedTags, data } = this.state; // Destructuring state
+    const {
+      title,
+      description,
+      price,
+      selectedTags,
+      data,
+      condition,
+      transactionPreference,
+      selectedCurrency,
+      selectedCurrencySymbol,
+    } = this.state; // Destructuring state
 
     const returnCode = this.checkValidListing();
     if (returnCode !== 0) {
       this.setState({ isLoading: false });
       if (returnCode === -1) {
-        Alert.alert("Error", "Please correct the errors in the form.");
+        Alert.alert('Error', 'Please correct the errors in the form.');
       } else if (returnCode === 1) {
-        Alert.alert("No images selected", "Please select at least one image.");
+        Alert.alert('No images selected', 'Please select at least one image.');
       } else if (returnCode === 2) {
-        Alert.alert("Too many images", "Please select no more than 9 images.");
+        Alert.alert('Too many images', 'Please select no more than 9 images.');
       } else if (returnCode === 3) {
-        Alert.alert("No tags selected", "Please select at least one tag.");
+        Alert.alert('No tags selected', 'Please select at least one tag.');
       }
       return;
     }
@@ -210,7 +213,7 @@ class CreateListing extends Component {
         formData.append(`image_${index}`, {
           uri: image.uri, // The URI of the image file
           name: `image_${index}.jpg`, // The desired file name
-          type: "image/jpeg", // The content type of the file
+          type: 'image/jpeg', // The content type of the file
         });
       });
 
@@ -221,35 +224,39 @@ class CreateListing extends Component {
       const locationString = JSON.stringify({ latitude, longitude });
 
       // Append the location to the formData
-      formData.append("location", locationString);
+      formData.append('location', locationString);
 
-      console.log("Location:", latitude, longitude);
+      console.log('Location:', latitude, longitude);
 
-      formData.append("price", price);
-      formData.append("title", title);
-      formData.append("description", description);
-      formData.append("tags", JSON.stringify(selectedTags));
-      formData.append("username", await SecureStore.getItemAsync("username"));
+      formData.append('price', price);
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('tags', JSON.stringify(selectedTags));
+      formData.append('username', getStoredUsername());
+      formData.append('condition', condition);
+      formData.append('transactionPreference', transactionPreference);
+      formData.append('currency', selectedCurrency);
+      formData.append('currencySymbol', selectedCurrencySymbol);
 
-      console.log("FormData:", formData);
+      console.log('Listing Data:', formData);
       const response = await fetch(`${serverIp}/api/createlisting`, {
-        method: "POST",
+        method: 'POST',
         body: formData,
         timeout: 10000,
       });
 
       if (response.status <= 201) {
         const responseData = await response.json();
-        console.log("Listing created successfully:", responseData);
+        console.log('Listing created successfully:', responseData);
         this.destructor();
-        this.props.navigation.navigate("Home", { refresh: true });
+        this.props.navigation.navigate('Home', { refresh: true });
       } else {
-        console.error("HTTP error! Status: ", response.status);
-        Alert.alert("Error", "Failed to create listing.");
+        console.error('HTTP error! Status: ', response.status);
+        Alert.alert('Error', 'Failed to create listing.');
       }
     } catch (error) {
-      console.error("Error creating listing:", error);
-      Alert.alert("Error", "An unexpected error occurred.");
+      console.error('Error creating listing:', error);
+      Alert.alert('Error', 'An unexpected error occurred.');
     } finally {
       this.setState({ isLoading: false });
     }
@@ -271,15 +278,15 @@ class CreateListing extends Component {
     // Camera roll Permission
     const { status: libraryStatus } =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (libraryStatus !== "granted") {
-      alert("Sorry, we need camera roll permissions to make this work!");
+    if (libraryStatus !== 'granted') {
+      alert('Sorry, we need camera roll permissions to make this work!');
     }
 
     // Camera Permission
     const { status: cameraStatus } =
       await ImagePicker.requestCameraPermissionsAsync();
-    if (cameraStatus !== "granted") {
-      alert("Sorry, we need camera permissions to make this work!");
+    if (cameraStatus !== 'granted') {
+      alert('Sorry, we need camera permissions to make this work!');
     }
   };
 
@@ -290,23 +297,23 @@ class CreateListing extends Component {
    */
   handleImagePick = () => {
     Alert.alert(
-      "Select Image",
-      "Choose where to select images from:",
+      'Select Image',
+      'Choose where to select images from:',
       [
         {
-          text: "Camera",
+          text: 'Camera',
           onPress: () => this.handleCameraPick(),
         },
         {
-          text: "Photo Library",
+          text: 'Photo Library',
           onPress: () => this.handleLibraryPick(),
         },
         {
-          text: "Cancel",
-          style: "cancel",
+          text: 'Cancel',
+          style: 'cancel',
         },
       ],
-      { cancelable: true },
+      { cancelable: true }
     );
   };
 
@@ -372,7 +379,7 @@ class CreateListing extends Component {
   processSelectedImages = async (assets) => {
     // Process multiple images
     const processedImages = await Promise.all(
-      assets.map(async (asset) => this.manipulateImage(asset.uri)),
+      assets.map(async (asset) => this.manipulateImage(asset.uri))
     );
     this.setState((prevState) => ({
       data: [...prevState.data, ...processedImages.filter(Boolean)],
@@ -387,17 +394,33 @@ class CreateListing extends Component {
    */
   manipulateImage = async (uri) => {
     try {
+      const originalSize = await FileSystem.getInfoAsync(uri);
       const manipulateResult = await ImageManipulator.manipulateAsync(uri, [], {
         compress: 0.4,
         format: ImageManipulator.SaveFormat.JPEG,
       });
+      const compressedSize = await FileSystem.getInfoAsync(
+        manipulateResult.uri
+      );
+      const savedData = originalSize.size - compressedSize.size;
+
+      console.log(
+        `Original File Size for ${uri}:`,
+        (originalSize.size / (1024 * 1024)).toFixed(2),
+        'MB',
+        `compressed to :`,
+        (compressedSize.size / (1024 * 1024)).toFixed(2),
+        'MB',
+        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`
+      );
+
       return {
-        name: manipulateResult.uri.split("/").pop(),
+        name: manipulateResult.uri.split('/').pop(),
         key: String(Date.now()),
         uri: manipulateResult.uri,
       };
     } catch (error) {
-      console.error("Image processing error:", error);
+      console.error('Image processing error:', error);
       return null;
     }
   };
@@ -408,13 +431,13 @@ class CreateListing extends Component {
    * @param {Number} index - index of the photo that the user wants to delete
    */
   handleDeletePhoto = (index) => {
-    Alert.alert("Delete Photo", "Are you sure you want to delete this photo?", [
+    Alert.alert('Delete Photo', 'Are you sure you want to delete this photo?', [
       {
-        text: "Cancel",
-        style: "cancel",
+        text: 'Cancel',
+        style: 'cancel',
       },
       {
-        text: "Delete",
+        text: 'Delete',
         onPress: () => {
           this.setState((prevState) => ({
             data: prevState.data.filter((_, i) => i !== index),
@@ -482,7 +505,7 @@ class CreateListing extends Component {
   handlePriceChange = (text) => {
     const regex = /^(\d{0,6}(\.\d{2})?)$/;
 
-    if (regex.test(text) || text === "") {
+    if (regex.test(text) || text === '') {
       // If text matches the format (4 digits before decimal, 2 after) or is empty
       this.setState({ isPriceInvalid: false });
     } else {
@@ -524,7 +547,7 @@ class CreateListing extends Component {
       if (isAlreadySelected) {
         // If already selected, remove it from the array
         newSelectedTags = prevState.selectedTags.filter(
-          (tagName) => tagName !== pressedTagName,
+          (tagName) => tagName !== pressedTagName
         );
       } else {
         // If not selected, add it to the array
@@ -563,14 +586,14 @@ class CreateListing extends Component {
   renderCurrencyOptions = () => {
     return this.state.currencies.map((currency) => (
       <TouchableOpacity
-        key={currency.symbol}
+        key={currency.name}
         onPress={() =>
           this.handleCurrencySelection(currency.name, currency.symbol)
         }
       >
         <Text style={styles.currencyOption}>
-          {this.state.selectedCurrency === currency.name ? "✓ " : ""}
-          {currency.name}
+          {this.state.selectedCurrency === currency.name ? '✓ ' : ''}
+          {`${currency.name} ${currency.symbol}`}
         </Text>
       </TouchableOpacity>
     ));
@@ -613,11 +636,13 @@ class CreateListing extends Component {
 
         <View style={styles.scrollfield}>
           <ScrollView scrollEnabled={this.state.isScrollEnabled}>
+            {/* TOP BUTTON
             <TouchableOpacity onPress={this.handleCreateListing}>
               <View style={styles.createButton}>
                 <Text style={styles.buttonText}>Create Listing</Text>
               </View>
             </TouchableOpacity>
+            */}
 
             <View style={styles.rowContainer}>
               <View style={styles.rowContainer}>
@@ -626,15 +651,15 @@ class CreateListing extends Component {
                   <View style={styles.rowContainer}>
                     <Text style={styles.asterisk}> *</Text>
                     <Text style={styles.errorMessage}>
-                      {this.state.title == ""
-                        ? "Title is required"
+                      {this.state.title == ''
+                        ? 'Title is required'
                         : this.state.title.length > 25
-                          ? "Title too long"
-                          : "Must enter a valid title"}
+                        ? 'Title too long'
+                        : 'Must enter a valid title'}
                     </Text>
                   </View>
                 ) : (
-                  ""
+                  ''
                 )}
               </View>
               <Text style={styles.characterCounter}>
@@ -645,7 +670,7 @@ class CreateListing extends Component {
               ref={this.titleInput}
               style={[
                 styles.input,
-                isTitleInvalid ? { borderColor: "red", borderWidth: 1 } : null,
+                isTitleInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
               ]}
               value={this.state.title}
               onChangeText={(text) => {
@@ -663,10 +688,10 @@ class CreateListing extends Component {
                     <Text style={styles.asterisk}> *</Text>
                     <Text style={styles.errorMessage}>
                       {this.state.description.length > 500
-                        ? "Description too long"
+                        ? 'Description too long'
                         : this.state.description.length === 0
-                          ? "Description is required"
-                          : "Must enter a valid description"}
+                        ? 'Description is required'
+                        : 'Must enter a valid description'}
                     </Text>
                   </View>
                 )}
@@ -680,9 +705,9 @@ class CreateListing extends Component {
               style={[
                 styles.input,
                 styles.multilineInput,
-                (textAlign = "left"),
+                (textAlign = 'left'),
                 isDescriptionInvalid
-                  ? { borderColor: "red", borderWidth: 1 }
+                  ? { borderColor: 'red', borderWidth: 1 }
                   : null,
               ]}
               value={this.state.description}
@@ -705,97 +730,82 @@ class CreateListing extends Component {
                 <View style={styles.rowContainer}>
                   <Text style={styles.asterisk}> *</Text>
                   <Text style={styles.errorMessage}>
-                    {this.state.price == ""
-                      ? "Price is required"
+                    {this.state.price == ''
+                      ? 'Price is required'
                       : this.state.price < 0
-                        ? "Invalid price"
-                        : this.state.price.length > 7
-                          ? "Price too long"
-                          : "Must enter a valid price"}
+                      ? 'Invalid price'
+                      : this.state.price.length >= 7
+                      ? 'Price too large'
+                      : 'Must enter a valid price'}
                   </Text>
                 </View>
               ) : (
-                ""
+                ''
               )}
             </View>
 
-            <TextInput
-              ref={this.priceInput}
-              style={[
-                styles.input,
-                isPriceInvalid ? { borderColor: "red", borderWidth: 1 } : null,
-              ]}
-              value={this.state.price}
-              onChangeText={(text) => {
-                this.setState({ price: text, isPriceInvalid: false });
-                this.handlePriceChange(text);
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginLeft: 20,
               }}
-              keyboardType="numeric"
-              returnKeyType="done"
-              placeholder={`${this.state.selectedCurrencySymbol}0.00`}
-              maxLength={9}
-            />
-            <View style={styles.currencyButtonContainer}>
-              <TouchableOpacity
-                onPress={() => this.setState({ showCurrencyOptions: true })}
-              >
-                <View style={styles.currencyButton}>
-                  <Text style={styles.currencyButtonText}>
-                    {this.state.selectedCurrency}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              {this.state.showCurrencyOptions && (
-                <Modal
-                  visible={this.state.showCurrencyOptions}
-                  animationType="slide"
+            >
+              <View style={{ ...styles.currencyButtonContainer }}>
+                <TouchableOpacity
+                  onPress={() => this.setState({ showCurrencyOptions: true })}
                 >
-                  <View style={styles.modalContent}>
-                    {this.renderCurrencyOptions()}
+                  <View style={styles.currencyButton}>
+                    <Text style={styles.currencyButtonText}>
+                      {this.state.selectedCurrency}{' '}
+                      {this.state.selectedCurrencySymbol}
+                    </Text>
                   </View>
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.setState({ showCurrencyOptions: false })
-                    }
+                </TouchableOpacity>
+                {this.state.showCurrencyOptions && (
+                  <Modal
+                    visible={this.state.showCurrencyOptions}
+                    animationType="slide"
                   >
-                    <Text style={styles.closeButton}>Close</Text>
-                  </TouchableOpacity>
-                </Modal>
-              )}
-            </View>
-
-            <View style={styles.rowContainer}>
-              <Text style={styles.label}>Condition</Text>
-              {isConditionInvalid ? (
-                <View style={styles.rowContainer}>
-                  <Text style={styles.asterisk}> *</Text>
-                  <Text style={styles.errorMessage}>
-                    Must select a condition
-                  </Text>
-                </View>
-              ) : (
-                ""
-              )}
-            </View>
-            <View style={styles.pickerStyle}>
-              <RNPickerSelect
-                selectedValue={this.state.condition}
-                onValueChange={(itemValue, itemIndex) => {
-                  this.setState({ condition: itemValue });
-                  this.setState({ isConditionInvalid: false });
-                }}
-                items={[
-                  { label: "Excellent", value: "Excellent" },
-                  { label: "Good", value: "Good" },
-                  { label: "Fair", value: "Fair" },
-                  { label: "Poor", value: "Poor" },
-                  { label: "For Parts", value: "For Parts" },
+                    <View style={styles.modalContent}>
+                      {this.renderCurrencyOptions()}
+                    </View>
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.setState({ showCurrencyOptions: false })
+                      }
+                    >
+                      <Text style={styles.closeButton}>Close</Text>
+                    </TouchableOpacity>
+                  </Modal>
+                )}
+              </View>
+              <TextInput
+                ref={this.priceInput}
+                style={[
+                  styles.input,
+                  { width: '94.5%', marginLeft: -101.5 },
+                  isPriceInvalid
+                    ? { borderColor: 'red', borderWidth: 1 }
+                    : null,
                 ]}
+                value={this.state.price}
+                onChangeText={(text) => {
+                  this.setState({ price: text, isPriceInvalid: false });
+                  this.handlePriceChange(text);
+                }}
+                keyboardType="numeric"
+                returnKeyType="done"
+                placeholder={`0.00`}
+                maxLength={9}
               />
             </View>
 
+            {/* TRANSACTION PREFERENCE*/}
             <View style={styles.rowContainer}>
-              <Text style={styles.label}>Transaction Preference</Text>
+              <Text style={{ ...styles.label, marginBottom: 0 }}>
+                Transaction Preference
+              </Text>
               {isTransactionPreferenceInvalid ? (
                 <View style={styles.rowContainer}>
                   <Text style={styles.asterisk}> *</Text>
@@ -804,7 +814,7 @@ class CreateListing extends Component {
                   </Text>
                 </View>
               ) : (
-                ""
+                ''
               )}
             </View>
             <View style={styles.pickerStyle}>
@@ -815,10 +825,43 @@ class CreateListing extends Component {
                   this.setState({ isTransactionPreferenceInvalid: false });
                 }}
                 items={[
-                  { label: "Pickup", value: "Pickup" },
-                  { label: "Meetup", value: "Meetup" },
-                  { label: "Delivery", value: "Delivery" },
-                  { label: "No Preference", value: "No Preference" },
+                  { label: 'Pickup', value: 'Pickup' },
+                  { label: 'Meetup', value: 'Meetup' },
+                  { label: 'Delivery', value: 'Delivery' },
+                  { label: 'No Preference', value: 'No Preference' },
+                ]}
+              />
+            </View>
+
+            {/* ITEM CONDITON */}
+            <View style={styles.rowContainer}>
+              <Text style={{ ...styles.label, marginTop: 10, marginBottom: 0 }}>
+                Condition
+              </Text>
+              {isConditionInvalid ? (
+                <View style={styles.rowContainer}>
+                  <Text style={styles.asterisk}> *</Text>
+                  <Text style={styles.errorMessage}>
+                    Must select a condition
+                  </Text>
+                </View>
+              ) : (
+                ''
+              )}
+            </View>
+            <View style={{ ...styles.pickerStyle }}>
+              <RNPickerSelect
+                selectedValue={this.state.condition}
+                onValueChange={(itemValue, itemIndex) => {
+                  this.setState({ condition: itemValue });
+                  this.setState({ isConditionInvalid: false });
+                }}
+                items={[
+                  { label: 'Excellent', value: 'Excellent' },
+                  { label: 'Good', value: 'Good' },
+                  { label: 'Fair', value: 'Fair' },
+                  { label: 'Poor', value: 'Poor' },
+                  { label: 'For Parts', value: 'For Parts' },
                 ]}
               />
             </View>
@@ -847,7 +890,7 @@ class CreateListing extends Component {
             <View
               style={[
                 styles.imageField,
-                isImageInvalid ? { borderColor: "red", borderWidth: 1 } : null,
+                isImageInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
               ]}
             >
               <View style={styles.innerField}>
@@ -875,7 +918,7 @@ class CreateListing extends Component {
             <ScrollView
               style={[
                 styles.tagField,
-                isTagInvalid ? { borderColor: "red", borderWidth: 1 } : null,
+                isTagInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
               ]}
             >
               <View>
@@ -933,43 +976,43 @@ export default CreateListing;
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    width: "100%",
+    width: '100%',
     marginTop: 0,
     backgroundColor: Colors.BB_bone,
   },
   scrollfield: {
     top: 0.08 * screenHeight,
-    height: "auto",
+    height: 'auto',
     backgroundColor: Colors.BB_bone,
   },
   buttonText2: {
     marginTop: 10,
     color: Colors.black,
     fontSize: 22,
-    alignSelf: "center",
-    fontWeight: "bold",
+    alignSelf: 'center',
+    fontWeight: 'bold',
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: Colors.white,
   },
   minorLoadingContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "transparent",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
   },
   imageField: {
-    alignSelf: "center",
-    width: "95%",
+    alignSelf: 'center',
+    width: '95%',
     height: 0.95 * screenWidth,
     backgroundColor: Colors.white,
     borderRadius: 20,
     ...Platform.select({
       ios: {
-        shadowColor: "gray",
+        shadowColor: 'gray',
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity: 0.9,
         shadowRadius: 2,
@@ -980,28 +1023,28 @@ const styles = StyleSheet.create({
     }),
   },
   deleteButton: {
-    position: "absolute",
-    alignContent: "center",
-    justifyContent: "center",
+    position: 'absolute',
+    alignContent: 'center',
+    justifyContent: 'center',
     width: 20,
     height: 20,
     top: 2,
     right: 2,
-    backgroundColor: "rgba(255, 255, 255, 0.7)",
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
     borderRadius: 12,
     zIndex: 2,
-    textAlign: "center",
+    textAlign: 'center',
   },
   deleteButtonText: {
-    color: "red",
-    fontWeight: "bold",
-    textAlign: "center",
-    alignSelf: "center",
+    color: 'red',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    alignSelf: 'center',
   },
   ///////////////
   tagField: {
-    alignSelf: "center",
-    width: "95%",
+    alignSelf: 'center',
+    width: '95%',
     height: 0.4 * screenHeight,
     backgroundColor: Colors.white,
     borderRadius: 20,
@@ -1009,7 +1052,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     ...Platform.select({
       ios: {
-        shadowColor: "#000",
+        shadowColor: '#000',
         shadowOffset: {
           width: 0,
           height: 2,
@@ -1023,8 +1066,8 @@ const styles = StyleSheet.create({
     }),
   },
   tagRowContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     marginBottom: 10,
     marginTop: 10,
   },
@@ -1032,14 +1075,14 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     borderRadius: 20,
-    alignContent: "center",
-    justifyContent: "center",
-    textAlign: "center",
-    height: 0.08 * screenHeight,
+    alignContent: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    height: 0.075 * screenHeight,
     width: 0.3 * screenWidth,
     ...Platform.select({
       ios: {
-        shadowColor: "gray",
+        shadowColor: 'gray',
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity: 0.9,
         shadowRadius: 2,
@@ -1049,8 +1092,8 @@ const styles = StyleSheet.create({
   tagText: {
     color: Colors.white,
     fontSize: 18,
-    alignSelf: "center",
-    fontWeight: "bold",
+    alignSelf: 'center',
+    fontWeight: 'bold',
     ...Platform.select({
       ios: {
         shadowColor: Colors.black,
@@ -1064,34 +1107,34 @@ const styles = StyleSheet.create({
     }),
   },
   rhombus: {
-    alignSelf: "center",
-    position: "absolute",
+    alignSelf: 'center',
+    position: 'absolute',
     width: 0.055 * screenHeight,
     aspectRatio: 1,
     backgroundColor: Colors.BB_darkPink,
     opacity: 0.15,
-    transform: [{ rotate: "45deg" }],
+    transform: [{ rotate: '45deg' }],
   },
   tagSelected: {
-    alignSelf: "center",
+    alignSelf: 'center',
     backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 20,
-    height: "100%",
-    width: "100%",
-    position: "absolute",
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
   },
   ///////////////////////////
   innerField: {
     margin: 10,
     marginTop: 20,
-    width: "95%",
-    height: "95%",
+    width: '95%',
+    height: '95%',
   },
   itemContainer: {
-    width: "33%",
-    height: "33%",
-    alignContent: "center",
-    justifyContent: "center",
+    width: '33%',
+    height: '33%',
+    alignContent: 'center',
+    justifyContent: 'center',
   },
   item: {
     marginTop: 10,
@@ -1101,7 +1144,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.BB_darkRedPurple,
     ...Platform.select({
       ios: {
-        shadowColor: "gray",
+        shadowColor: 'gray',
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity: 0.9,
         shadowRadius: 2,
@@ -1110,35 +1153,35 @@ const styles = StyleSheet.create({
         elevation: 10,
       },
     }),
-    backgroundColor: "red",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 10,
   },
   image: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
     borderRadius: 8,
   },
   container: {
     flex: 1,
     paddingTop: 50, //top of page
     padding: 30, //all around
-    backgroundColor: "#D6447F",
+    backgroundColor: '#D6447F',
   },
   createButton: {
     marginTop: 20,
-    alignSelf: "center",
+    alignSelf: 'center',
     width: screenWidth * 0.4,
     backgroundColor: Colors.BB_darkRedPurple,
     padding: 5,
     borderRadius: 10,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     height: 36,
     width: 150,
     ...Platform.select({
       ios: {
-        shadowColor: "gray",
+        shadowColor: 'gray',
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity: 0.9,
         shadowRadius: 2,
@@ -1151,21 +1194,21 @@ const styles = StyleSheet.create({
 
   label: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 10,
-    color: "black",
+    color: 'black',
     marginTop: 20,
     left: 0.05 * screenWidth,
   },
   asterisk: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "red",
+    fontWeight: 'bold',
+    color: 'red',
     left: 0.05 * screenWidth,
   },
   errorMessage: {
     fontSize: 12,
-    color: "red",
+    color: 'red',
     marginLeft: 10,
     top: 0.008 * screenHeight,
     left: 0.05 * screenWidth,
@@ -1175,14 +1218,14 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: Colors.BB_black,
     borderRadius: 10,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     opacity: 0.9,
-    marginBottom: 10,
-    width: "90%",
-    left: "5%",
+    //marginBottom: 10,
+    width: '90%',
+    left: '5%',
     ...Platform.select({
       ios: {
-        shadowColor: "gray",
+        shadowColor: 'gray',
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity: 0.9,
         shadowRadius: 2,
@@ -1191,34 +1234,34 @@ const styles = StyleSheet.create({
         elevation: 10,
       },
     }),
-    textAlign: "center",
-    color: "black",
+    textAlign: 'center',
+    color: 'black',
   },
   multilineInput: {
     height: 120,
   },
   pickerStyle: {
-    bottomMargin: 10,
+    //bottomMargin: 10,
     height: 50,
     left: 0.05 * screenWidth,
-    width: "40%",
+    width: '45%',
     color: Colors.white,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   button: {
     width: 150,
     height: 36,
     backgroundColor: Colors.BB_darkRedPurple,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 30,
-    alignSelf: "center",
+    alignSelf: 'center',
     borderRadius: 10,
     marginTop: 20,
     borderColor: Colors.black,
     ...Platform.select({
       ios: {
-        shadowColor: "gray",
+        shadowColor: 'gray',
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity: 0.9,
         shadowRadius: 2,
@@ -1230,65 +1273,67 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 18,
-    color: "white",
-    alignSelf: "center",
+    color: 'white',
+    alignSelf: 'center',
   },
 
   rowContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   characterCounter: {
     fontSize: 12,
-    color: "black",
-    position: "absolute",
+    color: 'black',
+    position: 'absolute',
     right: 0.05 * screenWidth,
   },
   loading: {
     height: screenHeight,
     width: screenWidth,
-    position: "absolute",
-    backgroundColor: "rgba(0,0,0,0.2)",
-    alignItems: "center",
-    justifyContent: "center",
+    position: 'absolute',
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
     zIndex: 1,
   },
   spacer: {
     height: 0.15 * screenHeight,
   },
   currencyButtonContainer: {
-    alignItems: "center",
-    marginTop: 20,
+    alignItems: 'center',
+    zIndex: 2,
+    //marginTop: 20,
   },
   currencyButton: {
     width: 100,
-    height: 36,
+    height: 40,
     backgroundColor: Colors.BB_darkRedPurple,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 10,
-    borderColor: "black",
+    borderColor: 'black',
+    //marginTop: -29.5
   },
   currencyButtonText: {
     fontSize: 18,
-    color: "white",
-    alignSelf: "center",
+    color: 'white',
+    alignSelf: 'center',
   },
   modalContent: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: Colors.BB_bone,
   },
   currencyOption: {
     fontSize: 24,
-    color: "black",
+    color: 'black',
     marginVertical: 10,
   },
   closeButton: {
     fontSize: 24,
-    color: "black",
+    color: 'black',
     bottom: 0.1 * screenHeight,
-    textAlign: "center",
+    textAlign: 'center',
   },
 });

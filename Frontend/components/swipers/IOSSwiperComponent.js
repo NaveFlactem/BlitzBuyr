@@ -1,27 +1,37 @@
-import React from "react";
-import Swiper from "react-native-swiper";
-import { memo } from "react";
-import Listing from "../Listing";
+import React, { memo } from 'react';
+import Swiper from 'react-native-swiper';
+import Listing from '../Listing';
+import BouncePulse from '../visuals/BouncePulse';
+import { FlatList } from 'react-native';
 
 const IOSSwiperComponent = memo(
-  ({ swiperRef, listings, removeListing, userLocation }) => {
+  ({ swiperRef, listings, refreshControl, removeListing, userLocation, onScroll }) => {
+    const renderItem = ({ item }) => (
+      <Listing
+        item={item}
+        removeListing={removeListing}
+        userLocation={userLocation}
+      />
+    );
+
+    const keyExtractor = (item) => item.ListingId.toString();
+
     return (
-      <Swiper
+      <FlatList
         ref={swiperRef}
-        loop={false}
-        horizontal={false}
-        showsPagination={false}
-        showsButtons={false}
-      >
-        {listings.map((item) => (
-          <Listing
-            key={item.ListingId}
-            item={item}
-            removeListing={removeListing}
-            userLocation={userLocation}
-          />
-        ))}
-      </Swiper>
+        initialNumToRender={1}
+        maxToRenderPerBatch={1}
+        windowSize={2}
+        decelerationRate="normal"
+        disableIntervalMomentum={true}
+        pagingEnabled={true}
+        removeClippedSubviews={true}
+        data={listings}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        refreshControl={refreshControl}
+        onScroll={onScroll}
+      />
     );
   },
 );

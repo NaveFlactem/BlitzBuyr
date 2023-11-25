@@ -1,28 +1,27 @@
-import { serverIp } from "../../config.js";
-import { useEffect } from "react";
-import * as SecureStore from "expo-secure-store";
-import { StyleSheet } from "react-native";
-import Colors from "../../constants/Colors";
-import { View, Image } from "react-native";
-import { Asset } from "expo-asset";
-import * as Settings from "../../hooks/UserSettings.js";
+import { Asset } from 'expo-asset';
+import * as SecureStore from 'expo-secure-store';
+import { useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { serverIp } from '../../config.js';
+import Colors from '../../constants/Colors';
+import * as Settings from '../../hooks/UserSettings.js';
 
 const assetsToPreload = [
-  require("../../assets/blitzbuyr_name_logo.png"),
-  require("../../assets/blitzbuyr_name_logo.png"),
-  require("../../assets/blitzbuyr_name_transparent_horizontal.png"),
-  require("../../assets/blitzbuyr_name_transparent.png"),
-  require("../../assets/blitzbuyr_name.png"),
-  require("../../assets/icon_background_transparent_upright.png"),
-  require("../../assets/icon_background_transparent_upright_mini.png"),
-  require("../../assets/icon_background_transparent.png"),
-  require("../../assets/icon_transparent_background_filled_upright.png"),
-  require("../../assets/icon_transparent_background_filled_upright_mini.png"),
-  require("../../assets/icon_transparent_background_filled.png"),
-  require("../../assets/icon_transparent.png"),
-  require("../../assets/icon.png"),
-  require("../../assets/no_wifi_icon_transparent.png"),
-  require("../../assets/card_background.png"),
+  require('../../assets/blitzbuyr_name_logo.png'),
+  require('../../assets/blitzbuyr_name_logo.png'),
+  require('../../assets/blitzbuyr_name_transparent_horizontal.png'),
+  require('../../assets/blitzbuyr_name_transparent.png'),
+  require('../../assets/blitzbuyr_name.png'),
+  require('../../assets/icon_background_transparent_upright.png'),
+  require('../../assets/icon_background_transparent_upright_mini.png'),
+  require('../../assets/icon_background_transparent.png'),
+  require('../../assets/icon_transparent_background_filled_upright.png'),
+  require('../../assets/icon_transparent_background_filled_upright_mini.png'),
+  require('../../assets/icon_transparent_background_filled.png'),
+  require('../../assets/icon_transparent.png'),
+  require('../../assets/icon.png'),
+  require('../../assets/no_wifi_icon_transparent.png'),
+  require('../../assets/card_background.png'),
 ];
 
 let storedUsername;
@@ -34,17 +33,17 @@ const getStoredPassword = () => storedPassword;
 const setStoredCredentials = async (username, password) => {
   storedUsername = username;
   storedPassword = password;
-  await SecureStore.setItemAsync("username", username);
-  await SecureStore.setItemAsync("password", password);
+  await SecureStore.setItemAsync('username', username);
+  await SecureStore.setItemAsync('password', password);
 };
 
 const clearStoredCredentials = async () => {
   try {
-    await SecureStore.deleteItemAsync("username");
-    await SecureStore.deleteItemAsync("password");
-    console.log("Stored credentials cleared.");
+    await SecureStore.deleteItemAsync('username');
+    await SecureStore.deleteItemAsync('password');
+    console.log('Stored credentials cleared.');
   } catch (error) {
-    console.error("Error clearing stored credentials:", error);
+    console.error('Error clearing stored credentials:', error);
   }
 };
 
@@ -64,12 +63,12 @@ const AuthenticateScreen = ({ navigation }) => {
   useEffect(() => {
     const loadSettings = async () => {
       const settings = await Settings.getUserSettings();
-      console.log("User settings:", settings);
+      console.log('User settings:', settings);
     };
 
     const checkStoredCredentials = async () => {
-      storedUsername = await SecureStore.getItemAsync("username");
-      storedPassword = await SecureStore.getItemAsync("password");
+      storedUsername = await SecureStore.getItemAsync('username');
+      storedPassword = await SecureStore.getItemAsync('password');
 
       if (storedUsername && storedPassword) {
         // Stored credentials exist, use them for login
@@ -79,9 +78,9 @@ const AuthenticateScreen = ({ navigation }) => {
         };
 
         const response = await fetch(`${serverIp}/api/login`, {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify(loginData),
         });
@@ -90,13 +89,13 @@ const AuthenticateScreen = ({ navigation }) => {
 
         if (response.status <= 201) {
           loadSettings();
-          console.log("Response data:", responseData);
-          navigation.navigate("BottomNavOverlay");
+          console.log('Response data:', responseData);
+          navigation.navigate('BottomNavOverlay');
         } else {
-          navigation.navigate("Login");
+          navigation.navigate('Login');
         }
       } else {
-        navigation.navigate("Login");
+        navigation.navigate('Login');
       }
     };
 
@@ -110,8 +109,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.BB_darkRedPurple,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

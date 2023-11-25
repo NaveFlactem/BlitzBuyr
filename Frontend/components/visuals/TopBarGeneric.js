@@ -1,8 +1,8 @@
-import React from "react";
-import { View, Image, Dimensions, StyleSheet, Platform } from "react-native";
-import { memo } from "react";
-import Colors from "../../constants/Colors";
-import { screenWidth, screenHeight } from "../../constants/ScreenDimensions.js";
+import React from 'react';
+import { View, Image, Dimensions, StyleSheet, Platform } from 'react-native';
+import { memo } from 'react';
+import Colors from '../../constants/Colors';
+import { screenWidth, screenHeight } from '../../constants/ScreenDimensions.js';
 
 const styles = StyleSheet.create({
   logo: {
@@ -20,15 +20,15 @@ const styles = StyleSheet.create({
     }),
   },
   topBar: {
-    position: "absolute",
+    position: 'absolute',
     height: 0.09 * screenHeight,
     width: screenWidth,
     backgroundColor: Colors.BB_darkRedPurple,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     borderBottomWidth: 3,
     borderColor:
-      Platform.OS == "ios" ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.3)",
+      Platform.OS == 'ios' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.3)',
     ...Platform.select({
       ios: {
         shadowColor: Colors.black,
@@ -46,7 +46,7 @@ const TopBar = memo(function TopBar() {
     <View style={styles.topBar}>
       <Image
         style={styles.logo}
-        source={require("../../assets/blitzbuyr_name_logo.png")}
+        source={require('../../assets/blitzbuyr_name_logo.png')}
       />
     </View>
   );

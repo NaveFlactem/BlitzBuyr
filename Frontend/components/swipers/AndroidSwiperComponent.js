@@ -1,34 +1,45 @@
-import React from "react";
-import Swiper from "react-native-swiper";
-import { memo } from "react";
-import { Image } from "expo-image";
-import Listing from "../Listing";
+import React, { memo } from 'react';
+import { FlatList } from 'react-native';
+import Listing from '../Listing';
 
 const AndroidSwiperComponent = memo(
-  ({ swiperRef, listings, refreshControl, removeListing, userLocation }) => {
-    return (
-      <Swiper
-        ref={swiperRef}
-        loop={false}
-        horizontal={false}
-        showsPagination={false}
-        showsButtons={false}
-        refreshControl={refreshControl}
-      >
-        {listings.map((item, listIndex) => {
-          Image.prefetch(item.images);
-          return (
-            <Listing
-              key={item.ListingId}
-              item={item}
-              removeListing={removeListing}
-              userLocation={userLocation}
-            />
-          );
-        })}
-      </Swiper>
+  ({
+    swiperRef,
+    listings,
+    refreshControl,
+    removeListing,
+    userLocation,
+    onScroll,
+  }) => {
+    const renderItem = ({ item }) => (
+      <Listing
+        item={item}
+        removeListing={removeListing}
+        userLocation={userLocation}
+        swiperRef={swiperRef}
+      />
     );
-  },
+
+    const keyExtractor = (item) => item.ListingId.toString();
+
+    return (
+      <FlatList
+        ref={swiperRef}
+        initialNumToRender={1}
+        maxToRenderPerBatch={1}
+        windowSize={2}
+        decelerationRate="normal"
+        disableIntervalMomentum={true}
+        pagingEnabled={true}
+        removeClippedSubviews={true}
+        data={listings}
+        onScroll={onScroll}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        refreshControl={refreshControl}
+      />
+    );
+  }
 );
 
 export default AndroidSwiperComponent;

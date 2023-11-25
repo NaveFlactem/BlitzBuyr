@@ -1,32 +1,26 @@
-import { serverIp } from "../../config.js";
-import React, { useState, useEffect } from "react";
+import React, { useState } from 'react';
 import {
-  View,
+  Alert,
+  Dimensions,
+  Image,
+  StyleSheet,
   Text,
   TextInput,
-  Button,
-  StyleSheet,
   TouchableOpacity,
-  Alert,
-  Image,
-  Dimensions,
-} from "react-native";
-import Colors from "../../constants/Colors";
-import * as SecureStore from "expo-secure-store";
-import {
-  getStoredUsername,
-  getStoredPassword,
-  setStoredCredentials,
-} from "./Authenticate.js";
+  View,
+} from 'react-native';
+import { serverIp } from '../../config.js';
+import Colors from '../../constants/Colors';
+import { setStoredCredentials } from './Authenticate.js';
 
 const LoginScreen = ({ navigation }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
 
   clearFields = () => {
-    setUsername("");
-    setPassword("");
+    setUsername('');
+    setPassword('');
   };
 
   const handleLogin = async () => {
@@ -37,9 +31,9 @@ const LoginScreen = ({ navigation }) => {
     };
 
     const response = await fetch(`${serverIp}/api/login`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(loginData),
     });
@@ -47,17 +41,17 @@ const LoginScreen = ({ navigation }) => {
     let responseData = await response.json();
 
     if (response.status <= 201) {
-      console.log("Response data:", responseData);
+      console.log('Response data:', responseData);
       await setStoredCredentials(username, password);
       clearFields();
-      navigation.navigate("BottomNavOverlay");
+      navigation.navigate('BottomNavOverlay');
     } else {
       Alert.alert(responseData.error);
     }
   };
 
   const handleCreateAccount = () => {
-    navigation.navigate("CreateAccount");
+    navigation.navigate('CreateAccount');
   };
 
   return (
@@ -67,7 +61,7 @@ const LoginScreen = ({ navigation }) => {
       ) : (
         <View style={styles.loginContainer}>
           <Image
-            source={require("../../assets/icon_transparent.png")} // Provide the correct path to your logo image
+            source={require('../../assets/icon_transparent.png')} // Provide the correct path to your logo image
             style={styles.logo} // Define a style for your logo
           />
           <TextInput
@@ -99,20 +93,20 @@ const LoginScreen = ({ navigation }) => {
   );
 };
 
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
     backgroundColor: Colors.BB_darkRedPurple,
-    alignItems: "center",
+    alignItems: 'center',
     padding: 16,
   },
   loginContainer: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: Colors.BB_pink,
     padding: 20,
     borderRadius: 10,
@@ -131,11 +125,11 @@ const styles = StyleSheet.create({
   input: {
     width: windowWidth * 0.45,
     height: windowHeight * 0.04,
-    borderColor: "gray",
+    borderColor: 'gray',
     marginBottom: 10,
     paddingHorizontal: 10,
     borderRadius: 7,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     ...Platform.select({
       ios: {
         shadowColor: Colors.black,
@@ -152,11 +146,11 @@ const styles = StyleSheet.create({
     width: windowWidth * 0.2,
     backgroundColor: Colors.BB_rangeYellow,
     padding: 5,
-    width: "100%",
+    width: '100%',
     borderColor: Colors.black,
     borderRadius: 10,
-    fontWeight: "bold",
-    shadowColor: "black",
+    fontWeight: 'bold',
+    shadowColor: 'black',
     ...Platform.select({
       ios: {
         shadowColor: Colors.black,
@@ -177,12 +171,12 @@ const styles = StyleSheet.create({
     padding: 5,
     borderColor: Colors.black,
     borderRadius: 10,
-    color: "black",
-    fontWeight: "bold",
+    color: 'black',
+    fontWeight: 'bold',
   },
   createAccountText: {
     fontSize: 8,
-    color: "white",
+    color: 'white',
   },
   logo: {
     width: 100,
