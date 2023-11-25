@@ -338,7 +338,7 @@ router.get('/ratings', function (req, res) {
 });
 
 /**
- * GET request endpoint at /api/profile for retrieving a user's profile.
+ * Handles retrieving a user's profile, including ratings, listings, and liked listings.
  *
  * @function
  * @async

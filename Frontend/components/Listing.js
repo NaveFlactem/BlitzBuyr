@@ -1,7 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
-import * as SecureStore from 'expo-secure-store';
-import React, { memo, useEffect, useState } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Animated as AnimatedRN,
   Modal,
@@ -28,7 +34,7 @@ import {
 } from '../screens/auth/Authenticate.js';
 import { parallaxLayout } from './parallax.ts';
 
-const blurhash =
+const default_blurhash =
   '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
 function getDistance(lat1, lon1, lat2, lon2) {
@@ -55,17 +61,19 @@ function getDistance(lat1, lon1, lat2, lon2) {
   return Math.floor(distanceMiles);
 }
 
-const LikeButton = ({ isLiked, onLikePress }) => {
+const LikeButton = memo(({ isLiked, onLikePress }) => {
   return (
-    <TouchableOpacity onPress={onLikePress} style={styles.likeButton}>
-      <MaterialCommunityIcons
-        name="heart"
-        size={50}
-        color={isLiked ? 'red' : 'black'}
-      />
-    </TouchableOpacity>
+    <React.Fragment>
+      <TouchableOpacity onPress={onLikePress} style={styles.likeButton}>
+        <MaterialCommunityIcons
+          name="heart"
+          size={50}
+          color={isLiked ? 'red' : 'black'}
+        />
+      </TouchableOpacity>
+    </React.Fragment>
   );
-};
+});
 
 const DeleteButton = ({ onDeletePress }) => {
   return (
@@ -114,25 +122,27 @@ const calculateFontSizeLocation = (city) => {
 
 const TimeBox = memo(({ timeSince }) => {
   return (
-    <View style={styles.timeSinceContainer}>
-      <Text style={styles.timeSinceText}>
-        {timeSince < 30
-          ? 'Just now'
-          : timeSince < 60
-          ? `${timeSince} seconds ago`
-          : timeSince < 120
-          ? `1 minute ago`
-          : timeSince < 3600
-          ? `${Math.floor(timeSince / 60)} minutes ago`
-          : timeSince < 7200
-          ? `1 hour ago`
-          : timeSince < 86400
-          ? `${Math.floor(timeSince / 3600)} hours ago`
-          : timeSince < 172800
-          ? `1 day ago`
-          : `${Math.floor(timeSince / 86400)} days ago`}
-      </Text>
-    </View>
+    <React.Fragment>
+      <View style={styles.timeSinceContainer}>
+        <Text style={styles.timeSinceText}>
+          {timeSince < 30
+            ? 'Just now'
+            : timeSince < 60
+            ? `${timeSince} seconds ago`
+            : timeSince < 120
+            ? `1 minute ago`
+            : timeSince < 3600
+            ? `${Math.floor(timeSince / 60)} minutes ago`
+            : timeSince < 7200
+            ? `1 hour ago`
+            : timeSince < 86400
+            ? `${Math.floor(timeSince / 3600)} hours ago`
+            : timeSince < 172800
+            ? `1 day ago`
+            : `${Math.floor(timeSince / 86400)} days ago`}
+        </Text>
+      </View>
+    </React.Fragment>
   );
 });
 
@@ -193,12 +203,15 @@ const CardOverlayBack = memo(
 );
 
 const MemoizedImage = memo(({ source, style, contentFit, transition }) => {
+  //console.log(`${serverIp}/img/${source.uri}`);
   return (
     <Image
-      source={{ uri: source }}
+      source={{ uri: `${serverIp}/img/${source.uri}` }}
       style={style}
       contentFit={contentFit}
       transition={transition}
+      placeholder={source.blurhash ? source.blurhash : default_blurhash}
+      cachePolicy="memory-disk"
     />
   );
 });
@@ -216,9 +229,12 @@ const CustomItem = memo(
     deleteVisible,
     origin,
   }) => {
-    const onZoomEvent = AnimatedRN.event([{ nativeEvent: { scale: scale } }], {
-      useNativeDriver: true,
-    });
+    const onZoomEvent = useCallback(
+      AnimatedRN.event([{ nativeEvent: { scale: scale } }], {
+        useNativeDriver: true,
+      }),
+      []
+    );
 
     const onZoomStateChange = (event) => {
       if (event.nativeEvent.oldState === 4) {
@@ -258,6 +274,15 @@ const CustomItem = memo(
 );
 
 const Listing = ({ item, origin, removeListing, userLocation }) => {
+  //console.log(item);
+  const prevItemRef = useRef();
+  useEffect(() => {
+    if (prevItemRef.current === item) {
+      return;
+    }
+    prevItemRef.current = item;
+  }, [item]);
+
   const navigation = useNavigation();
   const price = item.Price;
   const currencySymbol = item.CurrencySymbol;
@@ -266,26 +291,30 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
     setTimeSince(item.TimeSince);
   }, [item.TimeSince]);
   const [isLiked, setIsLiked] = useState(item.liked); // Initially KNOWN
-  const [distance, setDistance] = useState(
-    item.Latitude
-      ? getDistance(
-          item.Latitude,
-          item.Longitude,
-          userLocation.latitude,
-          userLocation.longitude
-        )
-      : 'Unknown'
-  );
+  const distance = useMemo(() => {
+    return getDistance(
+      item.Latitude,
+      item.Longitude,
+      userLocation.latitude,
+      userLocation.longitude
+    );
+  }, [
+    item.Latitude,
+    item.Longitude,
+    userLocation.latitude,
+    userLocation.longitude,
+  ]);
+
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
     origin == 'profile' && item.Username == getStoredUsername()
   );
 
-  const toggleDeleteModal = () => {
+  const toggleDeleteModal = useCallback(() => {
     setDeleteModalVisible(!isDeleteModalVisible);
-  };
+  }, [isDeleteModalVisible]);
 
-  const handleDeleteListing = async () => {
+  const handleDeleteListing = useCallback(async () => {
     try {
       const username = getStoredUsername();
       const password = getStoredPassword();
@@ -311,10 +340,10 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
     } finally {
       toggleDeleteModal(); // Close the modal
     }
-  };
+  }, []);
 
-  const handleLikePress = async () => {
-    const username = await SecureStore.getItemAsync('username');
+  const handleLikePress = useCallback(async () => {
+    const username = getStoredUsername();
     const method = isLiked ? 'DELETE' : 'POST';
     try {
       const response = await fetch(`${serverIp}/api/like`, {
@@ -333,12 +362,9 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
     } catch (error) {
       console.error('Error updating like status:', error);
     }
-  };
+  }, [isLiked]);
 
-  const arrayOfURIs = item.images.map((imageURI, index) => {
-    const modifiedURI = `${serverIp}/img/${imageURI}`;
-    return modifiedURI;
-  });
+  const images = React.useMemo(() => item.images, [item.images]);
 
   return (
     <SafeAreaView>
@@ -352,6 +378,10 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
       >
         <View style={styles.card}>
           <Carousel
+            pagingEnabled={true}
+            removeClippedSubviews={true}
+            initialNumToRender={1}
+            maxToRenderPerBatch={1}
             panGestureHandlerProps={{
               activeOffsetX: [-25, 25],
             }}
@@ -360,7 +390,8 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
             vertical={false}
             width={0.85 * screenWidth}
             height={0.75 * screenHeight}
-            data={arrayOfURIs}
+            data={images}
+            windowSize={2}
             mode="parallax"
             scrollAnimationDuration={400}
             renderItem={({ item, index, animationValue }) => (
@@ -599,7 +630,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
   );
 };
 
-export default Listing;
+export default memo(Listing);
 
 const PAGE_WIDTH = screenWidth / 2;
 //////////////////////////////////////////////////////////////////////////////////////

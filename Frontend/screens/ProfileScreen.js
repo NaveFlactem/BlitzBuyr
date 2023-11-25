@@ -55,8 +55,9 @@ const UserListingsRoute = ({ profileInfo, onPressListing }) => (
               <TouchableOpacity onPress={() => onPressListing(item)}>
                 <Image
                   source={{
-                    uri: `${serverIp}/img/${item.images[0]}`, // load the listing's first image
+                    uri: `${serverIp}/img/${item.images[0].uri}`, // load the listing's first image
                   }}
+                  placeholder={item.images[0].blurhash}
                   style={{ width: '100%', height: '100%', borderRadius: 12 }}
                 />
               </TouchableOpacity>
@@ -277,6 +278,7 @@ function ProfileScreen({ navigation, route }) {
   useBackButtonHandler(onBackPress);
 
   const onPressListing = (listingDetails) => {
+    console.log(listingDetails);
     setSelectedListing(listingDetails);
   };
 

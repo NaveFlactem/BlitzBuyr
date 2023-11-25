@@ -35,16 +35,11 @@ import {
   transactionOptions,
 } from '../constants/ListingData.js';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
-import { getLocationWithRetry } from '../constants/Utilities';
+import {
+  calculateTimeSince,
+  getLocationWithRetry,
+} from '../constants/Utilities';
 import * as Settings from '../hooks/UserSettings.js';
-
-const calculateTimeSince = (time) => {
-  const millisecondsPerHour = 3600000;
-  const now = new Date();
-  const past = new Date(time) - 8 * millisecondsPerHour;
-  const timeSince = Math.floor((now - past) / 1000);
-  return timeSince;
-};
 
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -256,7 +251,7 @@ const HomeScreen = ({ route }) => {
     console.log(selectedTransactions);
   };
 
-  const fetchListings = async () => {
+  const fetchListings = useCallback(async () => {
     console.log('Fetching listings...');
     console.log('Tags:', selectedTags);
     console.log('Distance:', distance < 510 ? distance : 'No Limit');
@@ -265,10 +260,10 @@ const HomeScreen = ({ route }) => {
     try {
       const { latitude, longitude } = userLocation;
       const mergedTags = '&tags[]=' + selectedTags.join('&tags[]=');
-      console.log(mergedTags);
       console.log('User Location:', userLocation);
       console.log('Latitude:', latitude);
       console.log('Longitude:', longitude);
+      console.log('Tags:', mergedTags);
       const username = encodeURIComponent(
         await SecureStore.getItemAsync('username')
       );
@@ -304,7 +299,7 @@ const HomeScreen = ({ route }) => {
       setHoldStateOfRefresh(false);
       setScrollY(0);
     }
-  };
+  }, [userLocation]);
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {

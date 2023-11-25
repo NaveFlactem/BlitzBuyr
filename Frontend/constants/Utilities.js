@@ -1,5 +1,13 @@
 import * as Location from 'expo-location';
 
+const calculateTimeSince = (time) => {
+  const millisecondsPerHour = 3600000;
+  const now = new Date();
+  const past = new Date(time) - 8 * millisecondsPerHour;
+  const timeSince = Math.floor((now - past) / 1000);
+  return timeSince;
+};
+
 const getLocationWithRetry = async function (retries = 20) {
   const timeout = new Promise((_, reject) =>
     setTimeout(() => reject(new Error('Timeout exceeded')), 300)
@@ -35,4 +43,4 @@ const getLocationWithRetry = async function (retries = 20) {
   }
 };
 
-export { getLocationWithRetry };
+export { getLocationWithRetry, calculateTimeSince };

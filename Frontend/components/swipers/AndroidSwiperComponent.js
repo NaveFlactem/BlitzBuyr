@@ -1,7 +1,6 @@
 import React, { memo } from 'react';
 import { FlatList } from 'react-native';
 import Listing from '../Listing';
-import BouncePulse from '../visuals/BouncePulse';
 
 const AndroidSwiperComponent = memo(
   ({ swiperRef, listings, refreshControl, removeListing, userLocation }) => {
@@ -12,6 +11,8 @@ const AndroidSwiperComponent = memo(
         userLocation={userLocation}
       />
     );
+
+    const keyExtractor = (item) => item.ListingId.toString();
 
     return (
       <FlatList
@@ -24,11 +25,8 @@ const AndroidSwiperComponent = memo(
         removeClippedSubviews={true}
         data={listings}
         renderItem={renderItem}
-        keyExtractor={(item) => item.ListingId}
+        keyExtractor={keyExtractor}
         refreshControl={refreshControl}
-        //snapToAlignment="start"
-        //snapToInterval={Dimensions.get('window').height}
-        ListEmptyComponent={<BouncePulse />}
       />
     );
   }

@@ -12,6 +12,52 @@ const multer = require('multer');
 const sharp = require('sharp');
 const { encode } = require('blurhash');
 const path = require('path');
+const { exec } = require('child_process');
+
+const encodeImageToBlurhash = async (path) => {
+  try {
+    const { data: buffer, info: metadata } = await sharp(path)
+      .raw()
+      .ensureAlpha()
+      .resize(128, 128, { fit: 'inside' })
+      .toBuffer({ resolveWithObject: true });
+
+    const { width, height } = metadata;
+    const hash = encode(new Uint8ClampedArray(buffer), width, height, 4, 4);
+    return hash;
+  } catch (err) {
+    throw new Error(`Error processing image: ${err.message}`);
+  }
+};
+
+function updateBlurhash(imagePath, filename) {
+  return new Promise((resolve, reject) => {
+    exec(
+      `node encodeImageToBlurhash.js ${String(imagePath)}`,
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error('Error updating blurhash:', error);
+          reject(error);
+        } else {
+          const hash = stdout.trim();
+          console.log('hash:', hash);
+          db.run(
+            'UPDATE Images SET BlurHash = ? WHERE ImageURI = ?',
+            [hash, filename],
+            (err) => {
+              if (err) {
+                console.error('Error updating blurhash:', err);
+                reject(err);
+              } else {
+                resolve();
+              }
+            }
+          );
+        }
+      }
+    );
+  });
+}
 
 /**
  * Storage configuration for multer to handle image uploads.
@@ -137,8 +183,7 @@ router.post('/createListing', imageUpload, async function (req, res) {
         const listingId = this.lastID;
         const componentX = req.body.componentX ?? 4;
         const componentY = req.body.componentY ?? 3;
-        //TOMMY CODE==========================================================
-        //const tags = req.body.tags || [];
+
         // Loop through tags and insert them into the "Tags" table if they don't exist
         JSON.parse(tags).forEach((tag) => {
           db.run(
@@ -183,16 +228,17 @@ router.post('/createListing', imageUpload, async function (req, res) {
             }
           );
         });
-        //END OF TOMMY CODE
+
         // Insert images into the Images table
         if (images.length > 0) {
           images.forEach(async (image) => {
-            // console.log(image);
             const imagePath = 'img/' + image.filename;
+            const hash = await encodeImageToBlurhash(imagePath, image.filename);
+            console.log('hash:', hash);
 
             db.run(
-              'INSERT INTO Images (listingId, ImageURI) VALUES (?, ?)',
-              [listingId, image.filename],
+              'INSERT INTO Images (listingId, ImageURI, BlurHash) VALUES (?, ?, ?)',
+              [listingId, image.filename, hash],
               (err) => {
                 if (err) {
                   console.error('Error querying the database:', err);
@@ -200,7 +246,6 @@ router.post('/createListing', imageUpload, async function (req, res) {
                     .status(500)
                     .json({ error: 'Internal Server Error' });
                 }
-                // console.log(`Inserted image ${image.originalname}`);
               }
             );
           });
@@ -251,6 +296,7 @@ router.get('/listings', async function (req, res) {
         Listings.*,
         GROUP_CONCAT(DISTINCT Tags.TagName) AS tags,
         GROUP_CONCAT(DISTINCT Images.ImageURI) AS images,
+        GROUP_CONCAT(DISTINCT Images.BlurHash) AS blurhashes,
         COALESCE((
           SELECT 1 
           FROM Likes 
@@ -308,10 +354,19 @@ router.get('/listings', async function (req, res) {
     // Parse the rows
     const parsedRows = rows.map((row) => {
       const { averageRating, ratingCount, ...rest } = row;
+      const images = row.images ? row.images.split(',') : [];
+      const blurhashes = row.blurhashes ? row.blurhashes.split(',') : [];
+
+      const imagesWithBlurhashes = images.map((uri, i) => {
+        return {
+          uri,
+          blurhash: blurhashes[i],
+        };
+      });
       return {
         ...rest,
         tags: row.tags ? row.tags.split(',') : [],
-        images: row.images ? row.images.split(',') : [],
+        images: imagesWithBlurhashes,
         liked: Boolean(row.liked),
         ratings: {
           averageRating: row.averageRating
@@ -612,7 +667,10 @@ getImagesFromListings = async (listingsResult, likedListingsResult) => {
     );
     const matchingImages = imagesResult
       .filter((image) => image.ListingId === listing.ListingId)
-      .map((image) => image.ImageURI);
+      .map((image) => ({
+        uri: image.ImageURI,
+        blurhash: image.BlurHash,
+      }));
 
     // Get the ratings for the listing's username
     const usernameRatings = {};

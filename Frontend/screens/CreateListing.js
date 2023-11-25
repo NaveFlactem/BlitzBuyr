@@ -248,7 +248,7 @@ class CreateListing extends Component {
       if (response.status <= 201) {
         const responseData = await response.json();
         console.log('Listing created successfully:', responseData);
-        this.destructor();
+        //this.destructor();
         this.props.navigation.navigate('Home', { refresh: true });
       } else {
         console.error('HTTP error! Status: ', response.status);
