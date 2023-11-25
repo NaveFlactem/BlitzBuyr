@@ -408,7 +408,6 @@ const HomeScreen = ({ route }) => {
 
   const onScroll = (event) => {
     scrollY.value = event.nativeEvent.contentOffset.y;
-    console.log('ScrollY:', scrollY.value);
   };
 
   const bouncePulseStyle = useAnimatedStyle(() => {
