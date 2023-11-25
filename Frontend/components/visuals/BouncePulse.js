@@ -11,7 +11,7 @@ import Animated, {
 import Colors from '../../constants/Colors';
 import { screenWidth, screenHeight } from '../../constants/ScreenDimensions.js';
 
-const BouncePulse = memo(({ opacity }) => {
+const BouncePulse = memo((props) => {
   const translateY1 = useSharedValue(0);
   const translateY2 = useSharedValue(0);
   const translateY3 = useSharedValue(0);
@@ -52,7 +52,19 @@ const BouncePulse = memo(({ opacity }) => {
   });
 
   return (
-    <View style={[styles.container, { opacity: opacity }]}>
+    <View
+      style={[
+        styles.container,
+        {
+          opacity: props.opacity || 1,
+          top: props.top || 0,
+          bottom: props.bottom || 0,
+          left: props.left || 0,
+          right: props.right || 0,
+          position: props.position || 'absolute',
+        },
+      ]}
+    >
       <Animated.View style={[styles.dot, animatedStyle1]} />
       <Animated.View style={[styles.dot, animatedStyle2]} />
       <Animated.View style={[styles.dot, animatedStyle3]} />
@@ -70,7 +82,6 @@ const styles = StyleSheet.create({
     height: 0.1 * screenHeight,
   },
   dot: {
-    top: 0.08 * screenHeight,
     backgroundColor: Colors.BB_darkRedPurple,
     width: 20,
     height: 20,

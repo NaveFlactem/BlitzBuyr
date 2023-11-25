@@ -88,7 +88,7 @@ const HomeScreen = ({ route }) => {
         // Detect left swipe
         translateX.value = Math.max(
           -screenWidth,
-          context.startX + event.translationX
+          context.startX + event.translationX,
         );
       }
     },
@@ -100,7 +100,7 @@ const HomeScreen = ({ route }) => {
       const shouldClose = translateX.value < -screenWidth * 0.65;
       translateX.value = withTiming(
         shouldClose ? -screenWidth : -screenWidth * 0.6,
-        { duration: 300 }
+        { duration: 300 },
       );
       if (shouldClose) {
         runOnJS(setIsDrawerOpen)(false);
@@ -124,7 +124,7 @@ const HomeScreen = ({ route }) => {
       const shouldOpen = translateX.value > -screenWidth * 0.9;
       translateX.value = withTiming(
         shouldOpen ? -screenWidth * 0.6 : -screenWidth,
-        { duration: 300 }
+        { duration: 300 },
       );
       if (shouldOpen) {
         runOnJS(setIsDrawerOpen)(true);
@@ -182,7 +182,7 @@ const HomeScreen = ({ route }) => {
     let newSelectedTags;
     if (isAlreadySelected) {
       newSelectedTags = selectedTags.filter(
-        (tagName) => tagName !== pressedTagName
+        (tagName) => tagName !== pressedTagName,
       );
     } else {
       newSelectedTags = [...selectedTags, pressedTagName];
@@ -208,7 +208,7 @@ const HomeScreen = ({ route }) => {
     let newSelectedConditions;
     if (isAlreadySelected) {
       newSelectedConditions = selectedConditions.filter(
-        (conditionName) => conditionName !== pressedConditionName
+        (conditionName) => conditionName !== pressedConditionName,
       );
     } else {
       newSelectedConditions = [...selectedConditions, pressedConditionName];
@@ -231,12 +231,12 @@ const HomeScreen = ({ route }) => {
     // Update the selectedTransactions state
     const pressedTransactionName = newTransactionsData[index].name;
     const isAlreadySelected = selectedTransactions.includes(
-      pressedTransactionName
+      pressedTransactionName,
     );
     let newSelectedTransactions;
     if (isAlreadySelected) {
       newSelectedTransactions = selectedTransactions.filter(
-        (transactionName) => transactionName !== pressedTransactionName
+        (transactionName) => transactionName !== pressedTransactionName,
       );
     } else {
       newSelectedTransactions = [
@@ -264,7 +264,7 @@ const HomeScreen = ({ route }) => {
       console.log('Longitude:', longitude);
       console.log('Tags:', mergedTags);
       const username = encodeURIComponent(
-        await SecureStore.getItemAsync('username')
+        await SecureStore.getItemAsync('username'),
       );
       let fetchUrl = `${serverIp}/api/listings?username=${username}&latitude=${latitude}&longitude=${longitude}`;
       if (distance < 510) fetchUrl += `&distance=${distance}`; // don't add distance on unlimited
@@ -283,7 +283,7 @@ const HomeScreen = ({ route }) => {
               ...listing,
               TimeSince: timeSince,
             };
-          })
+          }),
         );
         console.log('Listings fetched successfully');
       } else {
@@ -295,8 +295,7 @@ const HomeScreen = ({ route }) => {
       setIsLoading(false);
       setRefreshing(false);
       swiperRef.current?.scrollTo(0);
-      setHoldStateOfRefresh(false);
-      setScrollY(0);
+      scrollY = 0;
     }
   }, [userLocation]);
 
@@ -311,15 +310,15 @@ const HomeScreen = ({ route }) => {
   }, []);
 
   const [isLocationSliderVisible, setIsLocationSliderVisible] = useState(false);
-  const locationSliderHeight = useSharedValue(-300); // Start off-screen
+  const locationSliderHeight = useSharedValue(-100); // Start off-screen
 
   const handleLocationPress = () => {
     if (isLocationSliderVisible) {
-      locationSliderHeight.value = withTiming(-300); // Hide slider
+      locationSliderHeight.value = withTiming(-100, { duration: 100 }); // Hide slider
       setIsLocationSliderVisible(false);
       fetchListings();
     } else {
-      locationSliderHeight.value = withTiming(0); // Show slider
+      locationSliderHeight.value = withTiming(0, { duration: 100 }); // Show slider
       setIsLocationSliderVisible(true);
     }
   };
@@ -375,34 +374,32 @@ const HomeScreen = ({ route }) => {
     fetchListings();
   };
 
-  const [scrollY, setScrollY] = useState(0);
-  const [isHoldStateOfRefresh, setHoldStateOfRefresh] = useState(false);
+  const scrollY = useSharedValue(0);
+  refreshThreshold = 0.1 * screenHeight;
 
-  const refreshThreshold = -100; // Adjust this threshold
-
-  useEffect(() => {
-    if (scrollY <= refreshThreshold && !refreshing) {
-      setRefreshing(true);
-    }
-    if (isHoldStateOfRefresh) {
-      setScrollY(-60.5);
-    }
-  }, [scrollY, refreshing]);
-
-  useEffect(() => {
-    if (scrollY > 0) {
-      setScrollY(0);
-    }
-  });
-
-  const calculateOpacity = () => {
-    if (scrollY === 0 || scrollY === undefined) {
-      return 0;
-    }
-    let opacity = -scrollY / 100; // Adjust 100 to control the fade speed
-    opacity = Math.max(0, Math.min(opacity, 1)); // Clamp between 0 and 1
-    return opacity;
+  const onScroll = (event) => {
+    scrollY.value = event.nativeEvent.contentOffset.y;
+    console.log('ScrollY:', scrollY.value);
   };
+
+  const bouncePulseStyle = useAnimatedStyle(() => {
+    let newYPosition = -100; // Initial off-screen position
+    let newOpacity = 1;
+
+    if (refreshing) {
+      newYPosition = withTiming(0, { duration: 300 }); // Bring into view when refreshing
+    } else {
+      // Normalize and adjust opacity based on scrollY
+      const normalizedScrollY = Math.abs(scrollY.value); // Convert to positive value
+      newOpacity = Math.min(normalizedScrollY / 100, 1); // Adjust 100 to control fade speed
+      newYPosition = -100 - scrollY.value;
+    }
+
+    return {
+      transform: [{ translateY: newYPosition }],
+      opacity: newOpacity,
+    };
+  });
 
   const onRefresh = React.useCallback(() => {
     console.log('refreshing...');
@@ -411,21 +408,17 @@ const HomeScreen = ({ route }) => {
     else getUserLocation();
   }, []);
 
-  useEffect(() => {
-    console.log(`Refreshing: ${refreshing}, ScrollY: ${scrollY}`);
-  }, [refreshing, scrollY]);
-
   const debouncedFetchListings = useCallback(
     debounce(() => {
-      setHoldStateOfRefresh(true);
       fetchListings();
     }, 1000),
-    []
+    [],
   ); // Adjust debounce time as needed
 
   useEffect(() => {
     if (scrollY <= refreshThreshold && !refreshing) {
       setRefreshing(true);
+      scrollY = -60.5;
       debouncedFetchListings();
     }
   }, [scrollY, refreshing, debouncedFetchListings]);
@@ -465,9 +458,6 @@ const HomeScreen = ({ route }) => {
         }}
       />
 
-      {Platform.OS === 'ios' && (
-        <BouncePulse opacity={refreshing ? 1 : calculateOpacity()} />
-      )}
       {networkConnected ? (
         listings && listings.length > 0 ? (
           Platform.OS === 'ios' ? (
@@ -477,13 +467,10 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId)
+                    prevListings.filter((item) => item.ListingId !== listingId),
                   );
                 }}
-                onScroll={(event) => {
-                  const y = event.nativeEvent.contentOffset.y;
-                  setScrollY(y);
-                }}
+                onScroll={onScroll}
                 refreshControl={
                   <RefreshControl
                     refreshing={refreshing}
@@ -503,14 +490,17 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId)
+                    prevListings.filter((item) => item.ListingId !== listingId),
                   );
                 }}
                 refreshControl={
                   <RefreshControl
                     refreshing={refreshing}
                     onRefresh={onRefresh}
-                    progressViewOffset={60}
+                    progressViewOffset={50}
+                    progressBackgroundColor={'transparent'}
+                    colors={['transparent']}
+                    style={{ backgroundColor: 'transparent' }}
                   />
                 }
               />
@@ -567,6 +557,10 @@ const HomeScreen = ({ route }) => {
           <LocationSlider setDistance={setDistance} />
         </Animated.View>
       </PanGestureHandler>
+
+      <Animated.View style={[styles.bouncePulseContainer, bouncePulseStyle]}>
+        <BouncePulse />
+      </Animated.View>
     </SafeAreaView>
   );
 };
@@ -582,6 +576,12 @@ const styles = StyleSheet.create({
   swiperContainer: {
     height: screenHeight,
     width: screenWidth,
+  },
+  bouncePulseContainer: {
+    position: 'absolute',
+    alignSelf: 'center',
+    top: 0.08 * screenHeight,
+    alignItems: 'center',
   },
   topTap: {
     position: 'absolute',
