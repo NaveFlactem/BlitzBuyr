@@ -88,7 +88,7 @@ const HomeScreen = ({ route }) => {
         // Detect left swipe
         translateX.value = Math.max(
           -screenWidth,
-          context.startX + event.translationX,
+          context.startX + event.translationX
         );
       }
     },
@@ -100,7 +100,7 @@ const HomeScreen = ({ route }) => {
       const shouldClose = translateX.value < -screenWidth * 0.65;
       translateX.value = withTiming(
         shouldClose ? -screenWidth : -screenWidth * 0.6,
-        { duration: 300 },
+        { duration: 300 }
       );
       if (shouldClose) {
         runOnJS(setIsDrawerOpen)(false);
@@ -124,7 +124,7 @@ const HomeScreen = ({ route }) => {
       const shouldOpen = translateX.value > -screenWidth * 0.9;
       translateX.value = withTiming(
         shouldOpen ? -screenWidth * 0.6 : -screenWidth,
-        { duration: 300 },
+        { duration: 300 }
       );
       if (shouldOpen) {
         runOnJS(setIsDrawerOpen)(true);
@@ -167,88 +167,98 @@ const HomeScreen = ({ route }) => {
     }
   };
 
-  handleTagPress = (index) => {
-    // Update the tagsData state
-    const newTagsData = tagsData.map((tag, idx) => {
-      if (idx === index) {
-        return { ...tag, selected: !tag.selected };
+  const handleTagPress = useCallback(
+    (index) => {
+      // Update the tagsData state
+      const newTagsData = tagsData.map((tag, idx) => {
+        if (idx === index) {
+          return { ...tag, selected: !tag.selected };
+        }
+        return tag;
+      });
+
+      // Update the selectedTags state
+      const pressedTagName = newTagsData[index].name;
+      const isAlreadySelected = selectedTags.includes(pressedTagName);
+      let newSelectedTags;
+      if (isAlreadySelected) {
+        newSelectedTags = selectedTags.filter(
+          (tagName) => tagName !== pressedTagName
+        );
+      } else {
+        newSelectedTags = [...selectedTags, pressedTagName];
       }
-      return tag;
-    });
 
-    // Update the selectedTags state
-    const pressedTagName = newTagsData[index].name;
-    const isAlreadySelected = selectedTags.includes(pressedTagName);
-    let newSelectedTags;
-    if (isAlreadySelected) {
-      newSelectedTags = selectedTags.filter(
-        (tagName) => tagName !== pressedTagName,
-      );
-    } else {
-      newSelectedTags = [...selectedTags, pressedTagName];
-    }
+      setTagsData(newTagsData);
+      setSelectedTags(newSelectedTags);
+      console.log(selectedTags);
+    },
+    [selectedTags]
+  );
 
-    setTagsData(newTagsData);
-    setSelectedTags(newSelectedTags);
-    console.log(selectedTags);
-  };
+  const handleConditionPress = useCallback(
+    (index) => {
+      //update selectedConditions state
+      const newConditionsData = conditions.map((condition, idx) => {
+        if (idx === index) {
+          return { ...condition, selected: !condition.selected };
+        }
+        return condition;
+      });
 
-  handleConditionPress = (index) => {
-    //update selectedConditions state
-    const newConditionsData = conditions.map((condition, idx) => {
-      if (idx === index) {
-        return { ...condition, selected: !condition.selected };
+      // Update the selectedConditions state
+      const pressedConditionName = newConditionsData[index].name;
+      const isAlreadySelected =
+        selectedConditions.includes(pressedConditionName);
+      let newSelectedConditions;
+      if (isAlreadySelected) {
+        newSelectedConditions = selectedConditions.filter(
+          (conditionName) => conditionName !== pressedConditionName
+        );
+      } else {
+        newSelectedConditions = [...selectedConditions, pressedConditionName];
       }
-      return condition;
-    });
 
-    // Update the selectedConditions state
-    const pressedConditionName = newConditionsData[index].name;
-    const isAlreadySelected = selectedConditions.includes(pressedConditionName);
-    let newSelectedConditions;
-    if (isAlreadySelected) {
-      newSelectedConditions = selectedConditions.filter(
-        (conditionName) => conditionName !== pressedConditionName,
+      setConditionsData(newConditionsData);
+      setSelectedConditions(newSelectedConditions);
+      console.log(selectedConditions);
+    },
+    [selectedConditions]
+  );
+
+  const handleTransactionPress = useCallback(
+    (index) => {
+      //update selectedTransactions state
+      const newTransactionsData = transactions.map((transaction, idx) => {
+        if (idx === index) {
+          return { ...transaction, selected: !transaction.selected };
+        }
+        return transaction;
+      });
+
+      // Update the selectedTransactions state
+      const pressedTransactionName = newTransactionsData[index].name;
+      const isAlreadySelected = selectedTransactions.includes(
+        pressedTransactionName
       );
-    } else {
-      newSelectedConditions = [...selectedConditions, pressedConditionName];
-    }
-
-    setConditionsData(newConditionsData);
-    setSelectedConditions(newSelectedConditions);
-    console.log(selectedConditions);
-  };
-
-  handleTransactionPress = (index) => {
-    //update selectedTransactions state
-    const newTransactionsData = transactions.map((transaction, idx) => {
-      if (idx === index) {
-        return { ...transaction, selected: !transaction.selected };
+      let newSelectedTransactions;
+      if (isAlreadySelected) {
+        newSelectedTransactions = selectedTransactions.filter(
+          (transactionName) => transactionName !== pressedTransactionName
+        );
+      } else {
+        newSelectedTransactions = [
+          ...selectedTransactions,
+          pressedTransactionName,
+        ];
       }
-      return transaction;
-    });
 
-    // Update the selectedTransactions state
-    const pressedTransactionName = newTransactionsData[index].name;
-    const isAlreadySelected = selectedTransactions.includes(
-      pressedTransactionName,
-    );
-    let newSelectedTransactions;
-    if (isAlreadySelected) {
-      newSelectedTransactions = selectedTransactions.filter(
-        (transactionName) => transactionName !== pressedTransactionName,
-      );
-    } else {
-      newSelectedTransactions = [
-        ...selectedTransactions,
-        pressedTransactionName,
-      ];
-    }
-
-    setTransactionsData(newTransactionsData);
-    setSelectedTransactions(newSelectedTransactions);
-    console.log(selectedTransactions);
-  };
+      setTransactionsData(newTransactionsData);
+      setSelectedTransactions(newSelectedTransactions);
+      console.log('Selected Transactions:', selectedTransactions);
+    },
+    [selectedTransactions]
+  );
 
   const fetchListings = useCallback(async () => {
     console.log('Fetching listings...');
@@ -259,16 +269,25 @@ const HomeScreen = ({ route }) => {
     try {
       const { latitude, longitude } = userLocation;
       const mergedTags = '&tags[]=' + selectedTags.join('&tags[]=');
+      const mergedConditions =
+        '&conditions[]=' + selectedConditions.join('&conditions[]=');
+      const mergedTransactions =
+        '&transactions[]=' + selectedTransactions.join('&transactions[]=');
       console.log('User Location:', userLocation);
       console.log('Latitude:', latitude);
       console.log('Longitude:', longitude);
       console.log('Tags:', mergedTags);
+      console.log('Conditions:', mergedConditions);
+      console.log('Transactions:', mergedTransactions);
+
       const username = encodeURIComponent(
-        await SecureStore.getItemAsync('username'),
+        await SecureStore.getItemAsync('username')
       );
       let fetchUrl = `${serverIp}/api/listings?username=${username}&latitude=${latitude}&longitude=${longitude}`;
       if (distance < 510) fetchUrl += `&distance=${distance}`; // don't add distance on unlimited
       if (selectedTags.length > 0) fetchUrl += `&${mergedTags}`;
+      if (selectedTransactions.length > 0) fetchUrl += `&${mergedTransactions}`;
+      if (selectedConditions.length > 0) fetchUrl += `&${mergedConditions}`;
       console.log(fetchUrl);
       const listingsResponse = await fetch(fetchUrl, {
         method: 'GET',
@@ -283,7 +302,7 @@ const HomeScreen = ({ route }) => {
               ...listing,
               TimeSince: timeSince,
             };
-          }),
+          })
         );
         console.log('Listings fetched successfully');
       } else {
@@ -297,7 +316,14 @@ const HomeScreen = ({ route }) => {
       swiperRef.current?.scrollTo(0);
       scrollY = 0;
     }
-  }, [userLocation]);
+  }, [
+    userLocation,
+    selectedTags,
+    selectedTransactions,
+    selectedConditions,
+    distance,
+    refreshing,
+  ]);
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
@@ -360,6 +386,10 @@ const HomeScreen = ({ route }) => {
     if (userLocation) fetchListings();
   }, [userLocation]);
 
+  useEffect(() => {
+    if (userLocation && !isDrawerOpen) fetchListings();
+  }, [isDrawerOpen]);
+
   // This will run with refresh = true
   useEffect(() => {
     if (route.params?.refresh) {
@@ -412,7 +442,7 @@ const HomeScreen = ({ route }) => {
     debounce(() => {
       fetchListings();
     }, 1000),
-    [],
+    []
   ); // Adjust debounce time as needed
 
   useEffect(() => {
@@ -467,7 +497,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId),
+                    prevListings.filter((item) => item.ListingId !== listingId)
                   );
                 }}
                 onScroll={onScroll}
@@ -490,7 +520,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId),
+                    prevListings.filter((item) => item.ListingId !== listingId)
                   );
                 }}
                 onScroll={onScroll}
