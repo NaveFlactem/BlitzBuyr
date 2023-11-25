@@ -50,16 +50,8 @@ const HomeScreen = ({ route }) => {
   const translateX = useSharedValue(-screenWidth);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [distance, setDistance] = useState(30);
-
-  useEffect(() => {
-    const fetchDistance = async () => {
-      const initialDistance = await Settings.getDistance();
-      console.log('Initial distance:', initialDistance);
-      setDistance(initialDistance);
-    };
-
-    fetchDistance();
-  }, []);
+  const [isLocationSliderVisible, setIsLocationSliderVisible] = useState(false);
+  const locationSliderHeight = useSharedValue(-100); // Start off-screen
 
   const toggleTagDrawer = () => {
     if (translateX.value === -screenWidth * 0.6) {
@@ -77,6 +69,17 @@ const HomeScreen = ({ route }) => {
     }
   };
 
+  const handleLocationPress = () => {
+    if (isLocationSliderVisible) {
+      locationSliderHeight.value = withTiming(-100, { duration: 100 }); // Hide slider
+      setIsLocationSliderVisible(false);
+      fetchListings();
+    } else {
+      locationSliderHeight.value = withTiming(0, { duration: 100 }); // Show slider
+      setIsLocationSliderVisible(true);
+    }
+  };
+
   const getUserLocation = async () => {
     console.log("Getting user's location...");
 
@@ -89,6 +92,30 @@ const HomeScreen = ({ route }) => {
       // FIXME: Handle the error appropriately
     }
   };
+
+  retryButtonHandler = () => {
+    setRefreshing(true);
+    fetchListings();
+  };
+
+  let scrollY = useSharedValue(0);
+  const onScroll = (event) => {
+    scrollY.value = event.nativeEvent.contentOffset.y;
+  };
+
+  const onRefresh = React.useCallback(() => {
+    console.log('refreshing...');
+    setRefreshing(true);
+    if (userLocation) fetchListings();
+    else getUserLocation();
+  }, []);
+
+  const debouncedFetchListings = useCallback(
+    debounce(() => {
+      fetchListings();
+    }, 1000),
+    []
+  );
 
   const fetchListings = useCallback(async () => {
     console.log('Fetching listings...');
@@ -167,19 +194,15 @@ const HomeScreen = ({ route }) => {
     };
   }, []);
 
-  const [isLocationSliderVisible, setIsLocationSliderVisible] = useState(false);
-  const locationSliderHeight = useSharedValue(-100); // Start off-screen
+  useEffect(() => {
+    const fetchDistance = async () => {
+      const initialDistance = await Settings.getDistance();
+      console.log('Initial distance:', initialDistance);
+      setDistance(initialDistance);
+    };
 
-  const handleLocationPress = () => {
-    if (isLocationSliderVisible) {
-      locationSliderHeight.value = withTiming(-100, { duration: 100 }); // Hide slider
-      setIsLocationSliderVisible(false);
-      fetchListings();
-    } else {
-      locationSliderHeight.value = withTiming(0, { duration: 100 }); // Show slider
-      setIsLocationSliderVisible(true);
-    }
-  };
+    fetchDistance();
+  }, []);
 
   // This will run on mount
   useEffect(() => {
@@ -203,30 +226,6 @@ const HomeScreen = ({ route }) => {
       else getUserLocation();
     }
   }, [route.params]);
-
-  retryButtonHandler = () => {
-    setRefreshing(true);
-    fetchListings();
-  };
-
-  let scrollY = useSharedValue(0);
-  const onScroll = (event) => {
-    scrollY.value = event.nativeEvent.contentOffset.y;
-  };
-
-  const onRefresh = React.useCallback(() => {
-    console.log('refreshing...');
-    setRefreshing(true);
-    if (userLocation) fetchListings();
-    else getUserLocation();
-  }, []);
-
-  const debouncedFetchListings = useCallback(
-    debounce(() => {
-      fetchListings();
-    }, 1000),
-    []
-  ); // Adjust debounce time as needed
 
   const LoadingView = memo(() => (
     <View style={styles.loadingContainer}>
@@ -259,7 +258,7 @@ const HomeScreen = ({ route }) => {
         onResponderRelease={() => {
           if (swiperRef.current) {
             swiperRef.current.scrollToOffset({ animated: true, offset: 0 });
-        }
+          }
         }}
       />
 
