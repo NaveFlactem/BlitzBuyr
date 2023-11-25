@@ -1,49 +1,38 @@
-import { serverIp } from "../config.js";
-import React, { useEffect, useRef, useState, useCallback, memo } from "react";
+import NetInfo from '@react-native-community/netinfo';
+import * as SecureStore from 'expo-secure-store';
+import { debounce } from 'lodash';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import {
-  View,
-  StyleSheet,
-  SafeAreaView,
-  Dimensions,
-  RefreshControl,
-  ActivityIndicator,
-  ScrollView,
   Platform,
+  RefreshControl,
+  SafeAreaView,
+  StyleSheet,
   TouchableOpacity,
-  Text,
-} from "react-native";
-import NetInfo from "@react-native-community/netinfo";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  useAnimatedGestureHandler,
-  runOnJS,
-} from "react-native-reanimated";
-import Swiper from "react-native-swiper";
-import Colors from "../constants/Colors";
-import { Image } from "expo-image";
-import * as SecureStore from "expo-secure-store";
-import { debounce } from "lodash";
-import NoWifi from "../components/noWifi";
-import NoListings from "../components/noListings";
-import BouncePulse from "../components/visuals/BouncePulse.js";
-import CustomScrollView from "../components/CustomScrollView.js";
-import { PanGestureHandler, State } from "react-native-gesture-handler";
-import { getLocationWithRetry } from "../constants/Utilities";
-import TopBar from "../components/TopBarHome.js";
-import TagDrawer from "../components/TagDrawer.js";
-import IOSSwiperComponent from "../components/swipers/IOSSwiperComponent.js";
-import AndroidSwiperComponent from "../components/swipers/AndroidSwiperComponent.js";
-import LocationSlider from "../components/LocationSlider.js";
-import { LinearGradient } from "expo-linear-gradient";
-import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
-import * as Settings from "../hooks/UserSettings.js";
+  View,
+} from 'react-native';
+import { useSharedValue, withTiming } from 'react-native-reanimated';
+import LocationSlider from '../components/LocationSlider';
+import NoListings from '../components/noListings';
+import NoWifi from '../components/noWifi';
+import AndroidSwiperComponent from '../components/swipers/AndroidSwiperComponent.js';
+import IOSSwiperComponent from '../components/swipers/IOSSwiperComponent.js';
+import TagDrawer, { SwipeArea } from '../components/TagDrawer.js';
+import TopBar from '../components/TopBarHome.js';
+import BouncePulse from '../components/visuals/BouncePulse.js';
+import { CustomRefreshControl } from '../components/visuals/CustomRefreshControl';
+import { serverIp } from '../config.js';
+import Colors from '../constants/Colors';
 import {
-  tagOptions,
   conditionOptions,
+  tagOptions,
   transactionOptions,
-} from "../constants/ListingData.js";
+} from '../constants/ListingData.js';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
+import {
+  calculateTimeSince,
+  getLocationWithRetry,
+} from '../constants/Utilities';
+import * as Settings from '../hooks/UserSettings.js';
 
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -61,81 +50,8 @@ const HomeScreen = ({ route }) => {
   const translateX = useSharedValue(-screenWidth);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [distance, setDistance] = useState(30);
-
-  useEffect(() => {
-    const fetchDistance = async () => {
-      const initialDistance = await Settings.getDistance();
-      console.log("Initial distance:", initialDistance);
-      setDistance(initialDistance);
-    };
-
-    fetchDistance();
-  }, []);
-
-  const X_OFFSET_THRESHOLD = 10; // You can adjust this value as needed
-
-  const onGestureEvent = useAnimatedGestureHandler({
-    onStart: (_, context) => {
-      context.startX = translateX.value;
-      if (Platform.OS === "android") {
-        context.hasMovedPastThreshold = false;
-      }
-    },
-    onActive: (event, context) => {
-      if (Platform.OS === "android" && !context.hasMovedPastThreshold) {
-        if (Math.abs(event.translationX) > X_OFFSET_THRESHOLD) {
-          context.hasMovedPastThreshold = true;
-        }
-        return; // Early return until threshold is passed
-      }
-
-      if (event.translationX < 0) {
-        // Detect left swipe
-        translateX.value = Math.max(
-          -screenWidth,
-          context.startX + event.translationX,
-        );
-      }
-    },
-    onEnd: (_, context) => {
-      if (Platform.OS === "android" && !context.hasMovedPastThreshold) {
-        return; // Do nothing if the threshold was not passed
-      }
-
-      const shouldClose = translateX.value < -screenWidth * 0.65;
-      translateX.value = withTiming(
-        shouldClose ? -screenWidth : -screenWidth * 0.6,
-        { duration: 300 },
-      );
-      if (shouldClose) {
-        runOnJS(setIsDrawerOpen)(false);
-      }
-    },
-  });
-
-  // Gesture handler for opening the drawer
-  const onSwipeAreaGestureEvent = useAnimatedGestureHandler({
-    onStart: (_, context) => {
-      context.startX = translateX.value;
-    },
-    onActive: (event, context) => {
-      if (event.translationX > 0) {
-        // Detect right swipe
-        let newTranslateX = context.startX + event.translationX;
-        translateX.value = Math.min(newTranslateX, -screenWidth * 0.6);
-      }
-    },
-    onEnd: (_) => {
-      const shouldOpen = translateX.value > -screenWidth * 0.9;
-      translateX.value = withTiming(
-        shouldOpen ? -screenWidth * 0.6 : -screenWidth,
-        { duration: 300 },
-      );
-      if (shouldOpen) {
-        runOnJS(setIsDrawerOpen)(true);
-      }
-    },
-  });
+  const [isLocationSliderVisible, setIsLocationSliderVisible] = useState(false);
+  const locationSliderHeight = useSharedValue(-100); // Start off-screen
 
   const toggleTagDrawer = () => {
     if (translateX.value === -screenWidth * 0.6) {
@@ -153,11 +69,16 @@ const HomeScreen = ({ route }) => {
     }
   };
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: translateX.value }],
-    };
-  });
+  const handleLocationPress = () => {
+    if (isLocationSliderVisible) {
+      locationSliderHeight.value = withTiming(-100, { duration: 100 }); // Hide slider
+      setIsLocationSliderVisible(false);
+      fetchListings();
+    } else {
+      locationSliderHeight.value = withTiming(0, { duration: 100 }); // Show slider
+      setIsLocationSliderVisible(true);
+    }
+  };
 
   const getUserLocation = async () => {
     console.log("Getting user's location...");
@@ -167,137 +88,101 @@ const HomeScreen = ({ route }) => {
       const { latitude, longitude } = location.coords;
       setUserLocation({ latitude, longitude });
     } catch (error) {
-      console.error("Error getting location:", error);
+      console.error('Error getting location:', error);
       // FIXME: Handle the error appropriately
     }
   };
 
-  handleTagPress = (index) => {
-    // Update the tagsData state
-    const newTagsData = tagsData.map((tag, idx) => {
-      if (idx === index) {
-        return { ...tag, selected: !tag.selected };
-      }
-      return tag;
-    });
-
-    // Update the selectedTags state
-    const pressedTagName = newTagsData[index].name;
-    const isAlreadySelected = selectedTags.includes(pressedTagName);
-    let newSelectedTags;
-    if (isAlreadySelected) {
-      newSelectedTags = selectedTags.filter(
-        (tagName) => tagName !== pressedTagName,
-      );
-    } else {
-      newSelectedTags = [...selectedTags, pressedTagName];
-    }
-
-    setTagsData(newTagsData);
-    setSelectedTags(newSelectedTags);
-    console.log(selectedTags);
+  retryButtonHandler = () => {
+    setRefreshing(true);
+    fetchListings();
   };
 
-  handleConditionPress = (index) => {
-    //update selectedConditions state
-    const newConditionsData = conditions.map((condition, idx) => {
-      if (idx === index) {
-        return { ...condition, selected: !condition.selected };
-      }
-      return condition;
-    });
-
-    // Update the selectedConditions state
-    const pressedConditionName = newConditionsData[index].name;
-    const isAlreadySelected = selectedConditions.includes(pressedConditionName);
-    let newSelectedConditions;
-    if (isAlreadySelected) {
-      newSelectedConditions = selectedConditions.filter(
-        (conditionName) => conditionName !== pressedConditionName,
-      );
-    } else {
-      newSelectedConditions = [...selectedConditions, pressedConditionName];
-    }
-
-    setConditionsData(newConditionsData);
-    setSelectedConditions(newSelectedConditions);
-    console.log(selectedConditions);
+  let scrollY = useSharedValue(0);
+  const onScroll = (event) => {
+    scrollY.value = event.nativeEvent.contentOffset.y;
   };
 
-  handleTransactionPress = (index) => {
-    //update selectedTransactions state
-    const newTransactionsData = transactions.map((transaction, idx) => {
-      if (idx === index) {
-        return { ...transaction, selected: !transaction.selected };
-      }
-      return transaction;
-    });
+  const onRefresh = React.useCallback(() => {
+    console.log('refreshing...');
+    setRefreshing(true);
+    if (userLocation) fetchListings();
+    else getUserLocation();
+  }, []);
 
-    // Update the selectedTransactions state
-    const pressedTransactionName = newTransactionsData[index].name;
-    const isAlreadySelected = selectedTransactions.includes(
-      pressedTransactionName,
-    );
-    let newSelectedTransactions;
-    if (isAlreadySelected) {
-      newSelectedTransactions = selectedTransactions.filter(
-        (transactionName) => transactionName !== pressedTransactionName,
-      );
-    } else {
-      newSelectedTransactions = [
-        ...selectedTransactions,
-        pressedTransactionName,
-      ];
-    }
+  const debouncedFetchListings = useCallback(
+    debounce(() => {
+      fetchListings();
+    }, 1000),
+    []
+  );
 
-    setTransactionsData(newTransactionsData);
-    setSelectedTransactions(newSelectedTransactions);
-    console.log(selectedTransactions);
-  };
-
-  const fetchListings = async () => {
-    console.log("Fetching listings...");
-    console.log("Tags:", selectedTags);
-    console.log("Distance:", distance < 510 ? distance : "No Limit");
+  const fetchListings = useCallback(async () => {
+    console.log('Fetching listings...');
+    console.log('Tags:', selectedTags);
+    console.log('Distance:', distance < 510 ? distance : 'No Limit');
     if (route.params?.refresh) route.params.refresh = false;
 
     try {
       const { latitude, longitude } = userLocation;
-      const mergedTags = "&tags[]=" + selectedTags.join("&tags[]=");
-      console.log(mergedTags);
-      console.log("User Location:", userLocation);
-      console.log("Latitude:", latitude);
-      console.log("Longitude:", longitude);
+      const mergedTags = '&tags[]=' + selectedTags.join('&tags[]=');
+      const mergedConditions =
+        '&conditions[]=' + selectedConditions.join('&conditions[]=');
+      const mergedTransactions =
+        '&transactions[]=' + selectedTransactions.join('&transactions[]=');
+      console.log('User Location:', userLocation);
+      console.log('Latitude:', latitude);
+      console.log('Longitude:', longitude);
+      console.log('Tags:', mergedTags);
+      console.log('Conditions:', mergedConditions);
+      console.log('Transactions:', mergedTransactions);
+
       const username = encodeURIComponent(
-        await SecureStore.getItemAsync("username"),
+        await SecureStore.getItemAsync('username')
       );
       let fetchUrl = `${serverIp}/api/listings?username=${username}&latitude=${latitude}&longitude=${longitude}`;
       if (distance < 510) fetchUrl += `&distance=${distance}`; // don't add distance on unlimited
       if (selectedTags.length > 0) fetchUrl += `&${mergedTags}`;
+      if (selectedTransactions.length > 0) fetchUrl += `&${mergedTransactions}`;
+      if (selectedConditions.length > 0) fetchUrl += `&${mergedConditions}`;
       console.log(fetchUrl);
       const listingsResponse = await fetch(fetchUrl, {
-        method: "GET",
+        method: 'GET',
       });
 
       if (listingsResponse.status <= 201) {
         const listingsData = await listingsResponse.json();
-
-        setListings(listingsData);
-        console.log("Listings fetched successfully");
-        console.log(listingsData);
+        setListings(
+          listingsData.map((listing) => {
+            const timeSince = calculateTimeSince(listing.PostDate);
+            return {
+              ...listing,
+              TimeSince: timeSince,
+            };
+          })
+        );
+        console.log('Listings fetched successfully');
       } else {
-        console.log("Error fetching listings:", listingsResponse.status);
+        console.log('Error fetching listings:', listingsResponse.status);
       }
     } catch (err) {
-      console.log("Error:", err);
+      console.log('Error:', err);
     } finally {
       setIsLoading(false);
       setRefreshing(false);
-      swiperRef.current?.scrollTo(0);
-      setHoldStateOfRefresh(false);
-      setScrollY(0);
+      if (swiperRef.current) {
+        swiperRef.current.scrollToOffset({ animated: true, offset: 0 });
+      }
+      scrollY = 0;
     }
-  };
+  }, [
+    userLocation,
+    selectedTags,
+    selectedTransactions,
+    selectedConditions,
+    distance,
+    refreshing,
+  ]);
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
@@ -309,46 +194,15 @@ const HomeScreen = ({ route }) => {
     };
   }, []);
 
-  const [isLocationSliderVisible, setIsLocationSliderVisible] = useState(false);
-  const locationSliderHeight = useSharedValue(-300); // Start off-screen
-
-  const handleLocationPress = () => {
-    if (isLocationSliderVisible) {
-      locationSliderHeight.value = withTiming(-300); // Hide slider
-      setIsLocationSliderVisible(false);
-      fetchListings();
-    } else {
-      locationSliderHeight.value = withTiming(0); // Show slider
-      setIsLocationSliderVisible(true);
-    }
-  };
-
-  const locationSliderStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: locationSliderHeight.value }],
-      bottom: 0.085 * screenHeight,
+  useEffect(() => {
+    const fetchDistance = async () => {
+      const initialDistance = await Settings.getDistance();
+      console.log('Initial distance:', initialDistance);
+      setDistance(initialDistance);
     };
-  });
 
-  const onSwipeUpLocationSlider = useAnimatedGestureHandler({
-    onStart: (_, context) => {
-      context.startY = locationSliderHeight.value;
-    },
-    onActive: (event, context) => {
-      if (event.translationY < 0) {
-        // Detect swipe up
-        let newLocationSliderHeight = context.startY + event.translationY;
-        locationSliderHeight.value = Math.max(newLocationSliderHeight, -300);
-      }
-    },
-    onEnd: (_) => {
-      const shouldClose = locationSliderHeight.value < -20; // Halfway point
-      locationSliderHeight.value = withTiming(shouldClose ? -300 : 0, {
-        duration: 300,
-      });
-      runOnJS(setIsLocationSliderVisible)(!shouldClose);
-    },
-  });
+    fetchDistance();
+  }, []);
 
   // This will run on mount
   useEffect(() => {
@@ -360,6 +214,10 @@ const HomeScreen = ({ route }) => {
     if (userLocation) fetchListings();
   }, [userLocation]);
 
+  useEffect(() => {
+    if (userLocation && !isDrawerOpen) fetchListings();
+  }, [isDrawerOpen]);
+
   // This will run with refresh = true
   useEffect(() => {
     if (route.params?.refresh) {
@@ -368,66 +226,6 @@ const HomeScreen = ({ route }) => {
       else getUserLocation();
     }
   }, [route.params]);
-
-  retryButtonHandler = () => {
-    setRefreshing(true);
-    fetchListings();
-  };
-
-  const [scrollY, setScrollY] = useState(0);
-  const [isHoldStateOfRefresh, setHoldStateOfRefresh] = useState(false);
-
-  const refreshThreshold = -100; // Adjust this threshold
-
-  useEffect(() => {
-    if (scrollY <= refreshThreshold && !refreshing) {
-      setRefreshing(true);
-    }
-    if (isHoldStateOfRefresh) {
-      setScrollY(-60.5);
-    }
-  }, [scrollY, refreshing]);
-
-  useEffect(() => {
-    if (scrollY > 0) {
-      setScrollY(0);
-    }
-  });
-
-  const calculateOpacity = () => {
-    if (scrollY === 0 || scrollY === undefined) {
-      return 0;
-    }
-    let opacity = -scrollY / 100; // Adjust 100 to control the fade speed
-    opacity = Math.max(0, Math.min(opacity, 1)); // Clamp between 0 and 1
-    return opacity;
-  };
-
-  const onRefresh = React.useCallback(() => {
-    console.log("refreshing...");
-    setRefreshing(true);
-    if (userLocation) debouncedFetchListings();
-    else getUserLocation();
-  }, []);
-
-  useEffect(() => {
-    console.log(`Refreshing: ${refreshing}, ScrollY: ${scrollY}`);
-  }, [refreshing, scrollY]);
-
-  const debouncedFetchListings = useCallback(
-    debounce(() => {
-      setHoldStateOfRefresh(true);
-      fetchListings();
-    }, 1000),
-    [],
-  ); // Adjust debounce time as needed
-
-  useEffect(() => {
-    if (scrollY <= refreshThreshold && !refreshing) {
-      setRefreshing(true);
-      debouncedFetchListings();
-    }
-  }, [scrollY, refreshing, debouncedFetchListings]);
 
   const LoadingView = memo(() => (
     <View style={styles.loadingContainer}>
@@ -458,50 +256,38 @@ const HomeScreen = ({ route }) => {
         style={styles.topTap}
         onStartShouldSetResponder={() => true}
         onResponderRelease={() => {
-          if (swiperRef.current != null) {
-            swiperRef.current.scrollTo(0);
+          if (swiperRef.current) {
+            swiperRef.current.scrollToOffset({ animated: true, offset: 0 });
           }
         }}
       />
 
-      {Platform.OS === "ios" && (
-        <BouncePulse opacity={refreshing ? 1 : calculateOpacity()} />
-      )}
       {networkConnected ? (
         listings && listings.length > 0 ? (
-          Platform.OS === "ios" ? (
-            <ScrollView
-              onScroll={(event) => {
-                const y = event.nativeEvent.contentOffset.y;
-                setScrollY(y);
-              }}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                  tintColor="transparent"
-                  colors="transparent"
-                  titleColor="transparent"
-                  progressViewOffset={50}
-                />
-              }
-              scrollEventThrottle={16}
-            >
-              <View style={styles.swiperContainer}>
-                <IOSSwiperComponent
-                  swiperRef={swiperRef}
-                  listings={listings}
-                  userLocation={userLocation}
-                  removeListing={(listingId) => {
-                    setListings((prevListings) =>
-                      prevListings.filter(
-                        (item) => item.ListingId !== listingId,
-                      ),
-                    );
-                  }}
-                />
-              </View>
-            </ScrollView>
+          Platform.OS === 'ios' ? (
+            <View style={styles.swiperContainer}>
+              <IOSSwiperComponent
+                swiperRef={swiperRef}
+                listings={listings}
+                userLocation={userLocation}
+                removeListing={(listingId) => {
+                  setListings((prevListings) =>
+                    prevListings.filter((item) => item.ListingId !== listingId)
+                  );
+                }}
+                onScroll={onScroll}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    tintColor="transparent"
+                    colors="transparent"
+                    titleColor="transparent"
+                    progressViewOffset={50}
+                  />
+                }
+              />
+            </View>
           ) : (
             <View style={styles.swiperContainer}>
               <AndroidSwiperComponent
@@ -510,14 +296,18 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId),
+                    prevListings.filter((item) => item.ListingId !== listingId)
                   );
                 }}
+                onScroll={onScroll}
                 refreshControl={
                   <RefreshControl
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                     progressViewOffset={50}
+                    progressBackgroundColor={'transparent'}
+                    colors={['transparent']}
+                    style={{ backgroundColor: 'transparent' }}
                   />
                 }
               />
@@ -530,37 +320,32 @@ const HomeScreen = ({ route }) => {
         <NoWifi onRetry={retryButtonHandler} />
       )}
 
-      <PanGestureHandler onGestureEvent={onGestureEvent}>
-        <Animated.View
-          style={[
-            {
-              position: "absolute",
-              left: 0,
-              top: 0,
-              bottom: 0,
-              width: 0.45 * screenWidth,
-              flex: 110,
-            },
-            animatedStyle,
-          ]}
-        >
-          <TagDrawer
-            tags={tagsData}
-            handleTagPress={handleTagPress}
-            conditions={conditions}
-            handleConditionPress={handleConditionPress}
-            transactions={transactions}
-            handleTransactionPress={handleTransactionPress}
-            fetchListings={fetchListings}
-            handleMenuPress={toggleTagDrawer}
-            isDrawerOpen={isDrawerOpen}
-          />
-        </Animated.View>
-      </PanGestureHandler>
+      <TagDrawer
+        tagsData={tagsData}
+        conditions={conditions}
+        transactions={transactions}
+        setTagsData={setTagsData}
+        setConditionsData={setConditionsData}
+        setTransactionsData={setTransactionsData}
+        selectedTags={selectedTags}
+        selectedConditions={selectedConditions}
+        selectedTransactions={selectedTransactions}
+        setSelectedTags={setSelectedTags}
+        setSelectedConditions={setSelectedConditions}
+        setSelectedTransactions={setSelectedTransactions}
+        fetchListings={fetchListings}
+        handleMenuPress={toggleTagDrawer}
+        setIsDrawerOpen={setIsDrawerOpen}
+        isDrawerOpen={isDrawerOpen}
+        translateX={translateX}
+      />
 
-      <PanGestureHandler onGestureEvent={onSwipeAreaGestureEvent}>
-        <Animated.View style={styles.swipeArea} />
-      </PanGestureHandler>
+      <SwipeArea
+        handleSwipe={toggleTagDrawer}
+        translateX={translateX}
+        setIsDrawerOpen={setIsDrawerOpen}
+        isDrawerOpen={isDrawerOpen}
+      />
 
       {isLocationSliderVisible && (
         <TouchableOpacity
@@ -569,11 +354,14 @@ const HomeScreen = ({ route }) => {
         />
       )}
 
-      <PanGestureHandler onGestureEvent={onSwipeUpLocationSlider}>
-        <Animated.View style={locationSliderStyle}>
-          <LocationSlider setDistance={setDistance} />
-        </Animated.View>
-      </PanGestureHandler>
+      <LocationSlider
+        setDistance={setDistance}
+        isLocationSliderVisible={isLocationSliderVisible}
+        setIsLocationSliderVisible={setIsLocationSliderVisible}
+        locationSliderHeight={locationSliderHeight}
+      />
+
+      <CustomRefreshControl refreshing={refreshing} scrollY={scrollY} />
     </SafeAreaView>
   );
 };
@@ -591,7 +379,7 @@ const styles = StyleSheet.create({
     width: screenWidth,
   },
   topTap: {
-    position: "absolute",
+    position: 'absolute',
     top: 0.08 * screenHeight,
     width: screenWidth,
     height: 0.05 * screenHeight,
@@ -599,21 +387,14 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: Colors.BB_pink,
-  },
-  swipeArea: {
-    position: "absolute",
-    width: 0.05 * screenWidth,
-    height: screenHeight,
-    left: 0,
-    zIndex: 200,
   },
   sliderCover: {
     flex: 1,
     height: screenHeight,
     width: screenWidth,
-    position: "absolute",
+    position: 'absolute',
   },
 });

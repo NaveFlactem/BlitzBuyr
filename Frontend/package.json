@@ -33,7 +33,7 @@
     "expo-image": "~1.3.4",
     "expo-image-manipulator": "~11.3.0",
     "expo-image-picker": "~14.3.2",
-    "expo-linear-gradient": "^12.5.0",
+    "expo-linear-gradient": "~12.3.0",
     "expo-location": "~16.1.0",
     "expo-media-library": "~15.4.1",
     "expo-network": "~5.4.0",
@@ -46,6 +46,7 @@
     "react-native-a11y-slider": "^1.3.2",
     "react-native-animatable": "^1.4.0",
     "react-native-awesome-slider": "^2.4.5",
+    "react-native-blurhash": "^1.1.11",
     "react-native-draggable-grid": "^2.1.8",
     "react-native-eject": "^0.2.0",
     "react-native-fast-image": "^8.6.3",
@@ -72,5 +73,10 @@
     "react-navigation-stack": "^2.10.4",
     "swiper": "^11.0.3",
     "typescript": "^5.1.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.54.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-react": "^7.33.2"
   }
 }

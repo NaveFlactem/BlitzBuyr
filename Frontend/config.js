@@ -1,1 +1,1 @@
-export const serverIp = "http://blitzbuyr.lol";
+export const serverIp = 'http://blitzbuyr.lol';

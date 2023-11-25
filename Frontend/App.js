@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import StackNavigator from "./nav/StackNavigator";
+import { NavigationContainer } from '@react-navigation/native';
+import React from 'react';
+import StackNavigator from './nav/StackNavigator';
 
 export default function App() {
   return (

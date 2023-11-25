@@ -1,50 +1,49 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React, { useEffect, useRef, memo } from "react";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import React, { memo, useEffect } from 'react';
 import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
   Dimensions,
   Platform,
-} from "react-native";
-import Icon, { Icons } from "../components/visuals/Icons";
-import Colors from "../constants/Colors";
-import HomeScreen from "../screens/HomeScreen";
-import ProfileScreen from "../screens/ProfileScreen";
-import CreateListing from "../screens/CreateListing";
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Animated, {
-  useSharedValue,
   useAnimatedStyle,
+  useSharedValue,
   withSpring,
   withTiming,
-} from "react-native-reanimated";
-import useBackButtonHandler from "../hooks/DisableBackButton";
-import { screenWidth, screenHeight } from "../constants/ScreenDimensions.js";
+} from 'react-native-reanimated';
+import Icon, { Icons } from '../components/visuals/Icons';
+import Colors from '../constants/Colors';
+import { screenHeight } from '../constants/ScreenDimensions.js';
+import useBackButtonHandler from '../hooks/DisableBackButton';
+import CreateListing from '../screens/CreateListing';
+import HomeScreen from '../screens/HomeScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const TabArr = [
   {
-    route: "Home",
-    label: "Home",
+    route: 'Home',
+    label: 'Home',
     type: Icons.Ionicons,
-    activeIcon: "grid",
-    inActiveIcon: "grid-outline",
+    activeIcon: 'grid',
+    inActiveIcon: 'grid-outline',
     component: HomeScreen,
   },
   {
-    route: "CreateListing",
-    label: "Create Listing",
+    route: 'CreateListing',
+    label: 'Create Listing',
     type: Icons.MaterialCommunityIcons,
-    activeIcon: "plus-box-multiple",
-    inActiveIcon: "plus-box-multiple-outline",
+    activeIcon: 'plus-box-multiple',
+    inActiveIcon: 'plus-box-multiple-outline',
     component: CreateListing,
   },
   {
-    route: "Account",
-    label: "Account",
+    route: 'Account',
+    label: 'Account',
     type: Icons.FontAwesome,
-    activeIcon: "user-circle",
-    inActiveIcon: "user-circle-o",
+    activeIcon: 'user-circle',
+    inActiveIcon: 'user-circle-o',
     component: ProfileScreen,
   },
 ];
@@ -57,7 +56,7 @@ const TabButton = memo((props) => {
 
   // Local shared values for scale and rotate
   const scale = useSharedValue(1);
-  const rotate = useSharedValue("0deg");
+  const rotate = useSharedValue('0deg');
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -68,7 +67,7 @@ const TabButton = memo((props) => {
   useEffect(() => {
     // Animations are triggered based on the focused state of this specific TabButton
     scale.value = withSpring(focused ? 1.5 : 1);
-    rotate.value = withTiming(focused ? "360deg" : "0deg", { duration: 500 });
+    rotate.value = withTiming(focused ? '360deg' : '0deg', { duration: 500 });
   }, [focused]);
 
   const onBackPress = () => {
@@ -98,7 +97,7 @@ const TabButton = memo((props) => {
 });
 
 function BottomNavOverlay() {
-  const screenHeight = Dimensions.get("window").height;
+  const screenHeight = Dimensions.get('window').height;
 
   return (
     <Tab.Navigator
@@ -133,34 +132,34 @@ function BottomNavOverlay() {
 const styles = StyleSheet.create({
   tabButtonContainer: {
     flex: 1,
-    overflow: "hidden",
-    justifyContent: "center",
-    alignItems: "center",
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: Colors.BB_darkRedPurple,
     borderTopWidth: 3,
     borderColor:
-      Platform.OS == "ios" ? "rgba(0, 0, 0, 0.2)" : "rgba(0, 0, 0, 0.3)",
-    height: Platform.OS === "ios" ? "200%" : null,
+      Platform.OS == 'ios' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.3)',
+    height: Platform.OS === 'ios' ? '200%' : null,
   },
   tabButton: {
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100%",
-    width: "100%",
-    bottom: Platform.OS === "ios" ? "25%" : null,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    width: '100%',
+    bottom: Platform.OS === 'ios' ? '25%' : null,
   },
   outerRhombus: {
-    alignSelf: "center",
-    position: "absolute",
-    width: "85%",
+    alignSelf: 'center',
+    position: 'absolute',
+    width: '85%',
     aspectRatio: 1,
     backgroundColor: Colors.BB_darkPink,
     opacity: 0.1,
-    transform: [{ rotate: "45deg" }],
+    transform: [{ rotate: '45deg' }],
     ...Platform.select({
       ios: {
         bottom: 0,
-        shadowColor: "black",
+        shadowColor: 'black',
         shadowOpacity: 0.5,
         shadowRadius: 10,
         shadowOffset: { height: 4, width: 0 },
@@ -171,17 +170,17 @@ const styles = StyleSheet.create({
     }),
   },
   innerRhombus: {
-    alignSelf: "center",
-    position: "absolute",
-    width: "45%",
+    alignSelf: 'center',
+    position: 'absolute',
+    width: '45%',
     aspectRatio: 1,
     backgroundColor: Colors.BB_darkPink,
     opacity: 0.1,
-    transform: [{ rotate: "45deg" }],
+    transform: [{ rotate: '45deg' }],
     ...Platform.select({
       ios: {
         bottom: 0.03 * screenHeight,
-        shadowColor: "black",
+        shadowColor: 'black',
         shadowOpacity: 0.5,
         shadowRadius: 10,
         shadowOffset: { height: 4, width: 0 },
