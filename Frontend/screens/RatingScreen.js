@@ -75,7 +75,7 @@ const RatingScreen = ({ navigation, route }) => {
               color="black"
             />
           )}
-        </TouchableOpacity>
+        </TouchableOpacity>,
       );
     }
     return starIcons;

@@ -10,7 +10,7 @@ const calculateTimeSince = (time) => {
 
 const getLocationWithRetry = async function (retries = 20) {
   const timeout = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('Timeout exceeded')), 300)
+    setTimeout(() => reject(new Error('Timeout exceeded')), 300),
   );
   try {
     // Request location permission
@@ -36,7 +36,7 @@ const getLocationWithRetry = async function (retries = 20) {
         throw error;
       }
       console.log(
-        'Failed to get current location, using last known location instead.'
+        'Failed to get current location, using last known location instead.',
       );
       return lastKnownLocation;
     }

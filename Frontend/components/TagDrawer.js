@@ -124,7 +124,7 @@ const TagDrawer = memo(
         </ScrollView>
       </View>
     );
-  }
+  },
 );
 
 export default TagDrawer;

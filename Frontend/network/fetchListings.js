@@ -6,7 +6,7 @@ const fetchListings = async (userLocation, selectedTags, distance) => {
     const { latitude, longitude } = userLocation;
     const mergedTags = '&tags[]=' + selectedTags.join('&tags[]=');
     const username = encodeURIComponent(
-      await SecureStore.getItemAsync('username')
+      await SecureStore.getItemAsync('username'),
     );
     let fetchUrl = `${serverIp}/api/listings?username=${username}&latitude=${latitude}&longitude=${longitude}`;
     if (distance < 510) fetchUrl += `&distance=${distance}`;

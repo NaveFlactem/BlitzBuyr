@@ -313,7 +313,7 @@ class CreateListing extends Component {
           style: 'cancel',
         },
       ],
-      { cancelable: true }
+      { cancelable: true },
     );
   };
 
@@ -379,7 +379,7 @@ class CreateListing extends Component {
   processSelectedImages = async (assets) => {
     // Process multiple images
     const processedImages = await Promise.all(
-      assets.map(async (asset) => this.manipulateImage(asset.uri))
+      assets.map(async (asset) => this.manipulateImage(asset.uri)),
     );
     this.setState((prevState) => ({
       data: [...prevState.data, ...processedImages.filter(Boolean)],
@@ -400,7 +400,7 @@ class CreateListing extends Component {
         format: ImageManipulator.SaveFormat.JPEG,
       });
       const compressedSize = await FileSystem.getInfoAsync(
-        manipulateResult.uri
+        manipulateResult.uri,
       );
       const savedData = originalSize.size - compressedSize.size;
 
@@ -411,7 +411,7 @@ class CreateListing extends Component {
         `compressed to :`,
         (compressedSize.size / (1024 * 1024)).toFixed(2),
         'MB',
-        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`
+        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`,
       );
 
       return {
@@ -547,7 +547,7 @@ class CreateListing extends Component {
       if (isAlreadySelected) {
         // If already selected, remove it from the array
         newSelectedTags = prevState.selectedTags.filter(
-          (tagName) => tagName !== pressedTagName
+          (tagName) => tagName !== pressedTagName,
         );
       } else {
         // If not selected, add it to the array
@@ -654,8 +654,8 @@ class CreateListing extends Component {
                       {this.state.title == ''
                         ? 'Title is required'
                         : this.state.title.length > 25
-                        ? 'Title too long'
-                        : 'Must enter a valid title'}
+                          ? 'Title too long'
+                          : 'Must enter a valid title'}
                     </Text>
                   </View>
                 ) : (
@@ -690,8 +690,8 @@ class CreateListing extends Component {
                       {this.state.description.length > 500
                         ? 'Description too long'
                         : this.state.description.length === 0
-                        ? 'Description is required'
-                        : 'Must enter a valid description'}
+                          ? 'Description is required'
+                          : 'Must enter a valid description'}
                     </Text>
                   </View>
                 )}
@@ -733,10 +733,10 @@ class CreateListing extends Component {
                     {this.state.price == ''
                       ? 'Price is required'
                       : this.state.price < 0
-                      ? 'Invalid price'
-                      : this.state.price.length >= 7
-                      ? 'Price too large'
-                      : 'Must enter a valid price'}
+                        ? 'Invalid price'
+                        : this.state.price.length >= 7
+                          ? 'Price too large'
+                          : 'Must enter a valid price'}
                   </Text>
                 </View>
               ) : (

@@ -32,7 +32,7 @@ const IOSSwiperComponent = memo(
         onScroll={onScroll}
       />
     );
-  }
+  },
 );
 
 export default IOSSwiperComponent;

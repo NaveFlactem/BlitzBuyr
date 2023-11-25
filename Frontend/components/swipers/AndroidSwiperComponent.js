@@ -29,7 +29,7 @@ const AndroidSwiperComponent = memo(
         refreshControl={refreshControl}
       />
     );
-  }
+  },
 );
 
 export default AndroidSwiperComponent;

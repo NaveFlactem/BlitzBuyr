@@ -29,7 +29,7 @@ const CreateAccountScreen = ({ navigation }) => {
     if (password !== confirmPassword) {
       Alert.alert(
         'Password Mismatch',
-        'Password and Confirm Password do not match.'
+        'Password and Confirm Password do not match.',
       );
       return;
     }
@@ -69,7 +69,7 @@ const CreateAccountScreen = ({ navigation }) => {
     if (isValidPassword.current === false) {
       Alert.alert(
         'Invalid Input',
-        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
       );
       return;
     }
