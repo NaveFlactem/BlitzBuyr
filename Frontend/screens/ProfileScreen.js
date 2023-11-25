@@ -26,7 +26,10 @@ import BouncePulse from '../components/visuals/BouncePulse.js';
 import { serverIp } from '../config.js';
 import Colors from '../constants/Colors';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
-import { getLocationWithRetry } from '../constants/Utilities';
+import {
+  calculateTimeSince,
+  getLocationWithRetry,
+} from '../constants/Utilities';
 import useBackButtonHandler from '../hooks/DisableBackButton.js';
 import {
   clearStoredCredentials,
@@ -349,8 +352,20 @@ function ProfileScreen({ navigation, route }) {
 
       if (profileResponse.status <= 201) {
         setProfileInfo({
-          likedListings: profileData.likedListings,
-          userListings: profileData.userListings,
+          likedListings: profileData.likedListings.map((listing) => {
+            const timeSince = calculateTimeSince(listing.PostDate);
+            return {
+              ...listing,
+              TimeSince: timeSince,
+            };
+          }),
+          userListings: profileData.userListings.map((listing) => {
+            const timeSince = calculateTimeSince(listing.PostDate);
+            return {
+              ...listing,
+              TimeSince: timeSince,
+            };
+          }),
           userRatings: profileData.ratings.reduce(
             (acc, rating) => ({ ...acc, ...rating }),
             {}
