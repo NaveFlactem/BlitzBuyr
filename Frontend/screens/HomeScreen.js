@@ -472,42 +472,34 @@ const HomeScreen = ({ route }) => {
       {networkConnected ? (
         listings && listings.length > 0 ? (
           Platform.OS === 'ios' ? (
-            <ScrollView
-              onScroll={(event) => {
-                const y = event.nativeEvent.contentOffset.y;
-                setScrollY(y);
-              }}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                  tintColor="transparent"
-                  colors="transparent"
-                  titleColor="transparent"
-                  progressViewOffset={50}
-                />
-              }
-              scrollEventThrottle={16}
-            >
-              <View style={styles.swiperContainer}>
-                <IOSSwiperComponent
-                  swiperRef={swiperRef}
-                  listings={listings}
-                  userLocation={userLocation}
-                  removeListing={(listingId) => {
-                    setListings((prevListings) =>
-                      prevListings.filter(
-                        (item) => item.ListingId !== listingId
-                      )
-                    );
-                  }}
-                />
+            <View style={styles.swiperContainer}>
+              <IOSSwiperComponent
+                listings={listings}
+                userLocation={userLocation}
+                removeListing={(listingId) => {
+                  setListings((prevListings) =>
+                    prevListings.filter((item) => item.ListingId !== listingId)
+                  );
+                }}
+                onScroll={(event) => {
+                  const y = event.nativeEvent.contentOffset.y;
+                  setScrollY(y);
+                }}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    tintColor="transparent"
+                    colors="transparent"
+                    titleColor="transparent"
+                    progressViewOffset={50}
+                  />
+                }
+              />
               </View>
-            </ScrollView>
           ) : (
             <View style={styles.swiperContainer}>
               <AndroidSwiperComponent
-                swiperRef={swiperRef}
                 listings={listings}
                 userLocation={userLocation}
                 removeListing={(listingId) => {
