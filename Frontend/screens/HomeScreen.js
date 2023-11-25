@@ -235,14 +235,6 @@ const HomeScreen = ({ route }) => {
     []
   ); // Adjust debounce time as needed
 
-  useEffect(() => {
-    if (scrollY <= refreshThreshold && !refreshing) {
-      setRefreshing(true);
-      scrollY = -60.5;
-      debouncedFetchListings();
-    }
-  }, [scrollY, refreshing, debouncedFetchListings]);
-
   const LoadingView = memo(() => (
     <View style={styles.loadingContainer}>
       <BouncePulse />

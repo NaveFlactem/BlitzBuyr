@@ -497,6 +497,6 @@ const styles = StyleSheet.create({
   },
   spacer: {
     position: 'relative',
-    height: Platform.OS == 'ios' ? 0.2 * screenHeight : 0.03 * screenHeight,
+    height: Platform.OS == 'ios' ? 0.05 * screenHeight : 0.03 * screenHeight,
   },
 });
