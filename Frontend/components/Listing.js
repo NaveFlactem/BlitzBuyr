@@ -975,11 +975,11 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     position: 'absolute',
-    height: '95%',
-    width: '10%',
-    bottom: '0%',
-    right: '5%',
-    zIndex: 49,
+    height: 0.15 * screenWidth,
+    width: 0.15 * screenWidth,
+    bottom: '82%',
+    right: '-5%',
+    zIndex: 1,
   },
   modalContainer: {
     backgroundColor: 'white',
