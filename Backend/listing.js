@@ -19,7 +19,7 @@ const encodeImageToBlurhash = async (path) => {
     const { data: buffer, info: metadata } = await sharp(path)
       .raw()
       .ensureAlpha()
-      .resize(128, 128, { fit: 'inside' })
+      .resize(64, 64, { fit: 'inside' })
       .toBuffer({ resolveWithObject: true });
 
     const { width, height } = metadata;
@@ -288,7 +288,15 @@ router.post('/createListing', imageUpload, async function (req, res) {
  * }
  */
 router.get('/listings', async function (req, res) {
-  const { username, tags, latitude, longitude, distance } = req.query;
+  const {
+    username,
+    tags,
+    latitude,
+    longitude,
+    distance,
+    conditions,
+    transactions,
+  } = req.query;
 
   try {
     let query = `
@@ -326,6 +334,20 @@ router.get('/listings', async function (req, res) {
     if (tags) {
       query += `
           AND Tags.TagName IN (${tags.map((tag) => `'${tag}'`).join(',')})
+        `;
+    }
+    if (conditions) {
+      query += `
+          AND Listings.Condition IN (${conditions
+            .map((condition) => `'${condition}'`)
+            .join(',')})
+        `;
+    }
+    if (transactions) {
+      query += `
+          AND Listings.TransactionPreference IN (${transactions
+            .map((transaction) => `'${transaction}'`)
+            .join(',')})
         `;
     }
 

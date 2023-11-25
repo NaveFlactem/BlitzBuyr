@@ -108,16 +108,25 @@ const HomeScreen = ({ route }) => {
     try {
       const { latitude, longitude } = userLocation;
       const mergedTags = '&tags[]=' + selectedTags.join('&tags[]=');
+      const mergedConditions =
+        '&conditions[]=' + selectedConditions.join('&conditions[]=');
+      const mergedTransactions =
+        '&transactions[]=' + selectedTransactions.join('&transactions[]=');
       console.log('User Location:', userLocation);
       console.log('Latitude:', latitude);
       console.log('Longitude:', longitude);
       console.log('Tags:', mergedTags);
+      console.log('Conditions:', mergedConditions);
+      console.log('Transactions:', mergedTransactions);
+
       const username = encodeURIComponent(
-        await SecureStore.getItemAsync('username'),
+        await SecureStore.getItemAsync('username')
       );
       let fetchUrl = `${serverIp}/api/listings?username=${username}&latitude=${latitude}&longitude=${longitude}`;
       if (distance < 510) fetchUrl += `&distance=${distance}`; // don't add distance on unlimited
       if (selectedTags.length > 0) fetchUrl += `&${mergedTags}`;
+      if (selectedTransactions.length > 0) fetchUrl += `&${mergedTransactions}`;
+      if (selectedConditions.length > 0) fetchUrl += `&${mergedConditions}`;
       console.log(fetchUrl);
       const listingsResponse = await fetch(fetchUrl, {
         method: 'GET',
@@ -132,7 +141,7 @@ const HomeScreen = ({ route }) => {
               ...listing,
               TimeSince: timeSince,
             };
-          }),
+          })
         );
         console.log('Listings fetched successfully');
       } else {
@@ -146,7 +155,14 @@ const HomeScreen = ({ route }) => {
       swiperRef.current?.scrollTo(0);
       scrollY = 0;
     }
-  }, [userLocation]);
+  }, [
+    userLocation,
+    selectedTags,
+    selectedTransactions,
+    selectedConditions,
+    distance,
+    refreshing,
+  ]);
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
@@ -182,6 +198,10 @@ const HomeScreen = ({ route }) => {
     if (userLocation) fetchListings();
   }, [userLocation]);
 
+  useEffect(() => {
+    if (userLocation && !isDrawerOpen) fetchListings();
+  }, [isDrawerOpen]);
+
   // This will run with refresh = true
   useEffect(() => {
     if (route.params?.refresh) {
@@ -207,6 +227,21 @@ const HomeScreen = ({ route }) => {
     if (userLocation) fetchListings();
     else getUserLocation();
   }, []);
+
+  const debouncedFetchListings = useCallback(
+    debounce(() => {
+      fetchListings();
+    }, 1000),
+    []
+  ); // Adjust debounce time as needed
+
+  useEffect(() => {
+    if (scrollY <= refreshThreshold && !refreshing) {
+      setRefreshing(true);
+      scrollY = -60.5;
+      debouncedFetchListings();
+    }
+  }, [scrollY, refreshing, debouncedFetchListings]);
 
   const LoadingView = memo(() => (
     <View style={styles.loadingContainer}>
@@ -252,7 +287,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId),
+                    prevListings.filter((item) => item.ListingId !== listingId)
                   );
                 }}
                 onScroll={onScroll}
@@ -275,7 +310,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId),
+                    prevListings.filter((item) => item.ListingId !== listingId)
                   );
                 }}
                 onScroll={onScroll}
