@@ -37,11 +37,11 @@ import {
   getStoredUsername,
 } from './auth/Authenticate.js';
 
-const UserListingsRoute = ({ profileInfo, onPressListing }) => (
+const ListingsRoute = ({ onPressListing, data, text }) => (
   <View style={{ flex: 1 }}>
-    {profileInfo.userListings.length > 0 ? (
+    {data.length > 0 ? (
       <FlatList
-        data={profileInfo.userListings}
+        data={data}
         numColumns={3}
         renderItem={({ item }) => (
           <View
@@ -51,13 +51,12 @@ const UserListingsRoute = ({ profileInfo, onPressListing }) => (
               margin: 3,
             }}
           >
-            {item.images.length > 0 && (
+            {data.length > 0 && (
               <TouchableOpacity onPress={() => onPressListing(item)}>
                 <Image
                   source={{
                     uri: `${serverIp}/img/${item.images[0].uri}`, // load the listing's first image
                   }}
-                  placeholder={item.images[0].blurhash}
                   style={{ width: '100%', height: '100%', borderRadius: 12 }}
                 />
               </TouchableOpacity>
@@ -66,40 +65,7 @@ const UserListingsRoute = ({ profileInfo, onPressListing }) => (
         )}
       />
     ) : (
-      <Text style={styles.noListingsText}>No user listings found.</Text>
-    )}
-  </View>
-);
-
-const LikedListingsRoute = ({ profileInfo, onPressListing }) => (
-  <View style={{ flex: 1 }}>
-    {profileInfo.likedListings.length > 0 ? (
-      <FlatList
-        data={profileInfo.likedListings}
-        numColumns={3}
-        renderItem={({ item }) => (
-          <View
-            style={{
-              flex: 1,
-              aspectRatio: 1,
-              margin: 3,
-            }}
-          >
-            {item.images.length > 0 && (
-              <TouchableOpacity onPress={() => onPressListing(item)}>
-                <Image
-                  source={{
-                    uri: `${serverIp}/img/${item.images[0]}`, // load the listing's first image
-                  }}
-                  style={{ width: '100%', height: '100%', borderRadius: 12 }}
-                />
-              </TouchableOpacity>
-            )}
-          </View>
-        )}
-      />
-    ) : (
-      <Text style={styles.noListingsText}>No liked listings found.</Text>
+      <Text style={styles.noListingsText}>No {text} listings found.</Text>
     )}
   </View>
 );
@@ -111,8 +77,8 @@ const handleContactClick = async (key, data) => {
       try {
         await Linking.openURL(
           `mailto:${data}?subject=${encodeURIComponent(
-            'BlitzBuyr',
-          )}&body=${encodeURIComponent('')}`,
+            'BlitzBuyr'
+          )}&body=${encodeURIComponent('')}`
         );
       } catch (error) {
         console.error('Error opening email:', error);
@@ -136,7 +102,7 @@ const handleContactClick = async (key, data) => {
               onPress: () => Linking.openURL(`sms:${phoneNumber}`),
             },
           ],
-          { cancelable: true },
+          { cancelable: true }
         );
       } catch (error) {
         console.error('Error opening phoneNumber:', error);
@@ -161,7 +127,7 @@ const handleContactClick = async (key, data) => {
 
 const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
   let displayValues = Object.values(contactInfo).some(
-    (value) => value.data.length > 0,
+    (value) => value.data.length > 0
   );
 
   if (!selfProfile && Object.values(contactInfo).every((value) => value.hidden))
@@ -278,7 +244,6 @@ function ProfileScreen({ navigation, route }) {
   useBackButtonHandler(onBackPress);
 
   const onPressListing = (listingDetails) => {
-    console.log(listingDetails);
     setSelectedListing(listingDetails);
   };
 
@@ -287,7 +252,7 @@ function ProfileScreen({ navigation, route }) {
       const username = getStoredUsername();
       if (route.params?.username) {
         console.log(
-          `Setting username to passed username ${route.params.username}`,
+          `Setting username to passed username ${route.params.username}`
         );
         // we navigated with a username passed as param (i.e. clicking someone's profile)
         setProfileName(route.params.username);
@@ -344,7 +309,7 @@ function ProfileScreen({ navigation, route }) {
     console.log(`Fetching profile info for ${username}`);
     try {
       const fetchUrl = `${serverIp}/api/profile?username=${encodeURIComponent(
-        getStoredUsername(),
+        getStoredUsername()
       )}&password=${getStoredPassword()}&profileName=${username}`;
       console.log(fetchUrl);
       const profileResponse = await fetch(fetchUrl, {
@@ -370,12 +335,11 @@ function ProfileScreen({ navigation, route }) {
           }),
           userRatings: profileData.ratings.reduce(
             (acc, rating) => ({ ...acc, ...rating }),
-            {},
+            {}
           ),
           profilePicture: profileData.profilePicture,
           coverPicture: profileData.coverPicture,
         });
-        console.log(contactInfo);
         console.log(profileData.contactInfo);
 
         // Set the contactInfo state
@@ -388,8 +352,8 @@ function ProfileScreen({ navigation, route }) {
 
         const initialLikeStates = Object.fromEntries(
           [...profileData.likedListings, ...profileData.userListings].map(
-            (listing) => [listing.ListingId, listing.liked],
-          ),
+            (listing) => [listing.ListingId, listing.liked]
+          )
         );
         setLikeStates(initialLikeStates);
 
@@ -398,7 +362,7 @@ function ProfileScreen({ navigation, route }) {
         console.log(
           'Error fetching profile:',
           profileResponse.status,
-          profileData,
+          profileData
         );
       }
     } catch (err) {
@@ -436,7 +400,7 @@ function ProfileScreen({ navigation, route }) {
     console.log(
       `${
         newLikeStates[listingId] ? 'Likered' : 'UnLikered'
-      } listing ID ${listingId}`,
+      } listing ID ${listingId}`
     );
   };
 
@@ -753,16 +717,18 @@ function ProfileScreen({ navigation, route }) {
             switch (route.key) {
               case 'first':
                 return (
-                  <UserListingsRoute
-                    profileInfo={profileInfo}
+                  <ListingsRoute
                     onPressListing={onPressListing}
+                    data={profileInfo.userListings}
+                    text={'user'}
                   />
                 );
               case 'second':
                 return (
-                  <LikedListingsRoute
-                    profileInfo={profileInfo}
+                  <ListingsRoute
                     onPressListing={onPressListing}
+                    data={profileInfo.likedListings}
+                    text={'liked'}
                   />
                 );
               case 'third':
@@ -818,10 +784,10 @@ function ProfileScreen({ navigation, route }) {
                 setProfileInfo((prevProfileInfo) => ({
                   ...prevProfileInfo,
                   likedListings: prevProfileInfo.likedListings.filter(
-                    (item) => item.ListingId !== listingId,
+                    (item) => item.ListingId !== listingId
                   ),
                   userListings: prevProfileInfo.userListings.filter(
-                    (item) => item.ListingId !== listingId,
+                    (item) => item.ListingId !== listingId
                   ),
                 }));
 

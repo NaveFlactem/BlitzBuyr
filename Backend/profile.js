@@ -382,6 +382,75 @@ router.get('/profile', async function (req, res) {
     if (!userResult || userResult.length == 0)
       return res.status(404).json({ error: `User ${profileName} not found` });
 
+    let combinedListingsQuery = `
+      SELECT
+        Listings.*,
+        GROUP_CONCAT(DISTINCT Tags.TagName) AS tags,
+        GROUP_CONCAT(DISTINCT Images.ImageURI) AS images,
+        GROUP_CONCAT(DISTINCT Images.BlurHash) AS blurhashes,
+        COALESCE((
+          SELECT 1 
+          FROM Likes 
+          WHERE Likes.ListingId = Listings.ListingId AND Likes.Username = '${profileName}'
+          LIMIT 1
+        ), 0) AS liked,
+        COALESCE((
+          SELECT AVG(Rating) 
+          FROM Ratings 
+          WHERE Ratings.UserRated = Listings.Username
+        ), null) AS averageRating,
+        COALESCE((
+          SELECT COUNT(Rating) 
+          FROM Ratings 
+          WHERE Ratings.UserRated = Listings.Username
+        ), null) AS ratingCount
+      FROM Listings
+      LEFT JOIN ListingTags ON Listings.ListingId = ListingTags.ListingId
+      LEFT JOIN Tags ON ListingTags.TagId = Tags.TagId
+      LEFT JOIN Images ON Listings.ListingId = Images.ListingId
+      WHERE (Listings.ListingId IN (
+        SELECT ListingId
+        FROM Likes
+        WHERE Likes.Username = '${profileName}'
+      ))
+      OR (Listings.Username = '${profileName}')
+      GROUP BY Listings.ListingId
+      ORDER BY Listings.ListingId DESC;`;
+    const rows = await new Promise((resolve, reject) => {
+      db.all(combinedListingsQuery, (err, rows) => {
+        if (err) {
+          console.error('Error querying the database:', err);
+          reject(err);
+        }
+        resolve(rows);
+      });
+    });
+    const parsedRows = rows.map((row) => {
+      const { averageRating, ratingCount, ...rest } = row;
+      const images = row.images ? row.images.split(',') : [];
+      const blurhashes = row.blurhashes ? row.blurhashes.split(',') : [];
+
+      const imagesWithBlurhashes = images.map((uri, i) => {
+        return {
+          uri,
+          blurhash: blurhashes[i],
+        };
+      });
+      return {
+        ...rest,
+        tags: row.tags ? row.tags.split(',') : [],
+        images: imagesWithBlurhashes,
+        liked: Boolean(row.liked),
+        ratings: {
+          averageRating: row.averageRating
+            ? parseFloat(row.averageRating.toFixed(1))
+            : row.averageRating,
+          ratingCount: row.ratingCount,
+        },
+      };
+    });
+    console.log(parsedRows);
+
     // get the ratings belonging to the user
     const ratingsResult = await new Promise((resolve, reject) => {
       db.all(
@@ -481,49 +550,11 @@ router.get('/profile', async function (req, res) {
       );
     });
 
-    // get the user's posted listings
-    const userListingsResult = await new Promise((resolve, reject) => {
-      db.all(
-        'SELECT * FROM Listings WHERE Username = ? ORDER BY ListingId DESC',
-        [profileName],
-        (err, rows) => {
-          if (err) {
-            console.error('Error querying the database (third query):', err);
-            reject(err);
-          }
-          resolve(rows);
-        }
-      );
-    });
-
-    // get the user's liked listings
-    const likedListingsResult = await new Promise((resolve, reject) => {
-      db.all(
-        'SELECT * FROM Listings WHERE ListingId IN (SELECT ListingId FROM Likes WHERE Username = ?) ORDER BY ListingId DESC',
-        [profileName],
-        (err, rows) => {
-          if (err) {
-            console.error('Error querying the database (fourth query):', err);
-            reject(err);
-          }
-          resolve(rows);
-        }
-      );
-    });
-
-    // append the images to both
-    const likedListings = await getImagesFromListings(
-      likedListingsResult,
-      likedListingsResult
-    );
-    const userListings = await getImagesFromListings(
-      userListingsResult,
-      likedListingsResult
-    );
-
     return res.status(200).json({
-      likedListings: likedListings,
-      userListings: userListings,
+      likedListings: parsedRows.filter((listing) => listing.liked == true),
+      userListings: parsedRows.filter(
+        (listing) => listing.Username === profileName
+      ),
       ratings: ratingsResult,
       profilePicture: profilePictureResult[0].ProfilePicture,
       coverPicture: profilePictureResult[0].CoverPicture,

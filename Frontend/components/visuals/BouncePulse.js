@@ -1,15 +1,15 @@
-import React, { useEffect, memo } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import React, { memo, useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
 import Animated, {
+  useAnimatedStyle,
   useSharedValue,
-  withTiming,
+  withDelay,
   withRepeat,
   withSequence,
-  useAnimatedStyle,
-  withDelay,
+  withTiming,
 } from 'react-native-reanimated';
 import Colors from '../../constants/Colors';
-import { screenWidth, screenHeight } from '../../constants/ScreenDimensions.js';
+import { screenHeight } from '../../constants/ScreenDimensions.js';
 
 const BouncePulse = memo((props) => {
   const translateY1 = useSharedValue(0);
@@ -20,10 +20,10 @@ const BouncePulse = memo((props) => {
     animatedValue.value = withRepeat(
       withSequence(
         withDelay(delay, withTiming(1, { duration: 300 })),
-        withTiming(0, { duration: 300 }),
+        withTiming(0, { duration: 300 })
       ),
       -1, // infinite repeats
-      true, // reverse the animation on every second iteration
+      true // reverse the animation on every second iteration
     );
   };
 
@@ -52,19 +52,7 @@ const BouncePulse = memo((props) => {
   });
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          opacity: props.opacity || 1,
-          top: props.top || 0,
-          bottom: props.bottom || 0,
-          left: props.left || 0,
-          right: props.right || 0,
-          position: props.position || 'absolute',
-        },
-      ]}
-    >
+    <View style={[styles.container, { opacity: props.opacity }]}>
       <Animated.View style={[styles.dot, animatedStyle1]} />
       <Animated.View style={[styles.dot, animatedStyle2]} />
       <Animated.View style={[styles.dot, animatedStyle3]} />
@@ -82,6 +70,7 @@ const styles = StyleSheet.create({
     height: 0.1 * screenHeight,
   },
   dot: {
+    top: 0.08 * screenHeight,
     backgroundColor: Colors.BB_darkRedPurple,
     width: 20,
     height: 20,

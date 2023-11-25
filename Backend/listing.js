@@ -12,7 +12,6 @@ const multer = require('multer');
 const sharp = require('sharp');
 const { encode } = require('blurhash');
 const path = require('path');
-const { exec } = require('child_process');
 
 const encodeImageToBlurhash = async (path) => {
   try {
@@ -29,35 +28,6 @@ const encodeImageToBlurhash = async (path) => {
     throw new Error(`Error processing image: ${err.message}`);
   }
 };
-
-function updateBlurhash(imagePath, filename) {
-  return new Promise((resolve, reject) => {
-    exec(
-      `node encodeImageToBlurhash.js ${String(imagePath)}`,
-      (error, stdout, stderr) => {
-        if (error) {
-          console.error('Error updating blurhash:', error);
-          reject(error);
-        } else {
-          const hash = stdout.trim();
-          console.log('hash:', hash);
-          db.run(
-            'UPDATE Images SET BlurHash = ? WHERE ImageURI = ?',
-            [hash, filename],
-            (err) => {
-              if (err) {
-                console.error('Error updating blurhash:', err);
-                reject(err);
-              } else {
-                resolve();
-              }
-            }
-          );
-        }
-      }
-    );
-  });
-}
 
 /**
  * Storage configuration for multer to handle image uploads.
