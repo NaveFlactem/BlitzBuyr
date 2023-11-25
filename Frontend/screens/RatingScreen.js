@@ -10,6 +10,8 @@ import {
 } from 'react-native'; // Import the Button component
 import { serverIp } from '../config.js';
 import { getStoredUsername } from './auth/Authenticate.js';
+import { useThemeContext } from '../components/visuals/ThemeProvider.js';
+
 
 const RatingScreen = ({ navigation, route }) => {
   const [selectedRating, setSelectedRating] = useState(0);
@@ -135,5 +137,6 @@ const styles = StyleSheet.create({
     left: '7%',
   },
 });
+
 
 export default RatingScreen;
