@@ -151,7 +151,9 @@ const HomeScreen = ({ route }) => {
     } finally {
       setIsLoading(false);
       setRefreshing(false);
-      swiperRef.current?.scrollTo(0);
+      if (swiperRef.current) {
+        swiperRef.current.scrollToOffset({ animated: true, offset: 0 });
+      }
       scrollY = 0;
     }
   }, [
@@ -263,9 +265,9 @@ const HomeScreen = ({ route }) => {
         style={styles.topTap}
         onStartShouldSetResponder={() => true}
         onResponderRelease={() => {
-          if (swiperRef.current != null) {
-            swiperRef.current.scrollTo(0);
-          }
+          if (swiperRef.current) {
+            swiperRef.current.scrollToOffset({ animated: true, offset: 0 });
+        }
         }}
       />
 
@@ -274,6 +276,7 @@ const HomeScreen = ({ route }) => {
           Platform.OS === 'ios' ? (
             <View style={styles.swiperContainer}>
               <IOSSwiperComponent
+                swiperRef={swiperRef}
                 listings={listings}
                 userLocation={userLocation}
                 removeListing={(listingId) => {
@@ -297,6 +300,7 @@ const HomeScreen = ({ route }) => {
           ) : (
             <View style={styles.swiperContainer}>
               <AndroidSwiperComponent
+                swiperRef={swiperRef}
                 listings={listings}
                 userLocation={userLocation}
                 removeListing={(listingId) => {
