@@ -34,8 +34,7 @@ import {
 } from '../screens/auth/Authenticate.js';
 import { parallaxLayout } from './parallax.ts';
 
-const default_blurhash =
-  '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
+const default_blurhash = 'LEHLk~WB2yk8pyo0adR*.7kCMdnj';
 
 function getDistance(lat1, lon1, lat2, lon2) {
   function toRadians(degrees) {
@@ -174,19 +173,21 @@ const CardOverlay = memo(
   }
 );
 
-const MemoizedImage = memo(({ source, style, contentFit, transition }) => {
-  //console.log(`${serverIp}/img/${source.uri}`);
-  return (
-    <Image
-      source={{ uri: `${serverIp}/img/${source.uri}` }}
-      style={style}
-      contentFit={contentFit}
-      transition={transition}
-      placeholder={source.blurhash ? source.blurhash : default_blurhash}
-      cachePolicy="memory-disk"
-    />
-  );
-});
+const MemoizedImage = memo(
+  ({ source, blurhash, style, contentFit, transition }) => {
+    //console.log(`${serverIp}/img/${source.uri}`);
+    return (
+      <Image
+        source={{ uri: source }}
+        style={style}
+        contentFit={contentFit}
+        transition={transition}
+        placeholder={blurhash ? blurhash : default_blurhash}
+        cachePolicy="memory-disk"
+      />
+    );
+  }
+);
 
 const CustomItem = memo(
   ({
@@ -231,7 +232,8 @@ const CustomItem = memo(
           >
             <AnimatedRN.View style={[{ transform: [{ scale: scale }] }]}>
               <MemoizedImage
-                source={source}
+                source={`${serverIp}/img/${source.uri}`}
+                blurhash={source.blurhash}
                 style={styles.image}
                 contentFit="contain"
                 transition={0}
@@ -246,9 +248,7 @@ const CustomItem = memo(
   }
 );
 
-const Listing = ({ item, origin, removeListing, userLocation, swiperRef }) => {
-  //console.log(item);
-  const [currentIndex, setCurrentIndex] = useState(0);
+const Listing = ({ item, origin, removeListing, userLocation }) => {
   const prevItemRef = useRef();
   useEffect(() => {
     if (prevItemRef.current === item) {
@@ -454,10 +454,8 @@ const Listing = ({ item, origin, removeListing, userLocation, swiperRef }) => {
                   })
                 }
               >
-                <Image
-                  source={{
-                    uri: `${serverIp}/api/pfp?username=${item.Username}`,
-                  }}
+                <MemoizedImage
+                  source={item.ProfilePicture}
                   style={styles.sellerPic}
                 />
               </TouchableWithoutFeedback>

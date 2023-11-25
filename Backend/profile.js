@@ -594,7 +594,6 @@ router.get('/pfp', function (req, res) {
   const username = req.query.username;
   if (!username) return res.status(400).json({ error: 'Missing username' });
 
-  // Query the database for a list of ratings
   db.get(
     'SELECT ProfilePicture FROM Profiles WHERE Username = ?',
     [username],

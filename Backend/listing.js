@@ -275,6 +275,7 @@ router.get('/listings', async function (req, res) {
         GROUP_CONCAT(DISTINCT Tags.TagName) AS tags,
         GROUP_CONCAT(DISTINCT Images.ImageURI) AS images,
         GROUP_CONCAT(DISTINCT Images.BlurHash) AS blurhashes,
+        Profiles.ProfilePicture,
         COALESCE((
           SELECT 1 
           FROM Likes 
@@ -299,6 +300,7 @@ router.get('/listings', async function (req, res) {
       LEFT JOIN ListingTags ON Listings.ListingId = ListingTags.ListingId
       LEFT JOIN Tags ON ListingTags.TagId = Tags.TagId
       LEFT JOIN Images ON Listings.ListingId = Images.ListingId
+      LEFT JOIN Profiles ON Profiles.Username = Listings.Username
       WHERE PostDate >= datetime('now', '-14 days')`;
 
     if (tags) {
@@ -342,6 +344,20 @@ router.get('/listings', async function (req, res) {
         resolve(rows);
       });
     });
+
+    const pfp = await new Promise((resolve, reject) =>
+      db.get(
+        'SELECT ProfilePicture FROM Profiles WHERE Username = ?',
+        [username],
+        (err, row) => {
+          if (err) {
+            console.error('Error querying the database:', err);
+            reject(err);
+          }
+          resolve(row);
+        }
+      )
+    );
 
     // Parse the rows
     const parsedRows = rows.map((row) => {
