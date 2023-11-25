@@ -586,14 +586,14 @@ class CreateListing extends Component {
   renderCurrencyOptions = () => {
     return this.state.currencies.map((currency) => (
       <TouchableOpacity
-        key={currency.symbol}
+        key={currency.name}
         onPress={() =>
           this.handleCurrencySelection(currency.name, currency.symbol)
         }
       >
         <Text style={styles.currencyOption}>
           {this.state.selectedCurrency === currency.name ? '✓ ' : ''}
-          {currency.name}
+          {`${currency.name} ${currency.symbol}`}
         </Text>
       </TouchableOpacity>
     ));

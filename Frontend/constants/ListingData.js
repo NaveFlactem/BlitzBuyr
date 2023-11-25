@@ -26,13 +26,13 @@ export const transactionOptions = [
 ];
 
 export const currencies = [
-  { name: 'USD $', symbol: '$', selected: false },
-  { name: 'EUR €', symbol: '€', selected: false },
-  { name: 'MXN $', symbol: 'MXN $', selected: false },
-  { name: 'CAD $', symbol: 'CAD $', selected: false },
-  { name: 'GBP ₤', symbol: '₤', selected: false },
-  { name: 'AUD $', symbol: 'AUD $', selected: false },
-  { name: 'BRL R$', symbol: 'R$', selected: false },
-  { name: 'JPY ¥', symbol: '¥', selected: false },
-  { name: 'PHP ₱', symbol: '₱', selected: false },
+  { name: 'USD', symbol: '$', selected: false },
+  { name: 'EUR', symbol: '€', selected: false },
+  { name: 'MXN', symbol: '$', selected: false },
+  { name: 'CAD', symbol: '$', selected: false },
+  { name: 'GBP', symbol: '₤', selected: false },
+  { name: 'AUD', symbol: '$', selected: false },
+  { name: 'BRL', symbol: 'R$', selected: false },
+  { name: 'JPY', symbol: '¥', selected: false },
+  { name: 'PHP', symbol: '₱', selected: false },
 ];
