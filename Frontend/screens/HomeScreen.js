@@ -374,8 +374,8 @@ const HomeScreen = ({ route }) => {
     fetchListings();
   };
 
-  const scrollY = useSharedValue(0);
-  refreshThreshold = 0.1 * screenHeight;
+  let scrollY = useSharedValue(0);
+  refreshThreshold = 0.06 * screenHeight;
 
   const onScroll = (event) => {
     scrollY.value = event.nativeEvent.contentOffset.y;
@@ -493,6 +493,7 @@ const HomeScreen = ({ route }) => {
                     prevListings.filter((item) => item.ListingId !== listingId),
                   );
                 }}
+                onScroll={onScroll}
                 refreshControl={
                   <RefreshControl
                     refreshing={refreshing}
