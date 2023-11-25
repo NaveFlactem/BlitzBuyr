@@ -5,7 +5,7 @@ import BouncePulse from '../visuals/BouncePulse';
 import { FlatList } from 'react-native';
 
 const IOSSwiperComponent = memo(
-  ({ listings, refreshControl, removeListing, userLocation, onScroll }) => {
+  ({ swiperRef, listings, refreshControl, removeListing, userLocation, onScroll }) => {
     const renderItem = ({ item }) => (
       <Listing
         item={item}
@@ -18,6 +18,7 @@ const IOSSwiperComponent = memo(
 
     return (
       <FlatList
+        ref={swiperRef}
         initialNumToRender={1}
         maxToRenderPerBatch={1}
         windowSize={2}

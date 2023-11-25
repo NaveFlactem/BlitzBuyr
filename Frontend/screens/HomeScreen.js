@@ -17,9 +17,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import LocationSlider, {
-  handleLocationPress,
-} from '../components/LocationSlider';
+import LocationSlider from '../components/LocationSlider';
 import NoListings from '../components/noListings';
 import NoWifi from '../components/noWifi';
 import AndroidSwiperComponent from '../components/swipers/AndroidSwiperComponent.js';
@@ -58,17 +56,9 @@ const HomeScreen = ({ route }) => {
   const translateX = useSharedValue(-screenWidth);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [distance, setDistance] = useState(30);
-
-  useEffect(() => {
-    const fetchDistance = async () => {
-      const initialDistance = await Settings.getDistance();
-      console.log('Initial distance:', initialDistance);
-      setDistance(initialDistance);
-    };
-
-    fetchDistance();
-  }, []);
-
+  const [isLocationSliderVisible, setIsLocationSliderVisible] = useState(false);
+  const locationSliderHeight = useSharedValue(-100); // Start off-screen
+  
   const toggleTagDrawer = () => {
     if (translateX.value === -screenWidth * 0.6) {
       // Drawer is open, so close it
@@ -84,7 +74,18 @@ const HomeScreen = ({ route }) => {
       setIsDrawerOpen(true);
     }
   };
-
+  
+  const handleLocationPress = () => {
+    if (isLocationSliderVisible) {
+      locationSliderHeight.value = withTiming(-100, { duration: 100 }); // Hide slider
+      setIsLocationSliderVisible(false);
+      fetchListings();
+    } else {
+      locationSliderHeight.value = withTiming(0, { duration: 100 }); // Show slider
+      setIsLocationSliderVisible(true);
+    }
+  };
+  
   const getUserLocation = async () => {
     console.log("Getting user's location...");
 
@@ -98,16 +99,40 @@ const HomeScreen = ({ route }) => {
     }
   };
 
-  const fetchListings = useCallback(async () => {
-    console.log('Fetching listings...');
-    console.log('Tags:', selectedTags);
-    console.log('Distance:', distance < 510 ? distance : 'No Limit');
-    if (route.params?.refresh) route.params.refresh = false;
+  retryButtonHandler = () => {
+    setRefreshing(true);
+    fetchListings();
+  };
+  
+  let scrollY = useSharedValue(0);
+  const onScroll = (event) => {
+    scrollY.value = event.nativeEvent.contentOffset.y;
+  };
 
-    try {
-      const { latitude, longitude } = userLocation;
-      const mergedTags = '&tags[]=' + selectedTags.join('&tags[]=');
-      const mergedConditions =
+  const onRefresh = React.useCallback(() => {
+    console.log('refreshing...');
+    setRefreshing(true);
+    if (userLocation) fetchListings();
+    else getUserLocation();
+  }, []);
+
+  const debouncedFetchListings = useCallback(
+    debounce(() => {
+      fetchListings();
+    }, 1000),
+    []
+    ); 
+    
+    const fetchListings = useCallback(async () => {
+      console.log('Fetching listings...');
+      console.log('Tags:', selectedTags);
+      console.log('Distance:', distance < 510 ? distance : 'No Limit');
+      if (route.params?.refresh) route.params.refresh = false;
+      
+      try {
+        const { latitude, longitude } = userLocation;
+        const mergedTags = '&tags[]=' + selectedTags.join('&tags[]=');
+        const mergedConditions =
         '&conditions[]=' + selectedConditions.join('&conditions[]=');
       const mergedTransactions =
         '&transactions[]=' + selectedTransactions.join('&transactions[]=');
@@ -151,7 +176,9 @@ const HomeScreen = ({ route }) => {
     } finally {
       setIsLoading(false);
       setRefreshing(false);
-      swiperRef.current?.scrollTo(0);
+      if (swiperRef.current) {
+        swiperRef.current.scrollToOffset({ animated: true, offset: 0 });
+      }
       scrollY = 0;
     }
   }, [
@@ -173,19 +200,15 @@ const HomeScreen = ({ route }) => {
     };
   }, []);
 
-  const [isLocationSliderVisible, setIsLocationSliderVisible] = useState(false);
-  const locationSliderHeight = useSharedValue(-100); // Start off-screen
+  useEffect(() => {
+    const fetchDistance = async () => {
+      const initialDistance = await Settings.getDistance();
+      console.log('Initial distance:', initialDistance);
+      setDistance(initialDistance);
+    };
 
-  const handleLocationPress = () => {
-    if (isLocationSliderVisible) {
-      locationSliderHeight.value = withTiming(-100, { duration: 100 }); // Hide slider
-      setIsLocationSliderVisible(false);
-      fetchListings();
-    } else {
-      locationSliderHeight.value = withTiming(0, { duration: 100 }); // Show slider
-      setIsLocationSliderVisible(true);
-    }
-  };
+    fetchDistance();
+  }, []);
 
   // This will run on mount
   useEffect(() => {
@@ -209,30 +232,6 @@ const HomeScreen = ({ route }) => {
       else getUserLocation();
     }
   }, [route.params]);
-
-  retryButtonHandler = () => {
-    setRefreshing(true);
-    fetchListings();
-  };
-
-  let scrollY = useSharedValue(0);
-  const onScroll = (event) => {
-    scrollY.value = event.nativeEvent.contentOffset.y;
-  };
-
-  const onRefresh = React.useCallback(() => {
-    console.log('refreshing...');
-    setRefreshing(true);
-    if (userLocation) fetchListings();
-    else getUserLocation();
-  }, []);
-
-  const debouncedFetchListings = useCallback(
-    debounce(() => {
-      fetchListings();
-    }, 1000),
-    []
-  ); // Adjust debounce time as needed
 
   const LoadingView = memo(() => (
     <View style={styles.loadingContainer}>
@@ -263,9 +262,9 @@ const HomeScreen = ({ route }) => {
         style={styles.topTap}
         onStartShouldSetResponder={() => true}
         onResponderRelease={() => {
-          if (swiperRef.current != null) {
-            swiperRef.current.scrollTo(0);
-          }
+          if (swiperRef.current) {
+            swiperRef.current.scrollToOffset({ animated: true, offset: 0 });
+        }
         }}
       />
 
@@ -274,6 +273,7 @@ const HomeScreen = ({ route }) => {
           Platform.OS === 'ios' ? (
             <View style={styles.swiperContainer}>
               <IOSSwiperComponent
+                swiperRef={swiperRef}
                 listings={listings}
                 userLocation={userLocation}
                 removeListing={(listingId) => {
@@ -297,6 +297,7 @@ const HomeScreen = ({ route }) => {
           ) : (
             <View style={styles.swiperContainer}>
               <AndroidSwiperComponent
+                swiperRef={swiperRef}
                 listings={listings}
                 userLocation={userLocation}
                 removeListing={(listingId) => {
