@@ -1,6 +1,5 @@
-/**
- * Express application for serving static files and handling API requests.
- * @module API
+/** API endpoints related to Listings.
+ * @module API/Listings
  */
 
 const express = require('express');
@@ -13,6 +12,16 @@ const sharp = require('sharp');
 const { encode } = require('blurhash');
 const path = require('path');
 
+/** Encodes an image to Blurhash format.
+ *
+ * @function
+ * @async
+ * @name encodeImageToBlurhash
+ *
+ * @param {string} path - The path to the image file.
+ * @returns {Promise<string>} A Promise that resolves to the Blurhash string.
+ * @throws {Error} If there's an error processing the image.
+ */
 const encodeImageToBlurhash = async (path) => {
   try {
     const { data: buffer, info: metadata } = await sharp(path)
@@ -29,8 +38,7 @@ const encodeImageToBlurhash = async (path) => {
   }
 };
 
-/**
- * Storage configuration for multer to handle image uploads.
+/** Storage configuration for multer to handle image uploads.
  * @constant {Object} imageStorage
  * @property {string} destination - The directory where uploaded files will be stored.
  * @property {Function} filename - Generates a unique filename for each uploaded file.
@@ -47,8 +55,7 @@ const imageStorage = multer.diskStorage({
   },
 });
 
-/**
- * Multer configuration for handling image uploads.
+/** Multer configuration for handling image uploads.
  * @constant {Object} imageUpload
  * @property {Object} storage - The storage configuration for multer.
  * @property {Object} limits - The limits for uploaded files, such as file size.
@@ -56,10 +63,15 @@ const imageStorage = multer.diskStorage({
 const imageUpload = multer({
   storage: imageStorage,
   limits: {
-    fileSize: 10 * 1024 * 1024, // Adjust the file size limit as needed
+    fileSize: 10 * 1024 * 1024,
   },
-}).any(); // Use upload.any() to accept any type of field
+}).any();
 
+/** Storage configuration for multer to handle image uploads.
+ * @constant {Object} imageStorage
+ * @property {string} destination - The directory where uploaded files will be stored.
+ * @property {Function} filename - Generates a unique filename for each uploaded file.
+ */
 const getCityFromCoords = async (latitude, longitude) => {
   try {
     const response = await fetch(
@@ -73,8 +85,7 @@ const getCityFromCoords = async (latitude, longitude) => {
   }
 };
 
-/**
- * POST request endpoint for creating a new listing.
+/** POST request endpoint for creating a new listing.
  *
  * @function
  * @name createListing
@@ -232,8 +243,7 @@ router.post('/createListing', imageUpload, async function (req, res) {
   }
 });
 
-/**
- * GET request endpoint at /api/listings for retrieving a list of all listings.
+/** GET request endpoint at /api/listings for retrieving a list of all listings.
  *
  * @function
  * @name getListings
@@ -392,8 +402,7 @@ router.get('/listings', async function (req, res) {
   }
 });
 
-/**
- * Handles deleting of accounts.
+/** Handles deleting of accounts.
  *
  * @function
  * @name handleDeleteListings
@@ -441,8 +450,7 @@ router.delete('/deletelistings', function (req, res) {
   }
 });
 
-/**
- * GET request endpoint at /api/images for retrieving a list of all images or a list of images belonging to a specific listing using the 'listingId' query parameter.
+/** GET request endpoint at /api/images for retrieving a list of all images or a list of images belonging to a specific listing using the 'listingId' query parameter.
  *
  * @function
  * @name getImages
@@ -494,8 +502,7 @@ router.get('/images', function (req, res) {
   }
 });
 
-/**
- * Handles deleting images.
+/** Handles deleting images.
  *
  * @function
  * @name handleDeleteImages
@@ -543,8 +550,7 @@ router.delete('/deleteimages', function (req, res) {
   }
 });
 
-/**
- * Handles deleting a listing.
+/** Handles deleting a listing.
  *
  * @function
  * @name handleDeleteListing
@@ -614,91 +620,5 @@ router.delete('/deletelisting', async function (req, res) {
   }
 });
 
-/**
- * Retrieves images associated with listings and combines them with listing data.
- *
- * @function
- * @async
- * @name getImagesFromListings
- *
- * @param {Array} listingsResult - An array of listing objects to retrieve images for.
- *
- * @returns {Promise<Array>} A Promise that resolves to an array of combined data objects. Each combined object includes listing information, associated images, and a flag indicating whether the listing is liked.
- *
- * @throws {Error} If there's an error during the database query.
- */
-getImagesFromListings = async (listingsResult, likedListingsResult) => {
-  const imagesResult = await new Promise((resolve, reject) => {
-    const listingIds = listingsResult.map((listing) => listing.ListingId);
-    if (listingIds.length === 0) {
-      resolve([]);
-    } else {
-      const placeholders = listingIds.map(() => '?').join(', ');
-      db.all(
-        `SELECT * FROM Images i WHERE i.ListingId IN (${placeholders})`,
-        listingIds,
-        (err, rows) => {
-          if (err) {
-            console.error('Error querying the database (third query):', err);
-            reject(err);
-          }
-          resolve(rows);
-        }
-      );
-    }
-  });
-
-  // Fetch ratings for each listing's username
-  const ratingsResult = await new Promise((resolve, reject) => {
-    const usernames = listingsResult.map((listing) => listing.Username);
-    if (usernames.length === 0) {
-      resolve([]);
-    } else {
-      const placeholders = usernames.map(() => '?').join(', ');
-      db.all(
-        `SELECT UserRated, AVG(Rating) AS AverageRating, COUNT(*) AS RatingCount FROM Ratings WHERE UserRated IN (${placeholders}) GROUP BY UserRated`,
-        usernames,
-        (err, rows) => {
-          if (err) {
-            console.error('Error querying the database (ratings query):', err);
-            reject(err);
-          }
-          resolve(rows);
-        }
-      );
-    }
-  });
-
-  const combinedData = listingsResult.map((listing) => {
-    const isLiked = likedListingsResult.some(
-      (likedListing) => likedListing.ListingId === listing.ListingId
-    );
-    const matchingImages = imagesResult
-      .filter((image) => image.ListingId === listing.ListingId)
-      .map((image) => ({
-        uri: image.ImageURI,
-        blurhash: image.BlurHash,
-      }));
-
-    // Get the ratings for the listing's username
-    const usernameRatings = {};
-    ratingsResult.forEach((rating) => {
-      if (rating.UserRated === listing.Username) {
-        usernameRatings.averageRating = rating.AverageRating;
-        usernameRatings.ratingCount = rating.RatingCount;
-      }
-    });
-
-    return {
-      ...listing,
-      images: matchingImages,
-      liked: isLiked,
-      ratings: usernameRatings, // Add the ratings for the listing's username
-    };
-  });
-
-  return combinedData;
-};
-
 // Export the router
-module.exports = { router, getImagesFromListings, imageStorage, imageUpload };
+module.exports = { router, imageStorage, imageUpload };

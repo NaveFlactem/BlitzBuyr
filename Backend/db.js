@@ -1,13 +1,11 @@
-/**
- * Sqlite3 database for storing and managing data in a localized and embedded manner within a Node.js App.
+/** Sqlite3 database for storing and managing data in a localized and embedded manner within a Node.js App.
  * @module Database
  */
 
 //required modules
 const sqlite3 = require('sqlite3').verbose();
 
-/**
- * Initializing database connection.
+/** Initializing database connection.
  *
  * @function
  * @name sqlite3.Database
@@ -23,6 +21,13 @@ const db = new sqlite3.Database('./blitzbuyr.db', (err) => {
   }
 });
 
+/** Extracts columns from the given table definition.
+ *
+ * @function
+ * @name extractColumnsFromDefinition
+ * @param {string} definition - The SQL table definition.
+ * @returns {string} The normalized column definitions.
+ */
 function extractColumnsFromDefinition(definition) {
   const matchResult = definition.match(/\(([\s\S]+)\)/);
   return matchResult
@@ -30,6 +35,14 @@ function extractColumnsFromDefinition(definition) {
     : '';
 }
 
+/** Checks if two table definitions are equal.
+ *
+ * @function
+ * @name areTableDefinitionsEqual
+ * @param {string} definition1 - The first table definition.
+ * @param {string} definition2 - The second table definition.
+ * @returns {boolean} True if the table definitions are equal, false otherwise.
+ */
 function areTableDefinitionsEqual(definition1, definition2) {
   // Extract and compare the normalized column definitions
   const columns1 = extractColumnsFromDefinition(definition1);
@@ -39,6 +52,13 @@ function areTableDefinitionsEqual(definition1, definition2) {
   return columns1 === columns2;
 }
 
+/** Creates or updates a table in the database based on the provided table definition.
+ *
+ * @function
+ * @name createOrUpdateTable
+ * @param {Object} db - The SQLite database object.
+ * @param {string} tableDefinition - The SQL table definition.
+ */
 function createOrUpdateTable(db, tableDefinition) {
   db.serialize(() => {
     // Extract table name from the definition
@@ -128,6 +148,11 @@ function createOrUpdateTable(db, tableDefinition) {
 }
 
 // Accounts Table //
+/** SQL table definition for the Accounts table.
+ * @constant
+ * @name accountsTable
+ * @type {string}
+ */
 const accountsTable = `
 CREATE TABLE IF NOT EXISTS Accounts (
   Username TEXT PRIMARY KEY,
@@ -136,6 +161,11 @@ CREATE TABLE IF NOT EXISTS Accounts (
   );`;
 
 // Listings Table //
+/** SQL table definition for the Listings table.
+ * @constant
+ * @name listingsTable
+ * @type {string}
+ */
 const listingsTable = `
 CREATE TABLE IF NOT EXISTS Listings (
   ListingId INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -154,12 +184,23 @@ CREATE TABLE IF NOT EXISTS Listings (
   FOREIGN KEY (Username) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE
   );`;
 
+// Tags Table //
+/** SQL table definition for the Tags table.
+ * @constant
+ * @name tagDetails
+ * @type {string}
+ */
 const tagDetails = `
 CREATE TABLE IF NOT EXISTS Tags (
   TagId INTEGER PRIMARY KEY AUTOINCREMENT,
   TagName TEXT UNIQUE
 );`;
 
+/** SQL table definition for the ListingTags table.
+ * @constant
+ * @name tagTable
+ * @type {string}
+ */
 const tagTable = `
 CREATE TABLE IF NOT EXISTS ListingTags (
   ListingId INTEGER,
@@ -171,6 +212,11 @@ CREATE TABLE IF NOT EXISTS ListingTags (
 );`;
 
 // Images Table //
+/** SQL table definition for the Images table.
+ * @constant
+ * @name images
+ * @type {string}
+ */
 const images = `
 CREATE TABLE IF NOT EXISTS Images (
   ImageId INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -181,6 +227,11 @@ CREATE TABLE IF NOT EXISTS Images (
 );`;
 
 // Rating Table //
+/** SQL table definition for the Ratings table.
+ * @constant
+ * @name rating
+ * @type {string}
+ */
 const rating = `
 CREATE TABLE IF NOT EXISTS Ratings (
   UserRated TEXT, 
@@ -192,6 +243,11 @@ CREATE TABLE IF NOT EXISTS Ratings (
   );`;
 
 // Profile Table //
+/** SQL table definition for the Profiles table.
+ * @constant
+ * @name profile
+ * @type {string}
+ */
 const profile = `
 CREATE TABLE IF NOT EXISTS Profiles (
   Username TEXT,
@@ -202,6 +258,11 @@ CREATE TABLE IF NOT EXISTS Profiles (
   );`;
 
 // Contact Info Table
+/** SQL table definition for the ContactInfo table.
+ * @constant
+ * @name contactInfo
+ * @type {string}
+ */
 const contactInfo = `
 CREATE TABLE IF NOT EXISTS ContactInfo (
   Username TEXT,
@@ -216,6 +277,11 @@ CREATE TABLE IF NOT EXISTS ContactInfo (
 );`;
 
 // Settings
+/** SQL table definition for the Settings table.
+ * @constant
+ * @name settings
+ * @type {string}
+ */
 const settings = `
 CREATE TABLE IF NOT EXISTS Settings (
   Username TEXT,
@@ -230,6 +296,11 @@ CREATE TABLE IF NOT EXISTS Settings (
 );`;
 
 // Likes Table //
+/** SQL table definition for the Likes table.
+ * @constant
+ * @name likes
+ * @type {string}
+ */
 const likes = `
 CREATE TABLE IF NOT EXISTS Likes (
   Username Text,
@@ -239,7 +310,11 @@ CREATE TABLE IF NOT EXISTS Likes (
   FOREIGN KEY (ListingId) REFERENCES Listings (ListingId) ON DELETE CASCADE ON UPDATE CASCADE
   );`;
 
-// Create tables using Promises
+/** Array containing table information.
+ * @constant
+ * @name tables
+ * @type {Array<Object>}
+ */
 const tables = [
   { sql: accountsTable, name: 'Accounts' },
   { sql: listingsTable, name: 'Listings' },
@@ -253,8 +328,7 @@ const tables = [
   { sql: settings, name: 'Settings' },
 ];
 
-/**
- * Loops through globally initialized list that holds all SQL create statements.
+/** Loops through globally initialized list that holds all SQL create statements.
  *
  * @function
  * @name createTables

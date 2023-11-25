@@ -2,5 +2,14 @@
   "dependencies": {
     "@react-native-picker/picker": "^2.5.1",
     "react-native-picker-select": "^9.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "jsdoc": "jsdoc -a all -c jsdoc.json -r"
+  },
+  "devDependencies": {
+    "docdash": "^2.0.2",
+    "jsdoc": "^4.0.2",
+    "jsdoc-to-markdown": "^8.0.0"
   }
 }

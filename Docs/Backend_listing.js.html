@@ -1,23 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="utf-8">
-    <title>JSDoc: Source: Backend/listing.js</title>
-
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
+    <title>Backend/listing.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
 <body>
 
-<div id="main">
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <h1 class="page-title">Source: Backend/listing.js</h1>
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/NaveFlactem/BlitzBuyr" target="_blank" class="menu-item" id="repository" >Github repo</a></h2><h3>Classes</h3><ul><li><a href="CreateListing.html">CreateListing</a><ul class='methods'><li data-type='method' style='display: none;'><a href="CreateListing.html#checkValidListing">checkValidListing</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#componentDidMount">componentDidMount</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#destructor">destructor</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#getPermissionAsync">getPermissionAsync</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handleCameraPick">handleCameraPick</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handleCreateListing">handleCreateListing</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handleDeletePhoto">handleDeletePhoto</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handleDragRelease">handleDragRelease</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handleDragStart">handleDragStart</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handleImagePick">handleImagePick</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handleLibraryPick">handleLibraryPick</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handlePriceChange">handlePriceChange</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handleTagPress">handleTagPress</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#manipulateImage">manipulateImage</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#processImage">processImage</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#processSelectedImages">processSelectedImages</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#render_item">render_item</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-API_Accounts.html">API/Accounts</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~authenticateUser">authenticateUser</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~getAccounts">getAccounts</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleDeleteAccounts">handleDeleteAccounts</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleLoginRequest">handleLoginRequest</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleRegistrationRequest">handleRegistrationRequest</a></li></ul></li><li><a href="module-API_Listings.html">API/Listings</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~createListing">createListing</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~encodeImageToBlurhash">encodeImageToBlurhash</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~getImages">getImages</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~getListings">getListings</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteImages">handleDeleteImages</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteListing">handleDeleteListing</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteListings">handleDeleteListings</a></li></ul></li><li><a href="module-API_Profile.html">API/Profile</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~deleteAllLikes">deleteAllLikes</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~deleteRating">deleteRating</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getLikes">getLikes</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getProfilePicture">getProfilePicture</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getRatings">getRatings</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getUserProfile">getUserProfile</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~handleLike">handleLike</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~handleUnlike">handleUnlike</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~rateUser">rateUser</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~updateContactInfo">updateContactInfo</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~updateProfile">updateProfile</a></li></ul></li><li><a href="module-Database.html">Database</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-Database.html#~areTableDefinitionsEqual">areTableDefinitionsEqual</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~createOrUpdateTable">createOrUpdateTable</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~createTables">createTables</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~extractColumnsFromDefinition">extractColumnsFromDefinition</a></li></ul></li><li><a href="module-Server.html">Server</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-Server.html#~getRoot">getRoot</a></li><li data-type='method' style='display: none;'><a href="module-Server.html#~requestLogger">requestLogger</a></li></ul></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Backend/listing.js</h1>
+    
 
     
 
@@ -26,9 +47,8 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * Express application for serving static files and handling API requests.
- * @module API
+            <pre class="prettyprint source linenums"><code>/** API endpoints related to Listings.
+ * @module API/Listings
  */
 
 const express = require('express');
@@ -41,6 +61,16 @@ const sharp = require('sharp');
 const { encode } = require('blurhash');
 const path = require('path');
 
+/** Encodes an image to Blurhash format.
+ *
+ * @function
+ * @async
+ * @name encodeImageToBlurhash
+ *
+ * @param {string} path - The path to the image file.
+ * @returns {Promise&lt;string>} A Promise that resolves to the Blurhash string.
+ * @throws {Error} If there's an error processing the image.
+ */
 const encodeImageToBlurhash = async (path) => {
   try {
     const { data: buffer, info: metadata } = await sharp(path)
@@ -57,8 +87,7 @@ const encodeImageToBlurhash = async (path) => {
   }
 };
 
-/**
- * Storage configuration for multer to handle image uploads.
+/** Storage configuration for multer to handle image uploads.
  * @constant {Object} imageStorage
  * @property {string} destination - The directory where uploaded files will be stored.
  * @property {Function} filename - Generates a unique filename for each uploaded file.
@@ -75,8 +104,7 @@ const imageStorage = multer.diskStorage({
   },
 });
 
-/**
- * Multer configuration for handling image uploads.
+/** Multer configuration for handling image uploads.
  * @constant {Object} imageUpload
  * @property {Object} storage - The storage configuration for multer.
  * @property {Object} limits - The limits for uploaded files, such as file size.
@@ -84,10 +112,15 @@ const imageStorage = multer.diskStorage({
 const imageUpload = multer({
   storage: imageStorage,
   limits: {
-    fileSize: 10 * 1024 * 1024, // Adjust the file size limit as needed
+    fileSize: 10 * 1024 * 1024,
   },
-}).any(); // Use upload.any() to accept any type of field
+}).any();
 
+/** Storage configuration for multer to handle image uploads.
+ * @constant {Object} imageStorage
+ * @property {string} destination - The directory where uploaded files will be stored.
+ * @property {Function} filename - Generates a unique filename for each uploaded file.
+ */
 const getCityFromCoords = async (latitude, longitude) => {
   try {
     const response = await fetch(
@@ -101,8 +134,7 @@ const getCityFromCoords = async (latitude, longitude) => {
   }
 };
 
-/**
- * POST request endpoint for creating a new listing.
+/** POST request endpoint for creating a new listing.
  *
  * @function
  * @name createListing
@@ -260,8 +292,7 @@ router.post('/createListing', imageUpload, async function (req, res) {
   }
 });
 
-/**
- * GET request endpoint at /api/listings for retrieving a list of all listings.
+/** GET request endpoint at /api/listings for retrieving a list of all listings.
  *
  * @function
  * @name getListings
@@ -420,8 +451,7 @@ router.get('/listings', async function (req, res) {
   }
 });
 
-/**
- * Handles deleting of accounts.
+/** Handles deleting of accounts.
  *
  * @function
  * @name handleDeleteListings
@@ -469,8 +499,7 @@ router.delete('/deletelistings', function (req, res) {
   }
 });
 
-/**
- * GET request endpoint at /api/images for retrieving a list of all images or a list of images belonging to a specific listing using the 'listingId' query parameter.
+/** GET request endpoint at /api/images for retrieving a list of all images or a list of images belonging to a specific listing using the 'listingId' query parameter.
  *
  * @function
  * @name getImages
@@ -522,8 +551,7 @@ router.get('/images', function (req, res) {
   }
 });
 
-/**
- * Handles deleting images.
+/** Handles deleting images.
  *
  * @function
  * @name handleDeleteImages
@@ -571,8 +599,7 @@ router.delete('/deleteimages', function (req, res) {
   }
 });
 
-/**
- * Handles deleting a listing.
+/** Handles deleting a listing.
  *
  * @function
  * @name handleDeleteListing
@@ -642,94 +669,8 @@ router.delete('/deletelisting', async function (req, res) {
   }
 });
 
-/**
- * Retrieves images associated with listings and combines them with listing data.
- *
- * @function
- * @async
- * @name getImagesFromListings
- *
- * @param {Array} listingsResult - An array of listing objects to retrieve images for.
- *
- * @returns {Promise&lt;Array>} A Promise that resolves to an array of combined data objects. Each combined object includes listing information, associated images, and a flag indicating whether the listing is liked.
- *
- * @throws {Error} If there's an error during the database query.
- */
-getImagesFromListings = async (listingsResult, likedListingsResult) => {
-  const imagesResult = await new Promise((resolve, reject) => {
-    const listingIds = listingsResult.map((listing) => listing.ListingId);
-    if (listingIds.length === 0) {
-      resolve([]);
-    } else {
-      const placeholders = listingIds.map(() => '?').join(', ');
-      db.all(
-        `SELECT * FROM Images i WHERE i.ListingId IN (${placeholders})`,
-        listingIds,
-        (err, rows) => {
-          if (err) {
-            console.error('Error querying the database (third query):', err);
-            reject(err);
-          }
-          resolve(rows);
-        }
-      );
-    }
-  });
-
-  // Fetch ratings for each listing's username
-  const ratingsResult = await new Promise((resolve, reject) => {
-    const usernames = listingsResult.map((listing) => listing.Username);
-    if (usernames.length === 0) {
-      resolve([]);
-    } else {
-      const placeholders = usernames.map(() => '?').join(', ');
-      db.all(
-        `SELECT UserRated, AVG(Rating) AS AverageRating, COUNT(*) AS RatingCount FROM Ratings WHERE UserRated IN (${placeholders}) GROUP BY UserRated`,
-        usernames,
-        (err, rows) => {
-          if (err) {
-            console.error('Error querying the database (ratings query):', err);
-            reject(err);
-          }
-          resolve(rows);
-        }
-      );
-    }
-  });
-
-  const combinedData = listingsResult.map((listing) => {
-    const isLiked = likedListingsResult.some(
-      (likedListing) => likedListing.ListingId === listing.ListingId
-    );
-    const matchingImages = imagesResult
-      .filter((image) => image.ListingId === listing.ListingId)
-      .map((image) => ({
-        uri: image.ImageURI,
-        blurhash: image.BlurHash,
-      }));
-
-    // Get the ratings for the listing's username
-    const usernameRatings = {};
-    ratingsResult.forEach((rating) => {
-      if (rating.UserRated === listing.Username) {
-        usernameRatings.averageRating = rating.AverageRating;
-        usernameRatings.ratingCount = rating.RatingCount;
-      }
-    });
-
-    return {
-      ...listing,
-      images: matchingImages,
-      liked: isLiked,
-      ratings: usernameRatings, // Add the ratings for the listing's username
-    };
-  });
-
-  return combinedData;
-};
-
 // Export the router
-module.exports = { router, getImagesFromListings, imageStorage, imageUpload };
+module.exports = { router, imageStorage, imageUpload };
 </code></pre>
         </article>
     </section>
@@ -737,19 +678,25 @@ module.exports = { router, getImagesFromListings, imageStorage, imageUpload };
 
 
 
+    
+    
 </div>
-
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-API.html">API</a></li><li><a href="module-Database.html">Database</a></li><li><a href="module-Server.html">Server</a></li></ul><h3>Classes</h3><ul><li><a href="CreateListing.html">CreateListing</a></li></ul>
-</nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat Nov 25 2023 04:00:20 GMT-0800 (Pacific Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat Nov 25 2023 05:15:36 GMT-0800 (Pacific Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
 </body>
 </html>

@@ -1,19 +1,16 @@
-/**
- * Express application for serving static files and handling API requests.
- * @module API
+/** API Endpoints related to user Profiles.
+ * @module API/Profile
  */
 
 const express = require('express');
 const router = express.Router();
 var bodyParser = require('body-parser');
-const { getImagesFromListings } = require('./listing');
 router.use(bodyParser.urlencoded({ extended: true })).use(bodyParser.json());
 const db = require('./db').db;
-const { imageStorage, imageUpload } = require('./listing');
+const { imageUpload } = require('./listing');
 const { authenticateUser } = require('./account'); // FIXME: Use this like, everywhere
 
-/**
- * Handles a user liking a listing.
+/** Handles a user liking a listing.
  *
  * @function
  * @name handleLike
@@ -58,8 +55,7 @@ router.post('/like', function (req, res) {
   );
 });
 
-/**
- * Handles a user unliking a listing.
+/** Handles a user unliking a listing.
  *
  * @function
  * @name handleUnlike
@@ -104,8 +100,7 @@ router.delete('/like', function (req, res) {
   );
 });
 
-/**
- * GET request endpoint at /api/likes for retrieving a list of likes.
+/** GET request endpoint at /api/likes for retrieving a list of likes.
  *
  * @function
  * @name getLikes
@@ -140,8 +135,7 @@ router.get('/likes', function (req, res) {
   });
 });
 
-/**
- * DELETE request endpoint at /api/likes for deleting all likes.
+/** DELETE request endpoint at /api/likes for deleting all likes.
  *
  * @function
  * @name deleteAllLikes
@@ -174,8 +168,7 @@ router.delete('/likes', function (req, res) {
   });
 });
 
-/**
- * Handles rating a user.
+/** Handles rating a user.
  *
  * @function
  * @name rateUser
@@ -243,22 +236,31 @@ router.post('/rate', async function (req, res) {
   }
 });
 
-/**
- * Handles removing a user's rating.
+/** DELETE request endpoint at /api/rate for deleting a rating.
  *
  * @function
- * @name removeUserRating
+ * @name deleteRating
  *
- * @param {Object} req - Express.js request object with a JSON body containing 'username' and 'userRated'.
- * @param {Object} res - Express.js response object.
+ * @param {object} req - The HTTP request object.
+ * @param {object} res - The HTTP response object.
  *
  * @example
  * // Sample HTTP DELETE request to '/api/rate'
- * // Request body should contain a JSON object with 'username' and 'userRated' fields.
- * const requestPayload = {
- *   "username": "currentUser",
- *   "userRated": "ratedUser"
- * };
+ * const deleteRatingData = {
+ *     username: "testuser",
+ *     userRated: "rateduser",
+ *   };
+ * const deleteRatingResponse = await fetch(`${serverIp}/api/rate`, {
+ *     method: "DELETE",
+ *     headers: {
+ *       "Content-Type": "application/json",
+ *     },
+ *     body: JSON.stringify(deleteRatingData),
+ *   });
+ *
+ * if (deleteRatingResponse.status > 201) {
+ *     console.log("Error Deleting Rating:", deleteRatingResponse.status);
+ * }
  */
 router.delete('/rate', function (req, res) {
   const { username, userRated } = req.body;
@@ -279,14 +281,13 @@ router.delete('/rate', function (req, res) {
   );
 });
 
-/**
- * GET request endpoint at /api/ratings for retrieving a list of ratings.
+/** GET request endpoint at /api/ratings for retrieving a list of ratings.
  *
  * @function
  * @name getRatings
  *
- * @param {Object} req - Express.js request object.
- * @param {Object} res - Express.js response object.
+ * @param {object} req - The HTTP request object.
+ * @param {object} res - The HTTP response object.
  *
  * @example
  * // Sample HTTP GET request to '/api/ratings'
@@ -295,7 +296,7 @@ router.delete('/rate', function (req, res) {
  *     headers: {
  *       "Content-Type": "application/json",
  *     },
- * });
+ *   });
  *
  * if (ratingsResponse.status === 200) {
  *     const ratingsData = await ratingsResponse.json();
@@ -337,8 +338,7 @@ router.get('/ratings', function (req, res) {
   }
 });
 
-/**
- * Handles retrieving a user's profile, including ratings, listings, and liked listings.
+/** Handles retrieving a user's profile, including ratings, listings, and liked listings.
  *
  * @function
  * @async
@@ -569,8 +569,7 @@ router.get('/profile', async function (req, res) {
   }
 });
 
-/**
- * GET request endpoint at /api/pfp for retrieving a user's profile picture.
+/** GET request endpoint at /api/pfp for retrieving a user's profile picture.
  *
  * @function
  * @name getProfilePicture
@@ -611,8 +610,7 @@ router.get('/pfp', function (req, res) {
   );
 });
 
-/**
- * POST request endpoint at /api/editprofile for updating a user's profile information.
+/** POST request endpoint at /api/editprofile for updating a user's profile information.
  *
  * @function
  * @name updateProfile
@@ -687,8 +685,7 @@ router.post('/editprofile', imageUpload, function (req, res) {
   );
 });
 
-/**
- * Handles updating a user's contact information.
+/** Handles updating a user's contact information.
  *
  * @function
  * @async

@@ -1,6 +1,5 @@
-/**
- * Express application for serving static files and handling API requests.
- * @module API
+/** API endpoints related to user Accounts.
+ * @module API/Accounts
  */
 
 const express = require('express');
@@ -10,24 +9,24 @@ router.use(bodyParser.urlencoded({ extended: true })).use(bodyParser.json());
 const db = require('./db').db;
 const validator = require('validator');
 
-/**
- * Authenticates a user by checking if they are registered.
+/** Authenticates a user by checking if they are registered.
  *
  * @function
  * @async
  * @name authenticateUser
  *
  * @param {string} username - The username to authenticate.
+ * @param {string} password - The password to authenticate.
  *
- * @returns {Promise<boolean>} A promise that resolves to true if the user is registered, and false otherwise.
+ * @returns {Promise<boolean>} A promise that resolves to true if the user is registered and the password is correct, and false otherwise.
  *
  * @example
  * // Usage
- * const isAuthenticated = await authenticateUser("testuser");
+ * const isAuthenticated = await authenticateUser("testuser", "password123");
  * if (isAuthenticated) {
  *   console.log("User is registered");
  * } else {
- *   console.log("User is not registered");
+ *   console.log("User is not registered or password is incorrect");
  * }
  */
 async function authenticateUser(username, password) {
@@ -55,8 +54,7 @@ async function authenticateUser(username, password) {
   }
 }
 
-/**
- * GET request endpoint at /api/accounts for retrieving a list of accounts.
+/** GET request endpoint at /api/accounts for retrieving a list of accounts.
  *
  * @function
  * @name getAccounts
@@ -91,8 +89,7 @@ router.get('/accounts', function (req, res) {
   });
 });
 
-/**
- * Handles login requests and performs authentication.
+/** Handles login requests and performs authentication.
  *
  * @function
  * @name handleLoginRequest
@@ -145,8 +142,7 @@ router.post('/login', function (req, res) {
   );
 });
 
-/**
- * Handles user registration requests and account creation.
+/** Handles user registration requests and account creation.
  *
  * @function
  * @name handleRegistrationRequest
@@ -228,8 +224,7 @@ router.post('/register', (req, res) => {
   );
 });
 
-/**
- * Handles deleting of accounts.
+/** Handles deleting of accounts.
  *
  * @function
  * @name handleDeleteAccounts

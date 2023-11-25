@@ -1,6 +1,6 @@
-# BlitzBuyr Documentation
+# <img src="http://blitzbuyr.lol/img/blitzbuyr_name_logo.png" alt="BlitzBuyr Logo" width="400">
 
-Welcome to the official documentation for BlitzBuyr (BBC - BlitzBuyr Coders). This document provides an overview of the project's structure, key components, and how to use them effectively.
+# BlitzBuyr Documentation
 
 ## Table of Contents
 
@@ -27,7 +27,7 @@ The server handles routing and middleware, providing the foundation for API endp
 - Static routes for our JSDoc documentation.
 - Starting the Express server.
 
-[View `server.js` source code](server.js.html)
+[View `server.js` source code](Backend_server.js.html)
 
 ### Account Management
 
@@ -37,7 +37,7 @@ BlitzBuyr's account management system allows users to register, login, and authe
 - POST request endpoint for user registration.
 - POST request endpoint for user login and authentication.
 
-[View `account.js` source code](account.js.html)
+[View `account.js` source code](Backend_account.js.html)
 
 ### Listing Management
 
@@ -46,7 +46,7 @@ Listings are a fundamental part of BlitzBuyr, and the backend provides endpoints
 - POST request endpoint for creating a new listing.
 - GET request endpoint for retrieving a list of all listings.
 
-[View `listing.js` source code](listing.js.html)
+[View `listing.js` source code](Backend_listing.js.html)
 
 ## Frontend
 
@@ -56,19 +56,19 @@ The frontend of BlitzBuyr is built using React Native and provides a user-friend
 
 The Create Account screen allows users to create a new account, providing essential account information such as username, password, email, etc.
 
-[View `CreateAccountScreen.js` source code](CreateAccountScreen.js.html)
+[View `CreateAccountScreen.js` source code](Frontend_CreateAccountScreen.js.html)
 
 ### Login Screen
 
 The Login screen enables users to log into their accounts, requiring username and password authentication.
 
-[View `LoginScreen.js` source code](LoginScreen.js.html)
+[View `LoginScreen.js` source code](Frontend_LoginScreen.js.html)
 
 ### HomeScreen
 
 The Home screen is the primary user interface for browsing listings, interacting with listings, and discovering new items for sale.
 
-[View `HomeScreen.js` source code](HomeScreen.js.html)
+[View `HomeScreen.js` source code](Frontend_HomeScreen.js.html)
 
 ### ProfileScreen
 
@@ -76,7 +76,7 @@ The Profile screen allows users to manage their profiles, view their listings, a
 
 Each of these screens plays a vital role in delivering a seamless user experience within the BlitzBuyr application.
 
-[View `ProfileScreen.js` source code](ProfileScreen.js.html)
+[View `ProfileScreen.js` source code](Frontend_ProfileScreen.js.html)
 
 ## Conclusion
 

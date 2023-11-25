@@ -1,43 +1,83 @@
-# BlitzBuyr
+# BlitzBuyr Documentation
 
-Welcome to BlitzBuyr (BBC - BlitzBuyr Coders)!
+Welcome to the official documentation for BlitzBuyr (BBC - BlitzBuyr Coders). This document provides an overview of the project's structure, key components, and how to use them effectively.
 
-BlitzBuyr is a mobile application that simplifies the buying and selling of goods and services. It offers a platform for sellers to list their items and for buyers to discover and interact with listings. Whether you're a seller looking to reach a broader audience or a buyer searching for great deals, BlitzBuyr has you covered.
+## Table of Contents
 
-## Key Features
+- [Backend](#backend)
+  - [Server](#server)
+  - [Account Management](#account-management)
+  - [Listing Management](#listing-management)
+- [Frontend](#frontend)
+  - [CreateAccountScreen](#createaccountscreen)
+  - [Login Screen](#login-screen)
+  - [HomeScreen](#homescreen)
+  - [ProfileScreen](#profilescreen)
 
-### For Sellers:
+## Backend
 
-- **Easy Listing:** Create detailed listings for the items or services you want to sell. Provide essential information, images, and even videos to attract potential buyers.
+The backend of BlitzBuyr is built using Node.js and Express, with SQLite3 as the database. It serves as the core of the application, handling API requests and managing user accounts and listings.
 
-- **Profile Management:** Manage your profile, view your listed items, and interact with buyers. Build trust through a profile rating system and account verification.
+### Server
 
-- **Real-time Notifications:** Stay informed about buyer interactions with your listings and easily connect with interested parties.
+The server handles routing and middleware, providing the foundation for API endpoints. Key components include:
 
-- **Item Bumping:** Keep your listings active by updating or bumping them within the past two weeks.
+- Conglomerating the different routes into express.
+- Request logging middleware.
+- Static routes for our JSDoc documentation.
+- Starting the Express server.
 
-### For Buyers:
+[View `server.js` source code](server.js.html)
 
-- **Browse and Discover:** Swipe through a variety of listings, from physical items to abstract services. Find what you're looking for by sorting and filtering based on categories and keywords.
+### Account Management
 
-- **Interest Marking:** Express your interest by liking listings and saving them for later. Receive notifications when sellers respond to your interest.
+BlitzBuyr's account management system allows users to register, login, and authenticate their accounts. Key components include:
 
-- **Profile and Transaction Management:** Manage your account, view your transaction history, and find contact information for other users when you're part of a transaction.
+- GET request endpoint for retrieving a list of accounts.
+- POST request endpoint for user registration. Requires username, password and email. Returns success/failure message.
+- POST request endpoint for user login and authentication. Requires username and password. Returns success/failure message and authentication token on success.
 
-## Get Started
+[View `account.js` source code](account.js.html)
 
-To start using BlitzBuyr, follow these simple steps:
+### Listing Management
 
-1. **Clone this Repository:** Start by cloning this GitHub repository to your local machine.
+Listings are a fundamental part of BlitzBuyr, and the backend provides endpoints for listing creation and retrieval. Key components include:
 
-2. **Dependencies:** Install the necessary dependencies for both the frontend and backend. You can find detailed instructions in the documentation, or just run `npm install` in the respective folders.
+- POST request endpoint for creating a new listing. Requires listing details and returns the created listing ID.
+- GET request endpoint for retrieving a list of all listings. Returns a list of all listings.
 
-3. **Database and Environment Setup:** Configure your database and environment settings, including API keys and other configurations. Refer to the documentation for guidance.
+[View `listing.js` source code](listing.js.html)
 
-4. **Launch the Server:** Start the server with the command `node server.js`.
+## Frontend
 
-5. **Mobile Application:** BlitzBuyr's frontend is built using React Native. To run the mobile application, you can use a tool like Expo Go. Refer to the documentation for platform-specific setup instructions.
+The frontend of BlitzBuyr is built using React Native and provides a user-friendly interface for interacting with the application. It includes various screens for creating accounts, logging in, browsing listings, and managing user profiles.
 
-## Documentation
+### CreateAccountScreen
 
-For in-depth documentation and API references, please visit our [BlitzBuyr Documentation](https://blitzbuyr.lol).
+The Create Account screen allows users to create a new account, providing essential account information such as username, password, email, etc.
+
+[View `CreateAccountScreen.js` source code](CreateAccountScreen.js.html)
+
+### Login Screen
+
+The Login screen enables users to log into their accounts, requiring username and password authentication. On successful login, proceeds to HomeScreen.
+
+[View `LoginScreen.js` source code](LoginScreen.js.html)
+
+### HomeScreen
+
+The Home screen is the primary user interface for browsing listings, interacting with listings, and discovering new items for sale. Requires authentication to access.
+
+[View `HomeScreen.js` source code](HomeScreen.js.html)
+
+### ProfileScreen
+
+The Profile screen allows users to manage their profiles, view their listings, and interact with other users. Requires authentication to access own profile.
+
+Each of these screens plays a vital role in delivering a seamless user experience within the BlitzBuyr application.
+
+[View `ProfileScreen.js` source code](ProfileScreen.js.html)
+
+## Conclusion
+
+This documentation serves as a reference for developers working on the BlitzBuyr project, as well as any interested in our workflow or codebase, outlining the structure and key components of both the backend and frontend.
