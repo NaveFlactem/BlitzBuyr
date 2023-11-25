@@ -1,12 +1,12 @@
 import React, { memo } from 'react';
 import {
   Platform,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 
@@ -132,7 +132,7 @@ export default TagDrawer;
 const styles = StyleSheet.create({
   drawerContainer: {
     position: 'absolute',
-    height: screenHeight,
+    height: 0.9 * screenHeight,
     width: 0.3 * screenWidth,
     zIndex: 110,
     left: 0.55 * screenWidth,
@@ -291,6 +291,6 @@ const styles = StyleSheet.create({
   },
   spacer: {
     position: 'relative',
-    height: 0.2 * screenHeight,
+    height: Platform.OS == 'ios' ? 0.2 * screenHeight : 0.03 * screenHeight,
   },
 });

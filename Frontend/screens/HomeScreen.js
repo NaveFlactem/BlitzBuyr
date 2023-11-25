@@ -6,7 +6,6 @@ import {
   Platform,
   RefreshControl,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -496,7 +495,7 @@ const HomeScreen = ({ route }) => {
                   />
                 }
               />
-              </View>
+            </View>
           ) : (
             <View style={styles.swiperContainer}>
               <AndroidSwiperComponent
