@@ -165,6 +165,8 @@ const handleContactClick = async (key, data) => {
 };
 
 const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
+  const { theme } = useThemeContext();
+  const styles = getThemedStyles(theme);
   let displayValues = Object.values(contactInfo).some(
     (value) => value.data.length > 0,
   );
@@ -265,6 +267,8 @@ function ProfileScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState(null);
   const [LikeStates, setLikeStates] = useState({});
   const { toggleTheme } = useThemeContext();
+  const { theme } = useThemeContext();
+  const styles = getThemedStyles(theme);
 
   // Use states for contact info
   const [contactInfo, setContactInfo] = useState({
@@ -835,8 +839,8 @@ function ProfileScreen({ navigation, route }) {
         onPress={toggleTheme}
         style={{
           position: "absolute",
-          top: 0.03 * screenHeight,
-          right: 0.03 * screenHeight,
+          top: 0.28 * screenHeight,
+          left: 0.03 * screenHeight,
         }}
       >
         <MaterialCommunityIcons
@@ -850,92 +854,95 @@ function ProfileScreen({ navigation, route }) {
   );
 }
 
-const styles = StyleSheet.create({
-  contactInfoContainer: {
-    flexDirection: "column",
-    paddingVertical: 20,
-  },
-  socialIcons: {
-    flexDirection: "row",
-    paddingVertical: 5,
-    alignContent: "center",
-    paddingHorizontal: 10,
-    textAlign: "center",
-  },
-  socialText: {
-    marginVertical: 1.5,
-    marginHorizontal: 10,
-    fontWeight: "bold",
-    justifyContent: "center",
-    alignContent: "center",
-    textAlign: "center",
-  },
-  noListingsText: {
-    textAlign: "center",
-    marginTop: 110,
-    fontStyle: "normal",
-    fontWeight: "bold",
-    fontSize: 20,
-    color: Colors.BB_darkRedPurple,
-  },
-  button: {
-    width: 110,
-    height: 36,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: Colors.BB_darkRedPurple,
-    borderRadius: 10,
-    marginHorizontal: 2,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 2, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  buttonText: {
-    fontStyle: "normal",
-    fontWeight: "500",
-    fontSize: 15,
-    color: Colors.white,
-  },
-  ratingStar: {
-    alignSelf: "center",
-    position: "absolute",
-    width: "30%",
-    height: "60%",
-    borderRadius: 20,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.5,
-        shadowRadius: 1,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  circleContainer: {
-    top: 15,
-    left: 15,
-  },
-  circle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "white", // Set the background color as needed
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "black", // Set the border color as needed
-  },
-});
+const getThemedStyles = (theme) => {
+  return StyleSheet.create({
+    contactInfoContainer: {
+      flexDirection: "column",
+      paddingVertical: 20,
+    },
+    socialIcons: {
+      flexDirection: "row",
+      paddingVertical: 5,
+      alignContent: "center",
+      paddingHorizontal: 10,
+      textAlign: "center",
+    },
+    socialText: {
+      marginVertical: 1.5,
+      marginHorizontal: 10,
+      fontWeight: "bold",
+      justifyContent: "center",
+      alignContent: "center",
+      textAlign: "center",
+    },
+    noListingsText: {
+      textAlign: "center",
+      marginTop: 110,
+      fontStyle: "normal",
+      fontWeight: "bold",
+      fontSize: 20,
+      color: theme.BB_darkRedPurple, // Use theme color
+    },
+    button: {
+      width: 110,
+      height: 36,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: theme.BB_darkRedPurple, // Use theme color
+      borderRadius: 10,
+      marginHorizontal: 2,
+      ...Platform.select({
+        ios: {
+          shadowColor: theme.black, // Use theme color
+          shadowOffset: { width: 2, height: 2 },
+          shadowOpacity: 0.8,
+          shadowRadius: 2,
+        },
+        android: {
+          elevation: 10,
+        },
+      }),
+    },
+    buttonText: {
+      fontStyle: "normal",
+      fontWeight: "500",
+      fontSize: 15,
+      color: theme.white, // Use theme color
+    },
+    ratingStar: {
+      alignSelf: "center",
+      position: "absolute",
+      width: "30%",
+      height: "60%",
+      borderRadius: 20,
+      ...Platform.select({
+        ios: {
+          shadowColor: theme.black, // Use theme color
+          shadowOffset: { width: 1, height: 1 },
+          shadowOpacity: 0.5,
+          shadowRadius: 1,
+        },
+        android: {
+          elevation: 10,
+        },
+      }),
+    },
+    circleContainer: {
+      top: 15,
+      left: 15,
+    },
+    circle: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: "white", // Set the background color as needed
+      alignItems: "center",
+      justifyContent: "center",
+      borderWidth: 1,
+      borderColor: "black", // Set the border color as needed
+    },
+    // ... any other styles
+  });
+};
 
 export default memo(ProfileScreen);

@@ -1,22 +1,23 @@
-import React, { useEffect } from "react";
-import { useColorScheme } from 'react-native';
-import {
-  NavigationContainer,
-  DefaultTheme,
-  DarkTheme,
-} from '@react-navigation/native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import StackNavigator from "./nav/StackNavigator";
 import { CustomDarkTheme, CustomLightTheme } from "./constants/Colors";
 import { ThemeProvider, useThemeContext } from "./components/visuals/ThemeProvider";
 
-export default function App() {
+const AppContainer = () => {
   const { theme } = useThemeContext();
 
   return (
-    <ThemeProvider>
-    <NavigationContainer theme={scheme === 'dark' ? CustomDarkTheme : CustomLightTheme}>
+    <NavigationContainer theme={theme === 'dark' ? CustomDarkTheme : CustomLightTheme}>
       <StackNavigator />
     </NavigationContainer>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContainer />
     </ThemeProvider>
   );
 }

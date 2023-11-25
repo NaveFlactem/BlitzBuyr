@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import * as Settings from "../../hooks/UserSettings";
 
 const ThemeContext = createContext();
@@ -10,14 +10,18 @@ export const ThemeProvider = ({ children }) => {
 
     useEffect(() => {
     Settings.getColorMode().then((mode) => {
-        setTheme(mode);
+      console.log("mode: " + mode);  
+      setTheme(mode);
         });
     }
+
     , []);
 
   const toggleTheme = () => {
+    console.log("toggleTheme");
     setTheme(theme === 'light' ? 'dark' : 'light');
     Settings.updateColorMode(theme === 'light' ? 'dark' : 'light');
+    console.log(theme);
   };
 
   return (
