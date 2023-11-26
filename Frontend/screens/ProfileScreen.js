@@ -67,7 +67,7 @@ const ListingsRoute = ({ onPressListing, data, text }) => (
         )}
       />
     ) : (
-      <Text style={styles.noListingsText}>No {text} listings found.</Text>
+      <Text style={styles.ProfileScreen.noListingsText}>No {text} listings found.</Text>
     )}
   </View>
 );
@@ -137,7 +137,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
     displayValues = false;
 
   return (
-    <View style={styles.contactInfoContainer}>
+    <View style={styles.ProfileScreen.contactInfoContainer}>
       <ScrollView>
         <View>
           {displayValues ? (
@@ -155,7 +155,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                         {/* Icon + Handle */}
                         <TouchableOpacity
                           onPress={() => handleContactClick(key, value.data)}
-                          style={styles.socialIcons}
+                          style={styles.ProfileScreen.socialIcons}
                         >
                           <AntDesign
                             name={value.icon}
@@ -167,7 +167,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                           />
                           <Text
                             style={[
-                              styles.socialText,
+                              styles.ProfileScreen.socialText,
                               { opacity: value.hidden ? 0.25 : 1.0 },
                             ]}
                           >
@@ -188,7 +188,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                               }));
                             }}
                             style={[
-                              styles.socialIcons,
+                              styles.ProfileScreen.socialIcons,
                               { opacity: value.hidden ? 0.25 : 1.0 },
                             ]}
                           >
@@ -206,7 +206,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
               }
             })
           ) : (
-            <Text style={styles.noListingsText}>
+            <Text style={styles.ProfileScreen.noListingsText}>
               No Contact Information Available.
             </Text>
           )}
@@ -485,9 +485,9 @@ function ProfileScreen({ navigation, route }) {
               setLoading(true);
               navigation.navigate('BottomNavOverlay');
             }}
-            style={styles.circleContainer}
+            style={styles.ProfileScreen.circleContainer}
           >
-            <View style={styles.circle}>
+            <View style={styles.ProfileScreen.circle}>
               <MaterialCommunityIcons
                 name="arrow-left"
                 size={30}
@@ -590,7 +590,7 @@ function ProfileScreen({ navigation, route }) {
                   name="star"
                   size={20}
                   color="gold"
-                  style={styles.ratingStar}
+                  style={styles.ProfileScreen.ratingStar}
                 />
               )}
             </Text>
@@ -645,8 +645,8 @@ function ProfileScreen({ navigation, route }) {
             }}
           >
             {/* Logout */}
-            <TouchableOpacity onPress={handleLogout} style={styles.button}>
-              <Text style={styles.buttonText}>Logout</Text>
+            <TouchableOpacity onPress={handleLogout} style={styles.ProfileScreen.button}>
+              <Text style={styles.ProfileScreen.buttonText}>Logout</Text>
             </TouchableOpacity>
             {/* Edit Profile */}
             <TouchableOpacity
@@ -658,9 +658,9 @@ function ProfileScreen({ navigation, route }) {
                   coverPicture: profileInfo.coverPicture,
                 });
               }}
-              style={{ ...styles.button, width: 114 }}
+              style={{ ...styles.ProfileScreen.button, width: 114 }}
             >
-              <Text style={styles.buttonText}>Edit Profile</Text>
+              <Text style={styles.ProfileScreen.buttonText}>Edit Profile</Text>
             </TouchableOpacity>
             {/* Edit Contact */}
             <TouchableOpacity
@@ -670,9 +670,9 @@ function ProfileScreen({ navigation, route }) {
                   prevContactInfo: contactInfo,
                 });
               }}
-              style={styles.button}
+              style={styles.ProfileScreen.button}
             >
-              <Text style={styles.buttonText}>Edit Contact</Text>
+              <Text style={styles.ProfileScreen.buttonText}>Edit Contact</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -694,7 +694,7 @@ function ProfileScreen({ navigation, route }) {
                   username: profileName,
                 });
               }}
-              style={{ ...styles.button }}
+              style={{ ...styles.ProfileScreen.button }}
             >
               <Text
                 style={{
@@ -802,9 +802,9 @@ function ProfileScreen({ navigation, route }) {
           </View>
           <TouchableOpacity
             onPress={() => setSelectedListing(null)}
-            style={{ ...styles.button, bottom: '4%' }}
+            style={{ ...styles.ProfileScreen.button, bottom: '4%' }}
           >
-            <Text style={styles.buttonText}>Close</Text>
+            <Text style={styles.ProfileScreen.buttonText}>Close</Text>
           </TouchableOpacity>
         </View>
       )}

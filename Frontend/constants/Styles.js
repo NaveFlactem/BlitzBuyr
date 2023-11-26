@@ -1,5 +1,81 @@
 import {StyleSheet } from 'react-native';
 import Colors, { CustomDarkTheme, CustomLightTheme } from './Colors.js';
+import { screenHeight, screenWidth } from './ScreenDimensions.js';
+
+
+export const shapes = StyleSheet.create({
+  circle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  diamond: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 20,
+    borderRightWidth: 20,
+    borderBottomWidth: 40,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: 'red',
+    transform: [{ rotate: '45deg' }],
+  },
+  rhombus: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 20,
+    borderRightWidth: 20,
+    borderBottomWidth: 40,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: 'red',
+  },
+  oval: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  hexagon: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 20,
+    borderRightWidth: 20,
+    borderBottomWidth: 40,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: 'red',
+    transform: [{ rotate: '45deg' }],
+  },
+  square: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  rectangle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  triangle: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 20,
+    borderRightWidth: 20,
+    borderBottomWidth: 40,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: 'red',
+  },
+});
+
+
+
 
 export const getThemedStyles = (theme) => {
     let themeColors;
@@ -9,6 +85,7 @@ export const getThemedStyles = (theme) => {
       themeColors = CustomDarkTheme.colors;
     }
     return StyleSheet.create({
+    ProfileScreen: {
       contactInfoContainer: {
         flexDirection: 'column',
         paddingVertical: 20,
@@ -94,5 +171,116 @@ export const getThemedStyles = (theme) => {
         borderWidth: 1,
         borderColor: 'black', // Set the border color as needed
       },
+    },
+      HomeScreen: {
+      screenfield: {
+        flex: 1,
+        backgroundColor: themeColors.BB_pink,
+      },
+      swiperContainer: {
+        height: screenHeight,
+        width: screenWidth,
+      },
+      topTap: {
+        position: 'absolute',
+        top: 0.08 * screenHeight,
+        width: screenWidth,
+        height: 0.05 * screenHeight,
+        zIndex: 3,
+      },
+      loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: themeColors.BB_pink,
+      },
+      sliderCover: {
+        flex: 1,
+        height: screenHeight,
+        width: screenWidth,
+        position: 'absolute',
+      },
+    },
+      TopBarHome: {
+      logo: {
+        height: 0.1 * screenWidth,
+        width: 0.55 * screenWidth,
+        top: 0.025 * screenHeight,
+        right: 0.01 * screenWidth,
+        ...Platform.select({
+          ios: {
+            shadowColor: themeColors.black,
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.5,
+            shadowRadius: 5,
+          },
+        }),
+      },
+      menu: {
+        position: 'absolute',
+        paddingTop: Platform.OS == 'ios' ? 20 : 29,
+        paddingLeft: 20,
+        paddingBottom: 20,
+        paddingRight: 20,
+        height: 'auto',
+        width: 'auto',
+        alignContent: 'center',
+        justifyContent: 'center',
+        borderRadius: 80,
+        left: '1%',
+        zIndex: 11,
+        ...Platform.select({
+          ios: {
+            top: '28%',
+            shadowColor: themeColors.black,
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.5,
+            shadowRadius: 5,
+          },
+          android: {
+            top: '12%',
+          },
+        }),
+      },
+      location: {
+        position: 'absolute',
+        height: 'auto',
+        width: 'auto',
+        bottom: '8%',
+        right: '5%',
+        zIndex: 11,
+        ...Platform.select({
+          ios: {
+            shadowColor: themeColors.black,
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.5,
+            shadowRadius: 5,
+          },
+        }),
+      },
+      topBar: {
+        position: 'absolute',
+        height: 0.09 * screenHeight,
+        width: screenWidth,
+        backgroundColor: themeColors.BB_darkRedPurple,
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        borderBottomWidth: 3,
+        borderColor:
+          Platform.OS == 'ios' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.3)',
+        ...Platform.select({
+          ios: {
+            shadowColor: themeColors.black,
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.5,
+            shadowRadius: 5,
+          },
+        }),
+        zIndex: 10,
+      },
+    },
+
+      //
     });
-};
+  }

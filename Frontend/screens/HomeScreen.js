@@ -33,6 +33,8 @@ import {
   getLocationWithRetry,
 } from '../constants/Utilities';
 import * as Settings from '../hooks/UserSettings.js';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
 
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -52,6 +54,7 @@ const HomeScreen = ({ route }) => {
   const [distance, setDistance] = useState(30);
   const [isLocationSliderVisible, setIsLocationSliderVisible] = useState(false);
   const locationSliderHeight = useSharedValue(-100); // Start off-screen
+  const styles = getThemedStyles(useThemeContext().theme);
 
   const toggleTagDrawer = () => {
     if (translateX.value === -screenWidth * 0.6) {
@@ -228,14 +231,14 @@ const HomeScreen = ({ route }) => {
   }, [route.params]);
 
   const LoadingView = memo(() => (
-    <View style={styles.loadingContainer}>
+    <View style={styles.HomeScreen.loadingContainer}>
       <BouncePulse />
     </View>
   ));
 
   if (isLoading) {
     return (
-      <SafeAreaView style={styles.screenfield}>
+      <SafeAreaView style={styles.HomeScreen.screenfield}>
         <TopBar
           handleMenuPress={toggleTagDrawer}
           handleLocationPress={handleLocationPress}
@@ -246,14 +249,14 @@ const HomeScreen = ({ route }) => {
   }
 
   return (
-    <SafeAreaView style={styles.screenfield}>
+    <SafeAreaView style={styles.HomeScreen.screenfield}>
       <TopBar
         handleMenuPress={toggleTagDrawer}
         handleLocationPress={handleLocationPress}
       />
 
       <View
-        style={styles.topTap}
+        style={styles.HomeScreen.topTap}
         onStartShouldSetResponder={() => true}
         onResponderRelease={() => {
           if (swiperRef.current) {
@@ -265,7 +268,7 @@ const HomeScreen = ({ route }) => {
       {networkConnected ? (
         listings && listings.length > 0 ? (
           Platform.OS === 'ios' ? (
-            <View style={styles.swiperContainer}>
+            <View style={styles.HomeScreen.swiperContainer}>
               <IOSSwiperComponent
                 swiperRef={swiperRef}
                 listings={listings}
@@ -289,7 +292,7 @@ const HomeScreen = ({ route }) => {
               />
             </View>
           ) : (
-            <View style={styles.swiperContainer}>
+            <View style={styles.HomeScreen.swiperContainer}>
               <AndroidSwiperComponent
                 swiperRef={swiperRef}
                 listings={listings}
@@ -349,7 +352,7 @@ const HomeScreen = ({ route }) => {
 
       {isLocationSliderVisible && (
         <TouchableOpacity
-          style={styles.sliderCover}
+          style={styles.HomeScreen.sliderCover}
           onPress={handleLocationPress}
         />
       )}
@@ -367,34 +370,3 @@ const HomeScreen = ({ route }) => {
 };
 
 export default HomeScreen;
-
-//////////////////////////////////////////////////////////////////////////////////////
-const styles = StyleSheet.create({
-  screenfield: {
-    flex: 1,
-    backgroundColor: Colors.BB_pink,
-  },
-  swiperContainer: {
-    height: screenHeight,
-    width: screenWidth,
-  },
-  topTap: {
-    position: 'absolute',
-    top: 0.08 * screenHeight,
-    width: screenWidth,
-    height: 0.05 * screenHeight,
-    zIndex: 3,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.BB_pink,
-  },
-  sliderCover: {
-    flex: 1,
-    height: screenHeight,
-    width: screenWidth,
-    position: 'absolute',
-  },
-});

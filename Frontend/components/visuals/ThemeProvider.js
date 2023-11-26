@@ -18,10 +18,8 @@ export const ThemeProvider = ({ children }) => {
     , []);
 
   const toggleTheme = () => {
-    console.log("toggleTheme");
     setTheme(theme === 'light' ? 'dark' : 'light');
     Settings.updateColorMode(theme === 'light' ? 'dark' : 'light');
-    console.log(theme);
   };
 
   return (

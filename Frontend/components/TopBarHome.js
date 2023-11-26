@@ -8,12 +8,14 @@ import {
   View,
 } from 'react-native';
 import Colors from '../constants/Colors';
-import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
+import { useThemeContext } from './visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
 
 const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
+  const styles = getThemedStyles(useThemeContext().theme);
   return (
-    <View style={styles.topBar}>
-      <TouchableOpacity style={styles.menu} onPress={handleMenuPress}>
+    <View style={styles.TopBarHome.topBar}>
+      <TouchableOpacity style={styles.TopBarHome.menu} onPress={handleMenuPress}>
         <MaterialCommunityIcons
           name="menu"
           size={30}
@@ -21,7 +23,7 @@ const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
           style={(alignSelf = 'center')}
         />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.location} onPress={handleLocationPress}>
+      <TouchableOpacity style={styles.TopBarHome.location} onPress={handleLocationPress}>
         <MaterialCommunityIcons
           name="map-marker"
           size={30}
@@ -29,7 +31,7 @@ const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
         />
       </TouchableOpacity>
       <Image
-        style={styles.logo}
+        style={styles.TopBarHome.logo}
         source={require('../assets/blitzbuyr_name_logo.png')}
       />
     </View>
@@ -37,83 +39,3 @@ const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
 });
 
 export default TopBar;
-
-const styles = StyleSheet.create({
-  logo: {
-    height: 0.1 * screenWidth,
-    width: 0.55 * screenWidth,
-    top: 0.025 * screenHeight,
-    right: 0.01 * screenWidth,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-      },
-    }),
-  },
-  menu: {
-    position: 'absolute',
-    paddingTop: Platform.OS == 'ios' ? 20 : 29,
-    paddingLeft: 20,
-    paddingBottom: 20,
-    paddingRight: 20,
-    height: 'auto',
-    width: 'auto',
-    alignContent: 'center',
-    justifyContent: 'center',
-    borderRadius: 80,
-    left: '1%',
-    zIndex: 11,
-    ...Platform.select({
-      ios: {
-        top: '28%',
-        shadowColor: Colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-      },
-      android: {
-        top: '12%',
-      },
-    }),
-  },
-  location: {
-    position: 'absolute',
-    height: 'auto',
-    width: 'auto',
-    bottom: '8%',
-    right: '5%',
-    zIndex: 11,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-      },
-    }),
-  },
-  topBar: {
-    position: 'absolute',
-    height: 0.09 * screenHeight,
-    width: screenWidth,
-    backgroundColor: Colors.BB_darkRedPurple,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-    borderBottomWidth: 3,
-    borderColor:
-      Platform.OS == 'ios' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.3)',
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 5,
-      },
-    }),
-    zIndex: 10,
-  },
-});
