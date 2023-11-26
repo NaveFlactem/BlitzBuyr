@@ -67,7 +67,7 @@ const ListingsRoute = ({ onPressListing, data, text }) => (
         )}
       />
     ) : (
-      <Text style={styles.ProfileScreen.noListingsText}>No {text} listings found.</Text>
+      <Text style={styles.noListingsText}>No {text} listings found.</Text>
     )}
   </View>
 );
@@ -128,7 +128,7 @@ const handleContactClick = async (key, data) => {
 };
 
 const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
-  const styles = getThemedStyles(useThemeContext().theme);
+  const styles = getThemedStyles(useThemeContext().theme).ProfileScreen;
   let displayValues = Object.values(contactInfo).some(
     (value) => value.data.length > 0
   );
@@ -137,7 +137,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
     displayValues = false;
 
   return (
-    <View style={styles.ProfileScreen.contactInfoContainer}>
+    <View style={styles.contactInfoContainer}>
       <ScrollView>
         <View>
           {displayValues ? (
@@ -155,7 +155,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                         {/* Icon + Handle */}
                         <TouchableOpacity
                           onPress={() => handleContactClick(key, value.data)}
-                          style={styles.ProfileScreen.socialIcons}
+                          style={styles.socialIcons}
                         >
                           <AntDesign
                             name={value.icon}
@@ -167,7 +167,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                           />
                           <Text
                             style={[
-                              styles.ProfileScreen.socialText,
+                              styles.socialText,
                               { opacity: value.hidden ? 0.25 : 1.0 },
                             ]}
                           >
@@ -188,7 +188,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                               }));
                             }}
                             style={[
-                              styles.ProfileScreen.socialIcons,
+                              styles.socialIcons,
                               { opacity: value.hidden ? 0.25 : 1.0 },
                             ]}
                           >
@@ -206,7 +206,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
               }
             })
           ) : (
-            <Text style={styles.ProfileScreen.noListingsText}>
+            <Text style={styles.noListingsText}>
               No Contact Information Available.
             </Text>
           )}
@@ -228,8 +228,7 @@ function ProfileScreen({ navigation, route }) {
   const [selectedListing, setSelectedListing] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [LikeStates, setLikeStates] = useState({});
-  const { toggleTheme } = useThemeContext();
-  const styles = getThemedStyles(useThemeContext().theme);
+  const styles = getThemedStyles(useThemeContext().theme).ProfileScreen;
   
 
   // Use states for contact info
@@ -451,10 +450,6 @@ function ProfileScreen({ navigation, route }) {
     );
   }
 
-  const showColorModal = () => {
-    setShowColorMode(!showColorMode);
-  };
-
   return (
     <SafeAreaView
       style={{
@@ -485,9 +480,9 @@ function ProfileScreen({ navigation, route }) {
               setLoading(true);
               navigation.navigate('BottomNavOverlay');
             }}
-            style={styles.ProfileScreen.circleContainer}
+            style={styles.circleContainer}
           >
-            <View style={styles.ProfileScreen.circle}>
+            <View style={styles.circle}>
               <MaterialCommunityIcons
                 name="arrow-left"
                 size={30}
@@ -590,7 +585,7 @@ function ProfileScreen({ navigation, route }) {
                   name="star"
                   size={20}
                   color="gold"
-                  style={styles.ProfileScreen.ratingStar}
+                  style={styles.ratingStar}
                 />
               )}
             </Text>
@@ -645,8 +640,8 @@ function ProfileScreen({ navigation, route }) {
             }}
           >
             {/* Logout */}
-            <TouchableOpacity onPress={handleLogout} style={styles.ProfileScreen.button}>
-              <Text style={styles.ProfileScreen.buttonText}>Logout</Text>
+            <TouchableOpacity onPress={handleLogout} style={styles.button}>
+              <Text style={styles.buttonText}>Logout</Text>
             </TouchableOpacity>
             {/* Edit Profile */}
             <TouchableOpacity
@@ -658,9 +653,9 @@ function ProfileScreen({ navigation, route }) {
                   coverPicture: profileInfo.coverPicture,
                 });
               }}
-              style={{ ...styles.ProfileScreen.button, width: 114 }}
+              style={{ ...styles.button, width: 114 }}
             >
-              <Text style={styles.ProfileScreen.buttonText}>Edit Profile</Text>
+              <Text style={styles.buttonText}>Edit Profile</Text>
             </TouchableOpacity>
             {/* Edit Contact */}
             <TouchableOpacity
@@ -670,9 +665,9 @@ function ProfileScreen({ navigation, route }) {
                   prevContactInfo: contactInfo,
                 });
               }}
-              style={styles.ProfileScreen.button}
+              style={styles.button}
             >
-              <Text style={styles.ProfileScreen.buttonText}>Edit Contact</Text>
+              <Text style={styles.buttonText}>Edit Contact</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -694,7 +689,7 @@ function ProfileScreen({ navigation, route }) {
                   username: profileName,
                 });
               }}
-              style={{ ...styles.ProfileScreen.button }}
+              style={{ ...styles.button }}
             >
               <Text
                 style={{
@@ -802,27 +797,26 @@ function ProfileScreen({ navigation, route }) {
           </View>
           <TouchableOpacity
             onPress={() => setSelectedListing(null)}
-            style={{ ...styles.ProfileScreen.button, bottom: '4%' }}
+            style={{ ...styles.button, bottom: '4%' }}
           >
-            <Text style={styles.ProfileScreen.buttonText}>Close</Text>
+            <Text style={styles.buttonText}>Close</Text>
           </TouchableOpacity>
         </View>
       )}
 
-      {/* Theme Toggle */}
+      {/* Settings */}
       <TouchableOpacity
-        onPress={toggleTheme}
+        onPress={() => {
+          setLoading(true);
+          navigation.navigate('SettingsScreen');
+        }}
         style={{
           position: "absolute",
           top: 0.28 * screenHeight,
-          left: 0.03 * screenHeight,
+          right: 0.03 * screenHeight,
         }}
       >
-        <MaterialCommunityIcons
-          name="theme-light-dark"
-          size={30}
-          color="black"
-        />
+        <MaterialIcons name="settings" size={30} color="black" />
       </TouchableOpacity>
 
     </SafeAreaView>

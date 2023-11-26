@@ -87,7 +87,7 @@ export const CustomDarkTheme = {
   colors: {
     ...DarkTheme.colors,
     primary: "#637aff", 
-    background: "#161616", 
+    background: "#181818", 
     card: "#1E1E1E", 
     text: "#323232", 
     BB_bone: "#323232",

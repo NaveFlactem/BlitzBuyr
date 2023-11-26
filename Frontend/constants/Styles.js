@@ -1,7 +1,6 @@
-import {StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Colors, { CustomDarkTheme, CustomLightTheme } from './Colors.js';
 import { screenHeight, screenWidth } from './ScreenDimensions.js';
-
 
 export const shapes = StyleSheet.create({
   circle: {
@@ -74,21 +73,24 @@ export const shapes = StyleSheet.create({
   },
 });
 
-
-
-
 export const getThemedStyles = (theme) => {
-    let themeColors;
-    if (theme === 'light') {
-      themeColors = CustomLightTheme.colors;
-    } else {
-      themeColors = CustomDarkTheme.colors;
-    }
-    return StyleSheet.create({
+  let themeColors;
+  if (theme === 'light') {
+    themeColors = CustomLightTheme.colors;
+  } else {
+    themeColors = CustomDarkTheme.colors;
+  }
+  return StyleSheet.create({
+    ////////////////////////////////////////////
     ProfileScreen: {
       contactInfoContainer: {
         flexDirection: 'column',
         paddingVertical: 20,
+      },
+      settingsIcon: {
+        position: 'absolute',
+        top: 20,
+        right: 20,
       },
       socialIcons: {
         flexDirection: 'row',
@@ -165,14 +167,15 @@ export const getThemedStyles = (theme) => {
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: 'white', // Set the background color as needed
+        backgroundColor: 'white', 
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
-        borderColor: 'black', // Set the border color as needed
+        borderColor: 'black', 
       },
     },
-      HomeScreen: {
+    ////////////////////////////////////////////
+    HomeScreen: {
       screenfield: {
         flex: 1,
         backgroundColor: themeColors.BB_pink,
@@ -201,7 +204,8 @@ export const getThemedStyles = (theme) => {
         position: 'absolute',
       },
     },
-      TopBarHome: {
+    ////////////////////////////////////////////
+    TopBarHome: {
       logo: {
         height: 0.1 * screenWidth,
         width: 0.55 * screenWidth,
@@ -280,7 +284,67 @@ export const getThemedStyles = (theme) => {
         zIndex: 10,
       },
     },
-
-      //
-    });
-  }
+    ////////////////////////////////////////////
+    RatingScreen: {
+      container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      title: {
+        fontSize: 24,
+        marginBottom: '5%',
+      },
+      profilePic: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        marginBottom: '5%',
+      },
+      ratingContainer: {
+        flexDirection: 'row',
+        marginBottom: 20, // Add margin to move the button down
+      },
+      starButton: {
+        width: 60,
+        height: 60,
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      starMargin: {
+        marginRight: 4,
+      },
+      backButton: {
+        position: 'absolute',
+        top: '7%',
+        left: '7%',
+      },
+    },
+    ////////////////////////////////////////////
+    SettingsScreen: {
+      container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      text: {
+        fontSize: 24,
+      },
+    },
+    circleContainer: {
+      top: 15,
+      left: 15,
+    },
+    circle: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: 'white', 
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+      borderColor: 'black', 
+    },
+    ////////////////////////////////////////////
+  });
+};

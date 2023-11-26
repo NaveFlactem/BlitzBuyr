@@ -54,7 +54,7 @@ const HomeScreen = ({ route }) => {
   const [distance, setDistance] = useState(30);
   const [isLocationSliderVisible, setIsLocationSliderVisible] = useState(false);
   const locationSliderHeight = useSharedValue(-100); // Start off-screen
-  const styles = getThemedStyles(useThemeContext().theme);
+  const styles = getThemedStyles(useThemeContext().theme).HomeScreen;
 
   const toggleTagDrawer = () => {
     if (translateX.value === -screenWidth * 0.6) {
@@ -82,6 +82,13 @@ const HomeScreen = ({ route }) => {
       setIsLocationSliderVisible(true);
     }
   };
+
+  handleInnerScolling = () => {
+    swiperRef.current.setNativeProps({ scrollEnabled: false });
+  }
+  handleInnerScollingEnd = () => {
+    swiperRef.current.setNativeProps({ scrollEnabled: true });
+  }
 
   const getUserLocation = async () => {
     console.log("Getting user's location...");
@@ -231,14 +238,14 @@ const HomeScreen = ({ route }) => {
   }, [route.params]);
 
   const LoadingView = memo(() => (
-    <View style={styles.HomeScreen.loadingContainer}>
+    <View style={styles.loadingContainer}>
       <BouncePulse />
     </View>
   ));
 
   if (isLoading) {
     return (
-      <SafeAreaView style={styles.HomeScreen.screenfield}>
+      <SafeAreaView style={styles.screenfield}>
         <TopBar
           handleMenuPress={toggleTagDrawer}
           handleLocationPress={handleLocationPress}
@@ -249,14 +256,14 @@ const HomeScreen = ({ route }) => {
   }
 
   return (
-    <SafeAreaView style={styles.HomeScreen.screenfield}>
+    <SafeAreaView style={styles.screenfield}>
       <TopBar
         handleMenuPress={toggleTagDrawer}
         handleLocationPress={handleLocationPress}
       />
 
       <View
-        style={styles.HomeScreen.topTap}
+        style={styles.topTap}
         onStartShouldSetResponder={() => true}
         onResponderRelease={() => {
           if (swiperRef.current) {
@@ -268,7 +275,7 @@ const HomeScreen = ({ route }) => {
       {networkConnected ? (
         listings && listings.length > 0 ? (
           Platform.OS === 'ios' ? (
-            <View style={styles.HomeScreen.swiperContainer}>
+            <View style={styles.swiperContainer}>
               <IOSSwiperComponent
                 swiperRef={swiperRef}
                 listings={listings}
@@ -289,10 +296,12 @@ const HomeScreen = ({ route }) => {
                     progressViewOffset={50}
                   />
                 }
+                handleInnerScolling={handleInnerScolling}
+                handleInnerScollingEnd={handleInnerScollingEnd}
               />
             </View>
           ) : (
-            <View style={styles.HomeScreen.swiperContainer}>
+            <View style={styles.swiperContainer}>
               <AndroidSwiperComponent
                 swiperRef={swiperRef}
                 listings={listings}
@@ -313,6 +322,8 @@ const HomeScreen = ({ route }) => {
                     style={{ backgroundColor: 'transparent' }}
                   />
                 }
+                handleInnerScolling={handleInnerScolling}
+                handleInnerScollingEnd={handleInnerScollingEnd}
               />
             </View>
           )
@@ -352,7 +363,7 @@ const HomeScreen = ({ route }) => {
 
       {isLocationSliderVisible && (
         <TouchableOpacity
-          style={styles.HomeScreen.sliderCover}
+          style={styles.sliderCover}
           onPress={handleLocationPress}
         />
       )}

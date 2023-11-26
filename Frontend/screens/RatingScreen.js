@@ -11,9 +11,11 @@ import {
 import { serverIp } from '../config.js';
 import { getStoredUsername } from './auth/Authenticate.js';
 import { useThemeContext } from '../components/visuals/ThemeProvider.js';
+import { getThemedStyles } from '../constants/Styles.js';
 
 
 const RatingScreen = ({ navigation, route }) => {
+  const styles = getThemedStyles(useThemeContext().theme).RatingScreen; 
   const [selectedRating, setSelectedRating] = useState(0);
   console.log(route.params);
 
@@ -101,42 +103,6 @@ const RatingScreen = ({ navigation, route }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: '5%',
-  },
-  profilePic: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: '5%',
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    marginBottom: 20, // Add margin to move the button down
-  },
-  starButton: {
-    width: 60,
-    height: 60,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  starMargin: {
-    marginRight: 4,
-  },
-  backButton: {
-    position: 'absolute',
-    top: '7%',
-    left: '7%',
-  },
-});
 
 
 export default RatingScreen;
