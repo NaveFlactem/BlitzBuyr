@@ -35,7 +35,21 @@ import {
 import * as Settings from '../hooks/UserSettings.js';
 import { useThemeContext } from '../components/visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
+/**
+ * @namespace HomeScreenNamespace
+ * @description - HomeScreen is the home screen of the application
+ * 
+ */
 
+/**
+ * Home screen component displaying listings and filters.
+ * @component
+ * @name HomeScreen
+ * @memberof HomeScreenNamespace
+ * @param {object} route - Information about the current route.
+ * @returns {JSX.Element} Home screen UI with listings and filters.
+ * @description Renders the home screen displaying listings and various filters. Manages state for refreshing listings, network connectivity, loading state, user location, tag options, condition options, transaction options, selected tags, conditions, and transactions. Uses ref for swiper navigation and shared values for animation. Handles drawer visibility, distance settings, and location slider visibility.
+ */
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [listings, setListings] = useState([]);
@@ -56,6 +70,14 @@ const HomeScreen = ({ route }) => {
   const locationSliderHeight = useSharedValue(-100); // Start off-screen
   const styles = getThemedStyles(useThemeContext().theme).HomeScreen;
 
+  /**
+   * 
+   * @function
+   * @name toggleTagDrawer
+   * @memberof HomeScreenNamespace
+   * @returns {void}
+   * @description Controls the visibility of the tag drawer by toggling its state between open and closed. If the drawer is currently open, it animates its closure by sliding it to the left. If closed, it animates its opening by sliding it to the right.
+   */
   const toggleTagDrawer = () => {
     if (translateX.value === -screenWidth * 0.6) {
       // Drawer is open, so close it
@@ -72,6 +94,15 @@ const HomeScreen = ({ route }) => {
     }
   };
 
+  /**
+   * 
+   * @function
+   * @name handleLocationPress
+   * @memberof HomeScreenNamespace
+   * @returns {void}
+   * @description Controls the visibility of the location slider by toggling its state between visible and hidden. If the slider is currently visible, it initiates an animation to hide it and fetches listings. If hidden, it triggers an animation to display it.
+   */
+
   const handleLocationPress = () => {
     if (isLocationSliderVisible) {
       locationSliderHeight.value = withTiming(-100, { duration: 100 }); // Hide slider
@@ -83,13 +114,40 @@ const HomeScreen = ({ route }) => {
     }
   };
 
+  /**
+   * 
+   * @function
+   * @name handleInnerScrolling
+   * @memberof HomeScreenNamespace
+   * @param {React.RefObject<ScrollView>} swiperRef - Reference to the swiper ScrollView component.
+   * @returns {void}
+   * @description Disables scrolling on the swiper component by setting its native property 'scrollEnabled' to 'false'.
+   */
   handleInnerScolling = () => {
     swiperRef.current.setNativeProps({ scrollEnabled: false });
   };
+  /**
+   * 
+   * @function
+   * @name handleInnerScrollingEnd
+   * @memberof HomeScreenNamespace
+   * @param {React.RefObject<ScrollView>} swiperRef - Reference to the swiper ScrollView component.
+   * @returns {void}
+   * @description Enables scrolling on the swiper component by setting its native property 'scrollEnabled' to 'true'.
+   */
   handleInnerScollingEnd = () => {
     swiperRef.current.setNativeProps({ scrollEnabled: true });
   };
 
+  /**
+   * 
+   * @function
+   * @name getUserLocation
+   * @memberof HomeScreenNamespace
+   * @returns {void}
+   * @description Retrieves the user's location using `getLocationWithRetry` with retry mechanism. If successful, it extracts the latitude and longitude and sets the user's location in the component state. If an error occurs, it logs the error and requires appropriate error handling.
+   * Error processing incomplete
+   */
   const getUserLocation = async () => {
     console.log("Getting user's location...");
 
@@ -103,23 +161,55 @@ const HomeScreen = ({ route }) => {
     }
   };
 
+  /**
+   * Handles the retry action to fetch listings.
+   * @function
+   * @name retryButtonHandler
+   * @memberof HomeScreenNamespace
+   * @returns {void}
+   * @description Initiates the refreshing state, triggering a fetch of listings data when a retry action is performed. Used typically in response to a failed or interrupted data fetch operation to attempt fetching listings again.
+   */
   retryButtonHandler = () => {
     setRefreshing(true);
     fetchListings();
   };
 
+  /**
+   * 
+   * @function
+   * @name onScroll
+   * @memberof HomeScreenNamespace
+   * @param {Object} event - The scroll event object.
+   * @returns {void}
+   * @description Updates the shared value `scrollY` with the current vertical scroll position obtained.
+   */
   let scrollY = useSharedValue(0);
   const onScroll = (event) => {
     scrollY.value = event.nativeEvent.contentOffset.y;
   };
 
+  /**
+   * 
+   * @function
+   * @name onRefresh
+   * @memberof HomeScreenNamespace
+   * @returns {void}
+   * @description Initiates the refresh action by setting the refreshing state, and if the user location is available, it triggers fetching listings. If the user location is not available, it attempts to retrieve the user's location before fetching listings.
+   */
   const onRefresh = React.useCallback(() => {
     console.log('refreshing...');
     setRefreshing(true);
     if (userLocation) fetchListings();
     else getUserLocation();
   }, []);
-
+/**
+ * 
+ * @function
+ * @name debouncedFetchListings
+ * @memberof HomeScreenNamespace
+ * @returns {Function} - Debounced function
+ * @description Creates a version of the `fetchListings` function using the `debounce` utility. This debounced function introduces a delay of 1000 milliseconds before invoking `fetchListings`, ensuring that rapid consecutive calls to `debouncedFetchListings` within the specified delay period will result in a single execution of `fetchListings`.
+ */
   const debouncedFetchListings = useCallback(
     debounce(() => {
       fetchListings();
@@ -127,6 +217,27 @@ const HomeScreen = ({ route }) => {
     [],
   );
 
+  /**
+   * Fetches listings based on selected criteria such as user location, tags, conditions, and transactions.
+   * @function
+   * @name fetchListings
+   * @memberof HomeScreenNamespace
+   * @returns {Promise<void>}
+   * @description Initiates the process to fetch listings based on selected criteria:
+   * - Logs the fetched listings' details, including tags, distance, user location, etc.
+   * - Constructs the fetch URL with encoded parameters based on selected criteria.
+   * - Performs a GET request to fetch listings from the server.
+   * - Parses the response data and updates the listings state.
+   * - Calculates and adds a 'TimeSince' property to each listing to denote the time elapsed since posting.
+   * - Handles errors during the fetching process.
+   * - Updates states for loading and refreshing status after fetching listings.
+   * @param {Array} userLocation - User's geographical location coordinates.
+   * @param {Array} selectedTags - Selected tags for filtering listings.
+   * @param {Array} selectedTransactions - Selected transaction types for filtering listings.
+   * @param {Array} selectedConditions - Selected conditions for filtering listings.
+   * @param {number} distance - Maximum distance for listing proximity.
+   * @param {boolean} refreshing - Current state indicating refreshing status.
+   */
   const fetchListings = useCallback(async () => {
     console.log('Fetching listings...');
     console.log('Tags:', selectedTags);
