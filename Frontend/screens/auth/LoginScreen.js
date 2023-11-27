@@ -1,6 +1,6 @@
 import { serverIp } from "../../config.js";
 import React, { useState, useEffect } from "react";
-import { scheduleNotification } from '../../components/Notifications.js';
+import { startBackgroundFetch } from '../../components/Notifications.js';
 import {
   View,
   Text,
@@ -52,7 +52,7 @@ const LoginScreen = ({ navigation }) => {
       await setStoredCredentials(username, password);
       clearFields();
       navigation.navigate("BottomNavOverlay");
-      scheduleNotification();
+      startBackgroundFetch();
     } else {
       Alert.alert(responseData.error);
     }

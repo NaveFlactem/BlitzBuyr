@@ -2,7 +2,11 @@ import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from "expo-secure-store";
+import * as BackgroundFetch from 'expo-background-fetch';
+import * as TaskManager from 'expo-task-manager';
+import { serverIp } from "../config.js";
 
+//Still needs to be connected with backend
 export async function scheduleNotification(newListings) {
   await Permissions.askAsync(Permissions.NOTIFICATIONS);
 
@@ -45,9 +49,9 @@ export async function scheduleNotification(newListings) {
         body: selectedBody,
       },
       trigger: {
-        seconds: 0, // Start immediately
-        repeats: true, // Set to repeat
-        seconds: 60 * 60 * 24, // 60 seconds * 60 minutes = 1 hour
+        seconds: 0,
+        repeats: true,
+        seconds: 60 * 60 * 24,
       },
     };
 
@@ -56,6 +60,7 @@ export async function scheduleNotification(newListings) {
   }
 }
 
+//Still needs to be connected with backend
 export async function likedNotification(likedListings) {
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -70,16 +75,50 @@ export async function likedNotification(likedListings) {
   });
 
   const schedulingOptions = {
-    content: {
-      title: 'Post Activity',
-      body: 'Someone liked your post!',
-    },
-    trigger: null, // Immediate trigger
-  };
+      content: {
+        title: "Your post has been liked!",
+        body: "Your post has been liked " + likedListings + " times in the past 24 hours",
+      },
+      trigger: {
+        seconds: 0,
+        repeats: true,
+        seconds: 60 * 60 * 24,
+      },
+    };
   await Notifications.scheduleNotificationAsync(schedulingOptions);
 }
 
-export async function postingTimeout(days) {
+export const checkListingExpiration = async () => {
+  try {
+    const listingsResponse = await fetch(`${serverIp}/api/listings`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (listingsResponse.status === 200) {
+      const listingsData = await listingsResponse.json();
+      const currentTime = new Date();
+      listingsData.forEach(async (listing) => {
+        const postDate = new Date(listing.PostDate) - 8 * 3600000;
+        const twelveDays = 1 * 24 * 60 * 60 * 12;
+
+        if (Math.floor((currentTime - postDate) / 1000) >= twelveDays) {
+          const userName = listing.Username;
+
+          await userNotification(userName, listing.Title);
+        }
+      });
+    } else {
+      console.log('Error retrieving listings');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
+const userNotification = async (userName, listingTitle) => {
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowAlert: true,
@@ -88,16 +127,20 @@ export async function postingTimeout(days) {
     }),
   });
 
-  Notifications.addNotificationReceivedListener(notification => {
-    console.log('Received notification: ', notification);
-  });
+  try {
+    const currentUser = await SecureStore.getItemAsync("username");
+    if (currentUser == userName) {
+      const schedulingOptions = {
+        content: {
+          title: 'Listing Expiry!',
+          body: "Your listing named: '"+ listingTitle  + "' is about to expire in 2 days!",
+        },
+        trigger: null,
+      };
 
-  const schedulingOptions = {
-    content: {
-      title: 'Post Expiring!',
-      body: 'Your post will be deleted in' + days + ' days due to inactivity! Please take action.',
-    },
-    trigger: null, // Immediate trigger
-  };
-  await Notifications.scheduleNotificationAsync(schedulingOptions);
-}
+      await Notifications.scheduleNotificationAsync(schedulingOptions);
+    }
+  } catch (error) {
+    console.error('Error scheduling notification:', error);
+  }
+};
