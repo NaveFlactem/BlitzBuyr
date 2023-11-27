@@ -85,10 +85,10 @@ const HomeScreen = ({ route }) => {
 
   handleInnerScolling = () => {
     swiperRef.current.setNativeProps({ scrollEnabled: false });
-  }
+  };
   handleInnerScollingEnd = () => {
     swiperRef.current.setNativeProps({ scrollEnabled: true });
-  }
+  };
 
   const getUserLocation = async () => {
     console.log("Getting user's location...");
@@ -180,10 +180,6 @@ const HomeScreen = ({ route }) => {
     } finally {
       setIsLoading(false);
       setRefreshing(false);
-      if (swiperRef.current) {
-        swiperRef.current.scrollToOffset({ animated: true, offset: 0 });
-      }
-      scrollY = 0;
     }
   }, [
     userLocation,
@@ -317,9 +313,6 @@ const HomeScreen = ({ route }) => {
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                     progressViewOffset={50}
-                    progressBackgroundColor={'transparent'}
-                    colors={['transparent']}
-                    style={{ backgroundColor: 'transparent' }}
                   />
                 }
                 handleInnerScolling={handleInnerScolling}
@@ -374,8 +367,13 @@ const HomeScreen = ({ route }) => {
         setIsLocationSliderVisible={setIsLocationSliderVisible}
         locationSliderHeight={locationSliderHeight}
       />
-
-      <CustomRefreshControl refreshing={refreshing} scrollY={scrollY} />
+      {Platform.OS === 'ios' && (
+        <CustomRefreshControl
+          refreshing={refreshing}
+          scrollY={scrollY}
+          swiperRef={swiperRef}
+        />
+      )}
     </SafeAreaView>
   );
 };

@@ -24,6 +24,7 @@ import { currencies, tagOptions } from '../constants/ListingData.js';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import { getLocationWithRetry } from '../constants/Utilities';
 import { getStoredUsername } from './auth/Authenticate.js';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const blurhash = 'L5H2EC=PM+yV0g-mq.wG9c010J}I';
 
@@ -78,6 +79,7 @@ class CreateListing extends Component {
       showCurrencyOptions: false,
       tagsData: [...tagOptions],
       currencies: [...currencies],
+      selectImageModalVisible: false,
     };
     this.titleInput = React.createRef();
     this.descriptionInput = React.createRef();
@@ -105,6 +107,7 @@ class CreateListing extends Component {
       selectedCurrencySymbol: '$',
       tagsData: [...tagOptions],
       currencies: [...currencies],
+      selectImageModalVisible: false,
       isTitleInvalid: false,
       isDescriptionInvalid: false,
       isPriceInvalid: false,
@@ -292,67 +295,49 @@ class CreateListing extends Component {
 
   /**
    * @function
-   * @handleImagePick - allows the user to select images from their library or take photos with their camera
-   * @returns Returns the images that the user selected
+   * @showModal - shows the modal that contains camera/photo library options, changes the state of selectImageModalVisible to true
+   * @hideModal - hides the modal that contains camera/photo library options, changes the state of selectImageModalVisible to false
    */
-  handleImagePick = () => {
-    Alert.alert(
-      'Select Image',
-      'Choose where to select images from:',
-      [
-        {
-          text: 'Camera',
-          onPress: () => this.handleCameraPick(),
-        },
-        {
-          text: 'Photo Library',
-          onPress: () => this.handleLibraryPick(),
-        },
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-      ],
-      { cancelable: true }
-    );
-  };
+  showModal = () => this.setState({ selectImageModalVisible: true });
+  hideModal = () => this.setState({ selectImageModalVisible: false });
 
   /**
-   * @function
-   * @handleCameraPick - allows the user to take photos with their camera
-   * @returns Returns the photos that the user took
-   * @description - allows the user to take photos with their camera
-   */
-  handleCameraPick = async () => {
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: false,
-      quality: 1,
-    });
+ * @function
+ * @handleCameraPick - allows the user to take photos with their camera
+ * @returns Returns the photos that the user took
+ * @description - allows the user to take photos with their camera
+ */
+handleCameraPick = async () => {
+  const result = await ImagePicker.launchCameraAsync();
 
-    if (!result.canceled) {
-      this.processImage(result);
-    }
-  };
+  if (!result.canceled) {
+    this.processImage(result); // Process the first (and only) image
+  }
 
-  /**
-   * @function
-   * @handleLibraryPick - allows the user to select images from their library
-   * @returns Returns the images that the user selected
-   * @description - allows the user to select images from their library
-   */
-  handleLibraryPick = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: false,
-      quality: 1,
-      allowsMultipleSelection: true,
-      selectionLimit: 9 - this.state.data.length,
-    });
+  this.hideModal();
+};
 
-    if (!result.canceled) {
-      this.processSelectedImages(result.assets);
-    }
-  };
+/**
+ * @function
+ * @handleLibraryPick - allows the user to select images from their library
+ * @returns Returns the images that the user selected
+ * @description - allows the user to select images from their library
+ */
+handleLibraryPick = async () => {
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: false,
+    quality: 1,
+    allowsMultipleSelection: true,
+    selectionLimit: 9 - this.state.data.length,
+  });
+
+  if (!result.canceled && result.assets) {
+    this.processSelectedImages(result.assets);
+  }
+
+  this.hideModal();
+};
 
   /**
    * @function
@@ -767,20 +752,20 @@ class CreateListing extends Component {
                     visible={this.state.showCurrencyOptions}
                     animationType="slide"
                   >
-                    <ScrollView style = {styles.currencyScrollView} >
-                    <View style={styles.modalContent}>
-                      {this.renderCurrencyOptions()}
-                    </View>
-                    </ScrollView>
-                    <TouchableOpacity
-                      onPress={() =>
-                        this.setState({ showCurrencyOptions: false })
-                      }
-                      >
-                        <View style={styles.closeButtonContainer}>
-                      <Text style={styles.closeButton}>Close</Text>
+                    <ScrollView style={styles.currencyScrollView}>
+                      <View style={styles.modalContent}>
+                        {this.renderCurrencyOptions()}
                       </View>
-                    </TouchableOpacity>
+                    </ScrollView>
+                    <View style={styles.closeButtonContainer}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.setState({ showCurrencyOptions: false })
+                        }
+                      >
+                        <Text style={styles.closeButton}>Close</Text>
+                      </TouchableOpacity>
+                    </View>
                   </Modal>
                 )}
               </View>
@@ -871,26 +856,11 @@ class CreateListing extends Component {
             </View>
 
             <TouchableOpacity
-              onPress={this.handleImagePick}
+              onPress={this.showModal}
               style={styles.button}
             >
               <Text style={styles.buttonText}>Select Images</Text>
             </TouchableOpacity>
-            {/* {
-              isImageInvalid ? (
-                <View style={[styles.rowContainer, {alignSelf: "center"}]}>
-                  <Text style={styles.errorMessage}>
-                    {this.state.data.length == 0
-                      ? "Must select at least one image"
-                      : this.state.data.length > 9
-                      ? "Too many images selected"
-                      : "Must select at least one image"}
-                  </Text>
-                </View>
-              ) : (
-                ""
-              )
-            } */}
             <View
               style={[
                 styles.imageField,
@@ -907,18 +877,6 @@ class CreateListing extends Component {
                 />
               </View>
             </View>
-
-            {/* {
-              isTagInvalid ? (
-                <View style={[styles.rowContainer, {alignSelf: "center"}]}>
-                  <Text style={styles.errorMessage}>
-                    Must select at least one tag
-                  </Text>
-                </View>
-              ) : (
-                ""
-              )
-            } */}
             <ScrollView
               style={[
                 styles.tagField,
@@ -967,6 +925,52 @@ class CreateListing extends Component {
 
             <Text style={styles.spacer} />
           </ScrollView>
+
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.selectImageModalVisible}
+            onRequestClose={() => {
+              this.hideModal();
+            }}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <TouchableOpacity
+                  style={styles.imagePickerButton}
+                  onPress={this.handleCameraPick}
+                >
+                  <Text style={styles.imagePickerButtonText}>Camera</Text>
+                  <MaterialIcons
+                    name="camera-alt"
+                    size={24}
+                    color="black"
+                    style={{ top: 10, left: '90%' }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.imagePickerButton}
+                  onPress={this.handleLibraryPick}
+                >
+                  <Text style={styles.imagePickerButtonText}>
+                    Photo Library
+                  </Text>
+                  <MaterialIcons
+                    name="photo-library"
+                    size={24}
+                    color="black"
+                    style={{ top: 10, left: '50%' }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.imagePickerButton}
+                  onPress={() => this.hideModal()}
+                >
+                  <Text style={styles.imagePickerButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </View>
       </View>
     );
@@ -1335,23 +1339,22 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   closeButtonContainer: {
-    alignItems: 'center',
+    top: 0.8 * screenHeight,
+    backgroundColor: Colors.BB_bone,
     alignSelf: 'center',
-    justifyContent: 'center',
     zIndex: 2,
     marginTop: 20,
-    backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 10,
+    width: '25%',
+    height: '20%',
   },
   closeButton: {
+    position: 'absolute',
     fontSize: 24,
     color: 'black',
-    backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 10,
-    top: 0,
     textAlign: 'center',
     alignSelf: 'center',
-    width: '25%',
   },
   currencyScrollView: {
     position: 'absolute',
@@ -1359,5 +1362,50 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     top: 0.1 * screenHeight,
+  },
+  //Image Select Modal
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+  },
+  imagePickerButton: {
+    flexDirection: 'row',
+    width: 200,
+    height: 50,
+    marginBottom: 10,
+    backgroundColor: Colors.BB_bone,
+    borderRadius: 10,
+    borderColor: Colors.black,
+    alignContent: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+  },
+  imagePickerButtonText: {
+    fontSize: 18,
+    color: 'black',
+    alignSelf: 'center',
   },
 });
