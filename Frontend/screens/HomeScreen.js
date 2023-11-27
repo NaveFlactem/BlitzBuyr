@@ -1,23 +1,21 @@
-import { serverIp } from "../config.js";
-import React, { useEffect, useRef, useState, useCallback, memo } from "react";
+import NetInfo from '@react-native-community/netinfo';
+import * as SecureStore from 'expo-secure-store';
+import { debounce } from 'lodash';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import {
-  View,
-  StyleSheet,
-  SafeAreaView,
-  Dimensions,
-  RefreshControl,
-  ActivityIndicator,
-  ScrollView,
   Platform,
-} from "react-native";
-import NetInfo from "@react-native-community/netinfo";
-import Swiper from "react-native-swiper";
-import TopBar from "../components/TopBarHome.js";
-import Colors from "../constants/Colors";
-import { Image } from "expo-image";
-import * as SecureStore from "expo-secure-store";
-import noWifi from "../components/noWifi";
-import noListings from "../components/noListings";
+  RefreshControl,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { useSharedValue, withTiming } from 'react-native-reanimated';
+import LocationSlider from '../components/LocationSlider';
+import NoListings from '../components/noListings';
+import NoWifi from '../components/noWifi';
+import AndroidSwiperComponent from '../components/swipers/AndroidSwiperComponent.js';
+import IOSSwiperComponent from '../components/swipers/IOSSwiperComponent.js';
 //import Listing from "../components/Listing.tsx";
 import { likedNotification } from '../components/Notifications.js';
 import { PanGestureHandlerProps } from "react-native-gesture-handler";
@@ -26,60 +24,25 @@ import {
   getStoredPassword,
   setStoredCredentials,
 } from "./auth/Authenticate.js";
-import Listing from "../components/Listing.js";
-import useBackButtonHandler from "../hooks/DisableBackButton.js";
-import BouncePulse from "../components/BouncePulse.js";
-import { getLocationWithRetry } from "../constants/Utilities";
-
-const IOSSwiperComponent = memo(
-  ({ swiperRef, listings, removeListing, userLocation }) => {
-    return (
-      <Swiper
-        ref={swiperRef}
-        loop={false}
-        horizontal={false}
-        showsPagination={false}
-        showsButtons={false}
-      >
-        {listings.map((item) => (
-          <Listing
-            key={item.ListingId}
-            item={item}
-            removeListing={removeListing}
-            userLocation={userLocation}
-          />
-        ))}
-      </Swiper>
-    );
-  }
-);
-
-const AndroidSwiperComponent = memo(
-  ({ swiperRef, listings, refreshControl, removeListing, userLocation }) => {
-    return (
-      <Swiper
-        ref={swiperRef}
-        loop={false}
-        horizontal={false}
-        showsPagination={false}
-        showsButtons={false}
-        refreshControl={refreshControl}
-      >
-        {listings.map((item, listIndex) => {
-          Image.prefetch(item.images);
-          return (
-            <Listing
-              key={item.ListingId}
-              item={item}
-              removeListing={removeListing}
-              userLocation={userLocation}
-            />
-          );
-        })}
-      </Swiper>
-    );
-  }
-);
+import TagDrawer, { SwipeArea } from '../components/TagDrawer.js';
+import TopBar from '../components/TopBarHome.js';
+import BouncePulse from '../components/visuals/BouncePulse.js';
+import { CustomRefreshControl } from '../components/visuals/CustomRefreshControl';
+import { serverIp } from '../config.js';
+import Colors from '../constants/Colors';
+import {
+  conditionOptions,
+  tagOptions,
+  transactionOptions,
+} from '../constants/ListingData.js';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
+import {
+  calculateTimeSince,
+  getLocationWithRetry,
+} from '../constants/Utilities';
+import * as Settings from '../hooks/UserSettings.js';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
 
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -87,9 +50,53 @@ const HomeScreen = ({ route }) => {
   const swiperRef = useRef(null);
   const [networkConnected, setNetworkConnected] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const [scrollPosition, setScrollPosition] = useState({ x: 0, y: 0 });
   const [userLocation, setUserLocation] = useState(null);
-  const scrollViewRef = useRef(null);
+  const [tagsData, setTagsData] = useState([...tagOptions]);
+  const [conditions, setConditionsData] = useState([...conditionOptions]);
+  const [transactions, setTransactionsData] = useState([...transactionOptions]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedConditions, setSelectedConditions] = useState([]);
+  const [selectedTransactions, setSelectedTransactions] = useState([]);
+  const translateX = useSharedValue(-screenWidth);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [distance, setDistance] = useState(30);
+  const [isLocationSliderVisible, setIsLocationSliderVisible] = useState(false);
+  const locationSliderHeight = useSharedValue(-100); // Start off-screen
+  const styles = getThemedStyles(useThemeContext().theme).HomeScreen;
+
+  const toggleTagDrawer = () => {
+    if (translateX.value === -screenWidth * 0.6) {
+      // Drawer is open, so close it
+      translateX.value = withTiming(-screenWidth, {
+        duration: 300,
+      });
+      setIsDrawerOpen(false);
+    } else {
+      // Drawer is closed, so open it
+      translateX.value = withTiming(-screenWidth * 0.6, {
+        duration: 300,
+      });
+      setIsDrawerOpen(true);
+    }
+  };
+
+  const handleLocationPress = () => {
+    if (isLocationSliderVisible) {
+      locationSliderHeight.value = withTiming(-100, { duration: 100 }); // Hide slider
+      setIsLocationSliderVisible(false);
+      fetchListings();
+    } else {
+      locationSliderHeight.value = withTiming(0, { duration: 100 }); // Show slider
+      setIsLocationSliderVisible(true);
+    }
+  };
+
+  handleInnerScolling = () => {
+    swiperRef.current.setNativeProps({ scrollEnabled: false });
+  };
+  handleInnerScollingEnd = () => {
+    swiperRef.current.setNativeProps({ scrollEnabled: true });
+  };
 
   const getUserLocation = async () => {
     console.log("Getting user's location...");
@@ -99,44 +106,97 @@ const HomeScreen = ({ route }) => {
       const { latitude, longitude } = location.coords;
       setUserLocation({ latitude, longitude });
     } catch (error) {
-      console.error("Error getting location:", error);
+      console.error('Error getting location:', error);
       // FIXME: Handle the error appropriately
     }
   };
 
-  const fetchListings = async () => {
-    console.log("Fetching listings...");
+  retryButtonHandler = () => {
+    setRefreshing(true);
+    fetchListings();
+  };
+
+  let scrollY = useSharedValue(0);
+  const onScroll = (event) => {
+    scrollY.value = event.nativeEvent.contentOffset.y;
+  };
+
+  const onRefresh = React.useCallback(() => {
+    console.log('refreshing...');
+    setRefreshing(true);
+    if (userLocation) fetchListings();
+    else getUserLocation();
+  }, []);
+
+  const debouncedFetchListings = useCallback(
+    debounce(() => {
+      fetchListings();
+    }, 1000),
+    []
+  );
+
+  const fetchListings = useCallback(async () => {
+    console.log('Fetching listings...');
+    console.log('Tags:', selectedTags);
+    console.log('Distance:', distance < 510 ? distance : 'No Limit');
     if (route.params?.refresh) route.params.refresh = false;
 
     try {
       const { latitude, longitude } = userLocation;
-      console.log("User Location:", userLocation);
-      console.log("Latitude:", latitude);
-      console.log("Longitude:", longitude);
-      const listingsResponse = await fetch(
-        `${serverIp}/api/listings?username=${encodeURIComponent(
-          await SecureStore.getItemAsync("username")
-        )}&latitude=${latitude}&longitude=${longitude}&distance=${100}`, // FIXME: Consider encrypting this data. This 1 value needs to be determined by the UI slider
-        {
-          method: "GET",
-        }
+      const mergedTags = '&tags[]=' + selectedTags.join('&tags[]=');
+      const mergedConditions =
+        '&conditions[]=' + selectedConditions.join('&conditions[]=');
+      const mergedTransactions =
+        '&transactions[]=' + selectedTransactions.join('&transactions[]=');
+      console.log('User Location:', userLocation);
+      console.log('Latitude:', latitude);
+      console.log('Longitude:', longitude);
+      console.log('Tags:', mergedTags);
+      console.log('Conditions:', mergedConditions);
+      console.log('Transactions:', mergedTransactions);
+
+      const username = encodeURIComponent(
+        await SecureStore.getItemAsync('username')
       );
+      let fetchUrl = `${serverIp}/api/listings?username=${username}&latitude=${latitude}&longitude=${longitude}`;
+      if (distance < 510) fetchUrl += `&distance=${distance}`; // don't add distance on unlimited
+      if (selectedTags.length > 0) fetchUrl += `&${mergedTags}`;
+      if (selectedTransactions.length > 0) fetchUrl += `&${mergedTransactions}`;
+      if (selectedConditions.length > 0) fetchUrl += `&${mergedConditions}`;
+      console.log(fetchUrl);
+      const listingsResponse = await fetch(fetchUrl, {
+        method: 'GET',
+      });
 
       if (listingsResponse.status <= 201) {
         const listingsData = await listingsResponse.json();
-
-        setListings(listingsData);
-        console.log("Listings fetched successfully");
+        setListings(
+          listingsData.map((listing) => {
+            const timeSince = calculateTimeSince(listing.PostDate);
+            return {
+              ...listing,
+              TimeSince: timeSince,
+            };
+          })
+        );
+        console.log('Listings fetched successfully');
       } else {
-        console.log("Error fetching listings:", listingsResponse.status);
+        console.log('Error fetching listings:', listingsResponse.status);
       }
     } catch (err) {
-      console.log("Error:", err);
+      console.log('Error:', err);
     } finally {
       setIsLoading(false);
       setRefreshing(false);
     }
-  };
+  }, [
+    userLocation,
+    selectedTags,
+    selectedTransactions,
+    selectedConditions,
+    distance,
+    refreshing,
+  ]);
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
@@ -146,6 +206,16 @@ const HomeScreen = ({ route }) => {
     return () => {
       unsubscribe();
     };
+  }, []);
+
+  useEffect(() => {
+    const fetchDistance = async () => {
+      const initialDistance = await Settings.getDistance();
+      console.log('Initial distance:', initialDistance);
+      setDistance(initialDistance);
+    };
+
+    fetchDistance();
   }, []);
 
   // This will run on mount
@@ -158,6 +228,10 @@ const HomeScreen = ({ route }) => {
     if (userLocation) fetchListings();
   }, [userLocation]);
 
+  useEffect(() => {
+    if (userLocation && !isDrawerOpen) fetchListings();
+  }, [isDrawerOpen]);
+
   // This will run with refresh = true
   useEffect(() => {
     if (route.params?.refresh) {
@@ -166,42 +240,6 @@ const HomeScreen = ({ route }) => {
       else getUserLocation();
     }
   }, [route.params]);
-
-  const handleStarPress = async (listingId) => {
-    // toggle the like
-    const newStarStates = { ...starStates }; // Create a copy of the current starStates
-    newStarStates[listingId] = !newStarStates[listingId]; // Update the liked status
-
-    const likeData = {
-      username: await SecureStore.getItemAsync("username"),
-      listingId: listingId,
-    };
-
-    // Update the backend
-    const likedResponse = await fetch(`${serverIp}/api/like`, {
-      method: newStarStates[listingId] ? "POST" : "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(likeData),
-    });
-    if(newStarStates[listingId] == true){
-      likedNotification();
-    }
-
-    if (likedResponse.status > 201) {
-      console.log("Error Liking listing:", listingId, likedResponse.status);
-    }
-
-    // Update the state with the new star states object
-    setStarStates(newStarStates);
-
-    console.log(
-      `${
-        newStarStates[listingId] ? "Starred" : "Unstarred"
-      } listing ID ${listingId}`
-    );
-  };
 
   const onRefresh = React.useCallback(() => {
     console.log("refreshing...");
@@ -234,7 +272,10 @@ const HomeScreen = ({ route }) => {
   if (isLoading) {
     return (
       <SafeAreaView style={styles.screenfield}>
-        <TopBar />
+        <TopBar
+          handleMenuPress={toggleTagDrawer}
+          handleLocationPress={handleLocationPress}
+        />
         <LoadingView />
       </SafeAreaView>
     );
@@ -242,47 +283,49 @@ const HomeScreen = ({ route }) => {
 
   return (
     <SafeAreaView style={styles.screenfield}>
-      <TopBar />
+      <TopBar
+        handleMenuPress={toggleTagDrawer}
+        handleLocationPress={handleLocationPress}
+      />
 
       <View
         style={styles.topTap}
         onStartShouldSetResponder={() => true}
         onResponderRelease={() => {
-          swiperRef.current.scrollTo(0);
+          if (swiperRef.current) {
+            swiperRef.current.scrollToOffset({ animated: true, offset: 0 });
+          }
         }}
       />
 
       {networkConnected ? (
         listings && listings.length > 0 ? (
-          Platform.OS === "ios" ? (
-            <ScrollView
-              ref={scrollViewRef}
-              onScroll={handleScroll} //doesn't work
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                  progressViewOffset={50}
-                />
-              }
-              scrollEventThrottle={16}
-              scrollEnabled={Platform.OS === "ios" ? true : false}
-            >
-              <View style={styles.swiperContainer}>
-                <IOSSwiperComponent
-                  swiperRef={swiperRef}
-                  listings={listings}
-                  userLocation={userLocation}
-                  removeListing={(listingId) => {
-                    setListings((prevListings) =>
-                      prevListings.filter(
-                        (item) => item.ListingId !== listingId
-                      )
-                    );
-                  }}
-                />
-              </View>
-            </ScrollView>
+          Platform.OS === 'ios' ? (
+            <View style={styles.swiperContainer}>
+              <IOSSwiperComponent
+                swiperRef={swiperRef}
+                listings={listings}
+                userLocation={userLocation}
+                removeListing={(listingId) => {
+                  setListings((prevListings) =>
+                    prevListings.filter((item) => item.ListingId !== listingId)
+                  );
+                }}
+                onScroll={onScroll}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                    tintColor="transparent"
+                    colors="transparent"
+                    titleColor="transparent"
+                    progressViewOffset={50}
+                  />
+                }
+                handleInnerScolling={handleInnerScolling}
+                handleInnerScollingEnd={handleInnerScollingEnd}
+              />
+            </View>
           ) : (
             <View style={styles.swiperContainer}>
               <AndroidSwiperComponent
@@ -294,6 +337,7 @@ const HomeScreen = ({ route }) => {
                     prevListings.filter((item) => item.ListingId !== listingId)
                   );
                 }}
+                onScroll={onScroll}
                 refreshControl={
                   <RefreshControl
                     refreshing={refreshing}
@@ -301,45 +345,67 @@ const HomeScreen = ({ route }) => {
                     progressViewOffset={50}
                   />
                 }
+                handleInnerScolling={handleInnerScolling}
+                handleInnerScollingEnd={handleInnerScollingEnd}
               />
             </View>
           )
         ) : (
-          noListings()
+          <NoListings onRetry={retryButtonHandler} />
         )
       ) : (
-        noWifi()
+        <NoWifi onRetry={retryButtonHandler} />
+      )}
+
+      <TagDrawer
+        tagsData={tagsData}
+        conditions={conditions}
+        transactions={transactions}
+        setTagsData={setTagsData}
+        setConditionsData={setConditionsData}
+        setTransactionsData={setTransactionsData}
+        selectedTags={selectedTags}
+        selectedConditions={selectedConditions}
+        selectedTransactions={selectedTransactions}
+        setSelectedTags={setSelectedTags}
+        setSelectedConditions={setSelectedConditions}
+        setSelectedTransactions={setSelectedTransactions}
+        fetchListings={fetchListings}
+        handleMenuPress={toggleTagDrawer}
+        setIsDrawerOpen={setIsDrawerOpen}
+        isDrawerOpen={isDrawerOpen}
+        translateX={translateX}
+      />
+
+      <SwipeArea
+        handleSwipe={toggleTagDrawer}
+        translateX={translateX}
+        setIsDrawerOpen={setIsDrawerOpen}
+        isDrawerOpen={isDrawerOpen}
+      />
+
+      {isLocationSliderVisible && (
+        <TouchableOpacity
+          style={styles.sliderCover}
+          onPress={handleLocationPress}
+        />
+      )}
+
+      <LocationSlider
+        setDistance={setDistance}
+        isLocationSliderVisible={isLocationSliderVisible}
+        setIsLocationSliderVisible={setIsLocationSliderVisible}
+        locationSliderHeight={locationSliderHeight}
+      />
+      {Platform.OS === 'ios' && (
+        <CustomRefreshControl
+          refreshing={refreshing}
+          scrollY={scrollY}
+          swiperRef={swiperRef}
+        />
       )}
     </SafeAreaView>
   );
 };
 
 export default HomeScreen;
-
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
-
-//////////////////////////////////////////////////////////////////////////////////////
-const styles = StyleSheet.create({
-  screenfield: {
-    flex: 1,
-    backgroundColor: Colors.BB_pink,
-  },
-  swiperContainer: {
-    height: screenHeight,
-    width: screenWidth,
-  },
-  topTap: {
-    position: "absolute",
-    top: 0.08 * screenHeight,
-    width: screenWidth,
-    height: 0.05 * screenHeight,
-    zIndex: 3,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 100,
-  },
-});

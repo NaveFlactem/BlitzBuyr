@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Frontend/screens/CreateListing.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/NaveFlactem/BlitzBuyr" target="_blank" class="menu-item" id="repository" >Github repo</a></h2><h3>Classes</h3><ul><li><a href="CreateListing.html">CreateListing</a><ul class='methods'><li data-type='method' style='display: none;'><a href="CreateListing.html#checkValidListing">checkValidListing</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#componentDidMount">componentDidMount</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#destructor">destructor</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#getPermissionAsync">getPermissionAsync</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handleCameraPick">handleCameraPick</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handleCreateListing">handleCreateListing</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handleDeletePhoto">handleDeletePhoto</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handleDragRelease">handleDragRelease</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handleDragStart">handleDragStart</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handleImagePick">handleImagePick</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handleLibraryPick">handleLibraryPick</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handlePriceChange">handlePriceChange</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#handleTagPress">handleTagPress</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#manipulateImage">manipulateImage</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#processImage">processImage</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#processSelectedImages">processSelectedImages</a></li><li data-type='method' style='display: none;'><a href="CreateListing.html#render_item">render_item</a></li></ul></li></ul><h3>Modules</h3><ul><li><a href="module-API_Accounts.html">API/Accounts</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~authenticateUser">authenticateUser</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~getAccounts">getAccounts</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleDeleteAccounts">handleDeleteAccounts</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleLoginRequest">handleLoginRequest</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleRegistrationRequest">handleRegistrationRequest</a></li></ul></li><li><a href="module-API_Listings.html">API/Listings</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~createListing">createListing</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~encodeImageToBlurhash">encodeImageToBlurhash</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~getImages">getImages</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~getListings">getListings</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteImages">handleDeleteImages</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteListing">handleDeleteListing</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteListings">handleDeleteListings</a></li></ul></li><li><a href="module-API_Profile.html">API/Profile</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~deleteAllLikes">deleteAllLikes</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~deleteRating">deleteRating</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getLikes">getLikes</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getProfilePicture">getProfilePicture</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getRatings">getRatings</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getUserProfile">getUserProfile</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~handleLike">handleLike</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~handleUnlike">handleUnlike</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~rateUser">rateUser</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~updateContactInfo">updateContactInfo</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~updateProfile">updateProfile</a></li></ul></li><li><a href="module-Database.html">Database</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-Database.html#~areTableDefinitionsEqual">areTableDefinitionsEqual</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~createOrUpdateTable">createOrUpdateTable</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~createTables">createTables</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~extractColumnsFromDefinition">extractColumnsFromDefinition</a></li></ul></li><li><a href="module-Server.html">Server</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-Server.html#~getRoot">getRoot</a></li><li data-type='method' style='display: none;'><a href="module-Server.html#~requestLogger">requestLogger</a></li></ul></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Frontend/screens/CreateListing.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import * as FileSystem from 'expo-file-system';
+import { Image } from 'expo-image';
+import * as ImageManipulator from 'expo-image-manipulator';
+import * as ImagePicker from 'expo-image-picker';
+import React, { Component, memo } from 'react';
+import {
+  Alert,
+  Modal,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import DraggableGrid from 'react-native-draggable-grid';
+import RNPickerSelect from 'react-native-picker-select';
+import BouncePulse from '../components/visuals/BouncePulse.js';
+import TopBar from '../components/visuals/TopBarGeneric.js';
+import { serverIp } from '../config.js';
+import Colors from '../constants/Colors';
+import { currencies, tagOptions } from '../constants/ListingData.js';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
+import { getLocationWithRetry } from '../constants/Utilities';
+import { getStoredUsername } from './auth/Authenticate.js';
+
+const blurhash = 'L5H2EC=PM+yV0g-mq.wG9c010J}I';
+
+const LoadingView = memo(() => (
+  &lt;View style={styles.loading}>
+    &lt;BouncePulse />
+  &lt;/View>
+));
+
+const MinorLoadingView = memo(() => (
+  &lt;View style={styles.minorLoadingContainer}>
+    &lt;BouncePulse />
+  &lt;/View>
+));
+
+/**
+ * @class
+ * @classdesc - CreateListing is a screen that allows users to create a listing
+ * @extends Component
+ * @returns Returns a CreateListing screen
+ */
+class CreateListing extends Component {
+  /**
+   * @param {*} props
+   * @constructor
+   * @description - CreateListing constructor
+   * @initialize state variables
+   * @initialize refs
+   */
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: '',
+      description: '',
+      price: '',
+      condition: '',
+      transactionPreference: '',
+      data: [],
+      selectedTags: [],
+      isScrollEnabled: true,
+      isTitleInvalid: false,
+      isDescriptionInvalid: false,
+      isPriceInvalid: false,
+      isImageInvalid: false,
+      isConditionInvalid: false,
+      isTransactionPreferenceInvalid: false,
+      isTagInvalid: false,
+      isMinorLoading: false,
+      isLoading: false,
+      selectedCurrency: 'USD',
+      selectedCurrencySymbol: '$',
+      showCurrencyOptions: false,
+      tagsData: [...tagOptions],
+      currencies: [...currencies],
+    };
+    this.titleInput = React.createRef();
+    this.descriptionInput = React.createRef();
+    this.priceInput = React.createRef();
+    this.conditionInput = React.createRef();
+    this.transactionPreferenceInput = React.createRef();
+    this.imageInput = React.createRef();
+    this.tagInput = React.createRef();
+  }
+
+  /**
+   * @function
+   * @destructor - resets state variables
+   */
+  destructor() {
+    this.setState({
+      title: '',
+      description: '',
+      price: '',
+      condition: '',
+      transactionPreference: '',
+      data: [],
+      selectedTags: [],
+      selectedCurrency: 'USD',
+      selectedCurrencySymbol: '$',
+      tagsData: [...tagOptions],
+      currencies: [...currencies],
+      isTitleInvalid: false,
+      isDescriptionInvalid: false,
+      isPriceInvalid: false,
+      isConditionInvalid: false,
+      isTransactionPreferenceInvalid: false,
+      isImageInvalid: false,
+      isTagInvalid: false,
+      isMinorLoading: false,
+      isLoading: false,
+    });
+  }
+
+  /**
+   * @function
+   * @checkValidListing - checks if the listing is valid
+   * @stateUpdates - updates the states of the variables that check if the listing is valid
+   * @returns Returns 0 if the listing is valid, -1 if the listing is invalid and 1 if no images are selected and 2 if too many images are selected and 3 if no tags are selected
+   */
+  checkValidListing = () => {
+    let stateUpdates = {
+      isPriceInvalid:
+        this.state.price &lt; 0 ||
+        this.state.price.length > 7 ||
+        this.state.price === '',
+      isTitleInvalid:
+        this.state.title.length === 0 || this.state.title.length > 25,
+      isDescriptionInvalid:
+        this.state.description.length === 0 ||
+        this.state.description.length > 500,
+      isConditionInvalid: ![
+        'Excellent',
+        'Good',
+        'Fair',
+        'Poor',
+        'For Parts',
+      ].includes(this.state.condition),
+      isTransactionPreferenceInvalid: ![
+        'Pickup',
+        'Meetup',
+        'Delivery',
+        'No Preference',
+      ].includes(this.state.transactionPreference),
+      isImageInvalid:
+        this.state.data.length === 0 || this.state.data.length > 9,
+      isTagInvalid: this.state.selectedTags.length === 0,
+    };
+
+    this.setState(stateUpdates);
+
+    if (Object.values(stateUpdates).includes(true)) {
+      return -1; // Invalid form
+    }
+    if (this.state.data.length === 0) {
+      return 1; // No images selected
+    }
+    if (this.state.data.length > 9) {
+      return 2; // Too many images
+    }
+    if (this.state.selectedTags.length === 0) {
+      return 3; // No tags selected
+    }
+
+    return 0; // Valid form
+  };
+
+  /**
+   * @function
+   * @handleCreateListing - sends user inputted data to server and checks if it ran smoothly
+   * @param {Object} formData - object that is sent to the server with user inputted values
+   */
+  handleCreateListing = async () => {
+    this.setState({ isLoading: true });
+
+    const {
+      title,
+      description,
+      price,
+      selectedTags,
+      data,
+      condition,
+      transactionPreference,
+      selectedCurrency,
+      selectedCurrencySymbol,
+    } = this.state; // Destructuring state
+
+    const returnCode = this.checkValidListing();
+    if (returnCode !== 0) {
+      this.setState({ isLoading: false });
+      if (returnCode === -1) {
+        Alert.alert('Error', 'Please correct the errors in the form.');
+      } else if (returnCode === 1) {
+        Alert.alert('No images selected', 'Please select at least one image.');
+      } else if (returnCode === 2) {
+        Alert.alert('Too many images', 'Please select no more than 9 images.');
+      } else if (returnCode === 3) {
+        Alert.alert('No tags selected', 'Please select at least one tag.');
+      }
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+
+      data.forEach((image, index) => {
+        // Append each image as a file
+        formData.append(`image_${index}`, {
+          uri: image.uri, // The URI of the image file
+          name: `image_${index}.jpg`, // The desired file name
+          type: 'image/jpeg', // The content type of the file
+        });
+      });
+
+      let location = await getLocationWithRetry();
+      const { latitude, longitude } = location.coords;
+
+      // Convert location to a JSON string
+      const locationString = JSON.stringify({ latitude, longitude });
+
+      // Append the location to the formData
+      formData.append('location', locationString);
+
+      console.log('Location:', latitude, longitude);
+
+      formData.append('price', price);
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('tags', JSON.stringify(selectedTags));
+      formData.append('username', getStoredUsername());
+      formData.append('condition', condition);
+      formData.append('transactionPreference', transactionPreference);
+      formData.append('currency', selectedCurrency);
+      formData.append('currencySymbol', selectedCurrencySymbol);
+
+      console.log('Listing Data:', formData);
+      const response = await fetch(`${serverIp}/api/createlisting`, {
+        method: 'POST',
+        body: formData,
+        timeout: 10000,
+      });
+
+      if (response.status &lt;= 201) {
+        const responseData = await response.json();
+        console.log('Listing created successfully:', responseData);
+        this.destructor();
+        this.props.navigation.navigate('Home', { refresh: true });
+      } else {
+        console.error('HTTP error! Status: ', response.status);
+        Alert.alert('Error', 'Failed to create listing.');
+      }
+    } catch (error) {
+      console.error('Error creating listing:', error);
+      Alert.alert('Error', 'An unexpected error occurred.');
+    } finally {
+      this.setState({ isLoading: false });
+    }
+  };
+
+  /**
+   * @function
+   * @componentDidMount - calls getPermissionAsync() when component mounts
+   */
+  componentDidMount() {
+    this.getPermissionAsync();
+  }
+
+  /**
+   * @function
+   * @getPermissionAsync - asks for permission to access camera roll
+   */
+  getPermissionAsync = async () => {
+    // Camera roll Permission
+    const { status: libraryStatus } =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (libraryStatus !== 'granted') {
+      alert('Sorry, we need camera roll permissions to make this work!');
+    }
+
+    // Camera Permission
+    const { status: cameraStatus } =
+      await ImagePicker.requestCameraPermissionsAsync();
+    if (cameraStatus !== 'granted') {
+      alert('Sorry, we need camera permissions to make this work!');
+    }
+  };
+
+  /**
+   * @function
+   * @handleImagePick - allows the user to select images from their library or take photos with their camera
+   * @returns Returns the images that the user selected
+   */
+  handleImagePick = () => {
+    Alert.alert(
+      'Select Image',
+      'Choose where to select images from:',
+      [
+        {
+          text: 'Camera',
+          onPress: () => this.handleCameraPick(),
+        },
+        {
+          text: 'Photo Library',
+          onPress: () => this.handleLibraryPick(),
+        },
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  /**
+   * @function
+   * @handleCameraPick - allows the user to take photos with their camera
+   * @returns Returns the photos that the user took
+   * @description - allows the user to take photos with their camera
+   */
+  handleCameraPick = async () => {
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: false,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      this.processImage(result);
+    }
+  };
+
+  /**
+   * @function
+   * @handleLibraryPick - allows the user to select images from their library
+   * @returns Returns the images that the user selected
+   * @description - allows the user to select images from their library
+   */
+  handleLibraryPick = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      quality: 1,
+      allowsMultipleSelection: true,
+      selectionLimit: 9 - this.state.data.length,
+    });
+
+    if (!result.canceled) {
+      this.processSelectedImages(result.assets);
+    }
+  };
+
+  /**
+   * @function
+   * @processImage - processes the image that the user selected
+   * @param {*} image
+   * @returns Returns the image that the user selected
+   * @description - processes the image that the user selected
+   */
+  processImage = async (image) => {
+    // Process a single image
+    const manipulatedImage = await this.manipulateImage(image.uri);
+    if (manipulatedImage) {
+      this.setState((prevState) => ({
+        data: [...prevState.data, manipulatedImage],
+      }));
+    }
+  };
+
+  /**
+   * @function
+   * @processSelectedImages - processes the images that the user selected
+   * @param {*} assets
+   */
+  processSelectedImages = async (assets) => {
+    // Process multiple images
+    const processedImages = await Promise.all(
+      assets.map(async (asset) => this.manipulateImage(asset.uri))
+    );
+    this.setState((prevState) => ({
+      data: [...prevState.data, ...processedImages.filter(Boolean)],
+    }));
+  };
+
+  /**
+   * @function
+   * @manipulateImage - compresses the image that the user selected
+   * @param {*} uri
+   * @returns
+   */
+  manipulateImage = async (uri) => {
+    try {
+      const originalSize = await FileSystem.getInfoAsync(uri);
+      const manipulateResult = await ImageManipulator.manipulateAsync(uri, [], {
+        compress: 0.4,
+        format: ImageManipulator.SaveFormat.JPEG,
+      });
+      const compressedSize = await FileSystem.getInfoAsync(
+        manipulateResult.uri
+      );
+      const savedData = originalSize.size - compressedSize.size;
+
+      console.log(
+        `Original File Size for ${uri}:`,
+        (originalSize.size / (1024 * 1024)).toFixed(2),
+        'MB',
+        `compressed to :`,
+        (compressedSize.size / (1024 * 1024)).toFixed(2),
+        'MB',
+        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`
+      );
+
+      return {
+        name: manipulateResult.uri.split('/').pop(),
+        key: String(Date.now()),
+        uri: manipulateResult.uri,
+      };
+    } catch (error) {
+      console.error('Image processing error:', error);
+      return null;
+    }
+  };
+
+  /**
+   * @function
+   * @handleDeletePhoto - deletes photos that the user no longer wants to post
+   * @param {Number} index - index of the photo that the user wants to delete
+   */
+  handleDeletePhoto = (index) => {
+    Alert.alert('Delete Photo', 'Are you sure you want to delete this photo?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Delete',
+        onPress: () => {
+          this.setState((prevState) => ({
+            data: prevState.data.filter((_, i) => i !== index),
+          }));
+        },
+      },
+    ]);
+  };
+
+  /**
+   *
+   * @param {*} item
+   * @description - renders the images that the user selected
+   * @returns Returns the images that the user selected
+   */
+  render_item(item, index) {
+    return (
+      &lt;View style={styles.itemContainer} key={item.key}>
+        {item.uri ? (
+          &lt;View style={styles.item}>
+            &lt;Image
+              source={{ uri: item.uri }}
+              style={styles.image}
+              placeholder={blurhash}
+              transition={200}
+            />
+            &lt;TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => this.handleDeletePhoto(index)}
+            >
+              &lt;Text style={styles.deleteButtonText}>X&lt;/Text>
+            &lt;/TouchableOpacity>
+          &lt;/View>
+        ) : (
+          &lt;Text style={styles.item_text}>{item.name}&lt;/Text>
+        )}
+      &lt;/View>
+    );
+  }
+
+  /**
+   * @function
+   * @handleDragStart - disables scrolling when the user is dragging an image
+   */
+  handleDragStart = () => {
+    // When a drag starts, disable scrolling
+    this.setState({ isScrollEnabled: false });
+  };
+
+  /**
+   * @function
+   * @handleDragRelease - enables scrolling when the user is done dragging an image
+   */
+  handleDragRelease = (data) => {
+    // When the drag is released, enable scrolling
+    this.setState({ data, isScrollEnabled: true });
+  };
+
+  /**
+   * @function
+   * @handlePriceChange - handles when the user enters a price
+   * @param {*} text
+   * @description - handles when the user enters a price
+   */
+  handlePriceChange = (text) => {
+    const regex = /^(\d{0,6}(\.\d{2})?)$/;
+
+    if (regex.test(text) || text === '') {
+      // If text matches the format (4 digits before decimal, 2 after) or is empty
+      this.setState({ isPriceInvalid: false });
+    } else {
+      // If the text doesn't match the format
+      this.setState({ isPriceInvalid: true });
+    }
+  };
+
+  /**
+   * @function
+   * @handleTagPress - handles when the user presses a tag
+   * @param {Number} index - index of the tag that the user pressed
+   * @param {String} pressedTagName - name of the tag that the user pressed
+   * @param {Boolean} isAlreadySelected - boolean that checks if the tag is already selected
+   * @param {Array} newSelectedTags - array of the selected tags
+   * @param {Array} newTagsData - array of the tags data
+   * @param {Array} tagsData - array of the tags data
+   * @param {Array} selectedTags - array of the selected tags
+   * @description - handles when the user presses a tag
+   * @returns Returns the tags that the user selected
+   */
+  handleTagPress = (index) => {
+    this.setState((prevState) => {
+      // Toggle the 'selected' state of the pressed tag
+      const newTagsData = prevState.tagsData.map((tag, idx) => {
+        if (idx === index) {
+          return { ...tag, selected: !tag.selected };
+        }
+        return tag;
+      });
+
+      // Get the name of the tag that was pressed
+      const pressedTagName = newTagsData[index].name;
+
+      // Check if the tag is already in the selectedTags array
+      const isAlreadySelected = prevState.selectedTags.includes(pressedTagName);
+
+      let newSelectedTags;
+      if (isAlreadySelected) {
+        // If already selected, remove it from the array
+        newSelectedTags = prevState.selectedTags.filter(
+          (tagName) => tagName !== pressedTagName
+        );
+      } else {
+        // If not selected, add it to the array
+        newSelectedTags = [...prevState.selectedTags, pressedTagName];
+      }
+
+      return {
+        tagsData: newTagsData, // Update tagsData with the new 'selected' state
+        selectedTags: newSelectedTags, // Update selectedTags array
+      };
+    });
+  };
+
+  /**
+   *
+   * @param {*} tags
+   * @param {*} itemsPerRow
+   * @returns
+   */
+  groupTagsIntoRows = (tags, itemsPerRow) => {
+    return tags.reduce((rows, tag, index) => {
+      if (index % itemsPerRow === 0) rows.push([]);
+      rows[rows.length - 1].push(tag);
+      return rows;
+    }, []);
+  };
+
+  handleCurrencySelection = (currencyName, currencySymbol) => {
+    this.setState({
+      selectedCurrency: currencyName,
+      selectedCurrencySymbol: currencySymbol,
+      showCurrencyOptions: false,
+    });
+  };
+
+  renderCurrencyOptions = () => {
+    return this.state.currencies.map((currency) => (
+      &lt;TouchableOpacity
+        key={currency.name}
+        onPress={() =>
+          this.handleCurrencySelection(currency.name, currency.symbol)
+        }
+      >
+        &lt;Text style={styles.currencyOption}>
+          {this.state.selectedCurrency === currency.name ? '✓ ' : ''}
+          {`${currency.name} ${currency.symbol}`}
+        &lt;/Text>
+      &lt;/TouchableOpacity>
+    ));
+  };
+
+  render() {
+    const {
+      isTitleInvalid,
+      isDescriptionInvalid,
+      isPriceInvalid,
+      isConditionInvalid,
+      isTransactionPreferenceInvalid,
+      isImageInvalid,
+      isTagInvalid,
+      selectedCurrency,
+    } = this.state;
+
+    if (this.state.isLoading) {
+      return (
+        &lt;SafeAreaView>
+          &lt;TopBar />
+          &lt;LoadingView />
+        &lt;/SafeAreaView>
+      );
+    }
+
+    if (this.state.isMinorLoading) {
+      return (
+        &lt;SafeAreaView>
+          &lt;TopBar />
+          &lt;MinorLoadingView />
+        &lt;/SafeAreaView>
+      );
+    }
+
+    const rowsOfTags = this.groupTagsIntoRows(this.state.tagsData, 3);
+    return (
+      &lt;View style={styles.wrapper}>
+        &lt;TopBar />
+
+        &lt;View style={styles.scrollfield}>
+          &lt;ScrollView scrollEnabled={this.state.isScrollEnabled}>
+            {/* TOP BUTTON
+            &lt;TouchableOpacity onPress={this.handleCreateListing}>
+              &lt;View style={styles.createButton}>
+                &lt;Text style={styles.buttonText}>Create Listing&lt;/Text>
+              &lt;/View>
+            &lt;/TouchableOpacity>
+            */}
+
+            &lt;View style={styles.rowContainer}>
+              &lt;View style={styles.rowContainer}>
+                &lt;Text style={styles.label}>Title&lt;/Text>
+                {isTitleInvalid ? (
+                  &lt;View style={styles.rowContainer}>
+                    &lt;Text style={styles.asterisk}> *&lt;/Text>
+                    &lt;Text style={styles.errorMessage}>
+                      {this.state.title == ''
+                        ? 'Title is required'
+                        : this.state.title.length > 25
+                        ? 'Title too long'
+                        : 'Must enter a valid title'}
+                    &lt;/Text>
+                  &lt;/View>
+                ) : (
+                  ''
+                )}
+              &lt;/View>
+              &lt;Text style={styles.characterCounter}>
+                {this.state.title.length}/25
+              &lt;/Text>
+            &lt;/View>
+            &lt;TextInput
+              ref={this.titleInput}
+              style={[
+                styles.input,
+                isTitleInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
+              ]}
+              value={this.state.title}
+              onChangeText={(text) => {
+                this.setState({ title: text, isTitleInvalid: false });
+              }}
+              returnKeyType="next"
+              onSubmitEditing={() => this.descriptionInput.current.focus()}
+              maxLength={25}
+            />
+            &lt;View style={styles.rowContainer}>
+              &lt;View style={styles.rowContainer}>
+                &lt;Text style={styles.label}>Description&lt;/Text>
+                {isDescriptionInvalid &amp;&amp; (
+                  &lt;View style={styles.rowContainer}>
+                    &lt;Text style={styles.asterisk}> *&lt;/Text>
+                    &lt;Text style={styles.errorMessage}>
+                      {this.state.description.length > 500
+                        ? 'Description too long'
+                        : this.state.description.length === 0
+                        ? 'Description is required'
+                        : 'Must enter a valid description'}
+                    &lt;/Text>
+                  &lt;/View>
+                )}
+              &lt;/View>
+              &lt;Text style={styles.characterCounter}>
+                {this.state.description.length}/500
+              &lt;/Text>
+            &lt;/View>
+            &lt;TextInput
+              ref={this.descriptionInput}
+              style={[
+                styles.input,
+                styles.multilineInput,
+                (textAlign = 'left'),
+                isDescriptionInvalid
+                  ? { borderColor: 'red', borderWidth: 1 }
+                  : null,
+              ]}
+              value={this.state.description}
+              onChangeText={(text) => {
+                this.setState({
+                  description: text,
+                  isDescriptionInvalid: false,
+                });
+              }}
+              multiline={true}
+              textAlignVertical="top"
+              returnKeyType="next"
+              onSubmitEditing={() => this.priceInput.current.focus()}
+              maxLength={500}
+            />
+
+            &lt;View style={styles.rowContainer}>
+              &lt;Text style={styles.label}>Price&lt;/Text>
+              {isPriceInvalid ? (
+                &lt;View style={styles.rowContainer}>
+                  &lt;Text style={styles.asterisk}> *&lt;/Text>
+                  &lt;Text style={styles.errorMessage}>
+                    {this.state.price == ''
+                      ? 'Price is required'
+                      : this.state.price &lt; 0
+                      ? 'Invalid price'
+                      : this.state.price.length >= 7
+                      ? 'Price too large'
+                      : 'Must enter a valid price'}
+                  &lt;/Text>
+                &lt;/View>
+              ) : (
+                ''
+              )}
+            &lt;/View>
+
+            &lt;View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginLeft: 20,
+              }}
+            >
+              &lt;View style={{ ...styles.currencyButtonContainer }}>
+                &lt;TouchableOpacity
+                  onPress={() => this.setState({ showCurrencyOptions: true })}
+                >
+                  &lt;View style={styles.currencyButton}>
+                    &lt;Text style={styles.currencyButtonText}>
+                      {this.state.selectedCurrency}{' '}
+                      {this.state.selectedCurrencySymbol}
+                    &lt;/Text>
+                  &lt;/View>
+                &lt;/TouchableOpacity>
+                {this.state.showCurrencyOptions &amp;&amp; (
+                  &lt;Modal
+                    visible={this.state.showCurrencyOptions}
+                    animationType="slide"
+                  >
+                    &lt;View style={styles.modalContent}>
+                      {this.renderCurrencyOptions()}
+                    &lt;/View>
+                    &lt;TouchableOpacity
+                      onPress={() =>
+                        this.setState({ showCurrencyOptions: false })
+                      }
+                    >
+                      &lt;Text style={styles.closeButton}>Close&lt;/Text>
+                    &lt;/TouchableOpacity>
+                  &lt;/Modal>
+                )}
+              &lt;/View>
+              &lt;TextInput
+                ref={this.priceInput}
+                style={[
+                  styles.input,
+                  { width: '94.5%', marginLeft: -101.5 },
+                  isPriceInvalid
+                    ? { borderColor: 'red', borderWidth: 1 }
+                    : null,
+                ]}
+                value={this.state.price}
+                onChangeText={(text) => {
+                  this.setState({ price: text, isPriceInvalid: false });
+                  this.handlePriceChange(text);
+                }}
+                keyboardType="numeric"
+                returnKeyType="done"
+                placeholder={`0.00`}
+                maxLength={9}
+              />
+            &lt;/View>
+
+            {/* TRANSACTION PREFERENCE*/}
+            &lt;View style={styles.rowContainer}>
+              &lt;Text style={{ ...styles.label, marginBottom: 0 }}>
+                Transaction Preference
+              &lt;/Text>
+              {isTransactionPreferenceInvalid ? (
+                &lt;View style={styles.rowContainer}>
+                  &lt;Text style={styles.asterisk}> *&lt;/Text>
+                  &lt;Text style={styles.errorMessage}>
+                    Must select a preference
+                  &lt;/Text>
+                &lt;/View>
+              ) : (
+                ''
+              )}
+            &lt;/View>
+            &lt;View style={styles.pickerStyle}>
+              &lt;RNPickerSelect
+                selectedValue={this.state.transactionPreference}
+                onValueChange={(itemValue, itemIndex) => {
+                  this.setState({ transactionPreference: itemValue });
+                  this.setState({ isTransactionPreferenceInvalid: false });
+                }}
+                items={[
+                  { label: 'Pickup', value: 'Pickup' },
+                  { label: 'Meetup', value: 'Meetup' },
+                  { label: 'Delivery', value: 'Delivery' },
+                  { label: 'No Preference', value: 'No Preference' },
+                ]}
+              />
+            &lt;/View>
+
+            {/* ITEM CONDITON */}
+            &lt;View style={styles.rowContainer}>
+              &lt;Text style={{ ...styles.label, marginTop: 10, marginBottom: 0 }}>
+                Condition
+              &lt;/Text>
+              {isConditionInvalid ? (
+                &lt;View style={styles.rowContainer}>
+                  &lt;Text style={styles.asterisk}> *&lt;/Text>
+                  &lt;Text style={styles.errorMessage}>
+                    Must select a condition
+                  &lt;/Text>
+                &lt;/View>
+              ) : (
+                ''
+              )}
+            &lt;/View>
+            &lt;View style={{ ...styles.pickerStyle }}>
+              &lt;RNPickerSelect
+                selectedValue={this.state.condition}
+                onValueChange={(itemValue, itemIndex) => {
+                  this.setState({ condition: itemValue });
+                  this.setState({ isConditionInvalid: false });
+                }}
+                items={[
+                  { label: 'Excellent', value: 'Excellent' },
+                  { label: 'Good', value: 'Good' },
+                  { label: 'Fair', value: 'Fair' },
+                  { label: 'Poor', value: 'Poor' },
+                  { label: 'For Parts', value: 'For Parts' },
+                ]}
+              />
+            &lt;/View>
+
+            &lt;TouchableOpacity
+              onPress={this.handleImagePick}
+              style={styles.button}
+            >
+              &lt;Text style={styles.buttonText}>Select Images&lt;/Text>
+            &lt;/TouchableOpacity>
+            {/* {
+              isImageInvalid ? (
+                &lt;View style={[styles.rowContainer, {alignSelf: "center"}]}>
+                  &lt;Text style={styles.errorMessage}>
+                    {this.state.data.length == 0
+                      ? "Must select at least one image"
+                      : this.state.data.length > 9
+                      ? "Too many images selected"
+                      : "Must select at least one image"}
+                  &lt;/Text>
+                &lt;/View>
+              ) : (
+                ""
+              )
+            } */}
+            &lt;View
+              style={[
+                styles.imageField,
+                isImageInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
+              ]}
+            >
+              &lt;View style={styles.innerField}>
+                &lt;DraggableGrid
+                  numColumns={3}
+                  renderItem={(item, index) => this.render_item(item, index)}
+                  data={this.state.data}
+                  onDragRelease={this.handleDragRelease}
+                  onDragStart={this.handleDragStart}
+                />
+              &lt;/View>
+            &lt;/View>
+
+            {/* {
+              isTagInvalid ? (
+                &lt;View style={[styles.rowContainer, {alignSelf: "center"}]}>
+                  &lt;Text style={styles.errorMessage}>
+                    Must select at least one tag
+                  &lt;/Text>
+                &lt;/View>
+              ) : (
+                ""
+              )
+            } */}
+            &lt;ScrollView
+              style={[
+                styles.tagField,
+                isTagInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
+              ]}
+            >
+              &lt;View>
+                {rowsOfTags.map((row, rowIndex) => (
+                  &lt;View key={rowIndex} style={styles.tagRowContainer}>
+                    {row.map((tag, tagIndex) => (
+                      &lt;TouchableOpacity
+                        key={tagIndex}
+                        style={styles.tagContainer}
+                        onPress={() => {
+                          this.handleTagPress(tagIndex + rowIndex * 3);
+                          if (this.state.selectedTags.length > 0) {
+                            this.setState({ isTagInvalid: false });
+                          }
+                        }}
+                      >
+                        &lt;View
+                          style={[
+                            styles.tagSelected,
+                            { opacity: tag.selected ? 1 : 0.3 },
+                          ]}
+                        />
+                        &lt;View
+                          style={[
+                            styles.rhombus,
+                            { opacity: tag.selected ? 0.15 : 0 },
+                          ]}
+                        />
+                        &lt;Text style={styles.tagText}>{tag.name}&lt;/Text>
+                      &lt;/TouchableOpacity>
+                    ))}
+                  &lt;/View>
+                ))}
+              &lt;/View>
+            &lt;/ScrollView>
+
+            &lt;TouchableOpacity onPress={this.handleCreateListing}>
+              &lt;View style={[styles.createButton, (top = 30), (bottom = 0)]}>
+                &lt;Text style={styles.buttonText}>Create Listing&lt;/Text>
+              &lt;/View>
+            &lt;/TouchableOpacity>
+
+            &lt;Text style={styles.spacer} />
+          &lt;/ScrollView>
+        &lt;/View>
+      &lt;/View>
+    );
+  }
+}
+
+export default CreateListing;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    width: '100%',
+    marginTop: 0,
+    backgroundColor: Colors.BB_bone,
+  },
+  scrollfield: {
+    top: 0.08 * screenHeight,
+    height: 'auto',
+    backgroundColor: Colors.BB_bone,
+  },
+  buttonText2: {
+    marginTop: 10,
+    color: Colors.black,
+    fontSize: 22,
+    alignSelf: 'center',
+    fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
+  },
+  minorLoadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  imageField: {
+    alignSelf: 'center',
+    width: '95%',
+    height: 0.95 * screenWidth,
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'gray',
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.9,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+  },
+  deleteButton: {
+    position: 'absolute',
+    alignContent: 'center',
+    justifyContent: 'center',
+    width: 20,
+    height: 20,
+    top: 2,
+    right: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderRadius: 12,
+    zIndex: 2,
+    textAlign: 'center',
+  },
+  deleteButtonText: {
+    color: 'red',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    alignSelf: 'center',
+  },
+  ///////////////
+  tagField: {
+    alignSelf: 'center',
+    width: '95%',
+    height: 0.4 * screenHeight,
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    top: 30,
+    marginBottom: 50,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+  },
+  tagRowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  tagContainer: {
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 20,
+    alignContent: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    height: 0.075 * screenHeight,
+    width: 0.3 * screenWidth,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'gray',
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.9,
+        shadowRadius: 2,
+      },
+    }),
+  },
+  tagText: {
+    color: Colors.white,
+    fontSize: 18,
+    alignSelf: 'center',
+    fontWeight: 'bold',
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+  },
+  rhombus: {
+    alignSelf: 'center',
+    position: 'absolute',
+    width: 0.055 * screenHeight,
+    aspectRatio: 1,
+    backgroundColor: Colors.BB_darkPink,
+    opacity: 0.15,
+    transform: [{ rotate: '45deg' }],
+  },
+  tagSelected: {
+    alignSelf: 'center',
+    backgroundColor: Colors.BB_darkRedPurple,
+    borderRadius: 20,
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
+  },
+  ///////////////////////////
+  innerField: {
+    margin: 10,
+    marginTop: 20,
+    width: '95%',
+    height: '95%',
+  },
+  itemContainer: {
+    width: '33%',
+    height: '33%',
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+  item: {
+    marginTop: 10,
+    width: 0.25 * screenWidth,
+    height: 0.25 * screenWidth,
+    borderRadius: 8,
+    borderColor: Colors.BB_darkRedPurple,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'gray',
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.9,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 8,
+  },
+  container: {
+    flex: 1,
+    paddingTop: 50, //top of page
+    padding: 30, //all around
+    backgroundColor: '#D6447F',
+  },
+  createButton: {
+    marginTop: 20,
+    alignSelf: 'center',
+    width: screenWidth * 0.4,
+    backgroundColor: Colors.BB_darkRedPurple,
+    padding: 5,
+    borderRadius: 10,
+    fontWeight: 'bold',
+    height: 36,
+    width: 150,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'gray',
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.9,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+  },
+
+  label: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: 'black',
+    marginTop: 20,
+    left: 0.05 * screenWidth,
+  },
+  asterisk: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'red',
+    left: 0.05 * screenWidth,
+  },
+  errorMessage: {
+    fontSize: 12,
+    color: 'red',
+    marginLeft: 10,
+    top: 0.008 * screenHeight,
+    left: 0.05 * screenWidth,
+  },
+
+  input: {
+    height: 40,
+    borderColor: Colors.BB_black,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    opacity: 0.9,
+    //marginBottom: 10,
+    width: '90%',
+    left: '5%',
+    ...Platform.select({
+      ios: {
+        shadowColor: 'gray',
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.9,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+    textAlign: 'center',
+    color: 'black',
+  },
+  multilineInput: {
+    height: 120,
+  },
+  pickerStyle: {
+    //bottomMargin: 10,
+    height: 50,
+    left: 0.05 * screenWidth,
+    width: '45%',
+    color: Colors.white,
+    justifyContent: 'center',
+  },
+  button: {
+    width: 150,
+    height: 36,
+    backgroundColor: Colors.BB_darkRedPurple,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 30,
+    alignSelf: 'center',
+    borderRadius: 10,
+    marginTop: 20,
+    borderColor: Colors.black,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'gray',
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.9,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+  },
+  buttonText: {
+    fontSize: 18,
+    color: 'white',
+    alignSelf: 'center',
+  },
+
+  rowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  characterCounter: {
+    fontSize: 12,
+    color: 'black',
+    position: 'absolute',
+    right: 0.05 * screenWidth,
+  },
+  loading: {
+    height: screenHeight,
+    width: screenWidth,
+    position: 'absolute',
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1,
+  },
+  spacer: {
+    height: 0.15 * screenHeight,
+  },
+  currencyButtonContainer: {
+    alignItems: 'center',
+    zIndex: 2,
+    //marginTop: 20,
+  },
+  currencyButton: {
+    width: 100,
+    height: 40,
+    backgroundColor: Colors.BB_darkRedPurple,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    borderColor: 'black',
+    //marginTop: -29.5
+  },
+  currencyButtonText: {
+    fontSize: 18,
+    color: 'white',
+    alignSelf: 'center',
+  },
+  modalContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.BB_bone,
+  },
+  currencyOption: {
+    fontSize: 24,
+    color: 'black',
+    marginVertical: 10,
+  },
+  closeButton: {
+    fontSize: 24,
+    color: 'black',
+    bottom: 0.1 * screenHeight,
+    textAlign: 'center',
+  },
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat Nov 25 2023 05:15:36 GMT-0800 (Pacific Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>

@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useState } from 'react';
 import {
-  View,
+  Button,
+  Image,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  StyleSheet,
-  Image,
-  Button,
-} from "react-native"; // Import the Button component
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { getStoredUsername } from "./auth/Authenticate.js";
-import { serverIp } from "../config.js";
+  View,
+} from 'react-native'; // Import the Button component
+import { serverIp } from '../config.js';
+import { getStoredUsername } from './auth/Authenticate.js';
+import { useThemeContext } from '../components/visuals/ThemeProvider.js';
+import { getThemedStyles } from '../constants/Styles.js';
+
 
 const RatingScreen = ({ navigation, route }) => {
+  const styles = getThemedStyles(useThemeContext().theme).RatingScreen; 
   const [selectedRating, setSelectedRating] = useState(0);
   console.log(route.params);
 
@@ -32,9 +36,9 @@ const RatingScreen = ({ navigation, route }) => {
 
     // Make a POST request to your backend API to submit the rating
     fetch(`${serverIp}/api/rate`, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(ratingPayload),
     })
@@ -47,7 +51,7 @@ const RatingScreen = ({ navigation, route }) => {
         navigation.goBack();
       })
       .catch((error) => {
-        console.error("Error submitting rating:", error);
+        console.error('Error submitting rating:', error);
       });
   };
 
@@ -100,40 +104,5 @@ const RatingScreen = ({ navigation, route }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: "5%",
-  },
-  profilePic: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: "5%",
-  },
-  ratingContainer: {
-    flexDirection: "row",
-    marginBottom: 20, // Add margin to move the button down
-  },
-  starButton: {
-    width: 60,
-    height: 60,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  starMargin: {
-    marginRight: 4,
-  },
-  backButton: {
-    position: "absolute",
-    top: "7%",
-    left: "7%",
-  },
-});
 
 export default RatingScreen;

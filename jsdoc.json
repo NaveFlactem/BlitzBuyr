@@ -1,11 +1,43 @@
 {
+  "recurseDepth": 10,
   "source": {
     "include": ["./Backend", "./Frontend"],
-    "exclude": ["node_modules/", "Frontend/metro.config.js"]
+    "exclude": [
+      "node_modules/",
+      "Frontend/metro.config.js",
+      "./Backend/node_modules",
+      "./Frontend/node_modules"
+    ]
   },
   "opts": {
+    "template": "node_modules/docdash",
+    "encoding": "utf8",
     "destination": "./Docs",
     "readme": "./index.md",
-    "title": "BlitzBuyr Docs"
+    "title": "BlitzBuyr Docs",
+    "recurse": true
+  },
+  "plugins": ["plugins/markdown"],
+  "docdash": {
+    "static": true,
+    "sort": true,
+    "search": true,
+    "collapse": true,
+    "typedefs": true,
+    "removeQuotes": "none",
+    "scripts": [],
+    "menu": {
+      "Github repo": {
+        "href": "https://github.com/NaveFlactem/BlitzBuyr",
+        "target": "_blank",
+        "class": "menu-item",
+        "id": "repository"
+      }
+    }
+  },
+  "templates": {
+    "default": {
+      "useLongnameInNav": true
+    }
   }
 }

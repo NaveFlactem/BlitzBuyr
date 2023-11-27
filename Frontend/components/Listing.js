@@ -1,35 +1,39 @@
-import { serverIp } from "../config.js";
-import React, { useState, memo, useCallback, useEffect } from "react";
+import { useNavigation } from '@react-navigation/native';
+import { Image } from 'expo-image';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
-  StyleSheet,
-  View,
-  Dimensions,
-  Text,
-  ScrollView,
-  TouchableOpacity,
   Animated as AnimatedRN,
-  TouchableWithoutFeedback,
-  Platform,
-  SafeAreaView,
   Modal,
-} from "react-native";
-import Carousel from "react-native-reanimated-carousel";
-import { parallaxLayout } from "./parallax.ts";
-import { Image } from "expo-image";
-import Colors from "../constants/Colors.js";
-import FlipCard from "react-native-flip-card";
-import Entypo from "react-native-vector-icons/Entypo";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { PinchGestureHandler } from "react-native-gesture-handler";
-import { useNavigation } from "@react-navigation/native";
-import * as SecureStore from "expo-secure-store";
+  Platform,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import FlipCard from 'react-native-flip-card';
+import { PinchGestureHandler, ScrollView } from 'react-native-gesture-handler';
+import Carousel from 'react-native-reanimated-carousel';
+import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { serverIp } from '../config.js';
+import Colors from '../constants/Colors.js';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import {
   getStoredPassword,
   getStoredUsername,
-} from "../screens/auth/Authenticate.js";
+} from '../screens/auth/Authenticate.js';
+import { parallaxLayout } from './parallax.ts';
 
-const blurhash =
-  "|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[";
+const default_blurhash = 'LEHLk~WB2yk8pyo0adR*.7kCMdnj';
 
 function getDistance(lat1, lon1, lat2, lon2) {
   function toRadians(degrees) {
@@ -55,17 +59,19 @@ function getDistance(lat1, lon1, lat2, lon2) {
   return Math.floor(distanceMiles);
 }
 
-const LikeButton = ({ isLiked, onLikePress }) => {
+const LikeButton = memo(({ isLiked, onLikePress }) => {
   return (
-    <TouchableOpacity onPress={onLikePress} style={styles.likeButton}>
-      <MaterialCommunityIcons
-        name="heart"
-        size={50}
-        color={isLiked ? "red" : "black"}
-      />
-    </TouchableOpacity>
+    <React.Fragment>
+      <TouchableOpacity onPress={onLikePress} style={styles.likeButton}>
+        <MaterialCommunityIcons
+          name="heart"
+          size={50}
+          color={isLiked ? 'red' : 'black'}
+        />
+      </TouchableOpacity>
+    </React.Fragment>
   );
-};
+});
 
 const DeleteButton = ({ onDeletePress }) => {
   return (
@@ -81,76 +87,125 @@ const calculateFontSize = (price) => {
   }
 
   const numberOfDigits = price.toString().length;
+  if (price == 0) {
+    return 24;
+  }
 
   if (numberOfDigits <= 4) {
     return 20;
   } else if (numberOfDigits <= 6) {
     return 18;
-  } else {
+  } else if (numberOfDigits <= 8) {
     return 16;
+  } else if (numberOfDigits <= 10) {
+    return 14;
+  } else {
+    return 12;
   }
 };
 
-const CardOverlay1 = memo(({ children, price }) => {
+const calculateFontSizeLocation = (city) => {
+  if (city === undefined || city === null) {
+    return 16; // Default font size if price is not provided
+  }
+
+  if (city.length <= 10) {
+    return 14;
+  } else if (city.length <= 15) {
+    return 12;
+  } else {
+    return 10;
+  }
+};
+
+const TimeBox = memo(({ timeSince }) => {
   return (
-    <View style={styles.card}>
-      <View style={styles.cardBackground}>
-        <View style={styles.priceContainer}>
-          <Text
-            style={[styles.price, { fontSize: calculateFontSize(price) }]}
-          >{`$${price}`}</Text>
-        </View>
-        {children}
+    <React.Fragment>
+      <View style={styles.timeSinceContainer}>
+        <Text style={styles.timeSinceText}>
+          {timeSince < 30
+            ? 'Just now'
+            : timeSince < 60
+            ? `${timeSince} seconds ago`
+            : timeSince < 120
+            ? `1 minute ago`
+            : timeSince < 3600
+            ? `${Math.floor(timeSince / 60)} minutes ago`
+            : timeSince < 7200
+            ? `1 hour ago`
+            : timeSince < 86400
+            ? `${Math.floor(timeSince / 3600)} hours ago`
+            : timeSince < 172800
+            ? `1 day ago`
+            : `${Math.floor(timeSince / 86400)} days ago`}
+        </Text>
       </View>
-    </View>
+    </React.Fragment>
   );
 });
 
-const CardOverlay2 = memo(({ children, price }) => {
-  return (
-    <View style={styles.card}>
-      <View style={styles.cardBackground2}>
-        <View style={styles.top_rhombus} />
-        <View style={styles.mid_rhombus} />
-        <View style={styles.bottom_rhombus} />
-        <View style={styles.topR_circle} />
-        <View style={styles.topL_circle} />
-        <View style={styles.priceContainer}>
-          <Text
-            style={[styles.price, { fontSize: calculateFontSize(price) }]}
-          >{`$${price}`}</Text>
+const CardOverlay = memo(
+  ({ children, currencySymbol, price, timeSince, cardStyle }) => {
+    return (
+      <View style={styles.card}>
+        <View style={cardStyle}>
+          <Image
+            source={require('../assets/card_background.png')}
+            style={styles.backgroundImage}
+          />
+          <View style={styles.priceContainer}>
+            <Text
+              style={[
+                styles.price,
+                { fontSize: calculateFontSize(price) },
+                price === 0 && { fontWeight: 'bold' },
+              ]}
+            >
+              {price === 0 ? 'FREE' : `${currencySymbol}${price}`}
+            </Text>
+          </View>
+          {children}
+          <TimeBox timeSince={timeSince} />
         </View>
-        {children}
       </View>
-    </View>
-  );
-});
+    );
+  }
+);
 
-const MemoizedImage = memo(({ source, style, contentFit, transition }) => {
-  return (
-    <Image
-      source={{ uri: source }}
-      style={style}
-      contentFit={contentFit}
-      transition={transition}
-    />
-  );
-});
+const MemoizedImage = memo(
+  ({ source, blurhash, style, contentFit, transition }) => {
+    //console.log(`${serverIp}/img/${source.uri}`);
+    return (
+      <Image
+        source={{ uri: source }}
+        style={style}
+        contentFit={contentFit}
+        transition={transition}
+        placeholder={blurhash ? blurhash : default_blurhash}
+        cachePolicy="memory-disk"
+      />
+    );
+  }
+);
 
 const CustomItem = memo(
   ({
     source,
     scale,
+    currencySymbol,
     price,
+    timeSince,
     isLiked,
     onLikePress,
     onDeletePress,
     deleteVisible,
-    origin,
   }) => {
-    const onZoomEvent = AnimatedRN.event([{ nativeEvent: { scale: scale } }], {
-      useNativeDriver: true,
-    });
+    const onZoomEvent = useCallback(
+      AnimatedRN.event([{ nativeEvent: { scale: scale } }], {
+        useNativeDriver: true,
+      }),
+      []
+    );
 
     const onZoomStateChange = (event) => {
       if (event.nativeEvent.oldState === 4) {
@@ -161,8 +216,14 @@ const CustomItem = memo(
       }
     };
 
+    /*FRONT CARD*/
     return (
-      <CardOverlay1 price={price}>
+      <CardOverlay
+        price={price}
+        currencySymbol={currencySymbol}
+        timeSince={timeSince}
+        cardStyle={styles.cardBackground}
+      >
         <View>
           <PinchGestureHandler
             onGestureEvent={onZoomEvent}
@@ -170,7 +231,8 @@ const CustomItem = memo(
           >
             <AnimatedRN.View style={[{ transform: [{ scale: scale }] }]}>
               <MemoizedImage
-                source={source}
+                source={`${serverIp}/img/${source.uri}`}
+                blurhash={source.blurhash}
                 style={styles.image}
                 contentFit="contain"
                 transition={0}
@@ -180,42 +242,59 @@ const CustomItem = memo(
         </View>
         <LikeButton isLiked={isLiked} onLikePress={onLikePress} />
         {deleteVisible && <DeleteButton onDeletePress={onDeletePress} />}
-      </CardOverlay1>
+      </CardOverlay>
     );
   }
 );
 
-const Listing = ({ item, origin, removeListing, userLocation }) => {
+const Listing = ({ item, origin, removeListing, userLocation, handleInnerScolling, handleInnerScollingEnd }) => {
+  const prevItemRef = useRef();
+  useEffect(() => {
+    if (prevItemRef.current === item) {
+      return;
+    }
+    prevItemRef.current = item;
+  }, [item]);
+
   const navigation = useNavigation();
   const price = item.Price;
+  const currencySymbol = item.CurrencySymbol;
+  const [timeSince, setTimeSince] = useState(item.TimeSince);
+  useEffect(() => {
+    setTimeSince(item.TimeSince);
+  }, [item.TimeSince]);
   const [isLiked, setIsLiked] = useState(item.liked); // Initially KNOWN
-  const [distance, setDistance] = useState(
-    item.Latitude
-      ? getDistance(
-          item.Latitude,
-          item.Longitude,
-          userLocation.latitude,
-          userLocation.longitude
-        )
-      : "Unknown"
-  );
+  const distance = useMemo(() => {
+    return getDistance(
+      item.Latitude,
+      item.Longitude,
+      userLocation.latitude,
+      userLocation.longitude
+    );
+  }, [
+    item.Latitude,
+    item.Longitude,
+    userLocation.latitude,
+    userLocation.longitude,
+  ]);
+
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
-    origin == "profile" && item.Username == getStoredUsername()
+    origin == 'profile' && item.Username == getStoredUsername()
   );
 
-  const toggleDeleteModal = () => {
+  const toggleDeleteModal = useCallback(() => {
     setDeleteModalVisible(!isDeleteModalVisible);
-  };
+  }, [isDeleteModalVisible]);
 
-  const handleDeleteListing = async () => {
+  const handleDeleteListing = useCallback(async () => {
     try {
       const username = getStoredUsername();
       const password = getStoredPassword();
       const response = await fetch(`${serverIp}/api/deletelisting`, {
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, password, listingId: item.ListingId }),
       });
@@ -224,26 +303,26 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
 
       if (response.ok) {
         removeListing(item.ListingId);
-        alert("Listing deleted successfully.");
+        alert('Listing deleted successfully.');
       } else {
         alert(`Error deleting listing: ${responseData.error}`);
       }
     } catch (error) {
-      console.error("Error deleting listing:", error);
+      console.error('Error deleting listing:', error);
       alert(`Error deleting listing: ${error}`);
     } finally {
       toggleDeleteModal(); // Close the modal
     }
-  };
+  }, []);
 
-  const handleLikePress = async () => {
-    const username = await SecureStore.getItemAsync("username");
-    const method = isLiked ? "DELETE" : "POST";
+  const handleLikePress = useCallback(async () => {
+    const username = getStoredUsername();
+    const method = isLiked ? 'DELETE' : 'POST';
     try {
       const response = await fetch(`${serverIp}/api/like`, {
         method: method,
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, listingId: item.ListingId }),
       });
@@ -251,17 +330,15 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
       if (response.ok) {
         setIsLiked(!isLiked);
       } else {
-        console.error("Failed to update like status");
+        console.error('Failed to update like status');
       }
     } catch (error) {
-      console.error("Error updating like status:", error);
+      console.error('Error updating like status:', error);
     }
-  };
+  }, [isLiked]);
 
-  const arrayOfURIs = item.images.map((imageURI, index) => {
-    const modifiedURI = `${serverIp}/img/${imageURI}`;
-    return modifiedURI;
-  });
+  const images = React.useMemo(() => item.images, [item.images]);
+  const carouselRef = useRef(null);
 
   return (
     <SafeAreaView>
@@ -273,8 +350,15 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
         flip={false}
         clickable={true}
       >
+        {/*FACE SIDE*/}
         <View style={styles.card}>
           <Carousel
+            ref={carouselRef}
+            current
+            pagingEnabled={true}
+            removeClippedSubviews={true}
+            initialNumToRender={1}
+            maxToRenderPerBatch={1}
             panGestureHandlerProps={{
               activeOffsetX: [-25, 25],
             }}
@@ -283,14 +367,17 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
             vertical={false}
             width={0.85 * screenWidth}
             height={0.75 * screenHeight}
-            data={arrayOfURIs}
+            data={images}
+            windowSize={2}
             mode="parallax"
             scrollAnimationDuration={400}
-            renderItem={({ item, index, animationValue }) => (
+            renderItem={({ item }) => (
               <CustomItem
                 source={item}
                 scale={new AnimatedRN.Value(1)}
                 price={price}
+                currencySymbol={currencySymbol}
+                timeSince={timeSince}
                 isLiked={isLiked}
                 onLikePress={() => handleLikePress()}
                 onDeletePress={() => toggleDeleteModal()}
@@ -312,16 +399,22 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
           />
         </View>
 
-        <CardOverlay2 price={item.Price}>
+        {/*BACK SIDE*/}
+        <CardOverlay
+          price={price}
+          currencySymbol={currencySymbol}
+          timeSince={timeSince}
+          cardStyle={styles.cardBackground2}
+        >
           <Text style={styles.title}>{item.Title}</Text>
           <View style={styles.sellerInfoBox}>
             <View
               style={[
                 {
-                  height: "100%",
-                  width: "33%",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  height: '100%',
+                  width: '33%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 },
               ]}
             >
@@ -331,42 +424,49 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
                 color="white"
                 style={styles.locationPin}
               />
-              <Text style={styles.city}>{item.City}</Text>
-              <Text style={styles.distance}>{distance > 0 ? distance + "miles": "Less than 1 mile"} </Text>
+              <Text
+                style={[
+                  styles.city,
+                  { fontSize: calculateFontSizeLocation(item.City) },
+                ]}
+              >
+                {item.City}
+              </Text>
+              <Text style={styles.distance}>
+                {distance > 0 ? distance + ' miles' : 'Less than 1 mile'}{' '}
+              </Text>
             </View>
             <View
               style={[
                 {
-                  height: "100%",
-                  width: "33%",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  height: '100%',
+                  width: '33%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 },
               ]}
             >
-              <TouchableWithoutFeedback
+              <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate("Profile", {
+                  navigation.navigate('Profile', {
                     username: item.Username,
                   })
                 }
               >
-                <Image
-                  source={{
-                    uri: `${serverIp}/api/pfp?username=${item.Username}`,
-                  }}
+                <MemoizedImage
+                  source={item.ProfilePicture}
                   style={styles.sellerPic}
                 />
-              </TouchableWithoutFeedback>
-              <Text style={styles.sellerName}> {item.Username}</Text>
+              </TouchableOpacity>
+              <Text style={styles.sellerName}>{item.Username}</Text>
             </View>
             <View
               style={[
                 {
-                  height: "100%",
-                  width: "33%",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  height: '100%',
+                  width: '33%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 },
               ]}
             >
@@ -380,9 +480,92 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
               <Text style={styles.rating}>
                 {item.ratings.averageRating
                   ? item.ratings.averageRating
-                  : "N/A"}{" "}
-                ({item.ratings.ratingCount ? item.ratings.ratingCount : "0"})
+                  : 'N/A'}{' '}
+                ({item.ratings.ratingCount ? item.ratings.ratingCount : '0'})
               </Text>
+            </View>
+          </View>
+
+          <View style={styles.lowerRow}>
+            <View
+              style={[
+                {
+                  height: '100%',
+                  width: '33%',
+                  alignItems: 'center',
+                },
+              ]}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                  color: 'white',
+                  alignSelf: 'center',
+                  top: '10%',
+                }}
+              >
+                Condition:
+              </Text>
+              <Text style={[styles.conditionText]}>{item.Condition}</Text>
+            </View>
+            <View
+              style={[
+                {
+                  height: '100%',
+                  width: '33%',
+                  alignItems: 'center',
+                },
+              ]}
+            >
+              <Text
+                style={{
+                  fontSize: 11,
+                  fontWeight: 'bold',
+                  color: 'white',
+                  alignSelf: 'center',
+                  top: '8%',
+                }}
+              >
+                Transaction Preference:
+              </Text>
+              <Text style={{ ...styles.conditionText, top: '30%' }}>
+                {item.TransactionPreference}
+              </Text>
+            </View>
+            <View
+              style={[
+                {
+                  height: '100%',
+                  width: '33%',
+                  alignItems: 'center',
+                },
+              ]}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                  color: 'white',
+                  alignSelf: 'center',
+                  top: '8%',
+                }}
+              >
+                Tags:
+              </Text>
+              <ScrollView style={styles.tagColumn}
+              onScrollBeginDrag={handleInnerScolling}
+              onScrollEndDrag={handleInnerScollingEnd}
+              >
+                <Pressable>
+                  {item.tags &&
+                    item.tags.map((tag, index) => (
+                      <Text key={index} style={styles.tagText}>
+                        {tag}
+                      </Text>
+                    ))}
+                </Pressable>
+              </ScrollView>
             </View>
           </View>
 
@@ -395,7 +578,7 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
           </ScrollView>
 
           <LikeButton isLiked={isLiked} onLikePress={handleLikePress} />
-        </CardOverlay2>
+        </CardOverlay>
       </FlipCard>
 
       {/* Delete Confirmation Modal */}
@@ -429,32 +612,30 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
   );
 };
 
-export default Listing;
+export default memo(Listing);
 
-const screenWidth = Dimensions.get("window").width;
-const screenHeight = Dimensions.get("window").height;
 const PAGE_WIDTH = screenWidth / 2;
 //////////////////////////////////////////////////////////////////////////////////////
 const styles = StyleSheet.create({
   card: {
     height: screenHeight,
     width: screenWidth,
-    alignItems: "center",
+    alignItems: 'center',
   },
   cardBackground: {
-    position: "absolute",
+    position: 'absolute',
     width: 0.9 * screenWidth,
-    height: 0.8 * screenHeight,
+    height: 0.79 * screenHeight,
     backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 20,
-    borderWidth: 0.01 * screenHeight,
-    justifyContent: "center",
-    overflow: "hidden",
+    borderWidth: 0.005 * screenHeight,
+    justifyContent: 'center',
+    overflow: 'hidden',
     borderColor: Colors.BB_darkerRedPurple,
-    bottom: Platform.OS == "ios" ? "28%" : "23%",
+    bottom: Platform.OS == 'ios' ? '28%' : '23%',
     ...Platform.select({
       ios: {
-        shadowColor: "black",
+        shadowColor: 'black',
         shadowOpacity: 0.5,
         shadowRadius: 10,
         shadowOffset: { height: 4, width: 0 },
@@ -465,19 +646,19 @@ const styles = StyleSheet.create({
     }),
   },
   cardBackground2: {
-    position: "absolute",
+    position: 'absolute',
     width: 0.9 * screenWidth,
     height: 0.8 * screenHeight,
     backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 20,
     borderWidth: 0.01 * screenHeight,
-    justifyContent: "center",
-    overflow: "hidden",
+    justifyContent: 'center',
+    overflow: 'hidden',
     borderColor: Colors.BB_darkerRedPurple,
-    bottom: Platform.OS == "ios" ? "15.5%" : "10%",
+    bottom: Platform.OS == 'ios' ? '15.5%' : '10%',
     ...Platform.select({
       ios: {
-        shadowColor: "black",
+        shadowColor: 'black',
         shadowOpacity: 0.5,
         shadowRadius: 10,
         shadowOffset: { height: 4, width: 0 },
@@ -488,16 +669,16 @@ const styles = StyleSheet.create({
     }),
   },
   top_rhombus: {
-    alignSelf: "center",
-    position: "absolute",
-    width: "100%",
+    alignSelf: 'center',
+    position: 'absolute',
+    width: '100%',
     aspectRatio: 1,
-    backgroundColor: Colors.BB_darkPink,
-    opacity: 0.2,
-    transform: [{ rotate: "45deg" }],
+    backgroundColor: Colors.BB_darkerRedPurple,
+    opacity: 0.6,
+    transform: [{ rotate: '45deg' }],
     ...Platform.select({
       ios: {
-        shadowColor: "black",
+        shadowColor: 'black',
         shadowOpacity: 0.5,
         shadowRadius: 10,
         shadowOffset: { height: 4, width: 0 },
@@ -508,16 +689,16 @@ const styles = StyleSheet.create({
     }),
   },
   mid_rhombus: {
-    alignSelf: "center",
-    position: "absolute",
-    width: "70%",
+    alignSelf: 'center',
+    position: 'absolute',
+    width: '70%',
     aspectRatio: 1,
-    backgroundColor: Colors.BB_darkPink,
-    opacity: 0.1,
-    transform: [{ rotate: "45deg" }],
+    backgroundColor: Colors.BB_darkerRedPurple,
+    opacity: 0.6,
+    transform: [{ rotate: '45deg' }],
     ...Platform.select({
       ios: {
-        shadowColor: "black",
+        shadowColor: 'black',
         shadowOpacity: 0.5,
         shadowRadius: 10,
         shadowOffset: { height: 4, width: 0 },
@@ -528,16 +709,36 @@ const styles = StyleSheet.create({
     }),
   },
   bottom_rhombus: {
-    alignSelf: "center",
-    position: "absolute",
-    width: "35%",
+    alignSelf: 'center',
+    position: 'absolute',
+    width: '35%',
     aspectRatio: 1,
-    backgroundColor: Colors.BB_darkPink,
-    opacity: 0.2,
-    transform: [{ rotate: "45deg" }],
+    backgroundColor: Colors.BB_darkerRedPurple,
+    opacity: 0.6,
+    transform: [{ rotate: '45deg' }],
     ...Platform.select({
       ios: {
-        shadowColor: "black",
+        shadowColor: 'black',
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        shadowOffset: { height: 4, width: 0 },
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+  },
+  base_rhombus: {
+    alignSelf: 'center',
+    position: 'absolute',
+    width: 0.55 * screenHeight,
+    aspectRatio: 1,
+    backgroundColor: Colors.BB_darkerRedPurple,
+    opacity: 0.6,
+    transform: [{ rotate: '45deg' }],
+    ...Platform.select({
+      ios: {
+        shadowColor: 'black',
         shadowOpacity: 0.5,
         shadowRadius: 10,
         shadowOffset: { height: 4, width: 0 },
@@ -553,12 +754,12 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     backgroundColor: Colors.BB_darkPink,
     opacity: 0.2,
-    position: "absolute",
+    position: 'absolute',
     top: 0.03 * screenHeight,
     right: 0.06 * screenWidth,
     ...Platform.select({
       ios: {
-        shadowColor: "black",
+        shadowColor: 'black',
         shadowOpacity: 0.5,
         shadowRadius: 10,
         shadowOffset: { height: 4, width: 0 },
@@ -574,12 +775,12 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     backgroundColor: Colors.BB_darkPink,
     opacity: 0.2,
-    position: "absolute",
+    position: 'absolute',
     top: 0.03 * screenHeight,
     left: 0.06 * screenWidth,
     ...Platform.select({
       ios: {
-        shadowColor: "black",
+        shadowColor: 'black',
         shadowOpacity: 0.5,
         shadowRadius: 10,
         shadowOffset: { height: 4, width: 0 },
@@ -590,172 +791,253 @@ const styles = StyleSheet.create({
     }),
   },
   priceContainer: {
-    position: "absolute",
+    position: 'absolute',
     zIndex: 5,
-    width: "60%",
+    width: '60%',
     height: 0,
     bottom: 0,
     left: -70,
     borderBottomWidth: 50,
     borderBottomColor: Colors.BB_darkerRedPurple,
     borderLeftWidth: 50,
-    borderLeftColor: "transparent",
+    borderLeftColor: 'transparent',
     borderRightWidth: 50,
-    borderRightColor: "transparent",
-    borderStyle: "solid",
-    alignSelf: "center",
+    borderRightColor: 'transparent',
+    borderStyle: 'solid',
+    alignSelf: 'center',
   },
   image: {
-    height: "100%",
-    width: "100%",
+    height: '100%',
+    width: '100%',
   },
   title: {
-    alignSelf: "center",
-    position: "absolute",
-    top: "0%",
+    alignSelf: 'center',
+    position: 'absolute',
+    top: '5.5%',
     fontSize: 25,
-    fontWeight: "bold",
-    color: "white",
+    fontWeight: 'bold',
+    color: 'white',
     marginBottom: 0.02 * screenHeight,
   },
   sellerInfoBox: {
-    position: "absolute",
-    alignSelf: "center",
-    flexDirection: "row",
-    top: "7%",
-    width: "90%",
-    height: "20%",
+    position: 'absolute',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    top: '11%',
+    width: '90%',
+    height: '20%',
     borderRadius: 20,
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     marginBottom: 0.1 * screenHeight,
   },
   sellerPic: {
-    alignSelf: "center",
-    width: "90%",
-    height: "70%",
+    alignSelf: 'center',
+    height: '80%',
+    bottom: -10,
     aspectRatio: 1,
     borderRadius: 20,
-    marginBottom: "2%",
   },
   sellerName: {
-    alignSelf: "center",
-    alignContent: "center",
-    textAlign: "center",
-    marginTop: "4%",
-    width: "300%",
-    fontSize: 10,
-    fontWeight: "bold",
-    color: "white",
+    alignSelf: 'center',
+    alignContent: 'center',
+    textAlign: 'center',
+    width: '300%',
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: 'white',
+    bottom: 5,
   },
   locationPin: {
-    position: "absolute",
-    alignSelf: "center",
-    width: "40%",
-    height: "60%",
+    position: 'absolute',
+    alignSelf: 'center',
+    width: '40%',
+    height: '60%',
     borderRadius: 20,
   },
   city: {
-    alignSelf: "center",
+    alignSelf: 'center',
     fontSize: 14,
-    color: "white",
-    fontWeight: "bold",
-    position: "absolute",
-    top: "50%",
+    color: 'white',
+    fontWeight: 'bold',
+    position: 'absolute',
+    top: '50%',
   },
   distance: {
-    alignSelf: "center",
+    alignSelf: 'center',
     fontSize: 12,
-    color: "white",
-    position: "absolute",
-    top: "62%",
+    color: 'white',
+    position: 'absolute',
+    top: '62%',
   },
   ratingStar: {
-    alignSelf: "center",
-    position: "absolute",
-    width: "30%",
-    height: "60%",
+    alignSelf: 'center',
+    position: 'absolute',
+    width: '30%',
+    height: '60%',
     borderRadius: 20,
   },
   rating: {
-    alignSelf: "center",
+    alignSelf: 'center',
     fontSize: 14,
-    color: "white",
-    fontWeight: "bold",
-    position: "absolute",
-    top: "50%",
+    color: 'white',
+    fontWeight: 'bold',
+    position: 'absolute',
+    top: '50%',
   },
   price: {
     fontSize: (0.9 * screenWidth) / 3 / 5,
-    position: "absolute",
-    color: "white",
-    fontWeight: "bold",
+    position: 'absolute',
+    color: 'white',
+    fontWeight: 'bold',
     zIndex: 10,
-    left: "20%",
+    left: '20%',
     top: 0.01 * screenHeight,
   },
+  lowerRow: {
+    position: 'absolute',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    width: '90%',
+    height: '20%',
+    top: '31.5%',
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
+  conditionText: {
+    top: '35%',
+    fontSize: 14,
+    color: 'white',
+    alignSelf: 'center',
+    textAlign: 'center',
+    width: '70%',
+  },
+  transactionText: {
+    top: '20%',
+    fontSize: 12,
+    color: 'white',
+    alignSelf: 'center',
+    textAlign: 'center',
+    width: '100%',
+  },
+  tagColumn: {
+    position: 'absolute',
+    alignSelf: 'center',
+    flexDirection: 'column',
+    bottom: '0%',
+    width: '100%',
+    height: '70%',
+  },
+  tagText: {
+    fontSize: 12,
+    color: 'white',
+    alignSelf: 'center',
+    textAlign: 'center',
+    width: '100%',
+    marginBottom: '2%',
+  },
   descriptionContainer: {
-    position: "absolute",
-    alignSelf: "center",
-    height: "50%",
-    width: "90%",
-    bottom: "15%",
-    backgroundColor: "rgba(10, 10, 10, 0.9)",
+    position: 'absolute',
+    alignSelf: 'center',
+    height: '40%',
+    width: '90%',
+    bottom: '8%',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     padding: 5,
-    borderRadius: 5,
+    borderRadius: 20,
   },
   description: {
     fontSize: 16,
-    color: "white",
+    color: 'white',
   },
   likeButton: {
-    position: "absolute",
-    height: "10%",
-    width: "15%",
-    bottom: "0%",
-    right: "5%",
+    position: 'absolute',
+    height: 0.15 * screenWidth,
+    width: 0.15 * screenWidth,
+    bottom: '1%',
+    right: '2%',
     zIndex: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.BB_darkRedPurple,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'black',
+        shadowOpacity: 0.5,
+        shadowRadius: 10,
+        shadowOffset: { height: 4, width: 0 },
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+    borderRadius: 80,
   },
   deleteButton: {
-    position: "absolute",
-    height: "95%",
-    width: "10%",
-    bottom: "0%",
-    right: "5%",
-    zIndex: 49,
+    position: 'absolute',
+    height: 0.15 * screenWidth,
+    width: 0.15 * screenWidth,
+    bottom: '82%',
+    right: '-5%',
+    zIndex: 1,
   },
   modalContainer: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
-    borderColor: "black",
+    borderColor: 'black',
     borderWidth: 2,
-    alignSelf: "center",
-    marginTop: "80%",
+    alignSelf: 'center',
+    marginTop: '80%',
   },
   modalText: {
     fontSize: 18,
     marginBottom: 15,
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 15,
   },
   confirmButton: {
     flex: 1,
-    backgroundColor: "red",
+    backgroundColor: 'red',
     padding: 10,
     borderRadius: 5,
   },
   cancelButton: {
     flex: 1,
-    backgroundColor: "gray",
+    backgroundColor: 'gray',
     padding: 10,
     borderRadius: 5,
     marginLeft: 5,
   },
   buttonText: {
-    color: "white",
-    textAlign: "center",
+    color: 'white',
+    textAlign: 'center',
+  },
+  timeSinceContainer: {
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 20,
+    position: 'absolute',
+    right: '1%',
+    top: '0.5%',
+    height: '5%',
+    width: 'auto',
+  },
+  timeSinceText: {
+    fontSize: 12,
+    color: 'white',
+    fontWeight: 'bold',
+    marginRight: '2%',
+    marginLeft: '2%',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    opacity: 0.1,
   },
 });
