@@ -15,7 +15,7 @@ import { getStoredUsername } from './auth/Authenticate';
 
 /**
  * @namespace EditContactInfoNamespace
- * @description - EditContactInfo is a screen that allows users to edit their own contact information and descide what should be visable
+ * @description - EditContactInfo is a screen that allows users to edit their own contact information and decide what should be visable
  * 
  */
 

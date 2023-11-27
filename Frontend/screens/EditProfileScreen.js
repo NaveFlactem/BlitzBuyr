@@ -29,6 +29,23 @@ import {
   setStoredCredentials,
 } from './auth/Authenticate.js';
 
+/**
+ * @namespace EditProfileScreenNamespace
+ * @description - EditProfileScreen is a screen that allows users to edit their own profile information
+ * 
+ */
+
+/**
+ * 
+ * @function
+ * @name EditProfileScreen
+ * @memberof EditProfileScreenNamespace
+ * @param {Object} navigation - The object used to navigate between screens.
+ * @param {Object} route - Information about the current route.
+ * @description - Represents a screen for editing user profile information.
+ * @returns {JSX.Element} A screen for editing user profile information.
+ */
+
 const EditProfileScreen = ({ navigation, route }) => {
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(true);
@@ -39,6 +56,14 @@ const EditProfileScreen = ({ navigation, route }) => {
   const [selectedProfilePicture, setSelectedProfilePicture] = useState('');
   const [selectedCoverPicture, setSelectedCoverPicture] = useState('');
 
+  /**
+   * 
+   * @function
+   * @name togglePasswordVisibility
+   * @memberof EditProfileScreenNamespace
+   * @returns {void}
+   * @description Toggles the visibility of the password input field by switching between hidden and visible states.
+   */
   const togglePasswordVisibility = () => {
     setIsPasswordHidden(!isPasswordHidden);
   };
@@ -69,6 +94,16 @@ const EditProfileScreen = ({ navigation, route }) => {
     }
   }, [profileName, selectedProfilePicture, selectedCoverPicture, password]);
 
+  /**
+   *
+   * @function
+   * @name handleProfileImageSelection
+   * @memberof EditProfileScreenNamespace
+   * @async
+   * @returns {void | null} Returns either void if the selection and processing were successful or null if there was an error during image processing.
+   * @description Allows the user to select an image from the device's image library, manipulates the selected image to compress it, and sets it as the selected profile picture.
+   * @throws {Error} Throws an error if there's an issue during image processing.
+   */
   //Functions for touchable opacity prompts for changing profile/cover photo
   const handleProfileImageSelection = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -99,6 +134,17 @@ const EditProfileScreen = ({ navigation, route }) => {
       console.log('Profile Picture change function was canceled.');
     }
   };
+
+/**
+ *
+ * @function
+ * @name handleCoverImageSelection
+ * @memberof EditProfileScreenNamespace
+ * @async
+ * @returns {void | null} Returns either void if the selection and processing were successful or null if there was an error during image processing.
+ * @description Allows the user to select an image from the device's image library and sets it as the selected cover picture.
+ * @throws {Error} Throws an error if there's an issue during image processing.
+ */
 
   const handleCoverImageSelection = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -131,6 +177,16 @@ const EditProfileScreen = ({ navigation, route }) => {
   };
 
   //Function for handling save changes press
+  /**
+ * Saves the edited profile information by sending it to the server.
+ * @function
+ * @name saveChanges
+ * @memberof EditProfileScreenNamespace
+ * @async
+ * @returns {void}
+ * @description Prepares a FormData object with updated profile information, such as username, profile name, password, and images if they have been changed. Submits a POST request to the API to update the user's profile.  Updates local credentials, navigates back to the profile page, and logs the editing process.
+ * @throws {Error} Throws an error if there's an issue during the editing process.
+ */
   const saveChanges = async () => {
     const formData = new FormData();
     formData.append('username', getStoredUsername());
@@ -189,6 +245,14 @@ const EditProfileScreen = ({ navigation, route }) => {
   const [confirmUsername, setConfirmUsername] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  /**
+   * 
+   * @function
+   * @name confirmDeletion
+   * @memberof EditProfileScreenNamespace
+   * @returns {void}
+   * @description Initiates the deletion process for the user account by calling the 'deleteAccount' function with the username and password. 
+   */
   const confirmDeletion = () => {
     deleteAccount(confirmUsername, confirmPassword);
     setConfirmationModalVisible(false);
@@ -220,7 +284,16 @@ const EditProfileScreen = ({ navigation, route }) => {
   };
 
   // #endregion
-
+/**
+ * 
+ * @function
+ * @name deleteAccount
+ * @memberof EditProfileScreenNamespace
+ * @async
+ * @returns {void}
+ * @description Sends a DELETE request to the server to delete the user account using the username and password. 
+ * @throws {Error} Throws an error if there's an issue during the deletion process.
+ */
   if (loading) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
