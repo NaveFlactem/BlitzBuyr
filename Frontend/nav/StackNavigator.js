@@ -57,6 +57,7 @@ const StackNavigator = () => {
       <Stack.Screen name="EditContactInfo" component={EditContactInfo} />
       <Stack.Screen name="SettingsPage" component={SettingsPage} />
       <Stack.Screen name="RatingScreen" component={RatingScreen} />
+      <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
     </Stack.Navigator>
   );
 };

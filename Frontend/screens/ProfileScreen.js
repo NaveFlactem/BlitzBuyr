@@ -24,7 +24,7 @@ import { TabBar, TabView } from 'react-native-tab-view';
 import Listing from '../components/Listing.js';
 import BouncePulse from '../components/visuals/BouncePulse.js';
 import { serverIp } from '../config.js';
-import Colors from '../constants/Colors';
+import Colors, {CustomLightTheme, CustomDarkTheme} from '../constants/Colors';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import {
   calculateTimeSince,
@@ -36,6 +36,8 @@ import {
   getStoredPassword,
   getStoredUsername,
 } from './auth/Authenticate.js';
+import { useThemeContext } from '../components/visuals/ThemeProvider.js';
+import { getThemedStyles } from '../constants/Styles.js';
 
 const ListingsRoute = ({ onPressListing, data, text }) => (
   <View style={{ flex: 1 }}>
@@ -126,6 +128,7 @@ const handleContactClick = async (key, data) => {
 };
 
 const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
+  const styles = getThemedStyles(useThemeContext().theme).ProfileScreen;
   let displayValues = Object.values(contactInfo).some(
     (value) => value.data.length > 0
   );
@@ -226,7 +229,8 @@ function ProfileScreen({ navigation, route }) {
   const [selectedListing, setSelectedListing] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [LikeStates, setLikeStates] = useState({});
-  const [showColorMode, setShowColorMode] = useState(false);
+  const styles = getThemedStyles(useThemeContext().theme).ProfileScreen;
+  
 
   // Use states for contact info
   const [contactInfo, setContactInfo] = useState({
@@ -446,10 +450,6 @@ function ProfileScreen({ navigation, route }) {
       </View>
     );
   }
-
-  const showColorModal = () => {
-    setShowColorMode(!showColorMode);
-  };
 
   return (
     <SafeAreaView
@@ -812,127 +812,23 @@ function ProfileScreen({ navigation, route }) {
         </View>
       )}
 
-      {/* Testing with Dark Mode
-<TouchableOpacity onPress={showColorModal} style={{
+      {/* Settings */}
+      <TouchableOpacity
+        onPress={() => {
+          setLoading(true);
+          navigation.navigate('SettingsScreen');
+        }}
+        style={{
           position: "absolute",
-          top: 0.25 * screenHeight,
-          left: 0.1 * screenWidth,
-          width: 30,
-          height: 30,
-          backgroundColor: Colors.BB_darkRedPurple,
-          borderRadius: 80,
-        }}>
-
-      <View
-        
-        >
-        <Text
-          style={
-            {
-              top: "25%",
-              textAlign: "center",
-              fontStyle: "normal",
-              fontWeight: "bold",
-              fontSize: 8,
-              color: Colors.white,
-            }}
-        >
-          Temp
-        </Text>
-      </View>
+          top: 0.28 * screenHeight,
+          right: 0.03 * screenHeight,
+        }}
+      >
+        <MaterialIcons name="settings" size={30} color="black" />
       </TouchableOpacity>
-      
-      { showColorMode && <ColorMode />} */}
+
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  contactInfoContainer: {
-    flexDirection: 'column',
-    paddingVertical: 20,
-  },
-  socialIcons: {
-    flexDirection: 'row',
-    paddingVertical: 5,
-    alignContent: 'center',
-    paddingHorizontal: 10,
-    textAlign: 'center',
-  },
-  socialText: {
-    marginVertical: 1.5,
-    marginHorizontal: 10,
-    fontWeight: 'bold',
-    justifyContent: 'center',
-    alignContent: 'center',
-    textAlign: 'center',
-  },
-  noListingsText: {
-    textAlign: 'center',
-    marginTop: 110,
-    fontStyle: 'normal',
-    fontWeight: 'bold',
-    fontSize: 20,
-    color: Colors.BB_darkRedPurple,
-  },
-  button: {
-    width: 110,
-    height: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.BB_darkRedPurple,
-    borderRadius: 10,
-    marginHorizontal: 2,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 2, height: 2 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  buttonText: {
-    fontStyle: 'normal',
-    fontWeight: '500',
-    fontSize: 15,
-    color: Colors.white,
-  },
-  ratingStar: {
-    alignSelf: 'center',
-    position: 'absolute',
-    width: '30%',
-    height: '60%',
-    borderRadius: 20,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.5,
-        shadowRadius: 1,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  circleContainer: {
-    top: 15,
-    left: 15,
-  },
-  circle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'white', // Set the background color as needed
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'black', // Set the border color as needed
-  },
-});
 
 export default memo(ProfileScreen);

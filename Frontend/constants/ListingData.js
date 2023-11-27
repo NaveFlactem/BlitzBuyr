@@ -35,4 +35,6 @@ export const currencies = [
   { name: 'BRL', symbol: 'R$', selected: false },
   { name: 'JPY', symbol: '¥', selected: false },
   { name: 'PHP', symbol: '₱', selected: false },
+  { name: 'RUB', symbol: '₽', selected: false },
+  { name: 'INR', symbol: '₹', selected: false },
 ];

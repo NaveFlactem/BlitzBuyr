@@ -247,7 +247,7 @@ const CustomItem = memo(
   }
 );
 
-const Listing = ({ item, origin, removeListing, userLocation }) => {
+const Listing = ({ item, origin, removeListing, userLocation, handleInnerScolling, handleInnerScollingEnd }) => {
   const prevItemRef = useRef();
   useEffect(() => {
     if (prevItemRef.current === item) {
@@ -553,7 +553,10 @@ const Listing = ({ item, origin, removeListing, userLocation }) => {
               >
                 Tags:
               </Text>
-              <ScrollView style={styles.tagColumn}>
+              <ScrollView style={styles.tagColumn}
+              onScrollBeginDrag={handleInnerScolling}
+              onScrollEndDrag={handleInnerScollingEnd}
+              >
                 <Pressable>
                   {item.tags &&
                     item.tags.map((tag, index) => (

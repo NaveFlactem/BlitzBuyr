@@ -10,6 +10,8 @@ const AndroidSwiperComponent = memo(
     removeListing,
     userLocation,
     onScroll,
+    handleInnerScolling,
+    handleInnerScollingEnd,
   }) => {
     const renderItem = ({ item }) => (
       <Listing
@@ -17,6 +19,8 @@ const AndroidSwiperComponent = memo(
         removeListing={removeListing}
         userLocation={userLocation}
         swiperRef={swiperRef}
+        handleInnerScolling={handleInnerScolling}
+        handleInnerScollingEnd={handleInnerScollingEnd}
       />
     );
 

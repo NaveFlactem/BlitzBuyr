@@ -33,6 +33,8 @@ import {
   getLocationWithRetry,
 } from '../constants/Utilities';
 import * as Settings from '../hooks/UserSettings.js';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
 
 const HomeScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -52,6 +54,7 @@ const HomeScreen = ({ route }) => {
   const [distance, setDistance] = useState(30);
   const [isLocationSliderVisible, setIsLocationSliderVisible] = useState(false);
   const locationSliderHeight = useSharedValue(-100); // Start off-screen
+  const styles = getThemedStyles(useThemeContext().theme).HomeScreen;
 
   const toggleTagDrawer = () => {
     if (translateX.value === -screenWidth * 0.6) {
@@ -79,6 +82,13 @@ const HomeScreen = ({ route }) => {
       setIsLocationSliderVisible(true);
     }
   };
+
+  handleInnerScolling = () => {
+    swiperRef.current.setNativeProps({ scrollEnabled: false });
+  }
+  handleInnerScollingEnd = () => {
+    swiperRef.current.setNativeProps({ scrollEnabled: true });
+  }
 
   const getUserLocation = async () => {
     console.log("Getting user's location...");
@@ -286,6 +296,8 @@ const HomeScreen = ({ route }) => {
                     progressViewOffset={50}
                   />
                 }
+                handleInnerScolling={handleInnerScolling}
+                handleInnerScollingEnd={handleInnerScollingEnd}
               />
             </View>
           ) : (
@@ -310,6 +322,8 @@ const HomeScreen = ({ route }) => {
                     style={{ backgroundColor: 'transparent' }}
                   />
                 }
+                handleInnerScolling={handleInnerScolling}
+                handleInnerScollingEnd={handleInnerScollingEnd}
               />
             </View>
           )
@@ -367,34 +381,3 @@ const HomeScreen = ({ route }) => {
 };
 
 export default HomeScreen;
-
-//////////////////////////////////////////////////////////////////////////////////////
-const styles = StyleSheet.create({
-  screenfield: {
-    flex: 1,
-    backgroundColor: Colors.BB_pink,
-  },
-  swiperContainer: {
-    height: screenHeight,
-    width: screenWidth,
-  },
-  topTap: {
-    position: 'absolute',
-    top: 0.08 * screenHeight,
-    width: screenWidth,
-    height: 0.05 * screenHeight,
-    zIndex: 3,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.BB_pink,
-  },
-  sliderCover: {
-    flex: 1,
-    height: screenHeight,
-    width: screenWidth,
-    position: 'absolute',
-  },
-});
