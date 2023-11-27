@@ -303,42 +303,42 @@ class CreateListing extends Component {
   hideModal = () => this.setState({ selectImageModalVisible: false });
 
   /**
- * @function
- * @handleCameraPick - allows the user to take photos with their camera
- * @returns Returns the photos that the user took
- * @description - allows the user to take photos with their camera
- */
-handleCameraPick = async () => {
-  const result = await ImagePicker.launchCameraAsync();
+   * @function
+   * @handleCameraPick - allows the user to take photos with their camera
+   * @returns Returns the photos that the user took
+   * @description - allows the user to take photos with their camera
+   */
+  handleCameraPick = async () => {
+    const result = await ImagePicker.launchCameraAsync();
 
-  if (!result.canceled) {
-    this.processImage(result); // Process the first (and only) image
-  }
+    if (!result.canceled) {
+      this.processImage(result); // Process the first (and only) image
+    }
 
-  this.hideModal();
-};
+    this.hideModal();
+  };
 
-/**
- * @function
- * @handleLibraryPick - allows the user to select images from their library
- * @returns Returns the images that the user selected
- * @description - allows the user to select images from their library
- */
-handleLibraryPick = async () => {
-  const result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsEditing: false,
-    quality: 1,
-    allowsMultipleSelection: true,
-    selectionLimit: 9 - this.state.data.length,
-  });
+  /**
+   * @function
+   * @handleLibraryPick - allows the user to select images from their library
+   * @returns Returns the images that the user selected
+   * @description - allows the user to select images from their library
+   */
+  handleLibraryPick = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      quality: 1,
+      allowsMultipleSelection: true,
+      selectionLimit: 9 - this.state.data.length,
+    });
 
-  if (!result.canceled && result.assets) {
-    this.processSelectedImages(result.assets);
-  }
+    if (!result.canceled && result.assets) {
+      this.processSelectedImages(result.assets);
+    }
 
-  this.hideModal();
-};
+    this.hideModal();
+  };
 
   /**
    * @function
@@ -365,7 +365,7 @@ handleLibraryPick = async () => {
   processSelectedImages = async (assets) => {
     // Process multiple images
     const processedImages = await Promise.all(
-      assets.map(async (asset) => this.manipulateImage(asset.uri))
+      assets.map(async (asset) => this.manipulateImage(asset.uri)),
     );
     this.setState((prevState) => ({
       data: [...prevState.data, ...processedImages.filter(Boolean)],
@@ -386,7 +386,7 @@ handleLibraryPick = async () => {
         format: ImageManipulator.SaveFormat.JPEG,
       });
       const compressedSize = await FileSystem.getInfoAsync(
-        manipulateResult.uri
+        manipulateResult.uri,
       );
       const savedData = originalSize.size - compressedSize.size;
 
@@ -397,7 +397,7 @@ handleLibraryPick = async () => {
         `compressed to :`,
         (compressedSize.size / (1024 * 1024)).toFixed(2),
         'MB',
-        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`
+        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`,
       );
 
       return {
@@ -533,7 +533,7 @@ handleLibraryPick = async () => {
       if (isAlreadySelected) {
         // If already selected, remove it from the array
         newSelectedTags = prevState.selectedTags.filter(
-          (tagName) => tagName !== pressedTagName
+          (tagName) => tagName !== pressedTagName,
         );
       } else {
         // If not selected, add it to the array
@@ -640,8 +640,8 @@ handleLibraryPick = async () => {
                       {this.state.title == ''
                         ? 'Title is required'
                         : this.state.title.length > 25
-                        ? 'Title too long'
-                        : 'Must enter a valid title'}
+                          ? 'Title too long'
+                          : 'Must enter a valid title'}
                     </Text>
                   </View>
                 ) : (
@@ -676,8 +676,8 @@ handleLibraryPick = async () => {
                       {this.state.description.length > 500
                         ? 'Description too long'
                         : this.state.description.length === 0
-                        ? 'Description is required'
-                        : 'Must enter a valid description'}
+                          ? 'Description is required'
+                          : 'Must enter a valid description'}
                     </Text>
                   </View>
                 )}
@@ -719,10 +719,10 @@ handleLibraryPick = async () => {
                     {this.state.price == ''
                       ? 'Price is required'
                       : this.state.price < 0
-                      ? 'Invalid price'
-                      : this.state.price.length >= 7
-                      ? 'Price too large'
-                      : 'Must enter a valid price'}
+                        ? 'Invalid price'
+                        : this.state.price.length >= 7
+                          ? 'Price too large'
+                          : 'Must enter a valid price'}
                   </Text>
                 </View>
               ) : (
@@ -808,7 +808,7 @@ handleLibraryPick = async () => {
               )}
             </View>
             <View style={styles.pickerStyle}>
-            {Platform.OS == "ios" && <View style={styles.pickerBackground}/>}
+              {Platform.OS == 'ios' && <View style={styles.pickerBackground} />}
               <RNPickerSelect
                 selectedValue={this.state.transactionPreference}
                 onValueChange={(itemValue, itemIndex) => {
@@ -841,7 +841,7 @@ handleLibraryPick = async () => {
               )}
             </View>
             <View style={{ ...styles.pickerStyle }}>
-            {Platform.OS == "ios" && <View style={styles.pickerBackground}/>}
+              {Platform.OS == 'ios' && <View style={styles.pickerBackground} />}
               <RNPickerSelect
                 selectedValue={this.state.condition}
                 onValueChange={(itemValue, itemIndex) => {
@@ -858,10 +858,7 @@ handleLibraryPick = async () => {
               />
             </View>
 
-            <TouchableOpacity
-              onPress={this.showModal}
-              style={styles.button}
-            >
+            <TouchableOpacity onPress={this.showModal} style={styles.button}>
               <Text style={styles.buttonText}>Select Images</Text>
             </TouchableOpacity>
             <View
@@ -1277,9 +1274,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: Colors.white,
     shadowColor: 'gray',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.9,
-        shadowRadius: 2,
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.9,
+    shadowRadius: 2,
   },
   button: {
     width: 150,

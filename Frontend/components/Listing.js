@@ -126,18 +126,18 @@ const TimeBox = memo(({ timeSince }) => {
           {timeSince < 30
             ? 'Just now'
             : timeSince < 60
-            ? `${timeSince} seconds ago`
-            : timeSince < 120
-            ? `1 minute ago`
-            : timeSince < 3600
-            ? `${Math.floor(timeSince / 60)} minutes ago`
-            : timeSince < 7200
-            ? `1 hour ago`
-            : timeSince < 86400
-            ? `${Math.floor(timeSince / 3600)} hours ago`
-            : timeSince < 172800
-            ? `1 day ago`
-            : `${Math.floor(timeSince / 86400)} days ago`}
+              ? `${timeSince} seconds ago`
+              : timeSince < 120
+                ? `1 minute ago`
+                : timeSince < 3600
+                  ? `${Math.floor(timeSince / 60)} minutes ago`
+                  : timeSince < 7200
+                    ? `1 hour ago`
+                    : timeSince < 86400
+                      ? `${Math.floor(timeSince / 3600)} hours ago`
+                      : timeSince < 172800
+                        ? `1 day ago`
+                        : `${Math.floor(timeSince / 86400)} days ago`}
         </Text>
       </View>
     </React.Fragment>
@@ -169,7 +169,7 @@ const CardOverlay = memo(
         </View>
       </View>
     );
-  }
+  },
 );
 
 const MemoizedImage = memo(
@@ -185,7 +185,7 @@ const MemoizedImage = memo(
         cachePolicy="memory-disk"
       />
     );
-  }
+  },
 );
 
 const CustomItem = memo(
@@ -204,7 +204,7 @@ const CustomItem = memo(
       AnimatedRN.event([{ nativeEvent: { scale: scale } }], {
         useNativeDriver: true,
       }),
-      []
+      [],
     );
 
     const onZoomStateChange = (event) => {
@@ -244,10 +244,17 @@ const CustomItem = memo(
         {deleteVisible && <DeleteButton onDeletePress={onDeletePress} />}
       </CardOverlay>
     );
-  }
+  },
 );
 
-const Listing = ({ item, origin, removeListing, userLocation, handleInnerScolling, handleInnerScollingEnd }) => {
+const Listing = ({
+  item,
+  origin,
+  removeListing,
+  userLocation,
+  handleInnerScolling,
+  handleInnerScollingEnd,
+}) => {
   const prevItemRef = useRef();
   useEffect(() => {
     if (prevItemRef.current === item) {
@@ -269,7 +276,7 @@ const Listing = ({ item, origin, removeListing, userLocation, handleInnerScollin
       item.Latitude,
       item.Longitude,
       userLocation.latitude,
-      userLocation.longitude
+      userLocation.longitude,
     );
   }, [
     item.Latitude,
@@ -280,7 +287,7 @@ const Listing = ({ item, origin, removeListing, userLocation, handleInnerScollin
 
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
-    origin == 'profile' && item.Username == getStoredUsername()
+    origin == 'profile' && item.Username == getStoredUsername(),
   );
 
   const toggleDeleteModal = useCallback(() => {
@@ -394,7 +401,7 @@ const Listing = ({ item, origin, removeListing, userLocation, handleInnerScollin
                 parallaxScrollingScale: 1,
                 parallaxAdjacentItemScale: 0.5,
                 parallaxScrollingOffset: 10,
-              }
+              },
             )}
           />
         </View>
@@ -553,9 +560,10 @@ const Listing = ({ item, origin, removeListing, userLocation, handleInnerScollin
               >
                 Tags:
               </Text>
-              <ScrollView style={styles.tagColumn}
-              onScrollBeginDrag={handleInnerScolling}
-              onScrollEndDrag={handleInnerScollingEnd}
+              <ScrollView
+                style={styles.tagColumn}
+                onScrollBeginDrag={handleInnerScolling}
+                onScrollEndDrag={handleInnerScollingEnd}
               >
                 <Pressable>
                   {item.tags &&
