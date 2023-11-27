@@ -772,15 +772,15 @@ class CreateListing extends Component {
                       {this.renderCurrencyOptions()}
                     </View>
                     </ScrollView>
+                    <View style={styles.closeButtonContainer}>
                     <TouchableOpacity
                       onPress={() =>
                         this.setState({ showCurrencyOptions: false })
                       }
                       >
-                        <View style={styles.closeButtonContainer}>
-                      <Text style={styles.closeButton}>Close</Text>
-                      </View>
+                          <Text style={styles.closeButton}>Close</Text>
                     </TouchableOpacity>
+                    </View>
                   </Modal>
                 )}
               </View>
@@ -1335,23 +1335,22 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   closeButtonContainer: {
-    alignItems: 'center',
+    top: 0.8 * screenHeight,
+    backgroundColor: Colors.BB_bone,
     alignSelf: 'center',
-    justifyContent: 'center',
     zIndex: 2,
     marginTop: 20,
-    backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 10,
+    width: '25%',
+    height: '20%',
   },
   closeButton: {
+    position: 'absolute',
     fontSize: 24,
     color: 'black',
-    backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 10,
-    top: 0,
     textAlign: 'center',
     alignSelf: 'center',
-    width: '25%',
   },
   currencyScrollView: {
     position: 'absolute',
