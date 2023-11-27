@@ -18,7 +18,6 @@ const BottomBar = memo(function BottomBar() {
 
 export default BottomBar;
 
-
 const styles = StyleSheet.create({
   bottomBar: {
     position: 'absolute',

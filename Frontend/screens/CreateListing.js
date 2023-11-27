@@ -8,6 +8,7 @@ import React, { Component, memo } from 'react';
 import {
   Alert,
   Modal,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -26,6 +27,7 @@ import { currencies, tagOptions } from '../constants/ListingData.js';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import { getLocationWithRetry } from '../constants/Utilities';
 import { getStoredUsername } from './auth/Authenticate.js';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const blurhash = 'L5H2EC=PM+yV0g-mq.wG9c010J}I';
 
@@ -80,6 +82,7 @@ class CreateListing extends Component {
       showCurrencyOptions: false,
       tagsData: [...tagOptions],
       currencies: [...currencies],
+      selectImageModalVisible: false,
     };
     this.titleInput = React.createRef();
     this.descriptionInput = React.createRef();
@@ -107,6 +110,7 @@ class CreateListing extends Component {
       selectedCurrencySymbol: '$',
       tagsData: [...tagOptions],
       currencies: [...currencies],
+      selectImageModalVisible: false,
       isTitleInvalid: false,
       isDescriptionInvalid: false,
       isPriceInvalid: false,
@@ -294,30 +298,11 @@ class CreateListing extends Component {
 
   /**
    * @function
-   * @handleImagePick - allows the user to select images from their library or take photos with their camera
-   * @returns Returns the images that the user selected
+   * @showModal - shows the modal that contains camera/photo library options, changes the state of selectImageModalVisible to true
+   * @hideModal - hides the modal that contains camera/photo library options, changes the state of selectImageModalVisible to false
    */
-  handleImagePick = () => {
-    Alert.alert(
-      'Select Image',
-      'Choose where to select images from:',
-      [
-        {
-          text: 'Camera',
-          onPress: () => this.handleCameraPick(),
-        },
-        {
-          text: 'Photo Library',
-          onPress: () => this.handleLibraryPick(),
-        },
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-      ],
-      { cancelable: true }
-    );
-  };
+  showModal = () => this.setState({ selectImageModalVisible: true });
+  hideModal = () => this.setState({ selectImageModalVisible: false });
 
   /**
    * @function
@@ -326,14 +311,13 @@ class CreateListing extends Component {
    * @description - allows the user to take photos with their camera
    */
   handleCameraPick = async () => {
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: false,
-      quality: 1,
-    });
+    const result = await ImagePicker.launchCameraAsync();
 
     if (!result.canceled) {
-      this.processImage(result);
+      this.processImage(result); // Process the first (and only) image
     }
+
+    this.hideModal();
   };
 
   /**
@@ -351,9 +335,11 @@ class CreateListing extends Component {
       selectionLimit: 9 - this.state.data.length,
     });
 
-    if (!result.canceled) {
+    if (!result.canceled && result.assets) {
       this.processSelectedImages(result.assets);
     }
+
+    this.hideModal();
   };
 
   /**
@@ -381,7 +367,7 @@ class CreateListing extends Component {
   processSelectedImages = async (assets) => {
     // Process multiple images
     const processedImages = await Promise.all(
-      assets.map(async (asset) => this.manipulateImage(asset.uri))
+      assets.map(async (asset) => this.manipulateImage(asset.uri)),
     );
     this.setState((prevState) => ({
       data: [...prevState.data, ...processedImages.filter(Boolean)],
@@ -402,7 +388,7 @@ class CreateListing extends Component {
         format: ImageManipulator.SaveFormat.JPEG,
       });
       const compressedSize = await FileSystem.getInfoAsync(
-        manipulateResult.uri
+        manipulateResult.uri,
       );
       const savedData = originalSize.size - compressedSize.size;
 
@@ -413,7 +399,7 @@ class CreateListing extends Component {
         `compressed to :`,
         (compressedSize.size / (1024 * 1024)).toFixed(2),
         'MB',
-        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`
+        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`,
       );
 
       return {
@@ -554,7 +540,7 @@ class CreateListing extends Component {
       if (isAlreadySelected) {
         // If already selected, remove it from the array
         newSelectedTags = prevState.selectedTags.filter(
-          (tagName) => tagName !== pressedTagName
+          (tagName) => tagName !== pressedTagName,
         );
       } else {
         // If not selected, add it to the array
@@ -675,8 +661,8 @@ class CreateListing extends Component {
                       {this.state.title == ''
                         ? 'Title is required'
                         : this.state.title.length > 25
-                        ? 'Title too long'
-                        : 'Must enter a valid title'}
+                          ? 'Title too long'
+                          : 'Must enter a valid title'}
                     </Text>
                   </View>
                 ) : (
@@ -711,8 +697,8 @@ class CreateListing extends Component {
                       {this.state.description.length > 500
                         ? 'Description too long'
                         : this.state.description.length === 0
-                        ? 'Description is required'
-                        : 'Must enter a valid description'}
+                          ? 'Description is required'
+                          : 'Must enter a valid description'}
                     </Text>
                   </View>
                 )}
@@ -754,10 +740,10 @@ class CreateListing extends Component {
                     {this.state.price == ''
                       ? 'Price is required'
                       : this.state.price < 0
-                      ? 'Invalid price'
-                      : this.state.price.length >= 7
-                      ? 'Price too large'
-                      : 'Must enter a valid price'}
+                        ? 'Invalid price'
+                        : this.state.price.length >= 7
+                          ? 'Price too large'
+                          : 'Must enter a valid price'}
                   </Text>
                 </View>
               ) : (
@@ -788,20 +774,20 @@ class CreateListing extends Component {
                     visible={this.state.showCurrencyOptions}
                     animationType="slide"
                   >
-                    <ScrollView style = {styles.currencyScrollView} >
-                    <View style={styles.modalContent}>
-                      {this.renderCurrencyOptions()}
-                    </View>
-                    </ScrollView>
-                    <TouchableOpacity
-                      onPress={() =>
-                        this.setState({ showCurrencyOptions: false })
-                      }
-                      >
-                        <View style={styles.closeButtonContainer}>
-                      <Text style={styles.closeButton}>Close</Text>
+                    <ScrollView style={styles.currencyScrollView}>
+                      <View style={styles.modalContent}>
+                        {this.renderCurrencyOptions()}
                       </View>
-                    </TouchableOpacity>
+                    </ScrollView>
+                    <View style={styles.closeButtonContainer}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.setState({ showCurrencyOptions: false })
+                        }
+                      >
+                        <Text style={styles.closeButton}>Close</Text>
+                      </TouchableOpacity>
+                    </View>
                   </Modal>
                 )}
               </View>
@@ -843,6 +829,7 @@ class CreateListing extends Component {
               )}
             </View>
             <View style={styles.pickerStyle}>
+              {Platform.OS == 'ios' && <View style={styles.pickerBackground} />}
               <RNPickerSelect
                 selectedValue={this.state.transactionPreference}
                 onValueChange={(itemValue, itemIndex) => {
@@ -875,6 +862,7 @@ class CreateListing extends Component {
               )}
             </View>
             <View style={{ ...styles.pickerStyle }}>
+              {Platform.OS == 'ios' && <View style={styles.pickerBackground} />}
               <RNPickerSelect
                 selectedValue={this.state.condition}
                 onValueChange={(itemValue, itemIndex) => {
@@ -891,27 +879,9 @@ class CreateListing extends Component {
               />
             </View>
 
-            <TouchableOpacity
-              onPress={this.handleImagePick}
-              style={styles.button}
-            >
+            <TouchableOpacity onPress={this.showModal} style={styles.button}>
               <Text style={styles.buttonText}>Select Images</Text>
             </TouchableOpacity>
-            {/* {
-              isImageInvalid ? (
-                <View style={[styles.rowContainer, {alignSelf: "center"}]}>
-                  <Text style={styles.errorMessage}>
-                    {this.state.data.length == 0
-                      ? "Must select at least one image"
-                      : this.state.data.length > 9
-                      ? "Too many images selected"
-                      : "Must select at least one image"}
-                  </Text>
-                </View>
-              ) : (
-                ""
-              )
-            } */}
             <View
               style={[
                 styles.imageField,
@@ -928,18 +898,6 @@ class CreateListing extends Component {
                 />
               </View>
             </View>
-
-            {/* {
-              isTagInvalid ? (
-                <View style={[styles.rowContainer, {alignSelf: "center"}]}>
-                  <Text style={styles.errorMessage}>
-                    Must select at least one tag
-                  </Text>
-                </View>
-              ) : (
-                ""
-              )
-            } */}
             <ScrollView
               style={[
                 styles.tagField,
@@ -988,6 +946,52 @@ class CreateListing extends Component {
 
             <Text style={styles.spacer} />
           </ScrollView>
+
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.selectImageModalVisible}
+            onRequestClose={() => {
+              this.hideModal();
+            }}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <TouchableOpacity
+                  style={styles.imagePickerButton}
+                  onPress={this.handleCameraPick}
+                >
+                  <Text style={styles.imagePickerButtonText}>Camera</Text>
+                  <MaterialIcons
+                    name="camera-alt"
+                    size={24}
+                    color="black"
+                    style={{ top: 10, left: '90%' }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.imagePickerButton}
+                  onPress={this.handleLibraryPick}
+                >
+                  <Text style={styles.imagePickerButtonText}>
+                    Photo Library
+                  </Text>
+                  <MaterialIcons
+                    name="photo-library"
+                    size={24}
+                    color="black"
+                    style={{ top: 10, left: '50%' }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.imagePickerButton}
+                  onPress={() => this.hideModal()}
+                >
+                  <Text style={styles.imagePickerButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </View>
       </View>
     );
@@ -1267,11 +1271,33 @@ const styles = StyleSheet.create({
   },
   pickerStyle: {
     //bottomMargin: 10,
-    height: 50,
+    width: '90%',
     left: 0.05 * screenWidth,
-    width: '45%',
     color: Colors.white,
     justifyContent: 'center',
+    borderRadius: 10,
+    ...Platform.select({
+      ios: {
+        height: 40,
+        marginTop: 10,
+        marginBottom: 10,
+        padding: 10,
+      },
+    }),
+    android: {
+      elevation: 10,
+    },
+  },
+  pickerBackground: {
+    position: 'absolute',
+    width: 0.9 * screenWidth,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: Colors.white,
+    shadowColor: 'gray',
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.9,
+    shadowRadius: 2,
   },
   button: {
     width: 150,
@@ -1356,23 +1382,22 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   closeButtonContainer: {
-    alignItems: 'center',
+    top: 0.8 * screenHeight,
+    backgroundColor: Colors.BB_bone,
     alignSelf: 'center',
-    justifyContent: 'center',
     zIndex: 2,
     marginTop: 20,
-    backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 10,
+    width: '25%',
+    height: '20%',
   },
   closeButton: {
+    position: 'absolute',
     fontSize: 24,
     color: 'black',
-    backgroundColor: Colors.BB_darkRedPurple,
     borderRadius: 10,
-    top: 0,
     textAlign: 'center',
     alignSelf: 'center',
-    width: '25%',
   },
   currencyScrollView: {
     position: 'absolute',
@@ -1380,5 +1405,50 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     top: 0.1 * screenHeight,
+  },
+  //Image Select Modal
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+  },
+  imagePickerButton: {
+    flexDirection: 'row',
+    width: 200,
+    height: 50,
+    marginBottom: 10,
+    backgroundColor: Colors.BB_bone,
+    borderRadius: 10,
+    borderColor: Colors.black,
+    alignContent: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+  },
+  imagePickerButtonText: {
+    fontSize: 18,
+    color: 'black',
+    alignSelf: 'center',
   },
 });

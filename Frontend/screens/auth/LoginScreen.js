@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import { serverIp } from "../../config.js";
+import React, { useState, useEffect } from "react";
+import { checkListingExpiration } from '../../components/Notifications.js';
 import {
   Alert,
   Dimensions,
@@ -9,7 +11,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { serverIp } from '../../config.js';
 import Colors from '../../constants/Colors';
 import { setStoredCredentials } from './Authenticate.js';
 
@@ -44,7 +45,8 @@ const LoginScreen = ({ navigation }) => {
       console.log('Response data:', responseData);
       await setStoredCredentials(username, password);
       clearFields();
-      navigation.navigate('BottomNavOverlay');
+      navigation.navigate("BottomNavOverlay");
+      checkListingExpiration();
     } else {
       Alert.alert(responseData.error);
     }

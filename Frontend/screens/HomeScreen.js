@@ -124,7 +124,7 @@ const HomeScreen = ({ route }) => {
     debounce(() => {
       fetchListings();
     }, 1000),
-    []
+    [],
   );
 
   const fetchListings = useCallback(async () => {
@@ -148,7 +148,7 @@ const HomeScreen = ({ route }) => {
       console.log('Transactions:', mergedTransactions);
 
       const username = encodeURIComponent(
-        await SecureStore.getItemAsync('username')
+        await SecureStore.getItemAsync('username'),
       );
       let fetchUrl = `${serverIp}/api/listings?username=${username}&latitude=${latitude}&longitude=${longitude}`;
       if (distance < 510) fetchUrl += `&distance=${distance}`; // don't add distance on unlimited
@@ -169,7 +169,7 @@ const HomeScreen = ({ route }) => {
               ...listing,
               TimeSince: timeSince,
             };
-          })
+          }),
         );
         console.log('Listings fetched successfully');
       } else {
@@ -278,7 +278,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId)
+                    prevListings.filter((item) => item.ListingId !== listingId),
                   );
                 }}
                 onScroll={onScroll}
@@ -304,7 +304,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId)
+                    prevListings.filter((item) => item.ListingId !== listingId),
                   );
                 }}
                 onScroll={onScroll}

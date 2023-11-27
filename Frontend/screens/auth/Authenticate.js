@@ -1,9 +1,11 @@
-import { Asset } from 'expo-asset';
-import * as SecureStore from 'expo-secure-store';
-import { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { serverIp } from '../../config.js';
-import Colors from '../../constants/Colors';
+import { serverIp } from "../../config.js";
+import { useEffect } from "react";
+import * as SecureStore from "expo-secure-store";
+import Colors from "../../constants/Colors";
+import { View, Image } from "react-native";
+import { checkListingExpiration } from '../../components/Notifications.js';
+import { Asset } from "expo-asset";
+import { StyleSheet } from 'react-native';
 import * as Settings from '../../hooks/UserSettings.js';
 
 const assetsToPreload = [
@@ -91,6 +93,7 @@ const AuthenticateScreen = ({ navigation }) => {
           loadSettings();
           console.log('Response data:', responseData);
           navigation.navigate('BottomNavOverlay');
+          checkListingExpiration();
         } else {
           navigation.navigate('Login');
         }

@@ -20,10 +20,10 @@ const BouncePulse = memo((props) => {
     animatedValue.value = withRepeat(
       withSequence(
         withDelay(delay, withTiming(1, { duration: 300 })),
-        withTiming(0, { duration: 300 })
+        withTiming(0, { duration: 300 }),
       ),
       -1, // infinite repeats
-      true // reverse the animation on every second iteration
+      true, // reverse the animation on every second iteration
     );
   };
 

@@ -13,6 +13,7 @@ import { getStoredUsername } from './auth/Authenticate.js';
 import { useThemeContext } from '../components/visuals/ThemeProvider.js';
 import { getThemedStyles } from '../constants/Styles.js';
 
+
 /**
  * @namespace RatingScreenNamespace
  * @description - RatingScreen is a screen that allows users to rate another user
@@ -31,8 +32,10 @@ import { getThemedStyles } from '../constants/Styles.js';
   *         
   */
 
+
+
 const RatingScreen = ({ navigation, route }) => {
-  const styles = getThemedStyles(useThemeContext().theme).RatingScreen; 
+  const styles = getThemedStyles(useThemeContext().theme).RatingScreen;
   const [selectedRating, setSelectedRating] = useState(0);
   console.log(route.params);
 
@@ -152,6 +155,5 @@ const RatingScreen = ({ navigation, route }) => {
     </View>
   );
 };
-
 
 export default RatingScreen;

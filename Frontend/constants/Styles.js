@@ -96,11 +96,11 @@ export const getThemedStyles = (theme) => {
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: 'white', 
+        backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
-        borderColor: 'black', 
+        borderColor: 'black',
       },
     },
     ////////////////////////////////////////////
@@ -268,16 +268,15 @@ export const getThemedStyles = (theme) => {
       width: 40,
       height: 40,
       borderRadius: 20,
-      backgroundColor: 'white', 
+      backgroundColor: 'white',
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 1,
-      borderColor: 'black', 
+      borderColor: 'black',
     },
     ////////////////////////////////////////////
   });
 };
-
 
 export const shapes = StyleSheet.create({
   circle: {
