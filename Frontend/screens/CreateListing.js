@@ -1,3 +1,5 @@
+
+
 import * as FileSystem from 'expo-file-system';
 import { Image } from 'expo-image';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -376,7 +378,7 @@ class CreateListing extends Component {
    * @function
    * @manipulateImage - compresses the image that the user selected
    * @param {*} uri
-   * @returns
+   * @returns - an object with the name, key, and image file
    */
   manipulateImage = async (uri) => {
     try {
@@ -415,6 +417,7 @@ class CreateListing extends Component {
    * @function
    * @handleDeletePhoto - deletes photos that the user no longer wants to post
    * @param {Number} index - index of the photo that the user wants to delete
+   * @returns - prompts a box to confirm, then removes the photo
    */
   handleDeletePhoto = (index) => {
     Alert.alert('Delete Photo', 'Are you sure you want to delete this photo?', [
@@ -435,7 +438,8 @@ class CreateListing extends Component {
 
   /**
    *
-   * @param {*} item
+   * @param {*} item - contains image information
+   * @param {*} index - index of the item in the list of images
    * @description - renders the images that the user selected
    * @returns Returns the images that the user selected
    */
@@ -467,6 +471,7 @@ class CreateListing extends Component {
   /**
    * @function
    * @handleDragStart - disables scrolling when the user is dragging an image
+   * @description - basic handle function
    */
   handleDragStart = () => {
     // When a drag starts, disable scrolling
@@ -476,6 +481,7 @@ class CreateListing extends Component {
   /**
    * @function
    * @handleDragRelease - enables scrolling when the user is done dragging an image
+   * @description - basic handle function
    */
   handleDragRelease = (data) => {
     // When the drag is released, enable scrolling
@@ -484,9 +490,10 @@ class CreateListing extends Component {
 
   /**
    * @function
-   * @handlePriceChange - handles when the user enters a price
-   * @param {*} text
+   * @handlePriceChange - handles changes when the user enters a price
+   * @param {string} text - text that hold the entered price
    * @description - handles when the user enters a price
+   * @returns {void} This function doesn't return a value
    */
   handlePriceChange = (text) => {
     const regex = /^(\d{0,6}(\.\d{2})?)$/;
@@ -549,9 +556,10 @@ class CreateListing extends Component {
 
   /**
    *
-   * @param {*} tags
-   * @param {*} itemsPerRow
-   * @returns
+   * @groupTagsIntoRows - groups the tags into rows
+   * @param {Array} tags - array of tags
+   * @param {number} itemsPerRow - # of items to display per row
+   * @returns {Array} - returns the array with tags grouped together
    */
   groupTagsIntoRows = (tags, itemsPerRow) => {
     return tags.reduce((rows, tag, index) => {
@@ -561,6 +569,14 @@ class CreateListing extends Component {
     }, []);
   };
 
+  /**
+  * @function
+  * @handleCurrencySelection - allows user to select a currency for their listing.
+  * @param {string} currencyName - The name of the selected currency.
+  * @param {string} currencySymbol - The symbol of the selected currency.
+  * @description Handles the selection of a currency, updating the component state with the chosen currency's name and symbol
+  * @returns {void} This function does not return a value
+  */
   handleCurrencySelection = (currencyName, currencySymbol) => {
     this.setState({
       selectedCurrency: currencyName,
@@ -568,7 +584,12 @@ class CreateListing extends Component {
       showCurrencyOptions: false,
     });
   };
-
+  /**
+  * @function
+  * @renderCurrencyOptions - renders the currecny option list
+  * @description Renders a list of currency options, allowing the user to select a currency by tapping on it.
+  * @returns {Array<JSX.Element>} Returns an array of JSX elements representing selectable currency options.
+  */
   renderCurrencyOptions = () => {
     return this.state.currencies.map((currency) => (
       <TouchableOpacity
