@@ -13,10 +13,41 @@ import { getStoredUsername } from './auth/Authenticate.js';
 import { useThemeContext } from '../components/visuals/ThemeProvider.js';
 import { getThemedStyles } from '../constants/Styles.js';
 
+
+/**
+ * @namespace RatingScreenNamespace
+ * @description - RatingScreen is a screen that allows users to rate another user
+ * 
+ */
+  const RatingScreenNamespace = {};
+
+  /**
+  * @function
+  * @name RatingScreen
+  * @memberof RatingScreenNamespace
+  * @param {Object} navigation - The navigation object used to navigate between screens.
+  * @param {Object} route - Information about the current route.
+  * @returns {void}
+  * @description - A screen that allows users to rate a listing. 
+  *         
+  */
+
+
+
 const RatingScreen = ({ navigation, route }) => {
   const styles = getThemedStyles(useThemeContext().theme).RatingScreen;
   const [selectedRating, setSelectedRating] = useState(0);
   console.log(route.params);
+
+/**
+ * @function
+ * @memberof RatingScreenNamespace
+ * @param {number} value - The value containing the rating
+ * @returns {void}
+ * @description Handles the selection of a rating value.  Allows the rating to be deducted by half if selected again.  
+ *                - If the value matches the current selectedRating, decreases the selectedRating by 0.5 thus allowing for half ratings
+ *                - If the value differs from the current selectedRating, sets the selectedRating to the provided value.
+ */
 
   const handleRating = (value) => {
     if (selectedRating === value) {
@@ -25,6 +56,17 @@ const RatingScreen = ({ navigation, route }) => {
       setSelectedRating(value);
     }
   };
+
+  /**
+ * @function
+ * @name handleSubmitRating
+ * @memberof RatingScreenNamespace
+ * @returns {void}
+ * @description Handles the submission of a rating to the backend API.
+ *              Sends a POST request to the backend API
+ *              Handles the response from the backend
+ *              Logs errors if there's an issue while submitting the rating.
+ */
 
   const handleSubmitRating = () => {
     const ratingPayload = {
@@ -53,6 +95,17 @@ const RatingScreen = ({ navigation, route }) => {
         console.error('Error submitting rating:', error);
       });
   };
+
+/**
+ * @function
+ * @name renderStars
+ * @memberof RatingScreenNamespace
+ * @returns {Array<JSX.Element>} Returns an array of JSX elements representing star icons for rating.
+ * @description Dynamically generates an array of star icons based on the selected rating.
+ *              Uses TouchableOpacity components to allow the user to press their desirred rating.
+ *              Renders star icons filled, half-filled, or outlined based on the selected rating value.
+ *              Uses MaterialCommunityIcons for star visualization.
+ */
 
   const renderStars = () => {
     const starIcons = [];
