@@ -1,6 +1,6 @@
 import { serverIp } from "../../config.js";
 import React, { useState, useEffect } from "react";
-import { startBackgroundFetch } from '../../components/Notifications.js';
+import { checkListingExpiration } from '../../components/Notifications.js';
 import {
   Alert,
   Dimensions,
@@ -11,7 +11,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { serverIp } from '../../config.js';
 import Colors from '../../constants/Colors';
 import { setStoredCredentials } from './Authenticate.js';
 
@@ -47,7 +46,7 @@ const LoginScreen = ({ navigation }) => {
       await setStoredCredentials(username, password);
       clearFields();
       navigation.navigate("BottomNavOverlay");
-      startBackgroundFetch();
+      checkListingExpiration();
     } else {
       Alert.alert(responseData.error);
     }

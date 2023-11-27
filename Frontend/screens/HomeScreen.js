@@ -16,14 +16,6 @@ import NoListings from '../components/noListings';
 import NoWifi from '../components/noWifi';
 import AndroidSwiperComponent from '../components/swipers/AndroidSwiperComponent.js';
 import IOSSwiperComponent from '../components/swipers/IOSSwiperComponent.js';
-//import Listing from "../components/Listing.tsx";
-import { likedNotification } from '../components/Notifications.js';
-import { PanGestureHandlerProps } from "react-native-gesture-handler";
-import {
-  getStoredUsername,
-  getStoredPassword,
-  setStoredCredentials,
-} from "./auth/Authenticate.js";
 import TagDrawer, { SwipeArea } from '../components/TagDrawer.js';
 import TopBar from '../components/TopBarHome.js';
 import BouncePulse from '../components/visuals/BouncePulse.js';
@@ -240,28 +232,6 @@ const HomeScreen = ({ route }) => {
       else getUserLocation();
     }
   }, [route.params]);
-
-  const onRefresh = React.useCallback(() => {
-    console.log("refreshing...");
-    setRefreshing(true);
-    if (userLocation) fetchListings();
-    else getUserLocation();
-  }, []);
-
-  const handleScroll = (event) => {
-    // Update the scroll position state
-    setScrollPosition(event.nativeEvent.contentOffset);
-  };
-
-  const restoreScrollPosition = () => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo(scrollPosition);
-    }
-  };
-
-  useEffect(() => {
-    restoreScrollPosition();
-  }, []);
 
   const LoadingView = memo(() => (
     <View style={styles.loadingContainer}>
