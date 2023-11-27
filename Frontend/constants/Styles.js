@@ -2,77 +2,6 @@ import { StyleSheet } from 'react-native';
 import Colors, { CustomDarkTheme, CustomLightTheme } from './Colors.js';
 import { screenHeight, screenWidth } from './ScreenDimensions.js';
 
-export const shapes = StyleSheet.create({
-  circle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  diamond: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderLeftWidth: 20,
-    borderRightWidth: 20,
-    borderBottomWidth: 40,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: 'red',
-    transform: [{ rotate: '45deg' }],
-  },
-  rhombus: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderLeftWidth: 20,
-    borderRightWidth: 20,
-    borderBottomWidth: 40,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: 'red',
-  },
-  oval: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  hexagon: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderLeftWidth: 20,
-    borderRightWidth: 20,
-    borderBottomWidth: 40,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: 'red',
-    transform: [{ rotate: '45deg' }],
-  },
-  square: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  rectangle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  triangle: {
-    width: 0,
-    height: 0,
-    borderLeftWidth: 20,
-    borderRightWidth: 20,
-    borderBottomWidth: 40,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: 'red',
-  },
-});
-
 export const getThemedStyles = (theme) => {
   let themeColors;
   if (theme === 'light') {
@@ -348,3 +277,75 @@ export const getThemedStyles = (theme) => {
     ////////////////////////////////////////////
   });
 };
+
+
+export const shapes = StyleSheet.create({
+  circle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  diamond: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 20,
+    borderRightWidth: 20,
+    borderBottomWidth: 40,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: 'red',
+    transform: [{ rotate: '45deg' }],
+  },
+  rhombus: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 20,
+    borderRightWidth: 20,
+    borderBottomWidth: 40,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: 'red',
+  },
+  oval: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  hexagon: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 20,
+    borderRightWidth: 20,
+    borderBottomWidth: 40,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: 'red',
+    transform: [{ rotate: '45deg' }],
+  },
+  square: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  rectangle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  triangle: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 20,
+    borderRightWidth: 20,
+    borderBottomWidth: 40,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: 'red',
+  },
+});
