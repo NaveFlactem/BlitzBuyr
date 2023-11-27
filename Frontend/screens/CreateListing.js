@@ -6,6 +6,7 @@ import React, { Component, memo } from 'react';
 import {
   Alert,
   Modal,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -807,6 +808,7 @@ handleLibraryPick = async () => {
               )}
             </View>
             <View style={styles.pickerStyle}>
+            {Platform.OS == "ios" && <View style={styles.pickerBackground}/>}
               <RNPickerSelect
                 selectedValue={this.state.transactionPreference}
                 onValueChange={(itemValue, itemIndex) => {
@@ -839,6 +841,7 @@ handleLibraryPick = async () => {
               )}
             </View>
             <View style={{ ...styles.pickerStyle }}>
+            {Platform.OS == "ios" && <View style={styles.pickerBackground}/>}
               <RNPickerSelect
                 selectedValue={this.state.condition}
                 onValueChange={(itemValue, itemIndex) => {
@@ -1250,11 +1253,33 @@ const styles = StyleSheet.create({
   },
   pickerStyle: {
     //bottomMargin: 10,
-    height: 50,
+    width: '90%',
     left: 0.05 * screenWidth,
-    width: '45%',
     color: Colors.white,
     justifyContent: 'center',
+    borderRadius: 10,
+    ...Platform.select({
+      ios: {
+        height: 40,
+        marginTop: 10,
+        marginBottom: 10,
+        padding: 10,
+      },
+    }),
+    android: {
+      elevation: 10,
+    },
+  },
+  pickerBackground: {
+    position: 'absolute',
+    width: 0.9 * screenWidth,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: Colors.white,
+    shadowColor: 'gray',
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.9,
+        shadowRadius: 2,
   },
   button: {
     width: 150,

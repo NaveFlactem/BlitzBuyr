@@ -39,7 +39,8 @@ import {
 import { useThemeContext } from '../components/visuals/ThemeProvider.js';
 import { getThemedStyles } from '../constants/Styles.js';
 
-const ListingsRoute = ({ onPressListing, data, text }) => (
+
+const ListingsRoute = ({ onPressListing, data, text, styles }) => (
   <View style={{ flex: 1 }}>
     {data.length > 0 ? (
       <FlatList
@@ -721,6 +722,7 @@ function ProfileScreen({ navigation, route }) {
                     onPressListing={onPressListing}
                     data={profileInfo.userListings}
                     text={'user'}
+                    styles={styles}
                   />
                 );
               case 'second':
@@ -729,6 +731,7 @@ function ProfileScreen({ navigation, route }) {
                     onPressListing={onPressListing}
                     data={profileInfo.likedListings}
                     text={'liked'}
+                    styles={styles}
                   />
                 );
               case 'third':
@@ -737,6 +740,7 @@ function ProfileScreen({ navigation, route }) {
                     selfProfile={selfProfile}
                     contactInfo={contactInfo}
                     setContactInfo={setContactInfo}
+                    styles={styles}
                   />
                 );
               default:
