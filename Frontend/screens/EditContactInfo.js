@@ -1,3 +1,8 @@
+/**
+ * @namespace EditContactInfo
+ * @description - EditContactInfo is a screen that allows users to edit their own contact information and decide what should be visable
+ *
+ */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import {
@@ -9,21 +14,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { serverIp } from '../config';
 import Colors from '../constants/Colors';
+import { saveContactInfo } from '../network/Service';
 import { getStoredUsername } from './auth/Authenticate';
-
-/**
- * @namespace EditContactInfoNamespace
- * @description - EditContactInfo is a screen that allows users to edit their own contact information and decide what should be visable
- * 
- */
 
 /**
  * Represents a screen for editing contact information.
  * @function
  * @name EditContactInfo
- * @memberof EditContactInfoNamespace
+ * @memberof EditContactInfo
  * @param {Object} navigation - The object used to navigate between screens.
  * @param {Object} route - Information about the current route
  * @returns {JSX.Element} A screen for editing a users contact information.
@@ -33,10 +32,10 @@ const EditContactInfo = ({ navigation, route }) => {
   const [contactInfo, setContactInfo] = useState(route.params?.prevContactInfo);
 
   /**
-   * 
+   *
    * @function
    * @name handleInputChange
-   * @memberof EditContactInfoNamespace
+   * @memberof EditContactInfo
    * @param {string} key - The key representing the type of contact information to update.
    * @param {string} value - The new value to be set for the specified contact information.
    * @returns {void}
@@ -47,51 +46,6 @@ const EditContactInfo = ({ navigation, route }) => {
       ...prevContactInfo,
       [key]: { ...prevContactInfo[key], data: value },
     }));
-  };
-/**
- * Handles the process of saving edited contact information to the backend.
- * @function
- * @name saveChanges
- * @memberof EditContactInfoNamespace
- * @async
- * @returns {Promise<void>}
- * @description Sends a POST request to the backend API to save the updated contact information.
- *              Updates the profile name on the profile page if the save operation is successful.
- *              Navigates back to the profile page after saving changes, displaying a success message or errors if encountered.
- */
-  const saveChanges = async () => {
-    try {
-      let username = getStoredUsername();
-      const response = await fetch(`${serverIp}/api/editcontactinfo`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: username,
-          contactInfo: contactInfo,
-        }),
-      });
-
-      const data = await response.json();
-      console.log(data);
-
-      if (response.ok) {
-        // update the profile page's profile name
-        navigation.setOptions({
-          params: { profileName: username },
-        });
-
-        // go back to profile page, WIP MAYBE INCLUDE A SUCCESS MESSAGE OR SOMETHING
-        navigation.goBack();
-      } else {
-        console.log(response);
-        // handle error
-        alert('error');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
   };
 
   return (
@@ -154,7 +108,18 @@ const EditContactInfo = ({ navigation, route }) => {
         {/* SAVE CHANGES BUTTON */}
         <View style={{ flex: 1 }}>
           <TouchableOpacity
-            onPress={saveChanges}
+            onPress={() => {
+              try {
+                saveContactInfo(contactInfo);
+
+                navigation.setOptions({
+                  params: { profileName: getStoredUsername() },
+                });
+                navigation.goBack();
+              } catch (error) {
+                alert(error);
+              }
+            }}
             style={{
               width: 130,
               height: 50,

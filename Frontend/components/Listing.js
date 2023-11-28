@@ -27,10 +27,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { serverIp } from '../config.js';
 import Colors from '../constants/Colors.js';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
-import {
-  getStoredPassword,
-  getStoredUsername,
-} from '../screens/auth/Authenticate.js';
+import { handleDeleteListing, handleLike } from '../network/Service.js';
+import { getStoredUsername } from '../screens/auth/Authenticate.js';
 import { parallaxLayout } from './parallax.ts';
 
 const default_blurhash = 'LEHLk~WB2yk8pyo0adR*.7kCMdnj';
@@ -126,18 +124,18 @@ const TimeBox = memo(({ timeSince }) => {
           {timeSince < 30
             ? 'Just now'
             : timeSince < 60
-              ? `${timeSince} seconds ago`
-              : timeSince < 120
-                ? `1 minute ago`
-                : timeSince < 3600
-                  ? `${Math.floor(timeSince / 60)} minutes ago`
-                  : timeSince < 7200
-                    ? `1 hour ago`
-                    : timeSince < 86400
-                      ? `${Math.floor(timeSince / 3600)} hours ago`
-                      : timeSince < 172800
-                        ? `1 day ago`
-                        : `${Math.floor(timeSince / 86400)} days ago`}
+            ? `${timeSince} seconds ago`
+            : timeSince < 120
+            ? `1 minute ago`
+            : timeSince < 3600
+            ? `${Math.floor(timeSince / 60)} minutes ago`
+            : timeSince < 7200
+            ? `1 hour ago`
+            : timeSince < 86400
+            ? `${Math.floor(timeSince / 3600)} hours ago`
+            : timeSince < 172800
+            ? `1 day ago`
+            : `${Math.floor(timeSince / 86400)} days ago`}
         </Text>
       </View>
     </React.Fragment>
@@ -294,58 +292,18 @@ const Listing = ({
     setDeleteModalVisible(!isDeleteModalVisible);
   }, [isDeleteModalVisible]);
 
-  const handleDeleteListing = useCallback(async () => {
-    try {
-      const username = getStoredUsername();
-      const password = getStoredPassword();
-      const response = await fetch(`${serverIp}/api/deletelisting`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password, listingId: item.ListingId }),
-      });
-
-      const responseData = await response.json();
-
-      if (response.ok) {
-        removeListing(item.ListingId);
-        alert('Listing deleted successfully.');
-      } else {
-        alert(`Error deleting listing: ${responseData.error}`);
-      }
-    } catch (error) {
-      console.error('Error deleting listing:', error);
-      alert(`Error deleting listing: ${error}`);
-    } finally {
-      toggleDeleteModal(); // Close the modal
-    }
-  }, []);
-
-  const handleLikePress = useCallback(async () => {
-    const username = getStoredUsername();
-    const method = isLiked ? 'DELETE' : 'POST';
-    try {
-      const response = await fetch(`${serverIp}/api/like`, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, listingId: item.ListingId }),
-      });
-
-      if (response.ok) {
-        setIsLiked(!isLiked);
-      } else {
-        console.error('Failed to update like status');
-      }
-    } catch (error) {
-      console.error('Error updating like status:', error);
-    }
-  }, [isLiked]);
-
   const images = React.useMemo(() => item.images, [item.images]);
   const carouselRef = useRef(null);
+
+  const handleLikePress = useCallback(async () => {
+    try {
+      await handleLike(item.ListingId, isLiked);
+      setIsLiked(!isLiked);
+    } catch (error) {
+      console.error(error);
+      alert(error);
+    }
+  }, [isLiked]);
 
   return (
     <SafeAreaView>
@@ -585,7 +543,10 @@ const Listing = ({
             <Text style={styles.description}>{item.Description}</Text>
           </ScrollView>
 
-          <LikeButton isLiked={isLiked} onLikePress={handleLikePress} />
+          <LikeButton
+            isLiked={isLiked}
+            onLikePress={() => handleLikePress(item.ListingId)}
+          />
         </CardOverlay>
       </FlipCard>
 
@@ -603,7 +564,18 @@ const Listing = ({
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.confirmButton}
-              onPress={() => handleDeleteListing()}
+              onPress={async () => {
+                try {
+                  await handleDeleteListing(item.ListingId);
+                  removeListing(item.ListingId);
+                  alert('Listing deleted successfully.');
+                } catch (error) {
+                  console.error(error);
+                  alert(error);
+                } finally {
+                  toggleDeleteModal(); // Close the modal
+                }
+              }}
             >
               <Text style={styles.buttonText}>Yes</Text>
             </TouchableOpacity>

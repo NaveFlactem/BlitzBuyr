@@ -1,3 +1,6 @@
+/**
+ * @namespace Login
+ */
 import React, { useState } from 'react';
 import {
   Alert,
@@ -14,6 +17,11 @@ import { serverIp } from '../../config.js';
 import Colors from '../../constants/Colors';
 import { setStoredCredentials } from './Authenticate.js';
 
+/**
+ * LoginScreen component.
+ * @memberof Login
+ * @param {object} navigation - React Navigation object.
+ */
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -24,6 +32,10 @@ const LoginScreen = ({ navigation }) => {
     setPassword('');
   };
 
+  /**
+   * Function to handle the login process.
+   * @memberof Login
+   */
   const handleLogin = async () => {
     // Handle manual login process when the "Login" button is pressed
     const loginData = {
@@ -52,6 +64,10 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
+  /**
+   * Function to navigate to the create account screen.
+   * @memberof Login
+   */
   const handleCreateAccount = () => {
     navigation.navigate('CreateAccount');
   };
