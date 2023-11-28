@@ -1,3 +1,8 @@
+/**
+ * @namespace EditProfile
+ * @description - EditProfileScreen is a screen that allows users to edit their own profile information
+ *
+ */
 import {
   Feather,
   MaterialCommunityIcons,
@@ -19,9 +24,9 @@ import {
 } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
-import { serverIp } from '../config.js';
 import Colors from '../constants/Colors';
 import { screenWidth } from '../constants/ScreenDimensions.js';
+import { handleDeleteAccount, saveProfileInfo } from '../network/Service.js';
 import {
   clearStoredCredentials,
   getStoredPassword,
@@ -31,17 +36,36 @@ import {
 import { useThemeContext } from '../components/visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
 
+/**
+ *
+ * @function
+ * @name EditProfileScreen
+ * @memberof EditProfile
+ * @param {Object} navigation - The object used to navigate between screens.
+ * @param {Object} route - Information about the current route.
+ * @description - Represents a screen for editing user profile information.
+ * @returns {JSX.Element} A screen for editing user profile information.
+ */
+
 const EditProfileScreen = ({ navigation, route }) => {
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(true);
   const [profileName, setProfileName] = useState('');
-  const [email, setEmail] = useState('temporary@temp.com');
+  const [email, setEmail] = useState(route.params.email);
   const [password, setPassword] = useState('');
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const [selectedProfilePicture, setSelectedProfilePicture] = useState('');
   const [selectedCoverPicture, setSelectedCoverPicture] = useState('');
   const styles = getThemedStyles(useThemeContext().theme).EditProfileScreen;
 
+  /**
+   *
+   * @function
+   * @name togglePasswordVisibility
+   * @memberof EditProfile
+   * @returns {void}
+   * @description Toggles the visibility of the password input field by switching between hidden and visible states.
+   */
   const togglePasswordVisibility = () => {
     setIsPasswordHidden(!isPasswordHidden);
   };
@@ -50,6 +74,7 @@ const EditProfileScreen = ({ navigation, route }) => {
     if (isFocused) {
       setLoading(true);
       setProfileName(route.params.profileName);
+      setEmail(route.params.email);
       setSelectedProfilePicture(route.params.profilePicture);
       setSelectedCoverPicture(route.params.coverPicture);
       setPassword(getStoredPassword());
@@ -72,6 +97,16 @@ const EditProfileScreen = ({ navigation, route }) => {
     }
   }, [profileName, selectedProfilePicture, selectedCoverPicture, password]);
 
+  /**
+   *
+   * @function
+   * @name handleProfileImageSelection
+   * @memberof EditProfile
+   * @async
+   * @returns {void | null} Returns either void if the selection and processing were successful or null if there was an error during image processing.
+   * @description Allows the user to select an image from the device's image library, manipulates the selected image to compress it, and sets it as the selected profile picture.
+   * @throws {Error} Throws an error if there's an issue during image processing.
+   */
   //Functions for touchable opacity prompts for changing profile/cover photo
   const handleProfileImageSelection = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -86,7 +121,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         const manipulateResult = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
         );
         let localUri = manipulateResult.uri;
         let filename = localUri.split('/').pop();
@@ -103,6 +138,17 @@ const EditProfileScreen = ({ navigation, route }) => {
     }
   };
 
+  /**
+   *
+   * @function
+   * @name handleCoverImageSelection
+   * @memberof EditProfile
+   * @async
+   * @returns {void | null} Returns either void if the selection and processing were successful or null if there was an error during image processing.
+   * @description Allows the user to select an image from the device's image library and sets it as the selected cover picture.
+   * @throws {Error} Throws an error if there's an issue during image processing.
+   */
+
   const handleCoverImageSelection = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -116,7 +162,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         const manipulateResult = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
         );
         let localUri = manipulateResult.uri;
         let filename = localUri.split('/').pop();
@@ -134,11 +180,22 @@ const EditProfileScreen = ({ navigation, route }) => {
   };
 
   //Function for handling save changes press
+  /**
+   * Saves the edited profile information by sending it to the server.
+   * @function
+   * @name saveChanges
+   * @memberof EditProfile
+   * @async
+   * @returns {void}
+   * @description Prepares a FormData object with updated profile information, such as username, profile name, password, and images if they have been changed. Submits a POST request to the API to update the user's profile.  Updates local credentials, navigates back to the profile page, and logs the editing process.
+   * @throws {Error} Throws an error if there's an issue during the editing process.
+   */
   const saveChanges = async () => {
     const formData = new FormData();
     formData.append('username', getStoredUsername());
     formData.append('profileName', profileName);
     formData.append('password', password);
+    formData.append('email', email);
 
     if (selectedCoverPicture != route.params.coverPicture) {
       formData.append('coverPicture', {
@@ -157,33 +214,22 @@ const EditProfileScreen = ({ navigation, route }) => {
     }
 
     try {
-      console.log('FormData:', formData);
-      const response = await fetch(`${serverIp}/api/editprofile`, {
-        method: 'POST',
-        body: formData,
-        timeout: 10000,
+      console.log('New profile data:', formData);
+
+      await saveProfileInfo(formData);
+      // update the new credentials locally
+      await setStoredCredentials(profileName, password);
+
+      // update the profile page's profile name
+      navigation.setOptions({
+        params: { profileName: profileName },
       });
 
-      if (response.status <= 201) {
-        const responseData = await response.json();
-        console.log('Profile edited successfully:', responseData);
-
-        // update the new credentials locally
-        await setStoredCredentials(profileName, password);
-
-        // update the profile page's profile name
-        navigation.setOptions({
-          params: { profileName: profileName },
-        });
-
-        // go back to profile page, WIP MAYBE INCLUDE A SUCCESS MESSAGE OR SOMETHING
-        navigation.goBack();
-      } else {
-        console.error('HTTP error! Status: ', response.status);
-      }
-      console.log('Saving Changes');
+      // go back to profile page, FIXME: MAYBE INCLUDE A SUCCESS MESSAGE OR SOMETHING
+      navigation.goBack();
     } catch (error) {
-      console.error('Error editing profile:', error);
+      console.error(error);
+      alert(error);
     }
   };
 
@@ -192,38 +238,38 @@ const EditProfileScreen = ({ navigation, route }) => {
   const [confirmUsername, setConfirmUsername] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const confirmDeletion = () => {
-    deleteAccount(confirmUsername, confirmPassword);
-    setConfirmationModalVisible(false);
-  };
-
-  const deleteAccount = async () => {
-    const response = await fetch(
-      `${serverIp}/api/deleteaccount?username=${confirmUsername}&password=${confirmPassword}`,
-      {
-        method: 'DELETE',
-        timeout: 10000,
-      },
-    );
-
-    const responseData = await response.json();
-
-    if (response.ok) {
-      console.log(
-        `Account ${getStoredUsername} deleted successfully:`,
-        responseData,
-      );
+  /**
+   *
+   * @function
+   * @name confirmDeletion
+   * @memberof EditProfile
+   * @returns {void}
+   * @description Initiates the deletion process for the user account by calling the 'deleteAccount' function with the username and password.
+   */
+  const confirmDeletion = async () => {
+    try {
+      await handleDeleteAccount(confirmUsername, confirmPassword);
       await clearStoredCredentials();
       alert('Account deleted successfully.');
       navigation.navigate('Login');
-    } else {
-      console.log('Error deleting account:', responseData.error);
-      alert(`Error deleting account: ${responseData.error}`);
+      setConfirmationModalVisible(false);
+    } catch (error) {
+      console.error(error);
+      alert(error);
     }
   };
 
   // #endregion
-
+  /**
+   *
+   * @function
+   * @name deleteAccount
+   * @memberof EditProfile
+   * @async
+   * @returns {void}
+   * @description Sends a DELETE request to the server to delete the user account using the username and password.
+   * @throws {Error} Throws an error if there's an issue during the deletion process.
+   */
   if (loading) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

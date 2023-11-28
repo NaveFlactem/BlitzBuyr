@@ -1,3 +1,6 @@
+/**
+ * @namespace CreateListing
+ */
 import * as FileSystem from 'expo-file-system';
 import { Image } from 'expo-image';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -11,6 +14,7 @@ import React, {
 import {
   Alert,
   Modal,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -21,13 +25,14 @@ import {
 } from 'react-native';
 import DraggableGrid from 'react-native-draggable-grid';
 import RNPickerSelect from 'react-native-picker-select';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import BouncePulse from '../components/visuals/BouncePulse.js';
 import TopBar from '../components/visuals/TopBarGeneric.js';
-import { serverIp } from '../config.js';
 import Colors from '../constants/Colors';
 import { currencies, tagOptions } from '../constants/ListingData.js';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import { getLocationWithRetry } from '../constants/Utilities';
+import { handleListingCreation } from '../network/Service.js';
 import { getStoredUsername } from './auth/Authenticate.js';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useThemeContext } from '../components/visuals/ThemeProvider';
@@ -87,6 +92,7 @@ const CreateListing = memo(({navigation, route}) => {
   /**
    * @function
    * @destructor - resets state variables
+   * @memberof CreateListing
    */
   const destructor = () => {
     setTitle('');
@@ -114,6 +120,7 @@ const CreateListing = memo(({navigation, route}) => {
    * @function
    * @checkValidListing - checks if the listing is valid
    * @returns Returns 0 if the listing is valid, -1 if the listing is invalid and 1 if no images are selected and 2 if too many images are selected and 3 if no tags are selected
+   * @memberof CreateListing
    */
   const checkValidListing = async () => {
     const regex = /^(\d{0,6}(\.\d{2})?)$/;
@@ -145,6 +152,7 @@ const CreateListing = memo(({navigation, route}) => {
    * @function
    * @handleCreateListing - sends user inputted data to server and checks if it ran smoothly
    * @param {Object} formData - object that is sent to the server with user inputted values
+   * @memberof CreateListing
    */
   const handleCreateListing = async () => {
     setIsLoading(true);
@@ -205,8 +213,8 @@ const CreateListing = memo(({navigation, route}) => {
         Alert.alert('Error', 'Failed to create listing.');
       }
     } catch (error) {
-      console.error('Error creating listing:', error);
-      Alert.alert('Error', 'An unexpected error occurred.');
+      console.error(error);
+      alert(error);
     } finally {
       setIsLoading(false);
     }
@@ -224,6 +232,7 @@ const CreateListing = memo(({navigation, route}) => {
   /**
    * @function
    * @getPermissionAsync - asks for permission to access camera roll
+   * @memberof CreateListing
    */
   const getPermissionAsync = async () => {
     // Camera roll Permission
@@ -245,6 +254,7 @@ const CreateListing = memo(({navigation, route}) => {
    * @function
    * @showModal - shows the modal that contains camera/photo library options, changes the state of selectImageModalVisible to true
    * @hideModal - hides the modal that contains camera/photo library options, changes the state of selectImageModalVisible to false
+   * @memberof CreateListing
    */
   const showModal = () => setSelectImageModalVisible(true);
   const hideModal = () => setSelectImageModalVisible(false);
@@ -292,6 +302,7 @@ const handleLibraryPick = async () => {
    * @param {*} image
    * @returns Returns the image that the user selected
    * @description - processes the image that the user selected
+   * @memberof CreateListing
    */
   const processImage = async (image) => {
     // Process a single image
@@ -305,6 +316,7 @@ const handleLibraryPick = async () => {
    * @function
    * @processSelectedImages - processes the images that the user selected
    * @param {*} assets
+   * @memberof CreateListing
    */
   const processSelectedImages = async (assets) => {
     // Process multiple images
@@ -318,7 +330,8 @@ const handleLibraryPick = async () => {
    * @function
    * @manipulateImage - compresses the image that the user selected
    * @param {*} uri
-   * @returns
+   * @returns - an object with the name, key, and image file
+   * @memberof CreateListing
    */
   const manipulateImage = async (uri) => {
     try {
@@ -358,6 +371,8 @@ const handleLibraryPick = async () => {
    * @function
    * @handleDeletePhoto - deletes photos that the user no longer wants to post
    * @param {Number} index - index of the photo that the user wants to delete
+   * @returns - prompts a box to confirm, then removes the photo
+   * @memberof CreateListing
    */
   const handleDeletePhoto = (index) => {
     Alert.alert('Delete Photo', 'Are you sure you want to delete this photo?', [
@@ -375,10 +390,11 @@ const handleLibraryPick = async () => {
   };
 
   /**
-   *
-   * @param {*} item
+   * @param {*} item - contains image information
+   * @param {*} index - index of the item in the list of images
    * @description - renders the images that the user selected
    * @returns Returns the images that the user selected
+   * @memberof CreateListing
    */
   const render_item = (item, index) => {
     return (
@@ -408,6 +424,8 @@ const handleLibraryPick = async () => {
   /**
    * @function
    * @handleDragStart - disables scrolling when the user is dragging an image
+   * @description - basic handle function
+   * @memberof CreateListing
    */
   const handleDragStart = () => {
     // When a drag starts, disable scrolling
@@ -419,6 +437,8 @@ const handleLibraryPick = async () => {
   /**
    * @function
    * @handleDragRelease - enables scrolling when the user is done dragging an image
+   * @description - basic handle function
+   * @memberof CreateListing
    */
   const handleDragRelease = (data) => {
     // When the drag is released, enable scrolling
@@ -430,9 +450,11 @@ const handleLibraryPick = async () => {
 
   /**
    * @function
-   * @handlePriceChange - handles when the user enters a price
-   * @param {*} text
+   * @handlePriceChange - handles changes when the user enters a price
+   * @param {string} text - text that hold the entered price
    * @description - handles when the user enters a price
+   * @returns {void} This function doesn't return a value
+   * @memberof CreateListing
    */
   const handlePriceChange = (text) => {
     const regex = /^(\d{0,6}(\.\d{2})?)$/;
@@ -458,6 +480,7 @@ const handleLibraryPick = async () => {
    * @param {Array} selectedTags - array of the selected tags
    * @description - handles when the user presses a tag
    * @returns Returns the tags that the user selected
+   * @memberof CreateListing
    */
   const handleTagPress = (index) => {
     setIsTagInvalid(false);
@@ -483,10 +506,13 @@ const handleLibraryPick = async () => {
   };
 
   /**
-   *
-   * @param {*} tags
-   * @param {*} itemsPerRow
-   * @returns
+   * @function
+   * @name groupTagsIntoRows
+   * @description - Groups the tags into rows
+   * @param {Array} tags - array of tags
+   * @param {number} itemsPerRow - # of items to display per row
+   * @returns {Array} - returns the array with tags grouped together
+   * @memberof CreateListing
    */
   const groupTagsIntoRows = (tags, itemsPerRow) => {
     return tags.reduce((rows, tag, index) => {
@@ -703,6 +729,7 @@ const handleLibraryPick = async () => {
               )}
             </View>
             <View style={styles.pickerStyle}>
+              {Platform.OS == 'ios' && <View style={styles.pickerBackground} />}
               <RNPickerSelect
                 selectedValue={transactionPreference}
                 onValueChange={(itemValue, itemIndex) => {
@@ -735,6 +762,7 @@ const handleLibraryPick = async () => {
               )}
             </View>
             <View style={{ ...styles.pickerStyle }}>
+              {Platform.OS == 'ios' && <View style={styles.pickerBackground} />}
               <RNPickerSelect
                 selectedValue={condition}
                 onValueChange={(itemValue, itemIndex) => {

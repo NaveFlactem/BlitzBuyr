@@ -19,21 +19,26 @@ import Colors from '../constants/Colors';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import { useThemeContext } from './visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
+import { currencies } from '../constants/ListingData';
 
 const TagDrawer = memo(
   ({
     tagsData,
     conditions,
     transactions,
+    currencyData,
     setTagsData,
     setConditionsData,
     setTransactionsData,
+    setCurrencyData,
     selectedTags,
     selectedConditions,
     selectedTransactions,
+    selectedCurrency,
     setSelectedConditions,
     setSelectedTransactions,
     setSelectedTags,
+    setSelectedCurrency,
     fetchListings,
     handleMenuPress,
     setIsDrawerOpen,
@@ -125,6 +130,24 @@ const TagDrawer = memo(
       setSelectedTransactions(newSelectedTransactions);
       console.log(selectedTransactions);
     };
+
+    handleCurrencyPress = (index) => {
+      // Update the selection status of each currency in currencyData
+      const newCurrencyData = currencyData.map((currency, idx) => ({
+        ...currency,
+        selected: idx === index ? !currency.selected : false,
+      }));
+    
+      // Determine the new selected currency
+      const newSelectedCurrency = newCurrencyData[index].selected
+        ? newCurrencyData[index].name
+        : null;
+    
+      // Update state
+      setCurrencyData(newCurrencyData);
+      setSelectedCurrency(newSelectedCurrency);
+    };
+    
 
     const X_OFFSET_THRESHOLD = 10; // You can adjust this value as needed
 
@@ -285,6 +308,33 @@ const TagDrawer = memo(
                       ]}
                     />
                     <Text style={styles.tagText}>{transaction.name}</Text>
+                  </TouchableOpacity>
+                ))}
+              <View style={styles.seperationContainer}>
+                  <View style={styles.separatorLine} />
+                  <Text style={styles.seperationText}>Currency</Text>
+                </View>
+                {currencyData.map((currency, currencyIndex) => (
+                  <TouchableOpacity
+                    key={currencyIndex}
+                    style={styles.tagContainer}
+                    onPress={() => {
+                      handleCurrencyPress(currencyIndex);
+                    }}
+                  >
+                    <View
+                      style={[
+                        styles.tagSelected,
+                        { opacity: currency.selected ? 1 : 0.3 },
+                      ]}
+                    />
+                    <View
+                      style={[  
+                        styles.rhombus,
+                        { opacity: currency.selected ? 0.15 : 0 },
+                      ]}
+                    />
+                    <Text style={styles.tagText}>{currency.name} {currency.symbol}</Text>
                   </TouchableOpacity>
                 ))}
               </View>

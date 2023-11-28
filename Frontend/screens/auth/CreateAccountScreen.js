@@ -1,3 +1,6 @@
+/**
+ * @namespace CreateAccount
+ */
 import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import React, { useRef, useState } from 'react';
 import {
@@ -14,6 +17,15 @@ import { serverIp } from '../../config.js';
 import { useThemeContext } from '../../components/visuals/ThemeProvider.js';
 import { getThemedStyles } from '../../constants/Styles.js';
 
+/**
+ * Component for creating a new account.
+ * @function
+ * @name CreateAccountScreen
+ * @param {Object} props - React component props.
+ * @param {Object} props.navigation - Navigation object for navigating between screens.
+ * @returns {JSX.Element} The create account screen component.
+ * @memberof CreateAccount
+ */
 const CreateAccountScreen = ({ navigation }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -27,11 +39,18 @@ const CreateAccountScreen = ({ navigation }) => {
   const hasSpecialCharacter = useRef(false);
   const styles = getThemedStyles(useThemeContext().theme).CreateAccountScreen;
 
+  /**
+   * Handles the creation of a new account.
+   * @function
+   * @name handleCreateAccount
+   * @returns {Promise<void>}
+   * @memberof CreateAccount
+   */
   const handleCreateAccount = async () => {
     if (password !== confirmPassword) {
       Alert.alert(
         'Password Mismatch',
-        'Password and Confirm Password do not match.',
+        'Password and Confirm Password do not match.'
       );
       return;
     }
@@ -71,7 +90,7 @@ const CreateAccountScreen = ({ navigation }) => {
     if (isValidPassword.current === false) {
       Alert.alert(
         'Invalid Input',
-        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
       );
       return;
     }
@@ -101,6 +120,14 @@ const CreateAccountScreen = ({ navigation }) => {
     }
   };
 
+  /**
+   * Handles the change in the password input.
+   * @function
+   * @name handlePasswordChange
+   * @param {string} text - The input text.
+   * @returns {void}
+   * @memberof CreateAccount
+   */
   const handlePasswordChange = (text) => {
     setPassword(text);
 

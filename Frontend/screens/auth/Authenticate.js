@@ -1,7 +1,12 @@
+/**
+ * @namespace Authenticate
+ * @description Headless authentication screen which uses the device cache to automatically login into BlitzBuyer
+ */
 import { Asset } from 'expo-asset';
 import * as SecureStore from 'expo-secure-store';
 import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { checkListingExpiration } from '../../components/Notifications.js';
 import { serverIp } from '../../config.js';
 import Colors from '../../constants/Colors';
 import * as Settings from '../../hooks/UserSettings.js';
@@ -29,9 +34,33 @@ const assetsToPreload = [
 let storedUsername;
 let storedPassword;
 
+/**
+ * Returns the username stored in the device cache.
+ * @function
+ * @name getStoredUsername
+ * @returns {string} The stored username.
+ * @memberof Authenticate
+ */
 const getStoredUsername = () => storedUsername;
+
+/**
+ * Returns the password stored in the device cache.
+ * @function
+ * @name getStoredPassword
+ * @returns {string} The stored password.
+ * @memberof Authenticate
+ */
 const getStoredPassword = () => storedPassword;
 
+/**
+ * Sets the stored credentials in the cache.
+ * @function
+ * @name setStoredCredentials
+ * @param {string} username - The username to be stored.
+ * @param {string} password - The password to be stored.
+ * @returns {Promise<void>}
+ * @memberof Authenticate
+ */
 const setStoredCredentials = async (username, password) => {
   storedUsername = username;
   storedPassword = password;
@@ -39,6 +68,13 @@ const setStoredCredentials = async (username, password) => {
   await SecureStore.setItemAsync('password', password);
 };
 
+/**
+ * Clears the stored credentials.
+ * @function
+ * @name clearStoredCredentials
+ * @returns {Promise<void>}
+ * @memberof Authenticate
+ */
 const clearStoredCredentials = async () => {
   try {
     await SecureStore.deleteItemAsync('username');
@@ -49,12 +85,21 @@ const clearStoredCredentials = async () => {
   }
 };
 
+/**
+ * Component for authentication screen.
+ * @function
+ * @name AuthenticateScreen
+ * @param {Object} props - React component props.
+ * @param {Object} props.navigation - Navigation object for navigating between screens.
+ * @returns {JSX.Element} The authentication screen component.
+ * @memberof Authenticate
+ */
 const AuthenticateScreen = ({ navigation }) => {
   useEffect(() => {
     // Load and cache the assets when the component mounts
     async function loadAssetsAsync() {
       const assetPromises = assetsToPreload.map((asset) =>
-        Asset.fromModule(asset).downloadAsync(),
+        Asset.fromModule(asset).downloadAsync()
       );
       await Promise.all(assetPromises);
     }
@@ -63,11 +108,25 @@ const AuthenticateScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
+    /**
+     * Loads user settings.
+     * @function
+     * @name loadSettings
+     * @returns {Promise<void>}
+     * @memberof Authenticate
+     */
     const loadSettings = async () => {
       const settings = await Settings.getUserSettings();
       console.log('User settings:', settings);
     };
 
+    /**
+     * Checks stored credentials and performs login.
+     * @function
+     * @name checkStoredCredentials
+     * @returns {Promise<void>}
+     * @memberof Authenticate
+     */
     const checkStoredCredentials = async () => {
       storedUsername = await SecureStore.getItemAsync('username');
       storedPassword = await SecureStore.getItemAsync('password');
@@ -93,6 +152,7 @@ const AuthenticateScreen = ({ navigation }) => {
           loadSettings();
           console.log('Response data:', responseData);
           navigation.navigate('BottomNavOverlay');
+          checkListingExpiration();
         } else {
           navigation.navigate('Login');
         }

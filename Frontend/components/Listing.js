@@ -27,10 +27,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { serverIp } from '../config.js';
 import Colors from '../constants/Colors.js';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
-import {
-  getStoredPassword,
-  getStoredUsername,
-} from '../screens/auth/Authenticate.js';
+import { handleDeleteListing, handleLike } from '../network/Service.js';
+import { getStoredUsername } from '../screens/auth/Authenticate.js';
 import { parallaxLayout } from './parallax.ts';
 import { useThemeContext } from './visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
@@ -171,7 +169,7 @@ const CardOverlay = memo(
         </View>
       </View>
     );
-  }
+  },
 );
 
 const MemoizedImage = memo(
@@ -187,7 +185,7 @@ const MemoizedImage = memo(
         cachePolicy="memory-disk"
       />
     );
-  }
+  },
 );
 
 const CustomItem = memo(
@@ -207,7 +205,7 @@ const CustomItem = memo(
       AnimatedRN.event([{ nativeEvent: { scale: scale } }], {
         useNativeDriver: true,
       }),
-      []
+      [],
     );
 
     const onZoomStateChange = (event) => {
@@ -248,7 +246,7 @@ const CustomItem = memo(
         {deleteVisible && <DeleteButton onDeletePress={onDeletePress} styles={styles} />}
       </CardOverlay>
     );
-  }
+  },
 );
 
 const Listing = ({ item, origin, removeListing, userLocation, handleInnerScolling, handleInnerScollingEnd }) => {
@@ -274,7 +272,7 @@ const Listing = ({ item, origin, removeListing, userLocation, handleInnerScollin
       item.Latitude,
       item.Longitude,
       userLocation.latitude,
-      userLocation.longitude
+      userLocation.longitude,
     );
   }, [
     item.Latitude,
@@ -285,65 +283,25 @@ const Listing = ({ item, origin, removeListing, userLocation, handleInnerScollin
 
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
-    origin == 'profile' && item.Username == getStoredUsername()
+    origin == 'profile' && item.Username == getStoredUsername(),
   );
 
   const toggleDeleteModal = useCallback(() => {
     setDeleteModalVisible(!isDeleteModalVisible);
   }, [isDeleteModalVisible]);
 
-  const handleDeleteListing = useCallback(async () => {
-    try {
-      const username = getStoredUsername();
-      const password = getStoredPassword();
-      const response = await fetch(`${serverIp}/api/deletelisting`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password, listingId: item.ListingId }),
-      });
-
-      const responseData = await response.json();
-
-      if (response.ok) {
-        removeListing(item.ListingId);
-        alert('Listing deleted successfully.');
-      } else {
-        alert(`Error deleting listing: ${responseData.error}`);
-      }
-    } catch (error) {
-      console.error('Error deleting listing:', error);
-      alert(`Error deleting listing: ${error}`);
-    } finally {
-      toggleDeleteModal(); // Close the modal
-    }
-  }, []);
-
-  const handleLikePress = useCallback(async () => {
-    const username = getStoredUsername();
-    const method = isLiked ? 'DELETE' : 'POST';
-    try {
-      const response = await fetch(`${serverIp}/api/like`, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, listingId: item.ListingId }),
-      });
-
-      if (response.ok) {
-        setIsLiked(!isLiked);
-      } else {
-        console.error('Failed to update like status');
-      }
-    } catch (error) {
-      console.error('Error updating like status:', error);
-    }
-  }, [isLiked]);
-
   const images = React.useMemo(() => item.images, [item.images]);
   const carouselRef = useRef(null);
+
+  const handleLikePress = useCallback(async () => {
+    try {
+      await handleLike(item.ListingId, isLiked);
+      setIsLiked(!isLiked);
+    } catch (error) {
+      console.error(error);
+      alert(error);
+    }
+  }, [isLiked]);
 
   return (
     <SafeAreaView>
@@ -400,7 +358,7 @@ const Listing = ({ item, origin, removeListing, userLocation, handleInnerScollin
                 parallaxScrollingScale: 1,
                 parallaxAdjacentItemScale: 0.5,
                 parallaxScrollingOffset: 10,
-              }
+              },
             )}
           />
         </View>
@@ -560,9 +518,10 @@ const Listing = ({ item, origin, removeListing, userLocation, handleInnerScollin
               >
                 Tags:
               </Text>
-              <ScrollView style={styles.tagColumn}
-              onScrollBeginDrag={handleInnerScolling}
-              onScrollEndDrag={handleInnerScollingEnd}
+              <ScrollView
+                style={styles.tagColumn}
+                onScrollBeginDrag={handleInnerScolling}
+                onScrollEndDrag={handleInnerScollingEnd}
               >
                 <Pressable>
                   {item.tags &&
@@ -602,7 +561,18 @@ const Listing = ({ item, origin, removeListing, userLocation, handleInnerScollin
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={styles.confirmButton}
-              onPress={() => handleDeleteListing()}
+              onPress={async () => {
+                try {
+                  await handleDeleteListing(item.ListingId);
+                  removeListing(item.ListingId);
+                  alert('Listing deleted successfully.');
+                } catch (error) {
+                  console.error(error);
+                  alert(error);
+                } finally {
+                  toggleDeleteModal(); // Close the modal
+                }
+              }}
             >
               <Text style={styles.buttonText}>Yes</Text>
             </TouchableOpacity>
@@ -622,4 +592,3 @@ const Listing = ({ item, origin, removeListing, userLocation, handleInnerScollin
 export default memo(Listing);
 
 const PAGE_WIDTH = screenWidth / 2;
-

@@ -1,3 +1,6 @@
+/**
+ * @namespace Login
+ */
 import React, { useState } from 'react';
 import {
   Alert,
@@ -9,12 +12,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { checkListingExpiration } from '../../components/Notifications.js';
 import { serverIp } from '../../config.js';
 import Colors from '../../constants/Colors';
 import { setStoredCredentials } from './Authenticate.js';
 import { useThemeContext } from '../../components/visuals/ThemeProvider.js';
 import { getThemedStyles } from '../../constants/Styles.js';
 
+/**
+ * LoginScreen component.
+ * @memberof Login
+ * @param {object} navigation - React Navigation object.
+ */
 const LoginScreen = ({ navigation }) => {
   const styles = getThemedStyles(useThemeContext().theme).LoginScreen;
   const [username, setUsername] = useState('');
@@ -26,6 +35,10 @@ const LoginScreen = ({ navigation }) => {
     setPassword('');
   };
 
+  /**
+   * Function to handle the login process.
+   * @memberof Login
+   */
   const handleLogin = async () => {
     // Handle manual login process when the "Login" button is pressed
     const loginData = {
@@ -48,11 +61,16 @@ const LoginScreen = ({ navigation }) => {
       await setStoredCredentials(username, password);
       clearFields();
       navigation.navigate('BottomNavOverlay');
+      checkListingExpiration();
     } else {
       Alert.alert(responseData.error);
     }
   };
 
+  /**
+   * Function to navigate to the create account screen.
+   * @memberof Login
+   */
   const handleCreateAccount = () => {
     navigation.navigate('CreateAccount');
   };
