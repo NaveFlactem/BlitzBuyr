@@ -48,12 +48,13 @@ const MinorLoadingView = memo(({styles}) => (
 ));
 
 /**
- * @class
- * @classdesc - CreateListing is a screen that allows users to create a listing
- * @extends Component
+ * @function
+ * @CreateListing - creates a listing
+ * @param {*} props
+ * @description - creates a listing
  * @returns Returns a CreateListing screen
  */
-const CreateListing = memo(() => {
+const CreateListing = memo(({navigation, route}) => {
   const styles = getThemedStyles(useThemeContext().theme).CreateListing;
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -114,7 +115,7 @@ const CreateListing = memo(() => {
    * @checkValidListing - checks if the listing is valid
    * @returns Returns 0 if the listing is valid, -1 if the listing is invalid and 1 if no images are selected and 2 if too many images are selected and 3 if no tags are selected
    */
-  const checkValidListing = () => {
+  const checkValidListing = async () => {
     const regex = /^(\d{0,6}(\.\d{2})?)$/;
 
     setIsPriceInvalid(!regex.test(price) && price.length !== 0);
@@ -148,7 +149,7 @@ const CreateListing = memo(() => {
   const handleCreateListing = async () => {
     setIsLoading(true);
   
-    const returnCode = checkValidListing();
+    let returnCode = await checkValidListing();
     if (returnCode !== 0) {
       setIsLoading(false); // Turn off loading if validation fails
       if (returnCode === -1) {
@@ -198,7 +199,7 @@ const CreateListing = memo(() => {
       if (response.status <= 201) {
         const responseData = await response.json();
         destructor();
-        props.navigation.navigate('Home', { refresh: true });
+        navigation.navigate('Home', { refresh: true });
       } else {
         console.error('HTTP error! Status: ', response.status);
         Alert.alert('Error', 'Failed to create listing.');
@@ -341,6 +342,7 @@ const handleLibraryPick = async () => {
         `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`
       );
 
+      setIsImageInvalid(false);
       return {
         name: manipulateResult.uri.split('/').pop(),
         key: String(Date.now()),
@@ -458,6 +460,7 @@ const handleLibraryPick = async () => {
    * @returns Returns the tags that the user selected
    */
   const handleTagPress = (index) => {
+    setIsTagInvalid(false);
     const newTagsData = tagsData.map((tag, idx) => {
       if (idx === index) {
         return { ...tag, selected: !tag.selected };
@@ -519,7 +522,7 @@ const handleLibraryPick = async () => {
   return (
       <View style={styles.wrapper}>
         <TopBar />
-
+        
         <View style={styles.scrollfield}>
           <ScrollView scrollEnabled={isScrollEnabled}>
             <View style={styles.rowContainer}>
@@ -865,6 +868,14 @@ const handleLibraryPick = async () => {
             </View>
           </Modal>
         </View>
+
+        {
+          isMinorLoading && <MinorLoadingView styles={styles} />
+        }
+        {
+          isLoading && <LoadingView styles={styles} />
+        }
+
       </View>
     );
   }
