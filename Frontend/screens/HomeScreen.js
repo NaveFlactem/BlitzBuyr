@@ -6,7 +6,6 @@ import {
   Platform,
   RefreshControl,
   SafeAreaView,
-  StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -20,25 +19,24 @@ import TagDrawer, { SwipeArea } from '../components/TagDrawer.js';
 import TopBar from '../components/TopBarHome.js';
 import BouncePulse from '../components/visuals/BouncePulse.js';
 import { CustomRefreshControl } from '../components/visuals/CustomRefreshControl';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
 import { serverIp } from '../config.js';
-import Colors from '../constants/Colors';
 import {
   conditionOptions,
   tagOptions,
   transactionOptions,
 } from '../constants/ListingData.js';
-import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
+import { screenWidth } from '../constants/ScreenDimensions.js';
+import { getThemedStyles } from '../constants/Styles';
 import {
   calculateTimeSince,
   getLocationWithRetry,
 } from '../constants/Utilities';
 import * as Settings from '../hooks/UserSettings.js';
-import { useThemeContext } from '../components/visuals/ThemeProvider';
-import { getThemedStyles } from '../constants/Styles';
 /**
  * @namespace HomeScreenNamespace
  * @description - HomeScreen is the home screen of the application
- * 
+ *
  */
 
 /**
@@ -71,7 +69,7 @@ const HomeScreen = ({ route }) => {
   const styles = getThemedStyles(useThemeContext().theme).HomeScreen;
 
   /**
-   * 
+   *
    * @function
    * @name toggleTagDrawer
    * @memberof HomeScreenNamespace
@@ -95,7 +93,7 @@ const HomeScreen = ({ route }) => {
   };
 
   /**
-   * 
+   *
    * @function
    * @name handleLocationPress
    * @memberof HomeScreenNamespace
@@ -115,7 +113,7 @@ const HomeScreen = ({ route }) => {
   };
 
   /**
-   * 
+   *
    * @function
    * @name handleInnerScrolling
    * @memberof HomeScreenNamespace
@@ -127,7 +125,7 @@ const HomeScreen = ({ route }) => {
     swiperRef.current.setNativeProps({ scrollEnabled: false });
   };
   /**
-   * 
+   *
    * @function
    * @name handleInnerScrollingEnd
    * @memberof HomeScreenNamespace
@@ -140,7 +138,7 @@ const HomeScreen = ({ route }) => {
   };
 
   /**
-   * 
+   *
    * @function
    * @name getUserLocation
    * @memberof HomeScreenNamespace
@@ -175,7 +173,7 @@ const HomeScreen = ({ route }) => {
   };
 
   /**
-   * 
+   *
    * @function
    * @name onScroll
    * @memberof HomeScreenNamespace
@@ -189,7 +187,7 @@ const HomeScreen = ({ route }) => {
   };
 
   /**
-   * 
+   *
    * @function
    * @name onRefresh
    * @memberof HomeScreenNamespace
@@ -202,19 +200,19 @@ const HomeScreen = ({ route }) => {
     if (userLocation) fetchListings();
     else getUserLocation();
   }, []);
-/**
- * 
- * @function
- * @name debouncedFetchListings
- * @memberof HomeScreenNamespace
- * @returns {Function} - Debounced function
- * @description Creates a version of the `fetchListings` function using the `debounce` utility. This debounced function introduces a delay of 1000 milliseconds before invoking `fetchListings`, ensuring that rapid consecutive calls to `debouncedFetchListings` within the specified delay period will result in a single execution of `fetchListings`.
- */
+  /**
+   *
+   * @function
+   * @name debouncedFetchListings
+   * @memberof HomeScreenNamespace
+   * @returns {Function} - Debounced function
+   * @description Creates a version of the `fetchListings` function using the `debounce` utility. This debounced function introduces a delay of 1000 milliseconds before invoking `fetchListings`, ensuring that rapid consecutive calls to `debouncedFetchListings` within the specified delay period will result in a single execution of `fetchListings`.
+   */
   const debouncedFetchListings = useCallback(
     debounce(() => {
       fetchListings();
     }, 1000),
-    [],
+    []
   );
 
   /**
@@ -259,7 +257,7 @@ const HomeScreen = ({ route }) => {
       console.log('Transactions:', mergedTransactions);
 
       const username = encodeURIComponent(
-        await SecureStore.getItemAsync('username'),
+        await SecureStore.getItemAsync('username')
       );
       let fetchUrl = `${serverIp}/api/listings?username=${username}&latitude=${latitude}&longitude=${longitude}`;
       if (distance < 510) fetchUrl += `&distance=${distance}`; // don't add distance on unlimited
@@ -280,7 +278,7 @@ const HomeScreen = ({ route }) => {
               ...listing,
               TimeSince: timeSince,
             };
-          }),
+          })
         );
         console.log('Listings fetched successfully');
       } else {
@@ -389,7 +387,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId),
+                    prevListings.filter((item) => item.ListingId !== listingId)
                   );
                 }}
                 onScroll={onScroll}
@@ -415,7 +413,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId),
+                    prevListings.filter((item) => item.ListingId !== listingId)
                   );
                 }}
                 onScroll={onScroll}
@@ -423,7 +421,7 @@ const HomeScreen = ({ route }) => {
                   <RefreshControl
                     refreshing={refreshing}
                     onRefresh={onRefresh}
-                    progressViewOffset={50}
+                    progressViewOffset={60}
                   />
                 }
                 handleInnerScolling={handleInnerScolling}
