@@ -668,14 +668,7 @@ function ProfileScreen({ navigation, route }) {
               style={styles.button}
             >
               <Text style={styles.buttonText}>Edit Contact</Text>
-            </TouchableOpacity>
-            {/* Settings Button */}
-          <TouchableOpacity onPress={() => {
-              setLoading(true);
-              navigation.navigate("SettingsPage");
-            }}>
-            <Text>Settings</Text>
-          </TouchableOpacity>
+            </TouchableOpacity>         
           </View>
         )}
         {/* Rate User Button */}

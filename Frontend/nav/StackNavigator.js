@@ -11,7 +11,6 @@ import ProfileScreen from '../screens/ProfileScreen';
 import RatingScreen from '../screens/RatingScreen';
 import BottomNavOverlay from './BottomNavOverlay';
 import SettingsScreen from "../screens/SettingsScreen";
-import SettingsPage from "../screens/SettingsPage";
 
 
 const Stack = createStackNavigator();
@@ -56,7 +55,6 @@ const StackNavigator = () => {
 
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="ContactInfoScreen" component={ContactInfoScreen} />
-      <Stack.Screen name="SettingsPage" component={SettingsPage} />
       <Stack.Screen name="RatingScreen" component={RatingScreen} />
       <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
     </Stack.Navigator>
