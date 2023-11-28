@@ -127,7 +127,7 @@ const SettingsPage = ({ navigation }) => {
                       <Switch
                         trackColor={{
                           false: Colors.gray,
-                          true: Colors.BB_darkRedPurple,
+                          true: Colors.gray,
                         }}
                         thumbColor={Colors.BB_darkRedPurple}
                         onValueChange={() => {
