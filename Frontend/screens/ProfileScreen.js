@@ -130,7 +130,7 @@ const handleContactClick = async (key, data) => {
 const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
   const styles = getThemedStyles(useThemeContext().theme).ProfileScreen;
   let displayValues = Object.values(contactInfo).some(
-    (value) => value.data.length > 0
+    (value) => value.data?.length > 0
   );
 
   if (!selfProfile && Object.values(contactInfo).every((value) => value.hidden))
@@ -162,7 +162,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
         <View>
           {displayValues ? (
             Object.entries(contactInfo).map(([key, value]) => {
-              if (value.data.length > 0) {
+              if (value.data?.length > 0) {
                 return (
                   (selfProfile || (!selfProfile && !value.hidden)) && (
                     <View key={key}>
@@ -330,6 +330,7 @@ function ProfileScreen({ navigation, route }) {
         method: 'GET',
       });
       const profileData = await profileResponse.json();
+      console.log(profileData);
 
       if (profileResponse.status <= 201) {
         setProfileInfo({
@@ -353,6 +354,7 @@ function ProfileScreen({ navigation, route }) {
           ),
           profilePicture: profileData.profilePicture,
           coverPicture: profileData.coverPicture,
+          email: profileData.email,
         });
         console.log(profileData.contactInfo);
 
@@ -559,7 +561,7 @@ function ProfileScreen({ navigation, route }) {
                 color: Colors.BB_darkRedPurple,
               }}
             >
-              {profileInfo.userListings.length}
+              {profileInfo.userListings?.length}
             </Text>
             <Text
               style={{
@@ -626,7 +628,7 @@ function ProfileScreen({ navigation, route }) {
                   color: Colors.BB_darkRedPurple,
                 }}
               >
-                {profileInfo.likedListings.length}
+                {profileInfo.likedListings?.length}
               </Text>
               <Text
                 style={{
@@ -661,6 +663,7 @@ function ProfileScreen({ navigation, route }) {
                   profileName: profileName,
                   profilePicture: profileInfo.profilePicture,
                   coverPicture: profileInfo.coverPicture,
+                  email: profileInfo.email,
                 });
               }}
               style={{ ...styles.button, width: 114 }}
@@ -805,7 +808,7 @@ function ProfileScreen({ navigation, route }) {
               item={selectedListing}
               LikeStates={LikeStates}
               handleLikePress={handleLikePress}
-              numItems={selectedListing.images.length}
+              numItems={selectedListing.images?.length}
               userLocation={userLocation}
               origin={'profile'}
               removeListing={(listingId) => {
