@@ -11,6 +11,8 @@ import { PanGestureHandler } from 'react-native-gesture-handler';
 import Colors from '../constants/Colors';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions';
 import * as Settings from '../hooks/UserSettings.js';
+import { useThemeContext } from './visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
 const Slider =
   Platform.OS == 'ios'
     ? require('@react-native-community/slider').default
@@ -23,6 +25,7 @@ const LocationSlider = memo(
     setIsLocationSliderVisible,
     locationSliderHeight,
   }) => {
+    const styles = getThemedStyles(useThemeContext().theme).LocationSlider;
     const locationSliderStyle = useAnimatedStyle(() => {
       return {
         transform: [{ translateY: locationSliderHeight.value }],
@@ -90,36 +93,5 @@ const LocationSlider = memo(
     );
   },
 );
-
-const styles = StyleSheet.create({
-  box: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.BB_darkRedPurple,
-    position: 'absolute',
-    right: 0,
-    bottom: Platform.OS == 'ios' ? screenHeight * 0.8 : screenHeight * 0.75,
-    width: screenWidth * 0.7,
-    height: screenHeight * 0.07,
-    borderRadius: 80,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
-  },
-  valueText: {
-    position: 'absolute',
-    bottom: '65%',
-    color: Colors.white,
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
-});
 
 export default LocationSlider;

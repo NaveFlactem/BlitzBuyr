@@ -20,6 +20,8 @@ import useBackButtonHandler from '../hooks/DisableBackButton';
 import CreateListing from '../screens/CreateListing';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
 
 const TabArr = [
   {
@@ -51,7 +53,7 @@ const TabArr = [
 const Tab = createBottomTabNavigator();
 
 const TabButton = memo((props) => {
-  const { item, onPress, accessibilityState } = props;
+  const { item, onPress, accessibilityState, styles } = props;
   const focused = accessibilityState.selected;
 
   // Local shared values for scale and rotate
@@ -97,7 +99,7 @@ const TabButton = memo((props) => {
 });
 
 function BottomNavOverlay() {
-  const screenHeight = Dimensions.get('window').height;
+  const styles = getThemedStyles(useThemeContext().theme).BottomNavOverlay;
 
   return (
     <Tab.Navigator
@@ -120,7 +122,7 @@ function BottomNavOverlay() {
             component={item.component}
             options={{
               tabBarShowLabel: false,
-              tabBarButton: (props) => <TabButton {...props} item={item} />,
+              tabBarButton: (props) => <TabButton {...props} item={item} styles={styles} />, 
             }}
           />
         );
@@ -128,68 +130,5 @@ function BottomNavOverlay() {
     </Tab.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  tabButtonContainer: {
-    flex: 1,
-    overflow: 'hidden',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.BB_darkRedPurple,
-    borderTopWidth: 3,
-    borderColor:
-      Platform.OS == 'ios' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.3)',
-    height: Platform.OS === 'ios' ? '200%' : null,
-  },
-  tabButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
-    width: '100%',
-    bottom: Platform.OS === 'ios' ? '25%' : null,
-  },
-  outerRhombus: {
-    alignSelf: 'center',
-    position: 'absolute',
-    width: '85%',
-    aspectRatio: 1,
-    backgroundColor: Colors.BB_darkPink,
-    opacity: 0.1,
-    transform: [{ rotate: '45deg' }],
-    ...Platform.select({
-      ios: {
-        bottom: 0,
-        shadowColor: 'black',
-        shadowOpacity: 0.5,
-        shadowRadius: 10,
-        shadowOffset: { height: 4, width: 0 },
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  innerRhombus: {
-    alignSelf: 'center',
-    position: 'absolute',
-    width: '45%',
-    aspectRatio: 1,
-    backgroundColor: Colors.BB_darkPink,
-    opacity: 0.1,
-    transform: [{ rotate: '45deg' }],
-    ...Platform.select({
-      ios: {
-        bottom: 0.03 * screenHeight,
-        shadowColor: 'black',
-        shadowOpacity: 0.5,
-        shadowRadius: 10,
-        shadowOffset: { height: 4, width: 0 },
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-});
 
 export default memo(BottomNavOverlay);

@@ -28,6 +28,8 @@ import {
   getStoredUsername,
   setStoredCredentials,
 } from './auth/Authenticate.js';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
 
 const EditProfileScreen = ({ navigation, route }) => {
   const isFocused = useIsFocused();
@@ -38,6 +40,7 @@ const EditProfileScreen = ({ navigation, route }) => {
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const [selectedProfilePicture, setSelectedProfilePicture] = useState('');
   const [selectedCoverPicture, setSelectedCoverPicture] = useState('');
+  const styles = getThemedStyles(useThemeContext().theme).EditProfileScreen;
 
   const togglePasswordVisibility = () => {
     setIsPasswordHidden(!isPasswordHidden);
@@ -561,74 +564,5 @@ const EditProfileScreen = ({ navigation, route }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  modalHeader: {
-    fontSize: 30,
-    textAlign: 'center',
-    marginVertical: 5,
-    color: Colors.BB_darkRedPurple,
-  },
-  modalContainer: {
-    backgroundColor: Colors.BB_bone,
-    padding: 20,
-    borderRadius: 10,
-    borderColor: Colors.BB_darkRedPurple,
-    borderWidth: 3,
-  },
-  modalTitle: {
-    fontSize: 12,
-    marginBottom: 10,
-    color: Colors.BB_darkRedPurple,
-    textAlign: 'center',
-  },
-  input: {
-    height: 44,
-    width: '100%',
-    borderColor: Colors.BB_darkRedPurple,
-    borderWidth: 1,
-    borderRadius: 6,
-    justifyContent: 'center',
-    paddingLeft: 8,
-    marginBottom: 10,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 15,
-  },
-  confirmButton: {
-    backgroundColor: Colors.BB_red,
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
-  },
-  cancelButton: {
-    padding: 10,
-  },
-  confirmButtonText: {
-    color: Colors.white,
-    textAlign: 'center',
-  },
-  cancelButtonText: {
-    color: Colors.BB_darkRedPurple,
-    textAlign: 'center',
-  },
-  circleContainer: {
-    position: 'absolute',
-    top: 15,
-    left: Platform.OS == 'ios' ? 15 : 0,
-  },
-  circle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'black',
-  },
-});
 
 export default memo(EditProfileScreen);

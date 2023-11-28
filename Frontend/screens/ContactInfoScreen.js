@@ -12,8 +12,11 @@ import {
 import { serverIp } from '../config';
 import Colors from '../constants/Colors';
 import { getStoredUsername } from './auth/Authenticate';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
 
 const EditContactInfo = ({ navigation, route }) => {
+  const styles = getThemedStyles(useThemeContext().theme).EditContactInfo;
   const [loading, setLoading] = useState(true);
   const [contactInfo, setContactInfo] = useState(route.params?.prevContactInfo);
 
@@ -149,40 +152,5 @@ const EditContactInfo = ({ navigation, route }) => {
   );
 };
 
-const styles = {
-  container: {
-    marginBottom: 20,
-  },
-  itemContainer: {
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  data: {
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 6,
-    padding: 8,
-  },
-  circleContainer: {
-    position: 'absolute',
-    top: 15,
-    left: Platform.OS == 'ios' ? 15 : 0,
-  },
-  circle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'black',
-  },
-};
 
 export default EditContactInfo;

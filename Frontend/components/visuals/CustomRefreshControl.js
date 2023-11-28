@@ -6,8 +6,11 @@ import Animated, {
 } from 'react-native-reanimated';
 import { screenHeight } from '../../constants/ScreenDimensions.js';
 import BouncePulse from './BouncePulse';
+import { useThemeContext } from './ThemeProvider';
+import { getThemedStyles } from '../../constants/Styles';
 
 export const CustomRefreshControl = memo(({ refreshing, scrollY, swiperRef }) => {
+  const styles = getThemedStyles(useThemeContext().theme).CustomRefreshControl;
   const bouncePulseStyle = useAnimatedStyle(() => {
     let newYPosition = -100; // Initial off-screen position
     let newOpacity = 1;
@@ -32,13 +35,4 @@ export const CustomRefreshControl = memo(({ refreshing, scrollY, swiperRef }) =>
       <BouncePulse />
     </Animated.View>
   );
-});
-
-const styles = StyleSheet.create({
-  bouncePulseContainer: {
-    position: 'absolute',
-    alignSelf: 'center',
-    top: 0,
-    alignItems: 'center',
-  },
 });
