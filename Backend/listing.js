@@ -276,6 +276,7 @@ router.get('/listings', async function (req, res) {
     distance,
     conditions,
     transactions,
+    currency,
   } = req.query;
 
   try {
@@ -337,6 +338,9 @@ router.get('/listings', async function (req, res) {
       query += `
           AND distance <= ${distance}
         `;
+    }
+    if (currency) {
+      query += `AND Listings.Currency = '${currency}'`;
     }
 
     query += `
