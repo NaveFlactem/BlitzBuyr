@@ -97,11 +97,11 @@ const HomeScreen = ({ route }) => {
    * @description Controls the visibility of the location slider by toggling its state between visible and hidden. If the slider is currently visible, it initiates an animation to hide it and fetches listings. If hidden, it triggers an animation to display it.
    */
 
-  const handleLocationPress = () => {
+  const handleLocationPress = async () => {
     if (isLocationSliderVisible) {
       locationSliderHeight.value = withTiming(-100, { duration: 100 }); // Hide slider
       setIsLocationSliderVisible(false);
-      fetchListings(
+      await fetchListings(
         userLocation,
         distance,
         selectedTags,
@@ -172,9 +172,9 @@ const HomeScreen = ({ route }) => {
    * @returns {void}
    * @description Initiates the refreshing state, triggering a fetch of listings data when a retry action is performed. Used typically in response to a failed or interrupted data fetch operation to attempt fetching listings again.
    */
-  retryButtonHandler = () => {
+  retryButtonHandler = async () => {
     setRefreshing(true);
-    fetchListings(
+    await fetchListings(
       userLocation,
       distance,
       selectedTags,
@@ -208,11 +208,11 @@ const HomeScreen = ({ route }) => {
    * @returns {void}
    * @description Initiates the refresh action by setting the refreshing state, and if the user location is available, it triggers fetching listings. If the user location is not available, it attempts to retrieve the user's location before fetching listings.
    */
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = React.useCallback(async () => {
     console.log('refreshing...');
     setRefreshing(true);
     if (userLocation)
-      fetchListings(
+      await fetchListings(
         userLocation,
         distance,
         selectedTags,
@@ -233,8 +233,8 @@ const HomeScreen = ({ route }) => {
    * @description Creates a version of the `fetchListings` function using the `debounce` utility. This debounced function introduces a delay of 1000 milliseconds before invoking `fetchListings`, ensuring that rapid consecutive calls to `debouncedFetchListings` within the specified delay period will result in a single execution of `fetchListings`.
    */
   const debouncedFetchListings = useCallback(
-    debounce(() => {
-      fetchListings(
+    debounce(async () => {
+      await fetchListings(
         userLocation,
         distance,
         selectedTags,
@@ -245,7 +245,7 @@ const HomeScreen = ({ route }) => {
         setRefreshing
       );
     }, 1000),
-    []
+    [userLocation, distance, selectedTags, selectedConditions]
   );
 
   useEffect(() => {
@@ -276,7 +276,7 @@ const HomeScreen = ({ route }) => {
   // this will run after you have location
   useEffect(() => {
     if (userLocation)
-      fetchListings(
+      debouncedFetchListings(
         userLocation,
         distance,
         selectedTags,
@@ -290,7 +290,7 @@ const HomeScreen = ({ route }) => {
 
   useEffect(() => {
     if (userLocation && !isDrawerOpen)
-      fetchListings(
+      debouncedFetchListings(
         userLocation,
         distance,
         selectedTags,
@@ -307,7 +307,7 @@ const HomeScreen = ({ route }) => {
     if (route.params?.refresh) {
       setRefreshing(true);
       if (userLocation)
-        fetchListings(
+        debouncedFetchListings(
           userLocation,
           distance,
           selectedTags,
@@ -428,7 +428,7 @@ const HomeScreen = ({ route }) => {
         setSelectedTags={setSelectedTags}
         setSelectedConditions={setSelectedConditions}
         setSelectedTransactions={setSelectedTransactions}
-        fetchListings={fetchListings}
+        fetchListings={debouncedFetchListings}
         handleMenuPress={toggleTagDrawer}
         setIsDrawerOpen={setIsDrawerOpen}
         isDrawerOpen={isDrawerOpen}
