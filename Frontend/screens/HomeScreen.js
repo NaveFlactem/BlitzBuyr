@@ -1,5 +1,4 @@
 import NetInfo from '@react-native-community/netinfo';
-import { debounce } from 'lodash';
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import {
   Platform,
@@ -100,7 +99,7 @@ const HomeScreen = ({ route }) => {
    * @description Controls the visibility of the location slider by toggling its state between visible and hidden. If the slider is currently visible, it initiates an animation to hide it and fetches listings. If hidden, it triggers an animation to display it.
    */
 
-  const handleLocationPress = async () => {
+  const handleLocationPress = () => {
     console.log(
       'Location pressed, toggling slider visibility...',
       isLocationSliderVisible
@@ -108,17 +107,7 @@ const HomeScreen = ({ route }) => {
     if (isLocationSliderVisible) {
       locationSliderHeight.value = withTiming(-100, { duration: 100 }); // Hide slider
       setIsLocationSliderVisible(false);
-      await fetchListings(
-        userLocation,
-        distance,
-        selectedTags,
-        selectedConditions,
-        selectedTransactions,
-        selectedCurrency,
-        setListings,
-        setIsLoading,
-        setRefreshing
-      );
+      fetchListingsAsync();
     } else {
       locationSliderHeight.value = withTiming(0, { duration: 100 }); // Show slider
       setIsLocationSliderVisible(true);
@@ -181,19 +170,9 @@ const HomeScreen = ({ route }) => {
    * @returns {void}
    * @description Initiates the refreshing state, triggering a fetch of listings data when a retry action is performed. Used typically in response to a failed or interrupted data fetch operation to attempt fetching listings again.
    */
-  retryButtonHandler = async () => {
+  retryButtonHandler = () => {
     setRefreshing(true);
-    await fetchListings(
-      userLocation,
-      distance,
-      selectedTags,
-      selectedConditions,
-      selectedTransactions,
-      selectedCurrency,
-      setListings,
-      setIsLoading,
-      setRefreshing
-    );
+    fetchListingsAsync();
   };
 
   /**
@@ -218,10 +197,28 @@ const HomeScreen = ({ route }) => {
    * @returns {void}
    * @description Initiates the refresh action by setting the refreshing state, and if the user location is available, it triggers fetching listings. If the user location is not available, it attempts to retrieve the user's location before fetching listings.
    */
-  const onRefresh = React.useCallback(async () => {
+  const onRefresh = React.useCallback(() => {
     console.log('refreshing...');
     setRefreshing(true);
-    if (userLocation)
+    getUserLocation();
+  }, [userLocation]);
+
+  /**
+   * Asynchronously fetches listings.
+   *
+   * @function
+   * @name fetchListingsAsync
+   * @memberof HomeScreen
+   * @returns {Function} - Callback function
+   * @description
+   * Retrieves the listings asynchronously based on the state of the home screen
+   *
+   * @throws {Error} Throws an error if there is an issue during the fetching process.
+   * @async
+   * @see {@link fetchListings} - The original function for fetching listings.
+   */
+  const fetchListingsAsync = useCallback(async () => {
+    try {
       await fetchListings(
         userLocation,
         distance,
@@ -233,38 +230,11 @@ const HomeScreen = ({ route }) => {
         setIsLoading,
         setRefreshing
       );
-    else getUserLocation();
-  }, []);
-
-  /**
-   *
-   * @function
-   * @name debouncedFetchListings
-   * @memberof HomeScreen
-   * @returns {Function} - Debounced function
-   * @description Creates a version of the `fetchListings` function using the `debounce` utility. This debounced function introduces a delay of 1000 milliseconds before invoking `fetchListings`, ensuring that rapid consecutive calls to `debouncedFetchListings` within the specified delay period will result in a single execution of `fetchListings`.
-   */
-  const debouncedFetchListings = useCallback(
-    debounce(async () => {
-      try {
-        await fetchListings(
-          userLocation,
-          distance,
-          selectedTags,
-          selectedConditions,
-          selectedTransactions,
-          selectedCurrency,
-          setListings,
-          setIsLoading,
-          setRefreshing
-        );
-      } catch (error) {
-        console.error(error);
-        alert(error);
-      }
-    }, 1000),
-    [userLocation, distance, selectedTags, selectedConditions]
-  );
+    } catch (error) {
+      console.error(error);
+      alert(error);
+    }
+  }, [userLocation, distance, selectedTags, selectedConditions]);
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
@@ -293,51 +263,18 @@ const HomeScreen = ({ route }) => {
 
   // this will run after you have location
   useEffect(() => {
-    if (userLocation)
-      debouncedFetchListings(
-        userLocation,
-        distance,
-        selectedTags,
-        selectedConditions,
-        selectedTransactions,
-        selectedCurrency,
-        setListings,
-        setIsLoading,
-        setRefreshing
-      );
+    if (userLocation) fetchListingsAsync();
   }, [userLocation]);
 
   useEffect(() => {
-    if (userLocation && !isDrawerOpen)
-      debouncedFetchListings(
-        userLocation,
-        distance,
-        selectedTags,
-        selectedConditions,
-        selectedTransactions,
-        selectedCurrency,
-        setListings,
-        setIsLoading,
-        setRefreshing
-      );
+    if (userLocation && !isDrawerOpen) fetchListingsAsync();
   }, [isDrawerOpen]);
 
   // This will run with refresh = true
   useEffect(() => {
     if (route.params?.refresh) {
       setRefreshing(true);
-      if (userLocation)
-        debouncedFetchListings(
-          userLocation,
-          distance,
-          selectedTags,
-          selectedConditions,
-          selectedTransactions,
-          selectedCurrency,
-          setListings,
-          setIsLoading,
-          setRefreshing
-        );
+      if (userLocation) fetchListingsAsync();
       else getUserLocation();
     }
   }, [route.params]);
@@ -453,7 +390,7 @@ const HomeScreen = ({ route }) => {
         setSelectedConditions={setSelectedConditions}
         setSelectedTransactions={setSelectedTransactions}
         setSelectedCurrency={setSelectedCurrency}
-        fetchListings={debouncedFetchListings}
+        fetchListings={fetchListingsAsync}
         handleMenuPress={toggleTagDrawer}
         setIsDrawerOpen={setIsDrawerOpen}
         isDrawerOpen={isDrawerOpen}
