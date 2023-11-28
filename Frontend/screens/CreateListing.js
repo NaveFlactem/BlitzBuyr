@@ -309,10 +309,18 @@ class CreateListing extends Component {
    * @memberof CreateListing
    */
   handleCameraPick = async () => {
-    const result = await ImagePicker.launchCameraAsync();
+    try {
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: false,
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      this.processImage(result); // Process the first (and only) image
+      if (!result.cancelled) {
+        this.processImage(result);
+      }
+    } catch (error) {
+      console.error('Error taking photo:', error);
     }
 
     this.hideModal();

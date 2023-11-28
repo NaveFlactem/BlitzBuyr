@@ -23,6 +23,7 @@ import {
   conditionOptions,
   tagOptions,
   transactionOptions,
+  currencies,
 } from '../constants/ListingData.js';
 import { screenWidth } from '../constants/ScreenDimensions.js';
 import { getThemedStyles } from '../constants/Styles';
@@ -54,9 +55,11 @@ const HomeScreen = ({ route }) => {
   const [tagsData, setTagsData] = useState([...tagOptions]);
   const [conditions, setConditionsData] = useState([...conditionOptions]);
   const [transactions, setTransactionsData] = useState([...transactionOptions]);
+  const [currencyData, setCurrencyData] = useState([...currencies]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedConditions, setSelectedConditions] = useState([]);
   const [selectedTransactions, setSelectedTransactions] = useState([]);
+  const [selectedCurrency, setSelectedCurrency] = useState('USD'); 
   const translateX = useSharedValue(-screenWidth);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [distance, setDistance] = useState(30);
@@ -98,6 +101,7 @@ const HomeScreen = ({ route }) => {
    */
 
   const handleLocationPress = () => {
+    console.log('Location pressed, toggling slider visibility...', isLocationSliderVisible);
     if (isLocationSliderVisible) {
       locationSliderHeight.value = withTiming(-100, { duration: 100 }); // Hide slider
       setIsLocationSliderVisible(false);
@@ -107,6 +111,7 @@ const HomeScreen = ({ route }) => {
         selectedTags,
         selectedConditions,
         selectedTransactions,
+        selectedCurrency,
         setListings,
         setIsLoading,
         setRefreshing
@@ -114,6 +119,7 @@ const HomeScreen = ({ route }) => {
     } else {
       locationSliderHeight.value = withTiming(0, { duration: 100 }); // Show slider
       setIsLocationSliderVisible(true);
+      console.log('location slider', isLocationSliderVisible);
     }
   };
 
@@ -180,6 +186,7 @@ const HomeScreen = ({ route }) => {
       selectedTags,
       selectedConditions,
       selectedTransactions,
+      selectedCurrency,
       setListings,
       setIsLoading,
       setRefreshing
@@ -218,12 +225,14 @@ const HomeScreen = ({ route }) => {
         selectedTags,
         selectedConditions,
         selectedTransactions,
+        selectedCurrency,
         setListings,
         setIsLoading,
         setRefreshing
       );
     else getUserLocation();
   }, []);
+
   /**
    *
    * @function
@@ -240,6 +249,7 @@ const HomeScreen = ({ route }) => {
         selectedTags,
         selectedConditions,
         selectedTransactions,
+        selectedCurrency,
         setListings,
         setIsLoading,
         setRefreshing
@@ -282,6 +292,7 @@ const HomeScreen = ({ route }) => {
         selectedTags,
         selectedConditions,
         selectedTransactions,
+        selectedCurrency,
         setListings,
         setIsLoading,
         setRefreshing
@@ -296,6 +307,7 @@ const HomeScreen = ({ route }) => {
         selectedTags,
         selectedConditions,
         selectedTransactions,
+        selectedCurrency,
         setListings,
         setIsLoading,
         setRefreshing
@@ -313,6 +325,7 @@ const HomeScreen = ({ route }) => {
           selectedTags,
           selectedConditions,
           selectedTransactions,
+          selectedCurrency, 
           setListings,
           setIsLoading,
           setRefreshing
@@ -419,15 +432,19 @@ const HomeScreen = ({ route }) => {
         tagsData={tagsData}
         conditions={conditions}
         transactions={transactions}
+        currencyData={currencyData}
         setTagsData={setTagsData}
         setConditionsData={setConditionsData}
         setTransactionsData={setTransactionsData}
+        setCurrencyData={setCurrencyData}
         selectedTags={selectedTags}
         selectedConditions={selectedConditions}
         selectedTransactions={selectedTransactions}
+        selectedCurrency={selectedCurrency}
         setSelectedTags={setSelectedTags}
         setSelectedConditions={setSelectedConditions}
         setSelectedTransactions={setSelectedTransactions}
+        setSelectedCurrency={setSelectedCurrency}
         fetchListings={fetchListings}
         handleMenuPress={toggleTagDrawer}
         setIsDrawerOpen={setIsDrawerOpen}

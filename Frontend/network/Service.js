@@ -34,6 +34,7 @@ const fetchListings = async (
   selectedTags,
   selectedConditions,
   selectedTransactions,
+  selectedCurrency,
   setListings,
   setIsLoading,
   setRefreshing,
@@ -57,6 +58,7 @@ const fetchListings = async (
     console.log('Tags:', mergedTags);
     console.log('Conditions:', mergedConditions);
     console.log('Transactions:', mergedTransactions);
+    console.log('Currency:', selectedCurrency);
 
     const username = encodeURIComponent(
       await SecureStore.getItemAsync('username')
@@ -66,6 +68,7 @@ const fetchListings = async (
     if (selectedTags.length > 0) fetchUrl += `&${mergedTags}`;
     if (selectedTransactions.length > 0) fetchUrl += `&${mergedTransactions}`;
     if (selectedConditions.length > 0) fetchUrl += `&${mergedConditions}`;
+    if (selectedCurrency !== '') fetchUrl += `&currency=${selectedCurrency}`;
     console.log(fetchUrl);
     const response = await fetch(fetchUrl, {
       method: 'GET',
