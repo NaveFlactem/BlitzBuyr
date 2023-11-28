@@ -6,14 +6,13 @@ import {
 } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   Image,
   Linking,
   SafeAreaView,
   StatusBar,
-  StyleSheet,
   Text,
   TouchableOpacity,
   useWindowDimensions,
@@ -23,21 +22,22 @@ import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { TabBar, TabView } from 'react-native-tab-view';
 import Listing from '../components/Listing.js';
 import BouncePulse from '../components/visuals/BouncePulse.js';
+import { useThemeContext } from '../components/visuals/ThemeProvider.js';
 import { serverIp } from '../config.js';
-import Colors, { CustomLightTheme, CustomDarkTheme } from '../constants/Colors';
+import Colors from '../constants/Colors';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
+import { getThemedStyles } from '../constants/Styles.js';
 import {
   calculateTimeSince,
   getLocationWithRetry,
 } from '../constants/Utilities';
 import useBackButtonHandler from '../hooks/DisableBackButton.js';
+import { saveContactInfo } from '../network/Service';
 import {
   clearStoredCredentials,
   getStoredPassword,
   getStoredUsername,
 } from './auth/Authenticate.js';
-import { useThemeContext } from '../components/visuals/ThemeProvider.js';
-import { getThemedStyles } from '../constants/Styles.js';
 
 const ListingsRoute = ({ onPressListing, data, text, styles }) => (
   <View style={{ flex: 1 }}>
@@ -79,8 +79,8 @@ const handleContactClick = async (key, data) => {
       try {
         await Linking.openURL(
           `mailto:${data}?subject=${encodeURIComponent(
-            'BlitzBuyr',
-          )}&body=${encodeURIComponent('')}`,
+            'BlitzBuyr'
+          )}&body=${encodeURIComponent('')}`
         );
       } catch (error) {
         console.error('Error opening email:', error);
@@ -104,7 +104,7 @@ const handleContactClick = async (key, data) => {
               onPress: () => Linking.openURL(`sms:${phoneNumber}`),
             },
           ],
-          { cancelable: true },
+          { cancelable: true }
         );
       } catch (error) {
         console.error('Error opening phoneNumber:', error);
@@ -130,11 +130,31 @@ const handleContactClick = async (key, data) => {
 const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
   const styles = getThemedStyles(useThemeContext().theme).ProfileScreen;
   let displayValues = Object.values(contactInfo).some(
-    (value) => value.data.length > 0,
+    (value) => value.data.length > 0
   );
 
   if (!selfProfile && Object.values(contactInfo).every((value) => value.hidden))
     displayValues = false;
+
+  // hide settings
+  const updateHidden = useCallback(
+    async (key) => {
+      const newContactInfo = {
+        ...contactInfo,
+        [key]: {
+          ...contactInfo[key],
+          hidden: !contactInfo[key].hidden,
+        },
+      };
+      setContactInfo(newContactInfo);
+      saveContactInfo(newContactInfo);
+
+      console.log(
+        `${newContactInfo[key].hidden ? 'Hidden' : 'Unhidden'} ${key}`
+      );
+    },
+    [contactInfo]
+  );
 
   return (
     <View style={styles.contactInfoContainer}>
@@ -177,16 +197,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                         {/* Visibility */}
                         {selfProfile && (
                           <TouchableOpacity
-                            onPress={() => {
-                              setContactInfo((prevContactInfo) => ({
-                                ...prevContactInfo,
-                                [key]: {
-                                  ...prevContactInfo[key],
-                                  hidden: !prevContactInfo[key].hidden,
-                                  // This is where the contact hidden table should be changed
-                                },
-                              }));
-                            }}
+                            onPress={() => updateHidden(key)}
                             style={[
                               styles.socialIcons,
                               { opacity: value.hidden ? 0.25 : 1.0 },
@@ -255,7 +266,7 @@ function ProfileScreen({ navigation, route }) {
       const username = getStoredUsername();
       if (route.params?.username) {
         console.log(
-          `Setting username to passed username ${route.params.username}`,
+          `Setting username to passed username ${route.params.username}`
         );
         // we navigated with a username passed as param (i.e. clicking someone's profile)
         setProfileName(route.params.username);
@@ -312,7 +323,7 @@ function ProfileScreen({ navigation, route }) {
     console.log(`Fetching profile info for ${username}`);
     try {
       const fetchUrl = `${serverIp}/api/profile?username=${encodeURIComponent(
-        getStoredUsername(),
+        getStoredUsername()
       )}&password=${getStoredPassword()}&profileName=${username}`;
       console.log(fetchUrl);
       const profileResponse = await fetch(fetchUrl, {
@@ -338,7 +349,7 @@ function ProfileScreen({ navigation, route }) {
           }),
           userRatings: profileData.ratings.reduce(
             (acc, rating) => ({ ...acc, ...rating }),
-            {},
+            {}
           ),
           profilePicture: profileData.profilePicture,
           coverPicture: profileData.coverPicture,
@@ -355,8 +366,8 @@ function ProfileScreen({ navigation, route }) {
 
         const initialLikeStates = Object.fromEntries(
           [...profileData.likedListings, ...profileData.userListings].map(
-            (listing) => [listing.ListingId, listing.liked],
-          ),
+            (listing) => [listing.ListingId, listing.liked]
+          )
         );
         setLikeStates(initialLikeStates);
 
@@ -365,7 +376,7 @@ function ProfileScreen({ navigation, route }) {
         console.log(
           'Error fetching profile:',
           profileResponse.status,
-          profileData,
+          profileData
         );
       }
     } catch (err) {
@@ -403,7 +414,7 @@ function ProfileScreen({ navigation, route }) {
     console.log(
       `${
         newLikeStates[listingId] ? 'Likered' : 'UnLikered'
-      } listing ID ${listingId}`,
+      } listing ID ${listingId}`
     );
   };
 
@@ -801,10 +812,10 @@ function ProfileScreen({ navigation, route }) {
                 setProfileInfo((prevProfileInfo) => ({
                   ...prevProfileInfo,
                   likedListings: prevProfileInfo.likedListings.filter(
-                    (item) => item.ListingId !== listingId,
+                    (item) => item.ListingId !== listingId
                   ),
                   userListings: prevProfileInfo.userListings.filter(
-                    (item) => item.ListingId !== listingId,
+                    (item) => item.ListingId !== listingId
                   ),
                 }));
 
