@@ -17,7 +17,7 @@ import { useThemeContext } from '../components/visuals/ThemeProvider.js';
 
 const SettingsPage = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
-
+  const { theme } = useThemeContext();
   const { toggleTheme } = useThemeContext();
 
   const styles = getThemedStyles(useThemeContext().theme).SettingsScreen;
@@ -141,7 +141,7 @@ const SettingsPage = ({ navigation }) => {
                           bottom: 15,
                           left: 15,
                         }}
-                        value={switchItemsState[item]}
+                        value={theme === 'light' ? false : true}
                       />
                     </View>
                   )}
