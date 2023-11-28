@@ -135,7 +135,7 @@ const SettingsPage = ({ navigation }) => {
                             ...prevState,
                             [item]: !prevState[item],
                           }));
-                          toggleTheme
+                          toggleParams[item]();
                         }}
                         style={{
                           bottom: 15,
