@@ -12,10 +12,15 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
-import { screenWidth } from '../constants/ScreenDimensions.js';
+import { getThemedStyles } from '../constants/Styles.js';
+import { useThemeContext } from '../components/visuals/ThemeProvider.js';
 
 const SettingsPage = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
+
+  const { toggleTheme } = useThemeContext();
+
+  const styles = getThemedStyles(useThemeContext().theme).SettingsScreen;
 
   const titles = {
     'Account Settings': ['Change Password', 'Account Info', 'Contact Info'],
@@ -29,6 +34,10 @@ const SettingsPage = ({ navigation }) => {
   //     prevContactInfo: contactInfo,
   //   }
   // }
+
+  const toggleParams = {
+    'Dark Mode' : toggleTheme,
+  }
   
   const [switchItemsState, setSwitchItemsState] = useState({
     'Dark Mode': false,
@@ -126,6 +135,7 @@ const SettingsPage = ({ navigation }) => {
                             ...prevState,
                             [item]: !prevState[item],
                           }));
+                          toggleTheme
                         }}
                         style={{
                           bottom: 15,
@@ -149,80 +159,5 @@ const SettingsPage = ({ navigation }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  scrollViewContent: {
-    flexGrow: 1,
-  },
-  topBar: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    backgroundColor: Colors.BB_darkRedPurple,
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderBottomWidth: 2,
-    borderBottomColor: Colors.black,
-  },
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  headerText: {
-    color: Colors.BB_bone,
-    fontSize: 27.5,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-  },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  sectionHeaderContainer: {
-    paddingTop: 20,
-    paddingBottom: 5,
-    paddingHorizontal: 5,
-  },
-  header: {
-    color: Colors.BB_darkRedPurple,
-    fontWeight: 'bold',
-    fontSize: 20,
-  },
-  saveSettings: {
-    color: Colors.BB_bone,
-    fontSize: 15,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-  },
-  settingsItems: {
-    paddingVertical: 20,
-    paddingHorizontal: 5,
-    fontWeight: 'bold',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  lastItem: {
-    borderBottomWidth: 0,
-  },
-  itemText: {
-    fontWeight: '500',
-    color: Colors.BB_darkerRedPurple,
-    fontSize: 15,
-  },
-  thinHorizontalBar: {
-    height: 1,
-    backgroundColor: Colors.BB_darkRedPurple,
-    width: '100%',
-    borderRadius: 5,
-  },
-  horizontalBar: {
-    height: 15,
-    backgroundColor: Colors.BB_darkRedPurple,
-    width: '100%',
-    borderRadius: 5,
-  },
-});
 
 export default SettingsPage;

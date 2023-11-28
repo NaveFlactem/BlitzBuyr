@@ -251,28 +251,78 @@ export const getThemedStyles = (theme) => {
     },
     ////////////////////////////////////////////
     SettingsScreen: {
+      scrollViewContent: {
+        flexGrow: 1,
+      },
+      topBar: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        backgroundColor: Colors.BB_darkRedPurple,
+        paddingHorizontal: 15,
+        paddingVertical: 15,
+        borderBottomWidth: 2,
+        borderBottomColor: Colors.black,
+      },
       container: {
         flex: 1,
+        paddingHorizontal: 20,
+      },
+      headerText: {
+        color: Colors.BB_bone,
+        fontSize: 27.5,
+        fontWeight: 'bold',
+        alignSelf: 'center',
+      },
+      iconContainer: {
+        width: 40,
+        height: 40,
         alignItems: 'center',
         justifyContent: 'center',
       },
-      text: {
-        fontSize: 24,
+      sectionHeaderContainer: {
+        paddingTop: 20,
+        paddingBottom: 5,
+        paddingHorizontal: 5,
       },
-    },
-    circleContainer: {
-      top: 15,
-      left: 15,
-    },
-    circle: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      backgroundColor: 'white', 
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderWidth: 1,
-      borderColor: 'black', 
+      header: {
+        color: Colors.BB_darkRedPurple,
+        fontWeight: 'bold',
+        fontSize: 20,
+      },
+      saveSettings: {
+        color: Colors.BB_bone,
+        fontSize: 15,
+        fontWeight: 'bold',
+        alignSelf: 'center',
+      },
+      settingsItems: {
+        paddingVertical: 20,
+        paddingHorizontal: 5,
+        fontWeight: 'bold',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      },
+      lastItem: {
+        borderBottomWidth: 0,
+      },
+      itemText: {
+        fontWeight: '500',
+        color: Colors.BB_darkerRedPurple,
+        fontSize: 15,
+      },
+      thinHorizontalBar: {
+        height: 1,
+        backgroundColor: Colors.BB_darkRedPurple,
+        width: '100%',
+        borderRadius: 5,
+      },
+      horizontalBar: {
+        height: 15,
+        backgroundColor: Colors.BB_darkRedPurple,
+        width: '100%',
+        borderRadius: 5,
+      },
     },
     ////////////////////////////////////////////
   });
