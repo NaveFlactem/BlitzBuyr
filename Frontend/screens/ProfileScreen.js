@@ -231,7 +231,6 @@ function ProfileScreen({ navigation, route }) {
   const [LikeStates, setLikeStates] = useState({});
   const styles = getThemedStyles(useThemeContext().theme).ProfileScreen;
   
-
   // Use states for contact info
   const [contactInfo, setContactInfo] = useState({
     phone: { data: '2132149702', hidden: false, icon: 'phone' },
