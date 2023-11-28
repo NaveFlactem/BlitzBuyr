@@ -10,7 +10,7 @@ export const getThemedStyles = (theme) => {
     themeColors = CustomDarkTheme.colors;
   }
   return StyleSheet.create({
-    ////////////////////////////////////////////
+    // PROFILE SCREEN //
     ProfileScreen: {
       contactInfoContainer: {
         flexDirection: 'column',
@@ -103,7 +103,8 @@ export const getThemedStyles = (theme) => {
         borderColor: 'black', 
       },
     },
-    ////////////////////////////////////////////
+
+    // HOME SCREEN // 
     HomeScreen: {
       screenfield: {
         flex: 1,
@@ -133,7 +134,8 @@ export const getThemedStyles = (theme) => {
         position: 'absolute',
       },
     },
-    ////////////////////////////////////////////
+
+    // TOP BAR HOME //
     TopBarHome: {
       logo: {
         height: 0.1 * screenWidth,
@@ -213,7 +215,8 @@ export const getThemedStyles = (theme) => {
         zIndex: 10,
       },
     },
-    ////////////////////////////////////////////
+    
+    // RATING SCREEN //
     RatingScreen: {
       container: {
         flex: 1,
@@ -249,7 +252,8 @@ export const getThemedStyles = (theme) => {
         left: '7%',
       },
     },
-    ////////////////////////////////////////////
+
+    // SETTINGS SCREEN //
     SettingsScreen: {
       scrollViewContent: {
         flexGrow: 1,
@@ -324,7 +328,7 @@ export const getThemedStyles = (theme) => {
         borderRadius: 5,
       },
     },
-    ////////////////////////////////////////////
+    
   });
 };
 
