@@ -59,7 +59,7 @@ const HomeScreen = ({ route }) => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedConditions, setSelectedConditions] = useState([]);
   const [selectedTransactions, setSelectedTransactions] = useState([]);
-  const [selectedCurrency, setSelectedCurrency] = useState('USD');
+  const [selectedCurrency, setSelectedCurrency] = useState('');
   const translateX = useSharedValue(-screenWidth);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [distance, setDistance] = useState(30);
@@ -246,17 +246,22 @@ const HomeScreen = ({ route }) => {
    */
   const debouncedFetchListings = useCallback(
     debounce(async () => {
-      await fetchListings(
-        userLocation,
-        distance,
-        selectedTags,
-        selectedConditions,
-        selectedTransactions,
-        selectedCurrency,
-        setListings,
-        setIsLoading,
-        setRefreshing
-      );
+      try {
+        await fetchListings(
+          userLocation,
+          distance,
+          selectedTags,
+          selectedConditions,
+          selectedTransactions,
+          selectedCurrency,
+          setListings,
+          setIsLoading,
+          setRefreshing
+        );
+      } catch (error) {
+        console.error(error);
+        alert(error);
+      }
     }, 1000),
     [userLocation, distance, selectedTags, selectedConditions]
   );
