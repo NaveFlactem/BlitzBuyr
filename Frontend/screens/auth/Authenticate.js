@@ -5,6 +5,8 @@ import { StyleSheet, View } from 'react-native';
 import { serverIp } from '../../config.js';
 import Colors from '../../constants/Colors';
 import * as Settings from '../../hooks/UserSettings.js';
+import { useThemeContext } from '../../components/visuals/ThemeProvider.js';
+import { getThemedStyles } from '../../constants/Styles.js';
 
 const assetsToPreload = [
   require('../../assets/blitzbuyr_name_logo.png'),
@@ -102,17 +104,10 @@ const AuthenticateScreen = ({ navigation }) => {
     checkStoredCredentials();
   }, []);
 
+  const styles = getThemedStyles(useThemeContext().theme).Authentication;
+
   return <View style={styles.container}></View>;
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.BB_darkRedPurple,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 export {
   getStoredUsername,

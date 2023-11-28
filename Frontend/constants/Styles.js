@@ -1724,6 +1724,212 @@ export const getThemedStyles = (theme) => {
       },
     },
     ////////////////////////////////////////////
+    LoginScreen: {
+      container: {
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: Colors.BB_darkRedPurple,
+        alignItems: 'center',
+        padding: 16,
+      },
+      loginContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Colors.BB_pink,
+        padding: 20,
+        borderRadius: 10,
+        ...Platform.select({
+          ios: {
+            shadowColor: Colors.black,
+            shadowOffset: { width: 1, height: 1 },
+            shadowOpacity: 1,
+            shadowRadius: 2,
+          },
+          android: {
+            elevation: 10,
+          },
+        }),
+      },
+      input: {
+        width: screenWidth * 0.45,
+        height: screenHeight * 0.04,
+        borderColor: 'gray',
+        marginBottom: 10,
+        paddingHorizontal: 10,
+        borderRadius: 7,
+        backgroundColor: 'white',
+        ...Platform.select({
+          ios: {
+            shadowColor: Colors.black,
+            shadowOffset: { width: 1, height: 1 },
+            shadowOpacity: 1,
+            shadowRadius: 2,
+          },
+          android: {
+            elevation: 10,
+          },
+        }),
+      },
+      loginTextContainer: {
+        width: screenWidth * 0.2,
+        backgroundColor: Colors.BB_rangeYellow,
+        padding: 5,
+        width: '100%',
+        borderColor: Colors.black,
+        borderRadius: 10,
+        fontWeight: 'bold',
+        shadowColor: 'black',
+        ...Platform.select({
+          ios: {
+            shadowColor: Colors.black,
+            shadowOffset: { width: 1, height: 1 },
+            shadowOpacity: 1,
+            shadowRadius: 2,
+          },
+          android: {
+            elevation: 10,
+          },
+        }),
+      },
+      loginText: {
+        fontSize: 15,
+      },
+      createAccountTextContainer: {
+        marginTop: 10,
+        padding: 5,
+        borderColor: Colors.black,
+        borderRadius: 10,
+        color: 'black',
+        fontWeight: 'bold',
+      },
+      createAccountText: {
+        fontSize: 8,
+        color: 'white',
+      },
+      logo: {
+        width: 100,
+        height: 100,
+        marginBottom: 20,
+        shadowRadius: 3,
+        ...Platform.select({
+          ios: {
+            shadowColor: Colors.black,
+            shadowOffset: { width: 1, height: 1 },
+            shadowOpacity: 1,
+            shadowRadius: 2,
+          },
+          android: {
+            elevation: 10,
+          },
+        }),
+      },
+    },
+    CreateAccountScreen: {
+      container: {
+        flex: 1,
+        justifyContent: 'center',
+        backgroundColor: Colors.BB_darkRedPurple,
+        alignItems: 'center',
+        padding: 16,
+      },
+      loginContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Colors.BB_pink,
+        width: screenWidth * 0.8,
+        height: 'auto',
+        padding: 20,
+        borderRadius: 10,
+        ...Platform.select({
+          ios: {
+            shadowColor: Colors.black,
+            shadowOffset: { width: 1, height: 1 },
+            shadowOpacity: 1,
+            shadowRadius: 2,
+          },
+          android: {
+            elevation: 10,
+          },
+        }),
+      },
+      title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 16,
+      },
+      createAccountTextContainer: {
+        width: screenWidth * 0.4,
+        backgroundColor: Colors.BB_rangeYellow,
+        padding: 5,
+        borderColor: Colors.black,
+        borderRadius: 10,
+        fontWeight: 'bold',
+        ...Platform.select({
+          ios: {
+            shadowColor: Colors.black,
+            shadowOffset: { width: 1, height: 1 },
+            shadowOpacity: 1,
+            shadowRadius: 2,
+          },
+          android: {
+            elevation: 10,
+          },
+        }),
+      },
+      createAccountText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        alignSelf: 'center',
+      },
+      loginTextContainer: {
+        marginTop: 10,
+        padding: 5,
+        borderColor: Colors.black,
+        borderRadius: 10,
+        color: 'black',
+        fontWeight: 'bold',
+      },
+      loginText: {
+        fontSize: 10,
+        color: 'white',
+      },
+      input: {
+        width: screenWidth * 0.75,
+        height: screenHeight * 0.03,
+        borderColor: 'gray',
+        marginBottom: 10,
+        paddingHorizontal: 10,
+        borderRadius: 7,
+        backgroundColor: 'white',
+      },
+      logo: {
+        width: 100,
+        height: 100,
+        marginBottom: 20,
+      },
+      passwordRequirements: {
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        width: screenWidth * 0.4,
+        height: 'auto',
+        marginBottom: 15,
+      },
+      passwordRequirement: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        fontSize: 12,
+        color: 'white',
+      },
+    },
+    ////////////////////////////////////////////
+    Authentication: {
+      container: {
+        flex: 1,
+        backgroundColor: Colors.BB_darkRedPurple,
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+    },
   });
 };
 
