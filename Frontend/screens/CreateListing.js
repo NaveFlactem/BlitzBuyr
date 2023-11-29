@@ -1,6 +1,7 @@
 /**
  * @namespace CreateListing
  */
+import { serverIp } from '../config';
 import * as FileSystem from 'expo-file-system';
 import { Image } from 'expo-image';
 import * as ImageManipulator from 'expo-image-manipulator';
