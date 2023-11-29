@@ -53,11 +53,7 @@ const EditContactInfo = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView
-      style={
-        styles.safeareaview
-      }
-    >
+    <SafeAreaView style={styles.safeareaview}>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         stickyHeaderIndices={[0]}
@@ -134,6 +130,29 @@ const EditContactInfo = ({ navigation, route }) => {
               <View style={styles.thinHorizontalBar}></View>
             </View>
           ))}
+        </View>
+        <View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        >
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              setLoading(true);
+              try {
+                saveContactInfo(contactInfo);
+
+                navigation.setOptions({
+                  params: { profileName: getStoredUsername() },
+                });
+                navigation.navigate('SettingsScreen');
+              } catch (error) {
+                alert(error);
+              }
+              navigation.navigate('BottomNavOverlay');
+            }}
+          >
+            <Text style={styles.buttonText}>Apply Changes</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>

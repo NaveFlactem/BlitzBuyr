@@ -423,34 +423,21 @@ const EditProfileScreen = ({ navigation, route }) => {
               style={{
                 alignItems: 'center',
                 justifyContent: 'center',
-                paddingVertical: 10,
+                paddingVertical: 20,
+                flexDirection: 'row',
               }}
             >
+              <View style={styles.button}>
+                <TouchableOpacity>
+                  <Text style={styles.buttonText}> Save Changes </Text>
+                </TouchableOpacity>
+              </View>
               {/* DELETE ACCOUNT BUTTON */}
               <TouchableOpacity
                 onPress={() => setConfirmationModalVisible(true)}
-                style={{
-                  width: 130,
-                  height: 50,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: Colors.BB_darkRedPurple,
-                  borderRadius: 10,
-                  borderWidth: 2,
-                  borderColor: Colors.black,
-                  marginVertical: 20,
-                }}
+                style={styles.button}
               >
-                <Text
-                  style={{
-                    fontStyle: 'normal',
-                    color: Colors.white,
-                    fontWeight: '500',
-                    fontSize: 15,
-                  }}
-                >
-                  Delete Account
-                </Text>
+                <Text style={styles.buttonText}>Delete Account</Text>
               </TouchableOpacity>
             </View>
           </View>
