@@ -344,7 +344,7 @@ function ProfileScreen({ navigation, route }) {
         method: 'GET',
       });
       const profileData = await profileResponse.json();
-      console.log(profileData);
+      // console.log(profileData);
 
       if (profileResponse.status <= 201) {
         setProfileInfo({
@@ -391,7 +391,7 @@ function ProfileScreen({ navigation, route }) {
         console.log(
           'Error fetching profile:',
           profileResponse.status,
-          profileData
+          // profileData
         );
       }
     } catch (err) {

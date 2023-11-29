@@ -478,6 +478,28 @@ export const getThemedStyles = (theme) => {
       },
     },
     ////////////////////////////////////////////
+    ChangePassword: {
+      scrollViewContent: {
+        flexGrow: 1,
+      },
+      topBar: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        backgroundColor: themeColors.BB_darkRedPurple,
+        paddingHorizontal: 15,
+        paddingVertical: 15,
+        borderBottomWidth: 2,
+        borderBottomColor: themeColors.black,
+      },
+      headerText: {
+        color: themeColors.BB_bone,
+        fontSize: 27.5,
+        fontWeight: 'bold',
+        alignSelf: 'center',
+      },
+    },
+    ////////////////////////////////////////////
     NoWifi: {
       noWifiContainer: {
         flex: 1,
