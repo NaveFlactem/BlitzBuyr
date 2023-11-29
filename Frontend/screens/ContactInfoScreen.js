@@ -30,6 +30,7 @@ import { getThemedStyles } from '../constants/Styles';
  * @returns {JSX.Element} A screen for editing a users contact information.
  */
 const EditContactInfo = ({ navigation, route }) => {
+  const { theme } = useThemeContext();
   const styles = getThemedStyles(useThemeContext().theme).ContactInfoScreen;
   const [loading, setLoading] = useState(true);
   const [contactInfo, setContactInfo] = useState(route.params?.prevContactInfo);
@@ -53,10 +54,9 @@ const EditContactInfo = ({ navigation, route }) => {
 
   return (
     <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: Colors.BB_bone,
-      }}
+      style={
+        styles.safeareaview
+      }
     >
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
@@ -118,7 +118,7 @@ const EditContactInfo = ({ navigation, route }) => {
                   <AntDesign
                     name={contactInfo[key].icon}
                     size={24}
-                    color="black"
+                    color={theme === 'dark' ? Colors.BB_violet : Colors.BB_bone}
                     style={{ paddingRight: 10 }}
                   />
                   <Text style={styles.title}>

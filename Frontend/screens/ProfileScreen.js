@@ -203,6 +203,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                           <Text
                             style={[
                               styles.socialText,
+                              theme === 'light' ? { color: "black" } : { color: Colors.BB_bone },
                               { opacity: value.hidden ? 0.25 : 1.0 },
                             ]}
                           >
@@ -439,7 +440,7 @@ function ProfileScreen({ navigation, route }) {
     <TabBar
       {...props}
       indicatorStyle={{
-        backgroundColor: Colors.BB_darkRedPurple,
+        backgroundColor: theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet,
       }}
       style={{
         backgroundColor: Colors.bone,
@@ -449,7 +450,7 @@ function ProfileScreen({ navigation, route }) {
         <Text
           style={[
             {
-              color: Colors.BB_darkRedPurple,
+              color: theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet,
               fontWeight: 'bold',
               fontSize: 14,
               textAlign: 'center',
@@ -858,7 +859,7 @@ function ProfileScreen({ navigation, route }) {
           <MaterialIcons
             name="settings"
             size={30}
-            color={Colors.BB_darkerRedPurple}
+            color={theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet}
           />
         </View>
       </TouchableOpacity>
@@ -866,4 +867,4 @@ function ProfileScreen({ navigation, route }) {
   );
 }
 
-export default memo(ProfileScreen);
+export default ProfileScreen;

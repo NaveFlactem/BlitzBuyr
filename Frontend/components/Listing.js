@@ -60,13 +60,14 @@ function getDistance(lat1, lon1, lat2, lon2) {
 }
 
 const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
+  const { theme } = useThemeContext();
   return (
     <React.Fragment>
       <TouchableOpacity onPress={onLikePress} style={styles.likeButton}>
         <MaterialCommunityIcons
           name="heart"
           size={50}
-          color={isLiked ? 'red' : 'black'}
+          color={isLiked ? theme === 'dark' ? Colors.BB_violet : Colors.red : Colors.black}
         />
       </TouchableOpacity>
     </React.Fragment>

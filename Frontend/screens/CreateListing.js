@@ -574,7 +574,7 @@ const handleLibraryPick = async () => {
               ref={titleInput}
               style={[
                 styles.input,
-                isTitleInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
+              isTitleInvalid ? theme === 'dark' ? { borderColor: Colors.BB_violet, borderWidth: 1} : { borderColor: Colors.BB_red, borderWidth: 1 } : null,
                 theme === 'dark' ? { backgroundColor: '#2d2d30', color: Colors.white } : null,
               ]}
               value={title}
@@ -613,8 +613,7 @@ const handleLibraryPick = async () => {
                 styles.multilineInput,
                 (textAlign = 'left'),
                 isDescriptionInvalid
-                  ? { borderColor: 'red', borderWidth: 1 }
-                  : null,
+                  ? theme === 'dark' ? { borderColor: Colors.BB_violet, borderWidth: 1} : { borderColor: Colors.BB_red, borderWidth: 1 } : null,
                   theme === 'dark' ? { backgroundColor: '#2d2d30', color: Colors.white } : null,
 
               ]}
@@ -700,8 +699,7 @@ const handleLibraryPick = async () => {
                   styles.input,
                   { width: '94.5%', marginLeft: -101.5 },
                   isPriceInvalid
-                    ? { borderColor: 'red', borderWidth: 1 }
-                    : null,
+                    ? theme === 'dark' ? { borderColor: Colors.BB_violet, borderWidth: 1} : { borderColor: Colors.BB_red, borderWidth: 1 } : null,
                   theme === 'dark' ? { backgroundColor: '#2d2d30', color: Colors.white } : null,
                 ]}
                 value={price}
@@ -797,7 +795,7 @@ const handleLibraryPick = async () => {
             <View
               style={[
                 styles.imageField,
-                isImageInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
+                isImageInvalid ? theme === 'dark' ? { borderColor: Colors.BB_violet, borderWidth: 1} : { borderColor: Colors.BB_red, borderWidth: 1 } : null,
                 theme === 'dark' ? { backgroundColor: '#2d2d30'} : null,
               ]}
             >
@@ -814,7 +812,7 @@ const handleLibraryPick = async () => {
             <ScrollView
               style={[
                 styles.tagField,
-                isTagInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
+                isTagInvalid ? theme === 'dark' ? { borderColor: Colors.BB_violet, borderWidth: 1} : { borderColor: Colors.BB_red, borderWidth: 1 } : null,
                 theme === 'dark' ? { backgroundColor: '#2d2d30'} : null,
               ]}
             >

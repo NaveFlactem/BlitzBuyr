@@ -111,6 +111,8 @@ const SettingsScreen = ({ navigation, route }) => {
 
         {/* CONTENT */}
         <View style={styles.container}>
+        <View style={styles.settingsContent} >
+
           {/* EACH VIEW IS CREATED FROM EACH KEY IN THE titles DICTIONARY */}
           {Object.entries(titles).map(([section, items]) => (
             <View key={section}>
@@ -136,6 +138,7 @@ const SettingsScreen = ({ navigation, route }) => {
                         name="right"
                         size={15}
                         color={theme === "dark" ? Colors.BB_bone : Colors.BB_darkerRedPurple}
+                        style={{ right: 25 }}
                       />
                     </TouchableOpacity>
                   ) : (
@@ -149,7 +152,7 @@ const SettingsScreen = ({ navigation, route }) => {
                         justifyContent: 'space-between',
                       }}
                     >
-                      <Text style={styles.itemText}>{item}</Text>
+                      <Text style={[styles.itemText, {left: 20}]}>{item}</Text>
                       <Switch
                         trackColor={{
                           false: theme === "dark" ? Colors.BB_bone : Colors.gray,
@@ -165,7 +168,7 @@ const SettingsScreen = ({ navigation, route }) => {
                         }}
                         style={{
                           bottom: 15,
-                          left: 15,
+                          right: 10,
                         }}
                         value={switchItemsState[item]}
                       />
@@ -180,6 +183,7 @@ const SettingsScreen = ({ navigation, route }) => {
               <View style={styles.horizontalBar}></View>
             </View>
           ))}
+        </View>
         </View>
       </ScrollView>
     </SafeAreaView>
