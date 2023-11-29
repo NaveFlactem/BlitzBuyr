@@ -89,6 +89,7 @@ export async function likedNotification(likedListings) {
 }
 
 export const checkListingExpiration = async () => {
+  await Permissions.askAsync(Permissions.NOTIFICATIONS);
   try {
     const listingsResponse = await fetch(`${serverIp}/api/listings`, {
       method: 'GET',
