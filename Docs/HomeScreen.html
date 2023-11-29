@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Database - Documentation</title>
+    <title>HomeScreen - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -37,7 +37,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Database</h1>
+    <h1 class="page-title">HomeScreen</h1>
     
 
     
@@ -49,6 +49,13 @@
 
 <header>
     
+        <h2>
+        
+            Namespace
+        
+        </h2>
+        
+    
 </header>
 
 <article>
@@ -57,16 +64,28 @@
         
             
 
+
+    
+
+    <h4 class="name" id="HomeScreen">HomeScreen</h4>
+
+    
+
+
+
+
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Sqlite3 database for storing and managing data in a localized and embedded manner within a Node.js App.</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><ul>
+<li>HomeScreen is the home screen of the application</li>
+</ul></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Backend_db.js.html">Backend/db.js</a>, <a href="Backend_db.js.html#line1">line 1</a>
+        <a href="Frontend_screens_HomeScreen.js.html">Frontend/screens/HomeScreen.js</a>, <a href="Frontend_screens_HomeScreen.js.html#line32">line 32</a>
     </li></ul></dd>
     
 
@@ -104,11 +123,32 @@
 
 
 
-            
-                <div class="description usertext"><p>Sqlite3 database for storing and managing data in a localized and embedded manner within a Node.js App.</p></div>
-            
 
-            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         
         </div>
     
@@ -130,7 +170,7 @@
 
         
             
-<h4 class="name" id="~accountsTable"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>accountsTable<span class="type-signature"> :string</span></h4>
+<h4 class="name" id=".HomeScreen"><span class="type-signature type-signature-static">(static) </span>HomeScreen<span class="type-signature"></span></h4>
 
 
 
@@ -139,13 +179,13 @@
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>SQL table definition for the Accounts table.</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>Renders the home screen displaying listings and various filters. Manages state for refreshing listings, network connectivity, loading state, user location, tag options, condition options, transaction options, selected tags, conditions, and transactions. Uses ref for swiper navigation and shared values for animation. Handles drawer visibility, distance settings, and location slider visibility.</p></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Backend_db.js.html">Backend/db.js</a>, <a href="Backend_db.js.html#line151">line 151</a>
+        <a href="Frontend_screens_HomeScreen.js.html">Frontend/screens/HomeScreen.js</a>, <a href="Frontend_screens_HomeScreen.js.html#line38">line 38</a>
     </li></ul></dd>
     
 
@@ -185,801 +225,10 @@
 
 
 <div class="description usertext">
-    <p>SQL table definition for the Accounts table.</p>
+    <p>Renders the home screen displaying listings and various filters. Manages state for refreshing listings, network connectivity, loading state, user location, tag options, condition options, transaction options, selected tags, conditions, and transactions. Uses ref for swiper navigation and shared values for animation. Handles drawer visibility, distance settings, and location slider visibility.</p>
 </div>
 
 
-
-    <h5 class="h5-types">Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">string</span>
-
-
-
-        </li>
-    </ul>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="~contactInfo"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>contactInfo<span class="type-signature"> :string</span></h4>
-
-
-
-
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>SQL table definition for the ContactInfo table.</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Backend_db.js.html">Backend/db.js</a>, <a href="Backend_db.js.html#line261">line 261</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    <p>SQL table definition for the ContactInfo table.</p>
-</div>
-
-
-
-    <h5 class="h5-types">Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">string</span>
-
-
-
-        </li>
-    </ul>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="~images"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>images<span class="type-signature"> :string</span></h4>
-
-
-
-
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>SQL table definition for the Images table.</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Backend_db.js.html">Backend/db.js</a>, <a href="Backend_db.js.html#line215">line 215</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    <p>SQL table definition for the Images table.</p>
-</div>
-
-
-
-    <h5 class="h5-types">Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">string</span>
-
-
-
-        </li>
-    </ul>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="~likes"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>likes<span class="type-signature"> :string</span></h4>
-
-
-
-
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>SQL table definition for the Likes table.</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Backend_db.js.html">Backend/db.js</a>, <a href="Backend_db.js.html#line299">line 299</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    <p>SQL table definition for the Likes table.</p>
-</div>
-
-
-
-    <h5 class="h5-types">Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">string</span>
-
-
-
-        </li>
-    </ul>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="~listingsTable"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>listingsTable<span class="type-signature"> :string</span></h4>
-
-
-
-
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>SQL table definition for the Listings table.</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Backend_db.js.html">Backend/db.js</a>, <a href="Backend_db.js.html#line164">line 164</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    <p>SQL table definition for the Listings table.</p>
-</div>
-
-
-
-    <h5 class="h5-types">Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">string</span>
-
-
-
-        </li>
-    </ul>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="~profile"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>profile<span class="type-signature"> :string</span></h4>
-
-
-
-
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>SQL table definition for the Profiles table.</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Backend_db.js.html">Backend/db.js</a>, <a href="Backend_db.js.html#line246">line 246</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    <p>SQL table definition for the Profiles table.</p>
-</div>
-
-
-
-    <h5 class="h5-types">Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">string</span>
-
-
-
-        </li>
-    </ul>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="~rating"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>rating<span class="type-signature"> :string</span></h4>
-
-
-
-
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>SQL table definition for the Ratings table.</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Backend_db.js.html">Backend/db.js</a>, <a href="Backend_db.js.html#line230">line 230</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    <p>SQL table definition for the Ratings table.</p>
-</div>
-
-
-
-    <h5 class="h5-types">Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">string</span>
-
-
-
-        </li>
-    </ul>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="~settings"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>settings<span class="type-signature"> :string</span></h4>
-
-
-
-
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>SQL table definition for the Settings table.</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Backend_db.js.html">Backend/db.js</a>, <a href="Backend_db.js.html#line280">line 280</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    <p>SQL table definition for the Settings table.</p>
-</div>
-
-
-
-    <h5 class="h5-types">Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">string</span>
-
-
-
-        </li>
-    </ul>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="~tables"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>tables<span class="type-signature"> :Array.&lt;Object></span></h4>
-
-
-
-
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Array containing table information.</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Backend_db.js.html">Backend/db.js</a>, <a href="Backend_db.js.html#line313">line 313</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    <p>Array containing table information.</p>
-</div>
-
-
-
-    <h5 class="h5-types">Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Array.&lt;Object></span>
-
-
-
-        </li>
-    </ul>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="~tagDetails"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>tagDetails<span class="type-signature"> :string</span></h4>
-
-
-
-
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>SQL table definition for the Tags table.</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Backend_db.js.html">Backend/db.js</a>, <a href="Backend_db.js.html#line188">line 188</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    <p>SQL table definition for the Tags table.</p>
-</div>
-
-
-
-    <h5 class="h5-types">Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">string</span>
-
-
-
-        </li>
-    </ul>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="~tagTable"><span class="type-signature type-signature-inner, constant">(inner, constant) </span>tagTable<span class="type-signature"> :string</span></h4>
-
-
-
-
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>SQL table definition for the ListingTags table.</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Backend_db.js.html">Backend/db.js</a>, <a href="Backend_db.js.html#line199">line 199</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description usertext">
-    <p>SQL table definition for the ListingTags table.</p>
-</div>
-
-
-
-    <h5 class="h5-types">Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">string</span>
-
-
-
-        </li>
-    </ul>
 
 
 
@@ -997,7 +246,7 @@
 
     
 
-    <h4 class="name" id="~areTableDefinitionsEqual"><span class="type-signature type-signature-inner">(inner) </span>areTableDefinitionsEqual<span class="signature">(definition1, definition2)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    <h4 class="name" id=".debouncedFetchListings"><span class="type-signature type-signature-static">(static) </span>debouncedFetchListings<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
 
     
 
@@ -1007,13 +256,228 @@
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Checks if two table definitions are equal.</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>Creates a version of the <code>fetchListings</code> function using the <code>debounce</code> utility. This debounced function introduces a delay of 1000 milliseconds before invoking <code>fetchListings</code>, ensuring that rapid consecutive calls to <code>debouncedFetchListings</code> within the specified delay period will result in a single execution of <code>fetchListings</code>.</p></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Backend_db.js.html">Backend/db.js</a>, <a href="Backend_db.js.html#line38">line 38</a>
+        <a href="Frontend_screens_HomeScreen.js.html">Frontend/screens/HomeScreen.js</a>, <a href="Frontend_screens_HomeScreen.js.html#line227">line 227</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>Debounced function</li>
+</ul>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">function</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".getUserLocation"><span class="type-signature type-signature-static">(static) </span>getUserLocation<span class="signature">()</span><span class="type-signature"> &rarr; {void}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Retrieves the user's location using <code>getLocationWithRetry</code> with retry mechanism. If successful, it extracts the latitude and longitude and sets the user's location in the component state. If an error occurs, it logs the error and requires appropriate error handling.
+Error processing incomplete</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_HomeScreen.js.html">Frontend/screens/HomeScreen.js</a>, <a href="Frontend_screens_HomeScreen.js.html#line145">line 145</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">void</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".handleInnerScrolling"><span class="type-signature type-signature-static">(static) </span>handleInnerScrolling<span class="signature">(swiperRef)</span><span class="type-signature"> &rarr; {void}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Disables scrolling on the swiper component by setting its native property 'scrollEnabled' to 'false'.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_HomeScreen.js.html">Frontend/screens/HomeScreen.js</a>, <a href="Frontend_screens_HomeScreen.js.html#line120">line 120</a>
     </li></ul></dd>
     
 
@@ -1085,13 +549,13 @@
 
         <tr>
             
-                <td class="name"><code>definition1</code></td>
+                <td class="name"><code>swiperRef</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">React.RefObject.&lt;ScrollView></span>
 
 
 
@@ -1102,31 +566,7 @@
 
             
 
-            <td class="description last"><p>The first table definition.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>definition2</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The second table definition.</p></td>
+            <td class="description last"><p>Reference to the swiper ScrollView component.</p></td>
         </tr>
 
     
@@ -1151,10 +591,6 @@
 <h5 class="h5-returns">Returns:</h5>
 
         
-<div class="param-desc">
-    <p>True if the table definitions are equal, false otherwise.</p>
-</div>
-
 
 
 <dl class="param-type">
@@ -1163,7 +599,7 @@
     </dt>
     <dd>
         
-<span class="param-type">boolean</span>
+<span class="param-type">void</span>
 
 
 
@@ -1179,7 +615,7 @@
 
     
 
-    <h4 class="name" id="~createOrUpdateTable"><span class="type-signature type-signature-inner">(inner) </span>createOrUpdateTable<span class="signature">(db, tableDefinition)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".handleInnerScrollingEnd"><span class="type-signature type-signature-static">(static) </span>handleInnerScrollingEnd<span class="signature">(swiperRef)</span><span class="type-signature"> &rarr; {void}</span></h4>
 
     
 
@@ -1189,13 +625,13 @@
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Creates or updates a table in the database based on the provided table definition.</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>Enables scrolling on the swiper component by setting its native property 'scrollEnabled' to 'true'.</p></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Backend_db.js.html">Backend/db.js</a>, <a href="Backend_db.js.html#line55">line 55</a>
+        <a href="Frontend_screens_HomeScreen.js.html">Frontend/screens/HomeScreen.js</a>, <a href="Frontend_screens_HomeScreen.js.html#line132">line 132</a>
     </li></ul></dd>
     
 
@@ -1267,7 +703,369 @@
 
         <tr>
             
-                <td class="name"><code>db</code></td>
+                <td class="name"><code>swiperRef</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">React.RefObject.&lt;ScrollView></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Reference to the swiper ScrollView component.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">void</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".handleLocationPress"><span class="type-signature type-signature-static">(static) </span>handleLocationPress<span class="signature">()</span><span class="type-signature"> &rarr; {void}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Controls the visibility of the location slider by toggling its state between visible and hidden. If the slider is currently visible, it initiates an animation to hide it and fetches listings. If hidden, it triggers an animation to display it.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_HomeScreen.js.html">Frontend/screens/HomeScreen.js</a>, <a href="Frontend_screens_HomeScreen.js.html#line91">line 91</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">void</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".onRefresh"><span class="type-signature type-signature-static">(static) </span>onRefresh<span class="signature">()</span><span class="type-signature"> &rarr; {void}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Initiates the refresh action by setting the refreshing state, and if the user location is available, it triggers fetching listings. If the user location is not available, it attempts to retrieve the user's location before fetching listings.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_HomeScreen.js.html">Frontend/screens/HomeScreen.js</a>, <a href="Frontend_screens_HomeScreen.js.html#line203">line 203</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">void</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".onScroll"><span class="type-signature type-signature-static">(static) </span>onScroll<span class="signature">(event)</span><span class="type-signature"> &rarr; {void}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Updates the shared value <code>scrollY</code> with the current vertical scroll position obtained.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_HomeScreen.js.html">Frontend/screens/HomeScreen.js</a>, <a href="Frontend_screens_HomeScreen.js.html#line189">line 189</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>event</code></td>
             
 
             <td class="type">
@@ -1284,251 +1082,7 @@
 
             
 
-            <td class="description last"><p>The SQLite database object.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>tableDefinition</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The SQL table definition.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="~createTables"><span class="type-signature type-signature-inner">(inner) </span>createTables<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Loops through globally initialized list that holds all SQL create statements.</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Backend_db.js.html">Backend/db.js</a>, <a href="Backend_db.js.html#line331">line 331</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="~extractColumnsFromDefinition"><span class="type-signature type-signature-inner">(inner) </span>extractColumnsFromDefinition<span class="signature">(definition)</span><span class="type-signature"> &rarr; {string}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-    
-    <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Extracts columns from the given table definition.</p></li></ul></dd>
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Backend_db.js.html">Backend/db.js</a>, <a href="Backend_db.js.html#line24">line 24</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5 class="h5-parameters">Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>definition</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>The SQL table definition.</p></td>
+            <td class="description last"><p>The scroll event object.</p></td>
         </tr>
 
     
@@ -1553,10 +1107,6 @@
 <h5 class="h5-returns">Returns:</h5>
 
         
-<div class="param-desc">
-    <p>The normalized column definitions.</p>
-</div>
-
 
 
 <dl class="param-type">
@@ -1565,7 +1115,215 @@
     </dt>
     <dd>
         
-<span class="param-type">string</span>
+<span class="param-type">void</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".retryButtonHandler"><span class="type-signature type-signature-static">(static) </span>retryButtonHandler<span class="signature">()</span><span class="type-signature"> &rarr; {void}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Initiates the refreshing state, triggering a fetch of listings data when a retry action is performed. Used typically in response to a failed or interrupted data fetch operation to attempt fetching listings again.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_HomeScreen.js.html">Frontend/screens/HomeScreen.js</a>, <a href="Frontend_screens_HomeScreen.js.html#line167">line 167</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">void</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".toggleTagDrawer"><span class="type-signature type-signature-static">(static) </span>toggleTagDrawer<span class="signature">()</span><span class="type-signature"> &rarr; {void}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Controls the visibility of the tag drawer by toggling its state between open and closed. If the drawer is currently open, it animates its closure by sliding it to the left. If closed, it animates its opening by sliding it to the right.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_HomeScreen.js.html">Frontend/screens/HomeScreen.js</a>, <a href="Frontend_screens_HomeScreen.js.html#line67">line 67</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">void</span>
 
 
 

@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>Frontend/screens/auth/CreateAccountScreen.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -37,97 +37,375 @@
 
 <div id="main">
     
+    <h1 class="page-title">Frontend/screens/auth/CreateAccountScreen.js</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace CreateAccount
+ */
+import { Entypo, MaterialIcons } from '@expo/vector-icons';
+import React, { useRef, useState } from 'react';
+import {
+  Alert,
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { serverIp } from '../../config.js';
+import Colors from '../../constants/Colors.js';
 
+/**
+ * Component for creating a new account.
+ * @function
+ * @name CreateAccountScreen
+ * @param {Object} props - React component props.
+ * @param {Object} props.navigation - Navigation object for navigating between screens.
+ * @returns {JSX.Element} The create account screen component.
+ * @memberof CreateAccount
+ */
+const CreateAccountScreen = ({ navigation }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const isValidPassword = useRef(false);
+  const hasCharacter = useRef(false);
+  const hasLowercase = useRef(false);
+  const hasUppercase = useRef(false);
+  const hasNumber = useRef(false);
+  const hasSpecialCharacter = useRef(false);
 
-    <section class="package">
-        <h3> </h3>		
+  /**
+   * Handles the creation of a new account.
+   * @function
+   * @name handleCreateAccount
+   * @returns {Promise&lt;void>}
+   * @memberof CreateAccount
+   */
+  const handleCreateAccount = async () => {
+    if (password !== confirmPassword) {
+      Alert.alert(
+        'Password Mismatch',
+        'Password and Confirm Password do not match.'
+      );
+      return;
+    }
+
+    // Check if email is valid
+    const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+    if (!emailPattern.test(email)) {
+      Alert.alert('Invalid Email', 'Please enter a valid email address.');
+      return;
+    }
+
+    if (
+      name === '' ||
+      password === '' ||
+      confirmPassword === '' ||
+      email === ''
+    ) {
+      Alert.alert('Invalid Input', 'Please fill out all fields.');
+      return;
+    }
+
+    if (name.length > 20) {
+      Alert.alert('Invalid Input', 'Name must be less than 20 characters.');
+      return;
+    }
+
+    if (name.length &lt; 4) {
+      Alert.alert('Invalid Input', 'Name must be at least 4 characters.');
+      return;
+    }
+
+    if (password.length &lt; 8) {
+      Alert.alert('Invalid Input', 'Password must be at least 8 characters.');
+      return;
+    }
+
+    if (isValidPassword.current === false) {
+      Alert.alert(
+        'Invalid Input',
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
+      );
+      return;
+    }
+
+    const registrationData = {
+      username: name,
+      password: password,
+      confirmPassword: confirmPassword,
+      email: email,
+    };
+
+    const response = await fetch(`${serverIp}/api/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(registrationData),
+    });
+
+    let responseData = await response.json();
+
+    if (response.status &lt;= 201) {
+      console.log('Response data:', responseData);
+      navigation.navigate('Login');
+    } else {
+      Alert.alert(responseData.error);
+    }
+  };
+
+  /**
+   * Handles the change in the password input.
+   * @function
+   * @name handlePasswordChange
+   * @param {string} text - The input text.
+   * @returns {void}
+   * @memberof CreateAccount
+   */
+  const handlePasswordChange = (text) => {
+    setPassword(text);
+
+    // Password validation criteria
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&amp;])[A-Za-z\d@$!%*?&amp;.~`]{8,}$/;
+
+    const hasCharacterValue = text.length >= 8;
+    const hasLowercaseValue = /[a-z]/.test(text);
+    const hasUppercaseValue = /[A-Z]/.test(text);
+    const hasNumberValue = /\d/.test(text);
+    const hasSpecialCharacterValue = /[@$!%*?&amp;.~`,/-]/.test(text);
+
+    hasCharacter.current = hasCharacterValue;
+    hasLowercase.current = hasLowercaseValue;
+    hasUppercase.current = hasUppercaseValue;
+    hasNumber.current = hasNumberValue;
+    hasSpecialCharacter.current = hasSpecialCharacterValue;
+
+    // Check if the password meets all criteria
+    isValidPassword.current =
+      hasCharacterValue &amp;&amp;
+      hasLowercaseValue &amp;&amp;
+      hasUppercaseValue &amp;&amp;
+      hasNumberValue &amp;&amp;
+      hasSpecialCharacterValue;
+  };
+
+  return (
+    &lt;View style={styles.container}>
+      &lt;View style={styles.loginContainer}>
+        &lt;Image
+          source={require('../../assets/icon_transparent.png')} // Provide the correct path to your logo image
+          style={styles.logo} // Define a style for your logo
+        />
+        &lt;TextInput
+          style={styles.input}
+          placeholder="Name"
+          value={name}
+          onChangeText={(text) => setName(text)}
+        />
+        &lt;TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          keyboardType="email-address"
+        />
+        &lt;TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry={true}
+          value={password}
+          onChangeText={(text) => {
+            setPassword(text);
+            handlePasswordChange(text);
+          }}
+        />
+        &lt;TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          secureTextEntry={true}
+          value={confirmPassword}
+          onChangeText={(text) => setConfirmPassword(text)}
+        />
+
+        &lt;View style={styles.passwordRequirements}>
+          &lt;Text style={styles.passwordRequirement}>
+            {hasCharacter.current ? (
+              &lt;MaterialIcons name="check" size={16} color="green" />
+            ) : (
+              &lt;Entypo name="cross" size={16} color="red" />
+            )}{' '}
+            Has at least 8 Characters
+          &lt;/Text>
+          &lt;Text style={styles.passwordRequirement}>
+            {hasLowercase.current ? (
+              &lt;MaterialIcons name="check" size={16} color="green" />
+            ) : (
+              &lt;Entypo name="cross" size={16} color="red" />
+            )}{' '}
+            Has Lowercase Letter
+          &lt;/Text>
+          &lt;Text style={styles.passwordRequirement}>
+            {hasUppercase.current ? (
+              &lt;MaterialIcons name="check" size={16} color="green" />
+            ) : (
+              &lt;Entypo name="cross" size={16} color="red" />
+            )}{' '}
+            Uppercase
+          &lt;/Text>
+          &lt;Text style={styles.passwordRequirement}>
+            {hasNumber.current ? (
+              &lt;MaterialIcons name="check" size={16} color="green" />
+            ) : (
+              &lt;Entypo name="cross" size={16} color="red" />
+            )}{' '}
+            Number
+          &lt;/Text>
+          &lt;Text style={styles.passwordRequirement}>
+            {hasSpecialCharacter.current ? (
+              &lt;MaterialIcons name="check" size={16} color="green" />
+            ) : (
+              &lt;Entypo name="cross" size={16} color="red" />
+            )}{' '}
+            Special Character
+          &lt;/Text>
+        &lt;/View>
+
+        &lt;TouchableOpacity
+          onPress={handleCreateAccount}
+          style={styles.createAccountTextContainer}
+        >
+          &lt;Text style={styles.createAccountText}>Create Account&lt;/Text>
+        &lt;/TouchableOpacity>
+        &lt;TouchableOpacity
+          onPress={() => navigation.navigate('Login')}
+          style={styles.loginTextContainer}
+        >
+          &lt;Text style={styles.loginText}>Already have an Account? Login&lt;/Text>
+        &lt;/TouchableOpacity>
+      &lt;/View>
+    &lt;/View>
+  );
+};
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: Colors.BB_darkRedPurple,
+    alignItems: 'center',
+    padding: 16,
+  },
+  loginContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.BB_pink,
+    width: windowWidth * 0.8,
+    height: 'auto',
+    padding: 20,
+    borderRadius: 10,
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 1,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  createAccountTextContainer: {
+    width: windowWidth * 0.4,
+    backgroundColor: Colors.BB_rangeYellow,
+    padding: 5,
+    borderColor: Colors.black,
+    borderRadius: 10,
+    fontWeight: 'bold',
+    ...Platform.select({
+      ios: {
+        shadowColor: Colors.black,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 1,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
+  },
+  createAccountText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+  },
+  loginTextContainer: {
+    marginTop: 10,
+    padding: 5,
+    borderColor: Colors.black,
+    borderRadius: 10,
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  loginText: {
+    fontSize: 10,
+    color: 'white',
+  },
+  input: {
+    width: windowWidth * 0.75,
+    height: windowHeight * 0.03,
+    borderColor: 'gray',
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    borderRadius: 7,
+    backgroundColor: 'white',
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+  },
+  passwordRequirements: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    width: windowWidth * 0.4,
+    height: 'auto',
+    marginBottom: 15,
+  },
+  passwordRequirement: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    fontSize: 12,
+    color: 'white',
+  },
+});
+
+export default CreateAccountScreen;
+</code></pre>
+        </article>
     </section>
-
-
-
-
-
-
-
-
-
-    
-
-
-
-    <section class="readme usertext">
-        <article><h1><img src="http://blitzbuyr.lol/img/blitzbuyr_name_logo.png" alt="BlitzBuyr Logo" width="300"></h1>
-<h1>BlitzBuyr Documentation</h1>
-<h2>Table of Contents</h2>
-<ul>
-<li><a href="#backend">Backend</a>
-<ul>
-<li><a href="#server">Server</a></li>
-<li><a href="#account-management">Account Management</a></li>
-<li><a href="#listing-management">Listing Management</a></li>
-</ul>
-</li>
-<li><a href="#frontend">Frontend</a>
-<ul>
-<li><a href="#createaccountscreen">CreateAccountScreen</a></li>
-<li><a href="#login-screen">Login Screen</a></li>
-<li><a href="#homescreen">HomeScreen</a></li>
-<li><a href="#profilescreen">ProfileScreen</a></li>
-</ul>
-</li>
-</ul>
-<h2>Backend</h2>
-<p>The backend of BlitzBuyr is built using Node.js and Express, with SQLite3 as the database. It serves as the core of the application, handling API requests and managing user accounts and listings.</p>
-<h3>Server</h3>
-<p>The server handles routing and middleware, providing the foundation for API endpoints. Key components include:</p>
-<ul>
-<li>Conglomerating the different routes into express.</li>
-<li>Request logging middleware.</li>
-<li>Static routes for our JSDoc documentation.</li>
-<li>Starting the Express server.</li>
-</ul>
-<p><a href="Backend_server.js.html">View <code>server.js</code> source code</a></p>
-<h3>Account Management</h3>
-<p>BlitzBuyr's account management system allows users to register, login, and authenticate their accounts. Key components include:</p>
-<ul>
-<li>GET request endpoint for retrieving a list of accounts.</li>
-<li>POST request endpoint for user registration.</li>
-<li>POST request endpoint for user login and authentication.</li>
-</ul>
-<p><a href="Backend_account.js.html">View <code>account.js</code> source code</a></p>
-<h3>Listing Management</h3>
-<p>Listings are a fundamental part of BlitzBuyr, and the backend provides endpoints for listing creation and retrieval. Key components include:</p>
-<ul>
-<li>POST request endpoint for creating a new listing.</li>
-<li>GET request endpoint for retrieving a list of all listings.</li>
-</ul>
-<p><a href="Backend_listing.js.html">View <code>listing.js</code> source code</a></p>
-<h2>Frontend</h2>
-<p>The frontend of BlitzBuyr is built using React Native and provides a user-friendly interface for interacting with the application. It includes various screens for creating accounts, logging in, browsing listings, and managing user profiles.</p>
-<h3>CreateAccountScreen</h3>
-<p>The Create Account screen allows users to create a new account, providing essential account information such as username, password, email, etc.</p>
-<p><a href="Frontend_CreateAccountScreen.js.html">View <code>CreateAccountScreen.js</code> source code</a></p>
-<h3>Login Screen</h3>
-<p>The Login screen enables users to log into their accounts, requiring username and password authentication.</p>
-<p><a href="Frontend_LoginScreen.js.html">View <code>LoginScreen.js</code> source code</a></p>
-<h3>HomeScreen</h3>
-<p>The Home screen is the primary user interface for browsing listings, interacting with listings, and discovering new items for sale.</p>
-<p><a href="Frontend_HomeScreen.js.html">View <code>HomeScreen.js</code> source code</a></p>
-<h3>ProfileScreen</h3>
-<p>The Profile screen allows users to manage their profiles, view their listings, and interact with other users.</p>
-<p>Each of these screens plays a vital role in delivering a seamless user experience within the BlitzBuyr application.</p>
-<p><a href="Frontend_ProfileScreen.js.html">View <code>ProfileScreen.js</code> source code</a></p>
-<h2>Conclusion</h2>
-<p>This documentation serves as a reference for developers working on the BlitzBuyr project, as well as any interested in our workflow or codebase, outlining the structure and key components of both the backend and frontend.</p></article>
-    </section>
-
-
 
 
 

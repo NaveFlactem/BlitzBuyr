@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>Frontend/screens/RatingScreen.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -37,97 +37,166 @@
 
 <div id="main">
     
+    <h1 class="page-title">Frontend/screens/RatingScreen.js</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace Rating
+ * @description - RatingScreen is a screen that allows users to rate another user
+ *
+ */
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { Button, Image, Text, TouchableOpacity, View } from 'react-native'; // Import the Button component
+import { useThemeContext } from '../components/visuals/ThemeProvider.js';
+import { serverIp } from '../config.js';
+import { getThemedStyles } from '../constants/Styles.js';
+import { getStoredUsername } from './auth/Authenticate.js';
 
+/**
+ * @function
+ * @name RatingScreen
+ * @memberof Rating
+ * @param {Object} navigation - The navigation object used to navigate between screens.
+ * @param {Object} route - Information about the current route.
+ * @returns {void}
+ * @description - A screen that allows users to rate a listing.
+ *
+ */
 
-    <section class="package">
-        <h3> </h3>		
+const RatingScreen = ({ navigation, route }) => {
+  const styles = getThemedStyles(useThemeContext().theme).RatingScreen;
+  const [selectedRating, setSelectedRating] = useState(0);
+  console.log(route.params);
+
+  /**
+   * @function
+   * @memberof Rating
+   * @param {number} value - The value containing the rating
+   * @returns {void}
+   * @description Handles the selection of a rating value.  Allows the rating to be deducted by half if selected again.
+   *                - If the value matches the current selectedRating, decreases the selectedRating by 0.5 thus allowing for half ratings
+   *                - If the value differs from the current selectedRating, sets the selectedRating to the provided value.
+   */
+
+  const handleRating = (value) => {
+    if (selectedRating === value) {
+      setSelectedRating(selectedRating - 0.5);
+    } else {
+      setSelectedRating(value);
+    }
+  };
+
+  /**
+   * @function
+   * @name handleSubmitRating
+   * @memberof Rating
+   * @returns {void}
+   * @description Handles the submission of a rating to the backend API.
+   *              Sends a POST request to the backend API
+   *              Handles the response from the backend
+   *              Logs errors if there's an issue while submitting the rating.
+   */
+
+  const handleSubmitRating = () => {
+    const ratingPayload = {
+      username: getStoredUsername(),
+      userRated: route.params.username,
+      rating: selectedRating,
+    };
+
+    // Make a POST request to your backend API to submit the rating
+    fetch(`${serverIp}/api/rate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(ratingPayload),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data); // Handle the response from the backend
+        // show some indicator that the rating was successful
+
+        // then we go back
+        navigation.goBack();
+      })
+      .catch((error) => {
+        console.error('Error submitting rating:', error);
+      });
+  };
+
+  /**
+   * @function
+   * @name renderStars
+   * @memberof Rating
+   * @returns {Array&lt;JSX.Element>} Returns an array of JSX elements representing star icons for rating.
+   * @description Dynamically generates an array of star icons based on the selected rating.
+   *              Uses TouchableOpacity components to allow the user to press their desirred rating.
+   *              Renders star icons filled, half-filled, or outlined based on the selected rating value.
+   *              Uses MaterialCommunityIcons for star visualization.
+   */
+
+  const renderStars = () => {
+    const starIcons = [];
+    for (let i = 1; i &lt;= 5; i++) {
+      starIcons.push(
+        &lt;TouchableOpacity
+          key={i}
+          style={[styles.starButton, i &lt; 5 &amp;&amp; styles.starMargin]}
+          onPress={() => handleRating(i)}
+        >
+          {i &lt;= selectedRating ? (
+            &lt;MaterialCommunityIcons name="star" size={60} color="black" />
+          ) : i - 0.5 === selectedRating ? (
+            &lt;MaterialCommunityIcons
+              name="star-half-full"
+              size={60}
+              color="black"
+            />
+          ) : (
+            &lt;MaterialCommunityIcons
+              name="star-outline"
+              size={60}
+              color="black"
+            />
+          )}
+        &lt;/TouchableOpacity>
+      );
+    }
+    return starIcons;
+  };
+
+  return (
+    &lt;View style={styles.container}>
+      &lt;TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.backButton}
+      >
+        &lt;MaterialCommunityIcons name="arrow-left" size={30} color="black" />
+      &lt;/TouchableOpacity>
+      &lt;Text style={styles.title}>Rate User {route.params.username}&lt;/Text>
+      &lt;Image
+        source={{ uri: route.params.profileInfo.profilePicture }}
+        style={styles.profilePic}
+      />
+      &lt;View style={styles.ratingContainer}>{renderStars()}&lt;/View>
+      &lt;Button title="Submit Rating" onPress={handleSubmitRating} />
+    &lt;/View>
+  );
+};
+
+export default RatingScreen;
+</code></pre>
+        </article>
     </section>
-
-
-
-
-
-
-
-
-
-    
-
-
-
-    <section class="readme usertext">
-        <article><h1><img src="http://blitzbuyr.lol/img/blitzbuyr_name_logo.png" alt="BlitzBuyr Logo" width="300"></h1>
-<h1>BlitzBuyr Documentation</h1>
-<h2>Table of Contents</h2>
-<ul>
-<li><a href="#backend">Backend</a>
-<ul>
-<li><a href="#server">Server</a></li>
-<li><a href="#account-management">Account Management</a></li>
-<li><a href="#listing-management">Listing Management</a></li>
-</ul>
-</li>
-<li><a href="#frontend">Frontend</a>
-<ul>
-<li><a href="#createaccountscreen">CreateAccountScreen</a></li>
-<li><a href="#login-screen">Login Screen</a></li>
-<li><a href="#homescreen">HomeScreen</a></li>
-<li><a href="#profilescreen">ProfileScreen</a></li>
-</ul>
-</li>
-</ul>
-<h2>Backend</h2>
-<p>The backend of BlitzBuyr is built using Node.js and Express, with SQLite3 as the database. It serves as the core of the application, handling API requests and managing user accounts and listings.</p>
-<h3>Server</h3>
-<p>The server handles routing and middleware, providing the foundation for API endpoints. Key components include:</p>
-<ul>
-<li>Conglomerating the different routes into express.</li>
-<li>Request logging middleware.</li>
-<li>Static routes for our JSDoc documentation.</li>
-<li>Starting the Express server.</li>
-</ul>
-<p><a href="Backend_server.js.html">View <code>server.js</code> source code</a></p>
-<h3>Account Management</h3>
-<p>BlitzBuyr's account management system allows users to register, login, and authenticate their accounts. Key components include:</p>
-<ul>
-<li>GET request endpoint for retrieving a list of accounts.</li>
-<li>POST request endpoint for user registration.</li>
-<li>POST request endpoint for user login and authentication.</li>
-</ul>
-<p><a href="Backend_account.js.html">View <code>account.js</code> source code</a></p>
-<h3>Listing Management</h3>
-<p>Listings are a fundamental part of BlitzBuyr, and the backend provides endpoints for listing creation and retrieval. Key components include:</p>
-<ul>
-<li>POST request endpoint for creating a new listing.</li>
-<li>GET request endpoint for retrieving a list of all listings.</li>
-</ul>
-<p><a href="Backend_listing.js.html">View <code>listing.js</code> source code</a></p>
-<h2>Frontend</h2>
-<p>The frontend of BlitzBuyr is built using React Native and provides a user-friendly interface for interacting with the application. It includes various screens for creating accounts, logging in, browsing listings, and managing user profiles.</p>
-<h3>CreateAccountScreen</h3>
-<p>The Create Account screen allows users to create a new account, providing essential account information such as username, password, email, etc.</p>
-<p><a href="Frontend_CreateAccountScreen.js.html">View <code>CreateAccountScreen.js</code> source code</a></p>
-<h3>Login Screen</h3>
-<p>The Login screen enables users to log into their accounts, requiring username and password authentication.</p>
-<p><a href="Frontend_LoginScreen.js.html">View <code>LoginScreen.js</code> source code</a></p>
-<h3>HomeScreen</h3>
-<p>The Home screen is the primary user interface for browsing listings, interacting with listings, and discovering new items for sale.</p>
-<p><a href="Frontend_HomeScreen.js.html">View <code>HomeScreen.js</code> source code</a></p>
-<h3>ProfileScreen</h3>
-<p>The Profile screen allows users to manage their profiles, view their listings, and interact with other users.</p>
-<p>Each of these screens plays a vital role in delivering a seamless user experience within the BlitzBuyr application.</p>
-<p><a href="Frontend_ProfileScreen.js.html">View <code>ProfileScreen.js</code> source code</a></p>
-<h2>Conclusion</h2>
-<p>This documentation serves as a reference for developers working on the BlitzBuyr project, as well as any interested in our workflow or codebase, outlining the structure and key components of both the backend and frontend.</p></article>
-    </section>
-
-
 
 
 

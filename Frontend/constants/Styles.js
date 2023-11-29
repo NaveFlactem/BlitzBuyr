@@ -34,7 +34,9 @@ export const getThemedStyles = (theme) => {
         fontWeight: 'bold',
         justifyContent: 'center',
         alignContent: 'center',
-        textAlign: 'center',
+        textAlign: 'left',
+        width: 250,
+        overflow: 'hidden',
       },
       noListingsText: {
         textAlign: 'center',
@@ -96,11 +98,11 @@ export const getThemedStyles = (theme) => {
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: 'white', 
+        backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
-        borderColor: 'black', 
+        borderColor: 'black',
       },
     },
     ////////////////////////////////////////////
@@ -140,14 +142,6 @@ export const getThemedStyles = (theme) => {
         width: 0.55 * screenWidth,
         top: 0.025 * screenHeight,
         right: 0.01 * screenWidth,
-        ...Platform.select({
-          ios: {
-            shadowColor: themeColors.black,
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.5,
-            shadowRadius: 5,
-          },
-        }),
       },
       menu: {
         position: 'absolute',
@@ -165,13 +159,9 @@ export const getThemedStyles = (theme) => {
         ...Platform.select({
           ios: {
             top: '28%',
-            shadowColor: themeColors.black,
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.5,
-            shadowRadius: 5,
           },
           android: {
-            top: '12%',
+            bottom: -15,
           },
         }),
       },
@@ -182,14 +172,7 @@ export const getThemedStyles = (theme) => {
         bottom: '8%',
         right: '5%',
         zIndex: 11,
-        ...Platform.select({
-          ios: {
-            shadowColor: themeColors.black,
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.5,
-            shadowRadius: 5,
-          },
-        }),
+
       },
       topBar: {
         position: 'absolute',
@@ -259,25 +242,24 @@ export const getThemedStyles = (theme) => {
       text: {
         fontSize: 24,
       },
-    },
-    circleContainer: {
-      top: 15,
-      left: 15,
-    },
-    circle: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      backgroundColor: 'white', 
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderWidth: 1,
-      borderColor: 'black', 
+      circleContainer: {
+        top: 15,
+        left: 15,
+      },
+      circle: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: 'black',
+      },
     },
     ////////////////////////////////////////////
   });
 };
-
 
 export const shapes = StyleSheet.create({
   circle: {

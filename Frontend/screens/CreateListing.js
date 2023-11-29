@@ -1,3 +1,6 @@
+/**
+ * @namespace CreateListing
+ */
 import * as FileSystem from 'expo-file-system';
 import { Image } from 'expo-image';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -6,6 +9,7 @@ import React, { Component, memo } from 'react';
 import {
   Alert,
   Modal,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -16,13 +20,14 @@ import {
 } from 'react-native';
 import DraggableGrid from 'react-native-draggable-grid';
 import RNPickerSelect from 'react-native-picker-select';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import BouncePulse from '../components/visuals/BouncePulse.js';
 import TopBar from '../components/visuals/TopBarGeneric.js';
-import { serverIp } from '../config.js';
 import Colors from '../constants/Colors';
 import { currencies, tagOptions } from '../constants/ListingData.js';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import { getLocationWithRetry } from '../constants/Utilities';
+import { handleListingCreation } from '../network/Service.js';
 import { getStoredUsername } from './auth/Authenticate.js';
 
 const blurhash = 'L5H2EC=PM+yV0g-mq.wG9c010J}I';
@@ -40,10 +45,11 @@ const MinorLoadingView = memo(() => (
 ));
 
 /**
- * @class
- * @classdesc - CreateListing is a screen that allows users to create a listing
+ * @function
+ * @name CreateListing
  * @extends Component
- * @returns Returns a CreateListing screen
+ * @returns {JSX.Element} A screen for creating a listing.
+ * @memberof CreateListing
  */
 class CreateListing extends Component {
   /**
@@ -52,6 +58,7 @@ class CreateListing extends Component {
    * @description - CreateListing constructor
    * @initialize state variables
    * @initialize refs
+   * @memberof CreateListing
    */
   constructor(props) {
     super(props);
@@ -78,6 +85,7 @@ class CreateListing extends Component {
       showCurrencyOptions: false,
       tagsData: [...tagOptions],
       currencies: [...currencies],
+      selectImageModalVisible: false,
     };
     this.titleInput = React.createRef();
     this.descriptionInput = React.createRef();
@@ -91,6 +99,7 @@ class CreateListing extends Component {
   /**
    * @function
    * @destructor - resets state variables
+   * @memberof CreateListing
    */
   destructor() {
     this.setState({
@@ -105,6 +114,7 @@ class CreateListing extends Component {
       selectedCurrencySymbol: '$',
       tagsData: [...tagOptions],
       currencies: [...currencies],
+      selectImageModalVisible: false,
       isTitleInvalid: false,
       isDescriptionInvalid: false,
       isPriceInvalid: false,
@@ -122,6 +132,7 @@ class CreateListing extends Component {
    * @checkValidListing - checks if the listing is valid
    * @stateUpdates - updates the states of the variables that check if the listing is valid
    * @returns Returns 0 if the listing is valid, -1 if the listing is invalid and 1 if no images are selected and 2 if too many images are selected and 3 if no tags are selected
+   * @memberof CreateListing
    */
   checkValidListing = () => {
     let stateUpdates = {
@@ -174,6 +185,7 @@ class CreateListing extends Component {
    * @function
    * @handleCreateListing - sends user inputted data to server and checks if it ran smoothly
    * @param {Object} formData - object that is sent to the server with user inputted values
+   * @memberof CreateListing
    */
   handleCreateListing = async () => {
     this.setState({ isLoading: true });
@@ -238,25 +250,14 @@ class CreateListing extends Component {
       formData.append('currency', selectedCurrency);
       formData.append('currencySymbol', selectedCurrencySymbol);
 
-      console.log('Listing Data:', formData);
-      const response = await fetch(`${serverIp}/api/createlisting`, {
-        method: 'POST',
-        body: formData,
-        timeout: 10000,
-      });
+      console.log('Create Listing Data:', formData);
 
-      if (response.status <= 201) {
-        const responseData = await response.json();
-        console.log('Listing created successfully:', responseData);
-        this.destructor();
-        this.props.navigation.navigate('Home', { refresh: true });
-      } else {
-        console.error('HTTP error! Status: ', response.status);
-        Alert.alert('Error', 'Failed to create listing.');
-      }
+      await handleListingCreation(formData);
+      this.destructor();
+      this.props.navigation.navigate('Home', { refresh: true });
     } catch (error) {
-      console.error('Error creating listing:', error);
-      Alert.alert('Error', 'An unexpected error occurred.');
+      console.error(error);
+      alert(error);
     } finally {
       this.setState({ isLoading: false });
     }
@@ -273,6 +274,7 @@ class CreateListing extends Component {
   /**
    * @function
    * @getPermissionAsync - asks for permission to access camera roll
+   * @memberof CreateListing
    */
   getPermissionAsync = async () => {
     // Camera roll Permission
@@ -292,46 +294,36 @@ class CreateListing extends Component {
 
   /**
    * @function
-   * @handleImagePick - allows the user to select images from their library or take photos with their camera
-   * @returns Returns the images that the user selected
+   * @showModal - shows the modal that contains camera/photo library options, changes the state of selectImageModalVisible to true
+   * @hideModal - hides the modal that contains camera/photo library options, changes the state of selectImageModalVisible to false
+   * @memberof CreateListing
    */
-  handleImagePick = () => {
-    Alert.alert(
-      'Select Image',
-      'Choose where to select images from:',
-      [
-        {
-          text: 'Camera',
-          onPress: () => this.handleCameraPick(),
-        },
-        {
-          text: 'Photo Library',
-          onPress: () => this.handleLibraryPick(),
-        },
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-      ],
-      { cancelable: true }
-    );
-  };
+  showModal = () => this.setState({ selectImageModalVisible: true });
+  hideModal = () => this.setState({ selectImageModalVisible: false });
 
   /**
    * @function
    * @handleCameraPick - allows the user to take photos with their camera
    * @returns Returns the photos that the user took
    * @description - allows the user to take photos with their camera
+   * @memberof CreateListing
    */
   handleCameraPick = async () => {
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: false,
-      quality: 1,
-    });
+    try {
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: false,
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      this.processImage(result);
+      if (!result.cancelled) {
+        this.processImage(result);
+      }
+    } catch (error) {
+      console.error('Error taking photo:', error);
     }
+
+    this.hideModal();
   };
 
   /**
@@ -339,6 +331,7 @@ class CreateListing extends Component {
    * @handleLibraryPick - allows the user to select images from their library
    * @returns Returns the images that the user selected
    * @description - allows the user to select images from their library
+   * @memberof CreateListing
    */
   handleLibraryPick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -349,9 +342,11 @@ class CreateListing extends Component {
       selectionLimit: 9 - this.state.data.length,
     });
 
-    if (!result.canceled) {
+    if (!result.canceled && result.assets) {
       this.processSelectedImages(result.assets);
     }
+
+    this.hideModal();
   };
 
   /**
@@ -360,6 +355,7 @@ class CreateListing extends Component {
    * @param {*} image
    * @returns Returns the image that the user selected
    * @description - processes the image that the user selected
+   * @memberof CreateListing
    */
   processImage = async (image) => {
     // Process a single image
@@ -375,6 +371,7 @@ class CreateListing extends Component {
    * @function
    * @processSelectedImages - processes the images that the user selected
    * @param {*} assets
+   * @memberof CreateListing
    */
   processSelectedImages = async (assets) => {
     // Process multiple images
@@ -390,7 +387,8 @@ class CreateListing extends Component {
    * @function
    * @manipulateImage - compresses the image that the user selected
    * @param {*} uri
-   * @returns
+   * @returns - an object with the name, key, and image file
+   * @memberof CreateListing
    */
   manipulateImage = async (uri) => {
     try {
@@ -429,6 +427,8 @@ class CreateListing extends Component {
    * @function
    * @handleDeletePhoto - deletes photos that the user no longer wants to post
    * @param {Number} index - index of the photo that the user wants to delete
+   * @returns - prompts a box to confirm, then removes the photo
+   * @memberof CreateListing
    */
   handleDeletePhoto = (index) => {
     Alert.alert('Delete Photo', 'Are you sure you want to delete this photo?', [
@@ -448,10 +448,11 @@ class CreateListing extends Component {
   };
 
   /**
-   *
-   * @param {*} item
+   * @param {*} item - contains image information
+   * @param {*} index - index of the item in the list of images
    * @description - renders the images that the user selected
    * @returns Returns the images that the user selected
+   * @memberof CreateListing
    */
   render_item(item, index) {
     return (
@@ -481,15 +482,16 @@ class CreateListing extends Component {
   /**
    * @function
    * @handleDragStart - disables scrolling when the user is dragging an image
+   * @description - basic handle function
+   * @memberof CreateListing
    */
-  handleDragStart = () => {
-    // When a drag starts, disable scrolling
-    this.setState({ isScrollEnabled: false });
-  };
+  handleDragStart = () => {};
 
   /**
    * @function
    * @handleDragRelease - enables scrolling when the user is done dragging an image
+   * @description - basic handle function
+   * @memberof CreateListing
    */
   handleDragRelease = (data) => {
     // When the drag is released, enable scrolling
@@ -498,9 +500,11 @@ class CreateListing extends Component {
 
   /**
    * @function
-   * @handlePriceChange - handles when the user enters a price
-   * @param {*} text
+   * @handlePriceChange - handles changes when the user enters a price
+   * @param {string} text - text that hold the entered price
    * @description - handles when the user enters a price
+   * @returns {void} This function doesn't return a value
+   * @memberof CreateListing
    */
   handlePriceChange = (text) => {
     const regex = /^(\d{0,6}(\.\d{2})?)$/;
@@ -526,6 +530,7 @@ class CreateListing extends Component {
    * @param {Array} selectedTags - array of the selected tags
    * @description - handles when the user presses a tag
    * @returns Returns the tags that the user selected
+   * @memberof CreateListing
    */
   handleTagPress = (index) => {
     this.setState((prevState) => {
@@ -562,10 +567,13 @@ class CreateListing extends Component {
   };
 
   /**
-   *
-   * @param {*} tags
-   * @param {*} itemsPerRow
-   * @returns
+   * @function
+   * @name groupTagsIntoRows
+   * @description - Groups the tags into rows
+   * @param {Array} tags - array of tags
+   * @param {number} itemsPerRow - # of items to display per row
+   * @returns {Array} - returns the array with tags grouped together
+   * @memberof CreateListing
    */
   groupTagsIntoRows = (tags, itemsPerRow) => {
     return tags.reduce((rows, tag, index) => {
@@ -575,6 +583,15 @@ class CreateListing extends Component {
     }, []);
   };
 
+  /**
+   * @function
+   * @handleCurrencySelection - allows user to select a currency for their listing.
+   * @param {string} currencyName - The name of the selected currency.
+   * @param {string} currencySymbol - The symbol of the selected currency.
+   * @description Handles the selection of a currency, updating the component state with the chosen currency's name and symbol
+   * @returns {void} This function does not return a value
+   * @memberof CreateListing
+   */
   handleCurrencySelection = (currencyName, currencySymbol) => {
     this.setState({
       selectedCurrency: currencyName,
@@ -582,7 +599,13 @@ class CreateListing extends Component {
       showCurrencyOptions: false,
     });
   };
-
+  /**
+   * @function
+   * @renderCurrencyOptions - renders the currecny option list
+   * @description Renders a list of currency options, allowing the user to select a currency by tapping on it.
+   * @returns {Array<JSX.Element>} Returns an array of JSX elements representing selectable currency options.
+   * @memberof CreateListing
+   */
   renderCurrencyOptions = () => {
     return this.state.currencies.map((currency) => (
       <TouchableOpacity
@@ -767,19 +790,19 @@ class CreateListing extends Component {
                     visible={this.state.showCurrencyOptions}
                     animationType="slide"
                   >
-                    <ScrollView style = {styles.currencyScrollView} >
-                    <View style={styles.modalContent}>
-                      {this.renderCurrencyOptions()}
-                    </View>
+                    <ScrollView style={styles.currencyScrollView}>
+                      <View style={styles.modalContent}>
+                        {this.renderCurrencyOptions()}
+                      </View>
                     </ScrollView>
                     <View style={styles.closeButtonContainer}>
-                    <TouchableOpacity
-                      onPress={() =>
-                        this.setState({ showCurrencyOptions: false })
-                      }
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.setState({ showCurrencyOptions: false })
+                        }
                       >
-                          <Text style={styles.closeButton}>Close</Text>
-                    </TouchableOpacity>
+                        <Text style={styles.closeButton}>Close</Text>
+                      </TouchableOpacity>
                     </View>
                   </Modal>
                 )}
@@ -822,6 +845,7 @@ class CreateListing extends Component {
               )}
             </View>
             <View style={styles.pickerStyle}>
+              {Platform.OS == 'ios' && <View style={styles.pickerBackground} />}
               <RNPickerSelect
                 selectedValue={this.state.transactionPreference}
                 onValueChange={(itemValue, itemIndex) => {
@@ -854,6 +878,7 @@ class CreateListing extends Component {
               )}
             </View>
             <View style={{ ...styles.pickerStyle }}>
+              {Platform.OS == 'ios' && <View style={styles.pickerBackground} />}
               <RNPickerSelect
                 selectedValue={this.state.condition}
                 onValueChange={(itemValue, itemIndex) => {
@@ -870,27 +895,9 @@ class CreateListing extends Component {
               />
             </View>
 
-            <TouchableOpacity
-              onPress={this.handleImagePick}
-              style={styles.button}
-            >
+            <TouchableOpacity onPress={this.showModal} style={styles.button}>
               <Text style={styles.buttonText}>Select Images</Text>
             </TouchableOpacity>
-            {/* {
-              isImageInvalid ? (
-                <View style={[styles.rowContainer, {alignSelf: "center"}]}>
-                  <Text style={styles.errorMessage}>
-                    {this.state.data.length == 0
-                      ? "Must select at least one image"
-                      : this.state.data.length > 9
-                      ? "Too many images selected"
-                      : "Must select at least one image"}
-                  </Text>
-                </View>
-              ) : (
-                ""
-              )
-            } */}
             <View
               style={[
                 styles.imageField,
@@ -907,18 +914,6 @@ class CreateListing extends Component {
                 />
               </View>
             </View>
-
-            {/* {
-              isTagInvalid ? (
-                <View style={[styles.rowContainer, {alignSelf: "center"}]}>
-                  <Text style={styles.errorMessage}>
-                    Must select at least one tag
-                  </Text>
-                </View>
-              ) : (
-                ""
-              )
-            } */}
             <ScrollView
               style={[
                 styles.tagField,
@@ -967,6 +962,52 @@ class CreateListing extends Component {
 
             <Text style={styles.spacer} />
           </ScrollView>
+
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.selectImageModalVisible}
+            onRequestClose={() => {
+              this.hideModal();
+            }}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <TouchableOpacity
+                  style={styles.imagePickerButton}
+                  onPress={this.handleCameraPick}
+                >
+                  <Text style={styles.imagePickerButtonText}>Camera</Text>
+                  <MaterialIcons
+                    name="camera-alt"
+                    size={24}
+                    color="black"
+                    style={{ top: 10, left: '90%' }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.imagePickerButton}
+                  onPress={this.handleLibraryPick}
+                >
+                  <Text style={styles.imagePickerButtonText}>
+                    Photo Library
+                  </Text>
+                  <MaterialIcons
+                    name="photo-library"
+                    size={24}
+                    color="black"
+                    style={{ top: 10, left: '50%' }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.imagePickerButton}
+                  onPress={() => this.hideModal()}
+                >
+                  <Text style={styles.imagePickerButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </View>
       </View>
     );
@@ -1246,11 +1287,33 @@ const styles = StyleSheet.create({
   },
   pickerStyle: {
     //bottomMargin: 10,
-    height: 50,
+    width: '90%',
     left: 0.05 * screenWidth,
-    width: '45%',
     color: Colors.white,
     justifyContent: 'center',
+    borderRadius: 10,
+    ...Platform.select({
+      ios: {
+        height: 40,
+        marginTop: 10,
+        marginBottom: 10,
+        padding: 10,
+      },
+    }),
+    android: {
+      elevation: 10,
+    },
+  },
+  pickerBackground: {
+    position: 'absolute',
+    width: 0.9 * screenWidth,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: Colors.white,
+    shadowColor: 'gray',
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.9,
+    shadowRadius: 2,
   },
   button: {
     width: 150,
@@ -1358,5 +1421,50 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     top: 0.1 * screenHeight,
+  },
+  //Image Select Modal
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+  },
+  imagePickerButton: {
+    flexDirection: 'row',
+    width: 200,
+    height: 50,
+    marginBottom: 10,
+    backgroundColor: Colors.BB_bone,
+    borderRadius: 10,
+    borderColor: Colors.black,
+    alignContent: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+  },
+  imagePickerButtonText: {
+    fontSize: 18,
+    color: 'black',
+    alignSelf: 'center',
   },
 });

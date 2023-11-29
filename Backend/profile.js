@@ -451,7 +451,6 @@ router.get('/profile', async function (req, res) {
         },
       };
     });
-    console.log(parsedRows);
 
     // get the ratings belonging to the user
     const ratingsResult = await new Promise((resolve, reject) => {
@@ -560,7 +559,7 @@ router.get('/profile', async function (req, res) {
       ratings: ratingsResult,
       profilePicture: profilePictureResult[0].ProfilePicture,
       coverPicture: profilePictureResult[0].CoverPicture,
-      email: userResult.Email,
+      email: userResult[0].Email,
       contactInfo: contactInfo,
     });
   } catch (error) {
@@ -638,7 +637,8 @@ router.get('/pfp', function (req, res) {
  * }
  */
 router.post('/editprofile', imageUpload, function (req, res) {
-  const { username, contactInfo, profileName, password } = req.body;
+  const { username, profileName, email, password } = req.body;
+  console.log(req.body);
 
   const profilePicture = req.files.find(
     (file) => file.fieldname === 'profilePicture'
@@ -658,9 +658,8 @@ router.post('/editprofile', imageUpload, function (req, res) {
 
   // Update the Profiles table
   db.run(
-    `UPDATE Profiles SET ContactInfo = COALESCE(?, ContactInfo), 
-    ProfilePicture = COALESCE(?, ProfilePicture), CoverPicture = COALESCE(?, CoverPicture) WHERE Username = ?`,
-    [contactInfo, newProfilePicture, newCoverPicture, username],
+    `UPDATE Profiles SET ProfilePicture = COALESCE(?, ProfilePicture), CoverPicture = COALESCE(?, CoverPicture) WHERE Username = ?`,
+    [newProfilePicture, newCoverPicture, username],
     function (err) {
       if (err) {
         console.error('Error updating the Profiles table:', err);
@@ -669,8 +668,8 @@ router.post('/editprofile', imageUpload, function (req, res) {
 
       // Update the Accounts table
       db.run(
-        'UPDATE Accounts SET Password = COALESCE(?, Password), Username = COALESCE(?, Username) WHERE Username = ?',
-        [password, profileName, username],
+        'UPDATE Accounts SET Password = COALESCE(?, Password), Username = COALESCE(?, Username), Email = COALESCE(?, Email) WHERE Username = ?',
+        [password, profileName, email, username],
         function (err) {
           if (err) {
             console.error('Error updating the Accounts table:', err);
@@ -713,7 +712,11 @@ router.post('/editprofile', imageUpload, function (req, res) {
  * @throws {Error} If there's an error updating the database.
  */
 router.post('/editcontactinfo', async function (req, res) {
-  const { username, contactInfo } = req.body;
+  const { username, password, contactInfo } = req.body;
+  if (!(await authenticateUser(username, password)))
+    return res
+      .status(409)
+      .json({ error: 'Failed to authenticate with your credentials' });
 
   // Check if user exists
   const userResult = await new Promise((resolve, reject) => {

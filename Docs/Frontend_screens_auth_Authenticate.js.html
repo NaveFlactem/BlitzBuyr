@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>Frontend/screens/auth/Authenticate.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -37,97 +37,202 @@
 
 <div id="main">
     
+    <h1 class="page-title">Frontend/screens/auth/Authenticate.js</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace Authenticate
+ * @description Headless authentication screen which uses the device cache to automatically login into BlitzBuyer
+ */
+import { Asset } from 'expo-asset';
+import * as SecureStore from 'expo-secure-store';
+import { useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { checkListingExpiration } from '../../components/Notifications.js';
+import { serverIp } from '../../config.js';
+import Colors from '../../constants/Colors';
+import * as Settings from '../../hooks/UserSettings.js';
 
+const assetsToPreload = [
+  require('../../assets/blitzbuyr_name_logo.png'),
+  require('../../assets/blitzbuyr_name_logo.png'),
+  require('../../assets/blitzbuyr_name_transparent_horizontal.png'),
+  require('../../assets/blitzbuyr_name_transparent.png'),
+  require('../../assets/blitzbuyr_name.png'),
+  require('../../assets/icon_background_transparent_upright.png'),
+  require('../../assets/icon_background_transparent_upright_mini.png'),
+  require('../../assets/icon_background_transparent.png'),
+  require('../../assets/icon_transparent_background_filled_upright.png'),
+  require('../../assets/icon_transparent_background_filled_upright_mini.png'),
+  require('../../assets/icon_transparent_background_filled.png'),
+  require('../../assets/icon_transparent.png'),
+  require('../../assets/icon.png'),
+  require('../../assets/no_wifi_icon_transparent.png'),
+  require('../../assets/card_background.png'),
+];
 
-    <section class="package">
-        <h3> </h3>		
+let storedUsername;
+let storedPassword;
+
+/**
+ * Returns the username stored in the device cache.
+ * @function
+ * @name getStoredUsername
+ * @returns {string} The stored username.
+ * @memberof Authenticate
+ */
+const getStoredUsername = () => storedUsername;
+
+/**
+ * Returns the password stored in the device cache.
+ * @function
+ * @name getStoredPassword
+ * @returns {string} The stored password.
+ * @memberof Authenticate
+ */
+const getStoredPassword = () => storedPassword;
+
+/**
+ * Sets the stored credentials in the cache.
+ * @function
+ * @name setStoredCredentials
+ * @param {string} username - The username to be stored.
+ * @param {string} password - The password to be stored.
+ * @returns {Promise&lt;void>}
+ * @memberof Authenticate
+ */
+const setStoredCredentials = async (username, password) => {
+  storedUsername = username;
+  storedPassword = password;
+  await SecureStore.setItemAsync('username', username);
+  await SecureStore.setItemAsync('password', password);
+};
+
+/**
+ * Clears the stored credentials.
+ * @function
+ * @name clearStoredCredentials
+ * @returns {Promise&lt;void>}
+ * @memberof Authenticate
+ */
+const clearStoredCredentials = async () => {
+  try {
+    await SecureStore.deleteItemAsync('username');
+    await SecureStore.deleteItemAsync('password');
+    console.log('Stored credentials cleared.');
+  } catch (error) {
+    console.error('Error clearing stored credentials:', error);
+  }
+};
+
+/**
+ * Component for authentication screen.
+ * @function
+ * @name AuthenticateScreen
+ * @param {Object} props - React component props.
+ * @param {Object} props.navigation - Navigation object for navigating between screens.
+ * @returns {JSX.Element} The authentication screen component.
+ * @memberof Authenticate
+ */
+const AuthenticateScreen = ({ navigation }) => {
+  useEffect(() => {
+    // Load and cache the assets when the component mounts
+    async function loadAssetsAsync() {
+      const assetPromises = assetsToPreload.map((asset) =>
+        Asset.fromModule(asset).downloadAsync()
+      );
+      await Promise.all(assetPromises);
+    }
+
+    loadAssetsAsync();
+  }, []);
+
+  useEffect(() => {
+    /**
+     * Loads user settings.
+     * @function
+     * @name loadSettings
+     * @returns {Promise&lt;void>}
+     * @memberof Authenticate
+     */
+    const loadSettings = async () => {
+      const settings = await Settings.getUserSettings();
+      console.log('User settings:', settings);
+    };
+
+    /**
+     * Checks stored credentials and performs login.
+     * @function
+     * @name checkStoredCredentials
+     * @returns {Promise&lt;void>}
+     * @memberof Authenticate
+     */
+    const checkStoredCredentials = async () => {
+      storedUsername = await SecureStore.getItemAsync('username');
+      storedPassword = await SecureStore.getItemAsync('password');
+
+      if (storedUsername &amp;&amp; storedPassword) {
+        // Stored credentials exist, use them for login
+        const loginData = {
+          username: storedUsername,
+          password: storedPassword,
+        };
+
+        const response = await fetch(`${serverIp}/api/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(loginData),
+        });
+
+        let responseData = await response.json();
+
+        if (response.status &lt;= 201) {
+          loadSettings();
+          console.log('Response data:', responseData);
+          navigation.navigate('BottomNavOverlay');
+          checkListingExpiration();
+        } else {
+          navigation.navigate('Login');
+        }
+      } else {
+        navigation.navigate('Login');
+      }
+    };
+
+    checkStoredCredentials();
+  }, []);
+
+  return &lt;View style={styles.container}>&lt;/View>;
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.BB_darkRedPurple,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+
+export {
+  getStoredUsername,
+  getStoredPassword,
+  setStoredCredentials,
+  clearStoredCredentials,
+};
+export default AuthenticateScreen;
+</code></pre>
+        </article>
     </section>
-
-
-
-
-
-
-
-
-
-    
-
-
-
-    <section class="readme usertext">
-        <article><h1><img src="http://blitzbuyr.lol/img/blitzbuyr_name_logo.png" alt="BlitzBuyr Logo" width="300"></h1>
-<h1>BlitzBuyr Documentation</h1>
-<h2>Table of Contents</h2>
-<ul>
-<li><a href="#backend">Backend</a>
-<ul>
-<li><a href="#server">Server</a></li>
-<li><a href="#account-management">Account Management</a></li>
-<li><a href="#listing-management">Listing Management</a></li>
-</ul>
-</li>
-<li><a href="#frontend">Frontend</a>
-<ul>
-<li><a href="#createaccountscreen">CreateAccountScreen</a></li>
-<li><a href="#login-screen">Login Screen</a></li>
-<li><a href="#homescreen">HomeScreen</a></li>
-<li><a href="#profilescreen">ProfileScreen</a></li>
-</ul>
-</li>
-</ul>
-<h2>Backend</h2>
-<p>The backend of BlitzBuyr is built using Node.js and Express, with SQLite3 as the database. It serves as the core of the application, handling API requests and managing user accounts and listings.</p>
-<h3>Server</h3>
-<p>The server handles routing and middleware, providing the foundation for API endpoints. Key components include:</p>
-<ul>
-<li>Conglomerating the different routes into express.</li>
-<li>Request logging middleware.</li>
-<li>Static routes for our JSDoc documentation.</li>
-<li>Starting the Express server.</li>
-</ul>
-<p><a href="Backend_server.js.html">View <code>server.js</code> source code</a></p>
-<h3>Account Management</h3>
-<p>BlitzBuyr's account management system allows users to register, login, and authenticate their accounts. Key components include:</p>
-<ul>
-<li>GET request endpoint for retrieving a list of accounts.</li>
-<li>POST request endpoint for user registration.</li>
-<li>POST request endpoint for user login and authentication.</li>
-</ul>
-<p><a href="Backend_account.js.html">View <code>account.js</code> source code</a></p>
-<h3>Listing Management</h3>
-<p>Listings are a fundamental part of BlitzBuyr, and the backend provides endpoints for listing creation and retrieval. Key components include:</p>
-<ul>
-<li>POST request endpoint for creating a new listing.</li>
-<li>GET request endpoint for retrieving a list of all listings.</li>
-</ul>
-<p><a href="Backend_listing.js.html">View <code>listing.js</code> source code</a></p>
-<h2>Frontend</h2>
-<p>The frontend of BlitzBuyr is built using React Native and provides a user-friendly interface for interacting with the application. It includes various screens for creating accounts, logging in, browsing listings, and managing user profiles.</p>
-<h3>CreateAccountScreen</h3>
-<p>The Create Account screen allows users to create a new account, providing essential account information such as username, password, email, etc.</p>
-<p><a href="Frontend_CreateAccountScreen.js.html">View <code>CreateAccountScreen.js</code> source code</a></p>
-<h3>Login Screen</h3>
-<p>The Login screen enables users to log into their accounts, requiring username and password authentication.</p>
-<p><a href="Frontend_LoginScreen.js.html">View <code>LoginScreen.js</code> source code</a></p>
-<h3>HomeScreen</h3>
-<p>The Home screen is the primary user interface for browsing listings, interacting with listings, and discovering new items for sale.</p>
-<p><a href="Frontend_HomeScreen.js.html">View <code>HomeScreen.js</code> source code</a></p>
-<h3>ProfileScreen</h3>
-<p>The Profile screen allows users to manage their profiles, view their listings, and interact with other users.</p>
-<p>Each of these screens plays a vital role in delivering a seamless user experience within the BlitzBuyr application.</p>
-<p><a href="Frontend_ProfileScreen.js.html">View <code>ProfileScreen.js</code> source code</a></p>
-<h2>Conclusion</h2>
-<p>This documentation serves as a reference for developers working on the BlitzBuyr project, as well as any interested in our workflow or codebase, outlining the structure and key components of both the backend and frontend.</p></article>
-    </section>
-
-
 
 
 
