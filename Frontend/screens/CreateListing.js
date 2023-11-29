@@ -60,7 +60,8 @@ const MinorLoadingView = memo(({styles}) => (
  * @returns Returns a CreateListing screen
  */
 const CreateListing = memo(({navigation, route}) => {
-  const styles = getThemedStyles(useThemeContext().theme).CreateListing;
+  const { theme } = useThemeContext();
+  const styles = getThemedStyles(theme).CreateListing;
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -574,6 +575,7 @@ const handleLibraryPick = async () => {
               style={[
                 styles.input,
                 isTitleInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
+                theme === 'dark' ? { backgroundColor: '#2d2d30', color: Colors.white } : null,
               ]}
               value={title}
               onChangeText={(text) => {
@@ -613,6 +615,8 @@ const handleLibraryPick = async () => {
                 isDescriptionInvalid
                   ? { borderColor: 'red', borderWidth: 1 }
                   : null,
+                  theme === 'dark' ? { backgroundColor: '#2d2d30', color: Colors.white } : null,
+
               ]}
               value={description}
               onChangeText={(text) => {
@@ -659,7 +663,9 @@ const handleLibraryPick = async () => {
                 <TouchableOpacity
                   onPress={() => setShowCurrencyOptions(true)}
                 >
-                  <View style={styles.currencyButton}>
+                  <View style={[styles.currencyButton,
+                    theme === 'dark' ? { backgroundColor: '#1e1e1e' } : null,
+                  ]}>
                     <Text style={styles.currencyButtonText}>
                       {selectedCurrency}{' '}
                       {selectedCurrencySymbol}
@@ -696,6 +702,7 @@ const handleLibraryPick = async () => {
                   isPriceInvalid
                     ? { borderColor: 'red', borderWidth: 1 }
                     : null,
+                  theme === 'dark' ? { backgroundColor: '#2d2d30', color: Colors.white } : null,
                 ]}
                 value={price}
                 onChangeText={(text) => {
@@ -727,7 +734,9 @@ const handleLibraryPick = async () => {
               )}
             </View>
             <View style={styles.pickerStyle}>
-              {Platform.OS == 'ios' && <View style={styles.pickerBackground} />}
+              {Platform.OS == 'ios' && <View style={[styles.pickerBackground,
+                theme === 'dark' ? { backgroundColor: '#2d2d30'} : null,
+              ]} />}
               <RNPickerSelect
                 selectedValue={transactionPreference}
                 onValueChange={(itemValue, itemIndex) => {
@@ -760,7 +769,9 @@ const handleLibraryPick = async () => {
               )}
             </View>
             <View style={{ ...styles.pickerStyle }}>
-              {Platform.OS == 'ios' && <View style={styles.pickerBackground} />}
+            {Platform.OS == 'ios' && <View style={[styles.pickerBackground,
+                theme === 'dark' ? { backgroundColor: '#2d2d30'} : null,
+              ]} />}
               <RNPickerSelect
                 selectedValue={condition}
                 onValueChange={(itemValue, itemIndex) => {
@@ -787,6 +798,7 @@ const handleLibraryPick = async () => {
               style={[
                 styles.imageField,
                 isImageInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
+                theme === 'dark' ? { backgroundColor: '#2d2d30'} : null,
               ]}
             >
               <View style={styles.innerField}>
@@ -803,6 +815,7 @@ const handleLibraryPick = async () => {
               style={[
                 styles.tagField,
                 isTagInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
+                theme === 'dark' ? { backgroundColor: '#2d2d30'} : null,
               ]}
             >
               <View>
@@ -822,12 +835,14 @@ const handleLibraryPick = async () => {
                         <View
                           style={[
                             styles.tagSelected,
+                            theme === 'dark' ? { backgroundColor: Colors.BB_violet} : null,
                             { opacity: tag.selected ? 1 : 0.3 },
                           ]}
                         />
                         <View
                           style={[
                             styles.rhombus,
+                            theme === 'dark' ? { backgroundColor: Colors.white} : null,
                             { opacity: tag.selected ? 0.15 : 0 },
                           ]}
                         />
