@@ -34,7 +34,6 @@ import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import { getLocationWithRetry } from '../constants/Utilities';
 import { handleListingCreation } from '../network/Service.js';
 import { getStoredUsername } from './auth/Authenticate.js';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useThemeContext } from '../components/visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
 
@@ -638,6 +637,8 @@ const handleLibraryPick = async () => {
                   <Text style={styles.errorMessage}>
                     {price == ''
                       ? 'Price is required'
+                      : /^(\d{0,6}(\.\d{2})?)$/.test(price)
+                      ? 'Must enter a valid price'
                       : price < 0
                       ? 'Invalid price'
                       : price.length >= 7
