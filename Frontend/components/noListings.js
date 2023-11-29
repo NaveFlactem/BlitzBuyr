@@ -6,13 +6,14 @@ import { useThemeContext } from './visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
 
 const NoListings = memo(({ onRetry }) => {
-  const styles = getThemedStyles(useThemeContext().theme).NoListings;
+  const { theme } = useThemeContext();
+  const styles = getThemedStyles(theme).NoListings;
   return (
     <View style={styles.container}>
       <MaterialCommunityIcons
         name="file-document-outline"
         size={100}
-        color={Colors.BB_darkRedPurple}
+        color={theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_bone}
       />
       <Text style={styles.text}>No listings available</Text>
       <TouchableOpacity onPress={onRetry} style={styles.retryButton}>

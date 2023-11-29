@@ -45,7 +45,8 @@ const TagDrawer = memo(
     isDrawerOpen,
     translateX,
   }) => {
-    const styles = getThemedStyles(useThemeContext().theme).TagDrawer;
+    const theme = useThemeContext().theme;
+    const styles = getThemedStyles(theme).TagDrawer;
 
     handleTagPress = (index) => {
       // Update the tagsData state
@@ -242,17 +243,19 @@ const TagDrawer = memo(
                     }}
                   >
                     <View
-                      style={[
-                        styles.tagSelected,
-                        { opacity: tag.selected ? 1 : 0.3 },
-                      ]}
-                    />
-                    <View
-                      style={[
-                        styles.rhombus,
-                        { opacity: tag.selected ? 0.15 : 0 },
-                      ]}
-                    />
+                          style={[
+                            styles.tagSelected,
+                            theme === 'dark' ? { backgroundColor: Colors.BB_violet} : null,
+                            { opacity: tag.selected ? 1 : 0.3 },
+                          ]}
+                        />
+                        <View
+                          style={[
+                            styles.rhombus,
+                            theme === 'dark' ? { backgroundColor: Colors.white} : null,
+                            { opacity: tag.selected ? 0.15 : 0 },
+                          ]}
+                        />
                     <Text style={styles.tagText}>{tag.name}</Text>
                   </TouchableOpacity>
                 ))}
@@ -271,12 +274,14 @@ const TagDrawer = memo(
                     <View
                       style={[
                         styles.tagSelected,
+                        theme === 'dark' ? { backgroundColor: Colors.BB_violet} : null,
                         { opacity: condition.selected ? 1 : 0.3 },
                       ]}
                     />
                     <View
                       style={[
                         styles.rhombus,
+                        theme === 'dark' ? { backgroundColor: Colors.white} : null,
                         { opacity: condition.selected ? 0.15 : 0 },
                       ]}
                     />
@@ -298,12 +303,14 @@ const TagDrawer = memo(
                     <View
                       style={[
                         styles.tagSelected,
+                        theme === 'dark' ? { backgroundColor: Colors.BB_violet} : null,
                         { opacity: transaction.selected ? 1 : 0.3 },
                       ]}
                     />
                     <View
                       style={[
                         styles.rhombus,
+                        theme === 'dark' ? { backgroundColor: Colors.white} : null,
                         { opacity: transaction.selected ? 0.15 : 0 },
                       ]}
                     />
@@ -325,12 +332,16 @@ const TagDrawer = memo(
                     <View
                       style={[
                         styles.tagSelected,
+                        theme === 'dark' ? { backgroundColor: Colors.BB_violet} : null,
+
                         { opacity: currency.selected ? 1 : 0.3 },
                       ]}
                     />
                     <View
                       style={[  
                         styles.rhombus,
+                        theme === 'dark' ? { backgroundColor: Colors.white} : null,
+
                         { opacity: currency.selected ? 0.15 : 0 },
                       ]}
                     />

@@ -67,7 +67,7 @@ const SettingsScreen = ({ navigation, route }) => {
   });
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.BB_bone }}>
+    <SafeAreaView style={styles.safeareaview}>
       <ScrollView
         contentContainerStyle={styles.scrollViewContent}
         stickyHeaderIndices={[0]}
@@ -75,7 +75,7 @@ const SettingsScreen = ({ navigation, route }) => {
         {/* Top Bar */}
         <View style={styles.topBar}>
           <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+            style={{justifyContent: 'space-between' }}
           >
             <TouchableOpacity
               onPress={() => {
@@ -92,7 +92,7 @@ const SettingsScreen = ({ navigation, route }) => {
               </View>
             </TouchableOpacity>
             <Text style={styles.headerText}>Settings</Text>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
                 setLoading(true);
                 navigation.navigate('BottomNavOverlay');
@@ -105,7 +105,7 @@ const SettingsScreen = ({ navigation, route }) => {
                   color={Colors.BB_bone}
                 />
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
 
@@ -135,7 +135,7 @@ const SettingsScreen = ({ navigation, route }) => {
                       <AntDesign
                         name="right"
                         size={15}
-                        color={Colors.BB_darkRedPurple}
+                        color={theme === "dark" ? Colors.BB_bone : Colors.BB_darkerRedPurple}
                       />
                     </TouchableOpacity>
                   ) : (
@@ -152,10 +152,10 @@ const SettingsScreen = ({ navigation, route }) => {
                       <Text style={styles.itemText}>{item}</Text>
                       <Switch
                         trackColor={{
-                          false: Colors.gray,
+                          false: theme === "dark" ? Colors.BB_bone : Colors.gray,
                           true: Colors.BB_violet,
                         }}
-                        thumbColor={Colors.BB_darkerRedPurple}
+                        thumbColor={theme === "dark" ? "#3e3e42" : Colors.BB_darkerRedPurple}
                         onValueChange={() => {
                           setSwitchItemsState((prevState) => ({
                             ...prevState,

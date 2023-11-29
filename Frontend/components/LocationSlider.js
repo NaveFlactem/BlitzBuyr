@@ -25,6 +25,7 @@ const LocationSlider = memo(
     setIsLocationSliderVisible,
     locationSliderHeight,
   }) => {
+    const { theme } = useThemeContext();
     const styles = getThemedStyles(useThemeContext().theme).LocationSlider;
     const locationSliderStyle = useAnimatedStyle(() => {
       return {
@@ -79,7 +80,7 @@ const LocationSlider = memo(
               step={10}
               value={sliderValue}
               onValueChange={(value) => setSliderValue(value)}
-              minimumTrackTintColor={Colors.BB_pink}
+              minimumTrackTintColor={theme === 'dark' ? Colors.BB_violet : Colors.BB_pink}
               maximumTrackTintColor="#000000"
               thumbImage={require('../assets/icon_transparent_background_filled_upright_mini.png')}
               onSlidingComplete={(value) => {

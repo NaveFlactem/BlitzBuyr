@@ -318,6 +318,11 @@ const HomeScreen = ({ route }) => {
         listings && listings.length > 0 ? (
           Platform.OS === 'ios' ? (
             <View style={styles.swiperContainer}>
+              <CustomRefreshControl
+                refreshing={refreshing}
+                scrollY={scrollY}
+                swiperRef={swiperRef}
+              />
               <IOSSwiperComponent
                 swiperRef={swiperRef}
                 listings={listings}
@@ -417,13 +422,6 @@ const HomeScreen = ({ route }) => {
         setIsLocationSliderVisible={setIsLocationSliderVisible}
         locationSliderHeight={locationSliderHeight}
       />
-      {Platform.OS === 'ios' && (
-        <CustomRefreshControl
-          refreshing={refreshing}
-          scrollY={scrollY}
-          swiperRef={swiperRef}
-        />
-      )}
     </SafeAreaView>
   );
 };

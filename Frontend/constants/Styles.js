@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import Colors, { CustomDarkTheme, CustomLightTheme } from './Colors.js';
 import { screenHeight, screenWidth } from './ScreenDimensions.js';
 
@@ -56,7 +56,7 @@ export const getThemedStyles = (theme) => {
         marginHorizontal: 2,
         ...Platform.select({
           ios: {
-            shadowColor: themeColors.black,
+            shadowColor: theme === 'dark' ? null : Colors.BB_bone,
             shadowOffset: { width: 2, height: 2 },
             shadowOpacity: 0.8,
             shadowRadius: 2,
@@ -94,11 +94,18 @@ export const getThemedStyles = (theme) => {
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: themeColors.BB_bone,
+        backgroundColor: Colors.BB_bone,
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
         borderColor: 'black',
+        position: 'absolute',
+        ...Platform.select({
+          ios: {
+            top: 0.05 * screenHeight,
+            right: 0,
+          },
+        }),
       },
     },
 
@@ -234,12 +241,18 @@ export const getThemedStyles = (theme) => {
 
     // SETTINGS SCREEN //
     SettingsScreen: {
+      safeareaview : {
+        flex: 1,
+        backgroundColor: theme === 'dark' ? "#252526" : Colors.BB_bone,
+      },
       scrollViewContent: {
         flexGrow: 1,
       },
       container: {
         flex: 1,
         paddingHorizontal: 20,
+        backgroundColor: theme === 'dark' ? "#252526" : Colors.BB_bone,
+
       },
       topBar: {
         alignItems: 'center',
@@ -252,10 +265,11 @@ export const getThemedStyles = (theme) => {
         borderBottomColor: themeColors.black,
       },
       headerText: {
-        color: themeColors.BB_bone,
+        color: Colors.BB_bone,
         fontSize: 27.5,
         fontWeight: 'bold',
         alignSelf: 'center',
+        position: 'absolute',
       },
       iconContainer: {
         width: 40,
@@ -269,7 +283,7 @@ export const getThemedStyles = (theme) => {
         paddingHorizontal: 5,
       },
       header: {
-        color: themeColors.BB_darkRedPurple,
+        color: theme === 'dark' ? Colors.BB_bone : Colors.BB_darkRedPurple,
         fontWeight: 'bold',
         fontSize: 20,
       },
@@ -288,18 +302,18 @@ export const getThemedStyles = (theme) => {
       },
       itemText: {
         fontWeight: '500',
-        color: themeColors.BB_darkerRedPurple,
+        color: theme === 'dark' ? Colors.BB_bone : Colors.BB_darkRedPurple,
         fontSize: 15,
       },
       thinHorizontalBar: {
         height: 1,
-        backgroundColor: themeColors.BB_darkRedPurple,
+        backgroundColor: theme === 'dark' ? Colors.BB_bone : Colors.BB_darkRedPurple,
         width: '100%',
         borderRadius: 5,
       },
       horizontalBar: {
         height: 15,
-        backgroundColor: themeColors.BB_darkRedPurple,
+        backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
         width: '100%',
         borderRadius: 5,
       },
@@ -320,7 +334,7 @@ export const getThemedStyles = (theme) => {
         height: '100%',
         backgroundColor: themeColors.BB_darkRedPurple,
         borderRightWidth: 2,
-        borderRightColor: themeColors.BB_orange,
+        borderRightColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_orange,
       },
       drawer: {
         alignSelf: 'center',
@@ -333,7 +347,7 @@ export const getThemedStyles = (theme) => {
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 12,
-        backgroundColor: themeColors.BB_darkerRedPurple,
+        backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_darkRedPurple,
         ...Platform.select({
           ios: {
             shadowColor: themeColors.black,
@@ -409,14 +423,14 @@ export const getThemedStyles = (theme) => {
         alignSelf: 'center',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: themeColors.BB_pink,
+        backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkPink,
         borderColor: themeColors.BB_bone,
         borderWidth: 1,
         ...Platform.select({
           ios: {
-            shadowColor: themeColors.BB_bone,
+            shadowColor: Colors.BB_bone,
             shadowOffset: { width: 1, height: 1 },
-            shadowOpacity: 0.2,
+            shadowOpacity: theme === 'dark' ? 0.5 : 0.2,
             shadowRadius: 2,
           },
           android: {
@@ -447,7 +461,7 @@ export const getThemedStyles = (theme) => {
       },
       seperationText: {
         color: themeColors.white,
-        backgroundColor: themeColors.BB_darkerRedPurple,
+        backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_darkRedPurple,
         fontSize: 12,
         fontWeight: 'bold',
         marginTop: 10,
@@ -475,28 +489,6 @@ export const getThemedStyles = (theme) => {
       spacer: {
         position: 'relative',
         height: Platform.OS == 'ios' ? 0.06 * screenHeight : 0.03 * screenHeight,
-      },
-    },
-    ////////////////////////////////////////////
-    ChangePassword: {
-      scrollViewContent: {
-        flexGrow: 1,
-      },
-      topBar: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row',
-        backgroundColor: themeColors.BB_darkRedPurple,
-        paddingHorizontal: 15,
-        paddingVertical: 15,
-        borderBottomWidth: 2,
-        borderBottomColor: themeColors.black,
-      },
-      headerText: {
-        color: themeColors.BB_bone,
-        fontSize: 27.5,
-        fontWeight: 'bold',
-        alignSelf: 'center',
       },
     },
     ////////////////////////////////////////////
@@ -558,13 +550,13 @@ export const getThemedStyles = (theme) => {
       text: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: themeColors.BB_darkRedPurple,
+        color: theme === 'dark' ? Colors.BB_bone : Colors.BB_darkRedPurple,
         textAlign: 'center',
       },
       buttonText: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: themeColors.BB_bone,
+        color: Colors.BB_bone,
         textAlign: 'center',
       },
       retryButton: {
@@ -577,7 +569,7 @@ export const getThemedStyles = (theme) => {
         height: '7%',
         ...Platform.select({
           ios: {
-            shadowColor: themeColors.black,
+            shadowColor: theme === 'dark' ? null : Colors.BB_bone,
             shadowOffset: { width: 0, height: 1 },
             shadowOpacity: 0.5,
             shadowRadius: 2,
@@ -655,7 +647,7 @@ export const getThemedStyles = (theme) => {
         height: 0.8 * screenHeight,
         backgroundColor: themeColors.BB_darkRedPurple,
         borderRadius: 20,
-        borderWidth: 0.01 * screenHeight,
+        borderWidth: 0.005 * screenHeight,
         justifyContent: 'center',
         overflow: 'hidden',
         borderColor: themeColors.BB_darkerRedPurple,
@@ -1052,14 +1044,6 @@ export const getThemedStyles = (theme) => {
         width: 0.55 * screenWidth,
         top: 0.025 * screenHeight,
         right: 0.01 * screenWidth,
-        ...Platform.select({
-          ios: {
-            shadowColor: themeColors.black,
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.5,
-            shadowRadius: 5,
-          },
-        }),
       },
       topBar: {
         position: 'absolute',
@@ -1071,14 +1055,6 @@ export const getThemedStyles = (theme) => {
         borderBottomWidth: 3,
         borderColor:
           Platform.OS == 'ios' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.3)',
-        ...Platform.select({
-          ios: {
-            shadowColor: themeColors.black,
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.5,
-            shadowRadius: 5,
-          },
-        }),
         zIndex: 10,
       },
     },
@@ -1234,12 +1210,13 @@ export const getThemedStyles = (theme) => {
         position: 'absolute',
         top: 15,
         left: Platform.OS == 'ios' ? 15 : 0,
+        backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_bone,
       },
       circle: {
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: 'white',
+        backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_bone,
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,

@@ -131,7 +131,8 @@ const handleContactClick = async (key, data) => {
 };
 
 const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
-  const styles = getThemedStyles(useThemeContext().theme).ProfileScreen;
+  const theme = useThemeContext().theme;
+  const styles = getThemedStyles(theme).ProfileScreen;
   let displayValues = Object.values(contactInfo).some(
     (value) => value.data?.length > 0
   );
@@ -194,7 +195,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                           <AntDesign
                             name={value.icon}
                             size={24}
-                            color="black"
+                            color={theme === 'light' ? "black" : Colors.BB_bone}
                             style={{
                               opacity: value.hidden ? 0.25 : 1.0,
                             }}
@@ -220,7 +221,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                             <MaterialIcons
                               name="visibility"
                               size={24}
-                              color={Colors.BB_darkRedPurple}
+                              color={theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet}
                             />
                           </TouchableOpacity>
                         )}
@@ -253,7 +254,8 @@ function ProfileScreen({ navigation, route }) {
   const [selectedListing, setSelectedListing] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [LikeStates, setLikeStates] = useState({});
-  const styles = getThemedStyles(useThemeContext().theme).ProfileScreen;
+  const theme = useThemeContext().theme;
+  const styles = getThemedStyles(theme).ProfileScreen;
 
   // Use states for contact info
   const [contactInfo, setContactInfo] = useState({
@@ -390,7 +392,7 @@ function ProfileScreen({ navigation, route }) {
       } else {
         console.log(
           'Error fetching profile:',
-          profileResponse.status,
+          profileResponse.status
           // profileData
         );
       }
@@ -479,7 +481,7 @@ function ProfileScreen({ navigation, route }) {
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: Colors.BB_bone,
+        backgroundColor: theme === 'light' ? Colors.BB_bone : '#1e1e1e',
       }}
     >
       <StatusBar backgroundColor={'black'} />
@@ -494,7 +496,8 @@ function ProfileScreen({ navigation, route }) {
             width: '100%',
             height: 0.2 * screenHeight,
             borderWidth: 1,
-            borderColor: Colors.BB_darkRedPurple,
+            borderColor:
+              theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet,
             position: 'absolute',
           }}
         />
@@ -529,11 +532,13 @@ function ProfileScreen({ navigation, route }) {
             height: 0.38 * screenWidth,
             width: 0.38 * screenWidth,
             borderRadius: 999,
-            borderColor: Colors.BB_darkRedPurple,
+            borderColor:
+              theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet,
             borderWidth: 2,
             marginTop: -90,
             position: 'absolute',
             top: 0.2 * screenHeight,
+            backgroundColor: theme === 'light' ? 'white' : '#2d2d30',
           }}
         />
         <Text
@@ -544,7 +549,7 @@ function ProfileScreen({ navigation, route }) {
             fontStyle: 'normal',
             fontWeight: 'bold',
             fontSize: 25,
-            color: Colors.BB_darkRedPurple,
+            color: theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_bone,
           }}
         >
           {profileName}
@@ -571,7 +576,8 @@ function ProfileScreen({ navigation, route }) {
                 fontStyle: 'normal',
                 fontWeight: 'bold',
                 fontSize: 20,
-                color: Colors.BB_darkRedPurple,
+                color:
+                  theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_bone,
               }}
             >
               {profileInfo.userListings?.length}
@@ -579,7 +585,8 @@ function ProfileScreen({ navigation, route }) {
             <Text
               style={{
                 fontStyle: 'normal',
-                color: Colors.BB_darkRedPurple,
+                color:
+                  theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_bone,
               }}
             >
               Listings
@@ -599,7 +606,8 @@ function ProfileScreen({ navigation, route }) {
                 fontStyle: 'normal',
                 fontWeight: 'bold',
                 fontSize: 20,
-                color: Colors.BB_darkRedPurple,
+                color:
+                  theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_bone,
               }}
             >
               {profileInfo.userRatings.AverageRating
@@ -609,7 +617,7 @@ function ProfileScreen({ navigation, route }) {
                 <Entypo
                   name="star"
                   size={20}
-                  color="gold"
+                  color={theme === 'light' ? 'gold' : Colors.BB_violet}
                   style={styles.ratingStar}
                 />
               )}
@@ -618,7 +626,8 @@ function ProfileScreen({ navigation, route }) {
               style={{
                 alignContent: 'center',
                 fontStyle: 'normal',
-                color: Colors.BB_darkRedPurple,
+                color:
+                  theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_bone,
               }}
             >
               Rating ({profileInfo.userRatings.RatingCount})
@@ -638,7 +647,10 @@ function ProfileScreen({ navigation, route }) {
                   fontStyle: 'normal',
                   fontWeight: 'bold',
                   fontSize: 20,
-                  color: Colors.BB_darkRedPurple,
+                  color:
+                    theme === 'light'
+                      ? Colors.BB_darkRedPurple
+                      : Colors.BB_bone,
                 }}
               >
                 {profileInfo.likedListings?.length}
@@ -646,7 +658,10 @@ function ProfileScreen({ navigation, route }) {
               <Text
                 style={{
                   fontStyle: 'normal',
-                  color: Colors.BB_darkRedPurple,
+                  color:
+                    theme === 'light'
+                      ? Colors.BB_darkRedPurple
+                      : Colors.BB_bone,
                 }}
               >
                 Liked
@@ -665,13 +680,13 @@ function ProfileScreen({ navigation, route }) {
             }}
           >
             {/* Logout */}
-            <View style={{paddingHorizontal: 10}}>
+            <View style={{ paddingHorizontal: 10 }}>
               <TouchableOpacity onPress={handleLogout} style={styles.button}>
                 <Text style={styles.buttonText}>Logout</Text>
               </TouchableOpacity>
             </View>
             {/* Edit Profile */}
-            <View style={{paddingHorizontal: 10}}>
+            <View style={{ paddingHorizontal: 10 }}>
               <TouchableOpacity
                 onPress={() => {
                   setLoading(true);
@@ -836,15 +851,17 @@ function ProfileScreen({ navigation, route }) {
         style={{
           position: 'absolute',
           top: 10,
-          right: 10
+          right: 10,
         }}
       >
         <View style={styles.circle}>
-        <MaterialIcons name="settings" size={30} color={Colors.BB_darkerRedPurple} />
-
+          <MaterialIcons
+            name="settings"
+            size={30}
+            color={Colors.BB_darkerRedPurple}
+          />
         </View>
       </TouchableOpacity>
-
     </SafeAreaView>
   );
 }
