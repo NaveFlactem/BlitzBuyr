@@ -33,6 +33,7 @@ import {
 } from './auth/Authenticate.js';
 import { useThemeContext } from '../components/visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
+import BouncePulse from '../components/visuals/BouncePulse';
 
 /**
  *
@@ -54,6 +55,7 @@ const EditProfileScreen = ({ navigation, route }) => {
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const [selectedProfilePicture, setSelectedProfilePicture] = useState('');
   const [selectedCoverPicture, setSelectedCoverPicture] = useState('');
+  const {theme} = useThemeContext();
   const styles = getThemedStyles(useThemeContext().theme).EditProfileScreen;
 
   /**
@@ -271,7 +273,7 @@ const EditProfileScreen = ({ navigation, route }) => {
   if (loading) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color="blue" />
+        <BouncePulse />
         <Text>Loading...</Text>
       </View>
     );
@@ -279,14 +281,12 @@ const EditProfileScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: 'white',
-      }}
+      style={styles.safeareaview}
     >
       {/* Edit Profile and Go Back Arrow Column */}
       <ScrollView
         contentContainerStyle={styles.scrollViewContent}
+        style={{backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone}}
         stickyHeaderIndices={[0]}
       >
         {/* Top Bar */}
@@ -335,7 +335,7 @@ const EditProfileScreen = ({ navigation, route }) => {
                   width: '100%',
                   height: 180,
                   borderWidth: 1,
-                  borderColor: Colors.BB_darkRedPurple,
+                  borderColor: theme === "dark" ? Colors.BB_violet : Colors.BB_darkRedPurple,
                 }}
               />
               <View
@@ -361,13 +361,13 @@ const EditProfileScreen = ({ navigation, route }) => {
               <TouchableOpacity onPress={handleProfileImageSelection}>
                 <Image
                   source={{ uri: selectedProfilePicture }}
-                  resizeMode="contain"
+                  resizeMode="cover"
                   style={{
                     height: 145,
                     width: 145,
                     borderRadius: 85,
                     borderWidth: 2,
-                    borderColor: Colors.BB_darkRedPurple,
+                    borderColor: theme === "dark" ? Colors.BB_violet : Colors.BB_darkRedPurple,
                   }}
                 />
 
@@ -382,7 +382,7 @@ const EditProfileScreen = ({ navigation, route }) => {
                   <MaterialIcons
                     name="photo-camera"
                     size={30}
-                    color={Colors.black}
+                    color={theme === "dark" ? Colors.BB_violet : Colors.black}
                   />
                 </View>
               </TouchableOpacity>
@@ -403,6 +403,7 @@ const EditProfileScreen = ({ navigation, route }) => {
                   value={profileName}
                   onChangeText={(value) => setProfileName(value)}
                   editable={true}
+                  style={theme === "dark" ? {color: Colors.BB_bone} : {color: Colors.black}}
                 />
               </View>
             </View>
@@ -415,6 +416,7 @@ const EditProfileScreen = ({ navigation, route }) => {
                   value={email}
                   onChangeText={(value) => setEmail(value)}
                   editable={true}
+                  style={theme === "dark" ? {color: Colors.BB_bone} : {color: Colors.black}}
                 />
               </View>
             </View>

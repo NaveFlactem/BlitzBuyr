@@ -519,7 +519,11 @@ export const getThemedStyles = (theme) => {
       },
     },
     ////////////////////////////////////////////
-    ChangePassword: {
+    ChangePasswordScreen: {
+      safeareaview: {
+        flex: 1,
+        backgroundColor: themeColors.BB_darkRedPurple,
+      },
       scrollViewContent: {
         flexGrow: 1,
       },
@@ -539,7 +543,7 @@ export const getThemedStyles = (theme) => {
         borderBottomColor: themeColors.black,
       },
       headerText: {
-        color: themeColors.BB_bone,
+        color: Colors.BB_bone,
         fontSize: 24,
         fontWeight: 'bold',
         alignSelf: 'center',
@@ -1254,7 +1258,7 @@ export const getThemedStyles = (theme) => {
     ContactInfoScreen: {
       safeareaview: {
         flex: 1,
-        backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
+        backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
       },
       container: {
         paddingVertical: 10,
@@ -1820,6 +1824,10 @@ export const getThemedStyles = (theme) => {
     },
     ////////////////////////////////////////////
     EditProfileScreen: {
+      safeareaview: {
+        flex: 1,
+        backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
+      },
       modalHeader: {
         fontSize: 30,
         textAlign: 'center',
@@ -1876,7 +1884,7 @@ export const getThemedStyles = (theme) => {
         borderBottomColor: themeColors.black,
       },
       headerText: {
-        color: themeColors.BB_bone,
+        color: Colors.BB_bone,
         fontSize: 24,
         fontWeight: 'bold',
         alignSelf: 'center',
@@ -1893,7 +1901,7 @@ export const getThemedStyles = (theme) => {
         marginBottom: 10,
       },
       itemTitle: {
-        color: Colors.BB_darkRedPurple,
+        color: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
         fontWeight: 'bold',
         fontSize: 18,
         paddingBottom: 5,
@@ -1901,11 +1909,12 @@ export const getThemedStyles = (theme) => {
       },
       itemTextField: {
         height: 45,
-        borderColor: Colors.BB_darkRedPurple,
+        borderColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
         borderWidth: 1,
         borderRadius: 5,
         justifyContent: 'center',
-        paddingLeft: 10,
+        paddingLeft: 20,
+        backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.white,
       },
       itemContainer: {
         paddingVertical: 5,
@@ -1946,6 +1955,14 @@ export const getThemedStyles = (theme) => {
         justifyContent: 'center',
         borderWidth: 1,
         borderColor: 'black',
+      },
+      deleteAccountButton: {
+        width: 150,
+        height: 36,
+        backgroundColor: themeColors.BB_red,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 30,
       },
     },
     ////////////////////////////////////////////

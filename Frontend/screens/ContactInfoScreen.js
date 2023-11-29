@@ -53,9 +53,12 @@ const EditContactInfo = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeareaview}>
+    <SafeAreaView
+      style={styles.safeareaview}
+    >
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
+        style={{backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone}}
         stickyHeaderIndices={[0]}
       >
         {/* TOP BAR */}

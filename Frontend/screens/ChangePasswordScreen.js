@@ -32,8 +32,8 @@ const ChangePassword = ({ navigation, route }) => {
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const [isConfirmPasswordHidden, setIsConfirmPasswordHidden] = useState(true);
   const [profileName] = useState(route.params?.profileName);
-
-  const styles = getThemedStyles(useThemeContext().theme).ChangePassword;
+  const {theme} = useThemeContext();
+  const styles = getThemedStyles(useThemeContext().theme).ChangePasswordScreen;
 
   const togglePasswordVisibility = () => {
     setIsPasswordHidden(!isPasswordHidden);
@@ -86,10 +86,7 @@ const ChangePassword = ({ navigation, route }) => {
 
   return (
     <SafeAreaView
-      style={{
-        backgroundColor: Colors.BB_bone,
-        flex: 1,
-      }}
+      style={styles.safeareaview}
     >
       <ScrollView
         contentContainerStyle={styles.scrollViewContent}
@@ -127,9 +124,9 @@ const ChangePassword = ({ navigation, route }) => {
           </View>
         </View>
         {/* CONTENT */}
-        <View style={styles.container} backgroundColor={Colors.BB_bone}>
+        <View style={styles.container} backgroundColor={theme === 'dark' ? Colors.black : Colors.BB_bone}>
           <View>
-            <Text>
+            <Text style={{color: theme === 'dark' ? Colors.BB_bone : Colors.black}}>
               At least 9 characters with uppercase and lowercase letters.
             </Text>
           </View>
@@ -137,7 +134,7 @@ const ChangePassword = ({ navigation, route }) => {
           <View style={{ paddingVertical: 5 }}>
             <Text
               style={{
-                color: Colors.BB_darkRedPurple,
+                color: theme === 'dark' ? Colors.BB_bone : Colors.BB_darkRedPurple,
                 fontWeight: 'bold',
                 fontSize: 18,
                 paddingVertical: 10,
@@ -150,11 +147,13 @@ const ChangePassword = ({ navigation, route }) => {
               style={{
                 flexDirection: 'row',
                 height: 50,
-                borderColor: Colors.BB_darkRedPurple,
+                borderColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
                 borderWidth: 1,
                 borderRadius: 5,
                 justifyContent: 'space-between',
                 paddingHorizontal: 15,
+                backgroundColor: theme === 'dark' ? Colors.BB_bone : Colors.white
+
               }}
             >
               <TextInput
@@ -162,7 +161,8 @@ const ChangePassword = ({ navigation, route }) => {
                 onChangeText={(value) => setPassword(value)}
                 editable={true}
                 secureTextEntry={isPasswordHidden}
-                style={{ fontSize: 15, fontWeight: 'bold', flex: 1 }}
+                style={{ fontSize: 15, fontWeight: 'bold', flex: 1,
+                 }}
               />
               <TouchableOpacity
                 style={{
@@ -174,18 +174,19 @@ const ChangePassword = ({ navigation, route }) => {
                 <MaterialIcons
                   name="visibility"
                   size={30}
-                  color={Colors.BB_darkRedPurple}
+                  color={theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple}
                 />
               </TouchableOpacity>
             </View>
             {/* Confirm New Password */}
             <Text
               style={{
-                color: Colors.BB_darkRedPurple,
+                color: theme === 'dark' ? Colors.BB_bone : Colors.BB_darkRedPurple,
                 fontWeight: 'bold',
                 fontSize: 18,
                 paddingVertical: 10,
                 paddingHorizontal: 5,
+                
               }}
             >
               Confirm New Password
@@ -194,11 +195,13 @@ const ChangePassword = ({ navigation, route }) => {
               style={{
                 flexDirection: 'row',
                 height: 50,
-                borderColor: Colors.BB_darkRedPurple,
+                borderColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
                 borderWidth: 1,
                 borderRadius: 5,
                 justifyContent: 'space-between',
                 paddingHorizontal: 15,
+                backgroundColor: theme === 'dark' ? Colors.BB_bone : Colors.white
+
               }}
             >
               <TextInput
@@ -218,7 +221,7 @@ const ChangePassword = ({ navigation, route }) => {
                 <MaterialIcons
                   name="visibility"
                   size={30}
-                  color={Colors.BB_darkRedPurple}
+                  color={theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple}
                 />
               </TouchableOpacity>
             </View>

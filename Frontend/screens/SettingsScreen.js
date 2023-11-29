@@ -157,7 +157,7 @@ const SettingsScreen = ({ navigation, route }) => {
                         justifyContent: 'space-between',
                       }}
                     >
-                      <Text style={[styles.itemText, {left: 20}]}>{item}</Text>
+                      <Text style={[styles.itemText, {left: 20, bottom: 6}]}>{item}</Text>
                       <Switch
                         trackColor={{
                           false: theme === "dark" ? Colors.BB_bone : Colors.gray,
