@@ -278,7 +278,7 @@ export const getThemedStyles = (theme) => {
       },
       headerText: {
         color: Colors.BB_bone,
-        fontSize: 27.5,
+        fontSize: 24,
         fontWeight: 'bold',
         alignSelf: 'center',
         position: 'absolute',
@@ -507,6 +507,62 @@ export const getThemedStyles = (theme) => {
       spacer: {
         position: 'relative',
         height: Platform.OS == 'ios' ? 0.06 * screenHeight : 0.03 * screenHeight,
+      },
+    },
+    ////////////////////////////////////////////
+    ChangePassword: {
+      scrollViewContent: {
+        flexGrow: 1,
+      },
+      container: {
+        flex: 1,
+        paddingVertical: 20,
+        paddingHorizontal: 20
+      },
+      topBar: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        backgroundColor: themeColors.BB_darkRedPurple,
+        paddingHorizontal: 15,
+        paddingVertical: 15,
+        borderBottomWidth: 2,
+        borderBottomColor: themeColors.black,
+      },
+      headerText: {
+        color: themeColors.BB_bone,
+        fontSize: 24,
+        fontWeight: 'bold',
+        alignSelf: 'center',
+      },
+      iconContainer: {
+        width: 40,
+        height: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
+      itemContainer: {
+        paddingVertical: 10,
+      },
+      title: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 8,
+      },
+      data: {
+        fontSize: 16,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 6,
+        padding: 8,
+      },
+      thinHorizontalBar: {
+        height: 10,
+        top: 2,
+        backgroundColor: themeColors.BB_darkRedPurple,
+        width: '100%',
+        borderRadius: 5,
+        alignContent: 'center'
       },
     },
     ////////////////////////////////////////////
@@ -1231,6 +1287,14 @@ export const getThemedStyles = (theme) => {
         backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.white,
         color: theme === 'dark' ? Colors.BB_bone : Colors.black,
       },
+      thinHorizontalBar: {
+        height: 10,
+        top: 2,
+        backgroundColor: themeColors.BB_darkRedPurple,
+        width: '100%',
+        borderRadius: 5,
+        alignContent: 'center'
+      },
       circleContainer: {
         position: 'absolute',
         top: 15,
@@ -1729,7 +1793,7 @@ export const getThemedStyles = (theme) => {
       },
       headerText: {
         color: themeColors.BB_bone,
-        fontSize: 27.5,
+        fontSize: 24,
         fontWeight: 'bold',
         alignSelf: 'center',
       },

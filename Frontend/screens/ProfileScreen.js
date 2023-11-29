@@ -847,6 +847,7 @@ function ProfileScreen({ navigation, route }) {
           setLoading(true);
           navigation.navigate('SettingsScreen', {
             prevContactInfo: contactInfo,
+            profileName: profileName,
           });
         }}
         style={{
