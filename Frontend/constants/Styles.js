@@ -90,15 +90,11 @@ export const getThemedStyles = (theme) => {
           },
         }),
       },
-      circleContainer: {
-        top: 15,
-        left: 15,
-      },
       circle: {
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: themeColors.BB_darkRedPurple,
+        backgroundColor: themeColors.BB_bone,
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,

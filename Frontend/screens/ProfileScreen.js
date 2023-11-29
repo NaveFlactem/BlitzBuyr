@@ -722,21 +722,6 @@ function ProfileScreen({ navigation, route }) {
         )}
       </View>
 
-      {/* Settings */}
-      <TouchableOpacity
-        onPress={() => {
-          setLoading(true);
-          navigation.navigate('SettingsScreen');
-        }}
-        style={{
-          position: 'absolute',
-          top: 0.28 * screenHeight,
-          right: 0.03 * screenHeight,
-        }}
-      >
-        <MaterialIcons name="settings" size={30} color="black" />
-      </TouchableOpacity>
-
       <View
         style={{
           flex: 1,
@@ -850,12 +835,16 @@ function ProfileScreen({ navigation, route }) {
         }}
         style={{
           position: 'absolute',
-          top: 0.28 * screenHeight,
-          right: 0.03 * screenHeight,
+          top: 10,
+          right: 10
         }}
       >
-        <MaterialIcons name="settings" size={30} color="black" />
+        <View style={styles.circle}>
+        <MaterialIcons name="settings" size={30} color={Colors.BB_darkerRedPurple} />
+
+        </View>
       </TouchableOpacity>
+
     </SafeAreaView>
   );
 }
