@@ -391,123 +391,39 @@ const EditProfileScreen = ({ navigation, route }) => {
           <View
             style={{
               flexDirection: 'column',
-              marginBottom: 6,
               marginTop: 60,
+              paddingVertical: 15,
             }}
           >
             {/* Username */}
-            <Text
-              style={{
-                color: Colors.BB_darkRedPurple,
-                fontWeight: 'bold',
-                fontSize: 16,
-                paddingBottom: 10,
-              }}
-            >
-              Username
-            </Text>
-            <View
-              style={{
-                height: 44,
-                width: '100%',
-                borderColor: Colors.BB_darkRedPurple,
-                borderWidth: 1,
-                borderRadius: 6,
-                justifyContent: 'center',
-                paddingLeft: 8,
-              }}
-            >
-              <TextInput
-                value={profileName}
-                onChangeText={(value) => setProfileName(value)}
-                editable={true}
-              />
+            <View style={styles.itemContainer}>
+              <Text style={styles.itemTitle}>Username</Text>
+              <View style={styles.itemTextField}>
+                <TextInput
+                  value={profileName}
+                  onChangeText={(value) => setProfileName(value)}
+                  editable={true}
+                />
+              </View>
             </View>
 
             {/* Email */}
-            <Text
-              style={{
-                color: Colors.BB_darkRedPurple,
-                fontWeight: 'bold',
-                fontSize: 16,
-                paddingBottom: 10,
-                paddingTop: 10,
-              }}
-            >
-              Email
-            </Text>
-            <View
-              style={{
-                height: 44,
-                width: '100%',
-                borderColor: Colors.BB_darkRedPurple,
-                borderWidth: 1,
-                borderRadius: 6,
-                justifyContent: 'center',
-                paddingLeft: 8,
-              }}
-            >
-              <TextInput
-                value={email}
-                onChangeText={(value) => setEmail(value)}
-                editable={true}
-              />
-            </View>
-
-            {/* Password */}
-
-            <Text
-              style={{
-                color: Colors.BB_darkRedPurple,
-                fontWeight: 'bold',
-                fontSize: 16,
-                paddingBottom: 10,
-                paddingTop: 10,
-              }}
-            >
-              Password
-            </Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                height: 44,
-                width: '100%',
-                borderColor: Colors.BB_darkRedPurple,
-                borderWidth: 1,
-                borderRadius: 6,
-                justifyContent: 'center',
-                paddingLeft: 8,
-              }}
-            >
-              <TextInput
-                value={password}
-                onChangeText={(value) => setPassword(value)}
-                editable={true}
-                secureTextEntry={isPasswordHidden}
-                style={{ flex: 9 }}
-              />
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  paddingVertical: 10,
-                  paddingHorizontal: 10,
-                }}
-                onPress={togglePasswordVisibility}
-              >
-                <MaterialIcons
-                  name="visibility"
-                  size={20}
-                  color={Colors.BB_darkRedPurple}
+            <View style={styles.itemContainer}>
+              <Text style={styles.itemTitle}>Email</Text>
+              <View style={styles.itemTextField}>
+                <TextInput
+                  value={email}
+                  onChangeText={(value) => setEmail(value)}
+                  editable={true}
                 />
-              </TouchableOpacity>
+              </View>
             </View>
-
             {/* SAVE CHANGES + DELETE ACCOUNT */}
             <View
               style={{
                 alignItems: 'center',
                 justifyContent: 'center',
-                paddingVertical: 10
+                paddingVertical: 10,
               }}
             >
               {/* DELETE ACCOUNT BUTTON */}
