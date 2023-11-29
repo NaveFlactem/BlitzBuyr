@@ -19,13 +19,14 @@ const SettingsScreen = ({ navigation, route }) => {
   const { toggleTheme } = useThemeContext();
 
   const styles = getThemedStyles(useThemeContext().theme).SettingsScreen;
-  const [contactInfo, setContactInfo] = useState(route.params?.prevContactInfo);
+  const [contactInfo] = useState(route.params?.prevContactInfo);
+  const [profileName] = useState(route.params?.profileName);
 
   const titles = {
     'Account Settings': ['Change Password', 'Contact Info'],
-    'Notifications': ['Account Activity', 'Notification Preferences'],
-    'General': ['Dark Mode'],
-    'More': ['About Us'],
+    Notifications: ['Account Activity', 'Notification Preferences'],
+    General: ['Dark Mode'],
+    More: ['About Us'],
   };
 
   const toggleNotifications = () => {
@@ -50,26 +51,27 @@ const SettingsScreen = ({ navigation, route }) => {
 
   const toggleParams = {
     'Dark Mode': toggleDarkMode,
-    'Location': toggleLocation,
+    Location: toggleLocation,
     'Account Activity': toggleNotifications,
   };
 
   const params = {
-    'Contact Info' : {
+    'Contact Info': {
       prevContactInfo: contactInfo,
-    }
-  }
+    },
+    'Change Password': { profileName : profileName},
+  };
 
   const [switchItemsState, setSwitchItemsState] = useState({
     'Dark Mode': theme === 'light' ? false : true,
     'Account Activity': false,
-    'Location': false,
+    Location: false,
   });
 
   return (
     <SafeAreaView style={styles.safeareaview}>
       <ScrollView
-        contentContainerStyle={styles.scrollViewContent}
+        contentContainerStyle={{ flexGrow: 1 }}
         stickyHeaderIndices={[0]}
       >
         {/* Top Bar */}
@@ -128,7 +130,10 @@ const SettingsScreen = ({ navigation, route }) => {
                         setLoading(true);
                         console.log(`${item.replace(' ', '')}Screen`);
                         console.log(params[item]);
-                        navigation.navigate(`${item.replace(' ', '')}Screen`, params[item]);
+                        navigation.navigate(
+                          `${item.replace(' ', '')}Screen`,
+                          params[item]
+                        );
                       }}
                     >
                       <Text style={styles.itemText}>{item}</Text>
