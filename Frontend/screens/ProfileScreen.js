@@ -79,8 +79,8 @@ const handleContactClick = async (key, data) => {
       try {
         await Linking.openURL(
           `mailto:${data}?subject=${encodeURIComponent(
-            'BlitzBuyr',
-          )}&body=${encodeURIComponent('')}`,
+            'BlitzBuyr'
+          )}&body=${encodeURIComponent('')}`
         );
       } catch (error) {
         console.error('Error opening email:', error);
@@ -90,7 +90,6 @@ const handleContactClick = async (key, data) => {
       try {
         // Assuming `data` is your phone number
         const phoneNumber = data;
-
         Alert.alert(
           'Choose an action',
           'Would you like to call or text this number?',
@@ -103,8 +102,12 @@ const handleContactClick = async (key, data) => {
               text: 'Text',
               onPress: () => Linking.openURL(`sms:${phoneNumber}`),
             },
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+            },
           ],
-          { cancelable: true },
+          { cancelable: true }
         );
       } catch (error) {
         console.error('Error opening phoneNumber:', error);
@@ -130,7 +133,7 @@ const handleContactClick = async (key, data) => {
 const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
   const styles = getThemedStyles(useThemeContext().theme).ProfileScreen;
   let displayValues = Object.values(contactInfo).some(
-    (value) => value.data?.length > 0,
+    (value) => value.data?.length > 0
   );
 
   if (!selfProfile && Object.values(contactInfo).every((value) => value.hidden))
@@ -150,11 +153,20 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
       saveContactInfo(newContactInfo);
 
       console.log(
-        `${newContactInfo[key].hidden ? 'Hidden' : 'Unhidden'} ${key}`,
+        `${newContactInfo[key].hidden ? 'Hidden' : 'Unhidden'} ${key}`
       );
     },
-    [contactInfo],
+    [contactInfo]
   );
+
+  const formatPhoneNumber = (phoneNumberString) => {
+    var cleaned = ('' + phoneNumberString).replace(/\D/g, '');
+    var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      return '(' + match[1] + ')-' + match[2] + '-' + match[3];
+    }
+    return null;
+  };
 
   return (
     <View style={styles.contactInfoContainer}>
@@ -163,6 +175,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
           {displayValues ? (
             Object.entries(contactInfo).map(([key, value]) => {
               if (value.data?.length > 0) {
+                const displayData = key === 'phone' ? formatPhoneNumber(value.data) : value.data;
                 return (
                   (selfProfile || (!selfProfile && !value.hidden)) && (
                     <View key={key}>
@@ -174,7 +187,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                       >
                         {/* Icon + Handle */}
                         <TouchableOpacity
-                          onPress={() => handleContactClick(key, value.data)}
+                      onPress={() => handleContactClick(key, displayData)}
                           style={styles.socialIcons}
                         >
                           <AntDesign
@@ -191,7 +204,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                               { opacity: value.hidden ? 0.25 : 1.0 },
                             ]}
                           >
-                            {value.data}
+                        {displayData}
                           </Text>
                         </TouchableOpacity>
                         {/* Visibility */}
@@ -223,7 +236,6 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
           )}
         </View>
       </ScrollView>
-      
     </View>
   );
 };
@@ -241,7 +253,7 @@ function ProfileScreen({ navigation, route }) {
   const [userLocation, setUserLocation] = useState(null);
   const [LikeStates, setLikeStates] = useState({});
   const styles = getThemedStyles(useThemeContext().theme).ProfileScreen;
-  
+
   // Use states for contact info
   const [contactInfo, setContactInfo] = useState({
     phone: { data: '2132149702', hidden: false, icon: 'phone' },
@@ -267,7 +279,7 @@ function ProfileScreen({ navigation, route }) {
       const username = getStoredUsername();
       if (route.params?.username) {
         console.log(
-          `Setting username to passed username ${route.params.username}`,
+          `Setting username to passed username ${route.params.username}`
         );
         // we navigated with a username passed as param (i.e. clicking someone's profile)
         setProfileName(route.params.username);
@@ -324,7 +336,7 @@ function ProfileScreen({ navigation, route }) {
     console.log(`Fetching profile info for ${username}`);
     try {
       const fetchUrl = `${serverIp}/api/profile?username=${encodeURIComponent(
-        getStoredUsername(),
+        getStoredUsername()
       )}&password=${getStoredPassword()}&profileName=${username}`;
       console.log(fetchUrl);
       const profileResponse = await fetch(fetchUrl, {
@@ -351,7 +363,7 @@ function ProfileScreen({ navigation, route }) {
           }),
           userRatings: profileData.ratings.reduce(
             (acc, rating) => ({ ...acc, ...rating }),
-            {},
+            {}
           ),
           profilePicture: profileData.profilePicture,
           coverPicture: profileData.coverPicture,
@@ -369,8 +381,8 @@ function ProfileScreen({ navigation, route }) {
 
         const initialLikeStates = Object.fromEntries(
           [...profileData.likedListings, ...profileData.userListings].map(
-            (listing) => [listing.ListingId, listing.liked],
-          ),
+            (listing) => [listing.ListingId, listing.liked]
+          )
         );
         setLikeStates(initialLikeStates);
 
@@ -379,7 +391,7 @@ function ProfileScreen({ navigation, route }) {
         console.log(
           'Error fetching profile:',
           profileResponse.status,
-          profileData,
+          profileData
         );
       }
     } catch (err) {
@@ -417,7 +429,7 @@ function ProfileScreen({ navigation, route }) {
     console.log(
       `${
         newLikeStates[listingId] ? 'Likered' : 'UnLikered'
-      } listing ID ${listingId}`,
+      } listing ID ${listingId}`
     );
   };
 
@@ -682,7 +694,7 @@ function ProfileScreen({ navigation, route }) {
               style={styles.button}
             >
               <Text style={styles.buttonText}>Edit Contact</Text>
-            </TouchableOpacity>         
+            </TouchableOpacity>
           </View>
         )}
         {/* Rate User Button */}
@@ -816,10 +828,10 @@ function ProfileScreen({ navigation, route }) {
                 setProfileInfo((prevProfileInfo) => ({
                   ...prevProfileInfo,
                   likedListings: prevProfileInfo.likedListings.filter(
-                    (item) => item.ListingId !== listingId,
+                    (item) => item.ListingId !== listingId
                   ),
                   userListings: prevProfileInfo.userListings.filter(
-                    (item) => item.ListingId !== listingId,
+                    (item) => item.ListingId !== listingId
                   ),
                 }));
 
