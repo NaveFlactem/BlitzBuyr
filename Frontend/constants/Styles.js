@@ -113,7 +113,7 @@ export const getThemedStyles = (theme) => {
       },
     },
 
-    // HOME SCREEN // 
+    // HOME SCREEN //
     HomeScreen: {
       screenfield: {
         flex: 1,
@@ -181,7 +181,6 @@ export const getThemedStyles = (theme) => {
         bottom: '8%',
         right: '5%',
         zIndex: 11,
-
       },
       topBar: {
         position: 'absolute',
@@ -205,7 +204,7 @@ export const getThemedStyles = (theme) => {
         zIndex: 10,
       },
     },
-    
+
     // RATING SCREEN //
     RatingScreen: {
       container: {
@@ -245,7 +244,7 @@ export const getThemedStyles = (theme) => {
 
     // SETTINGS SCREEN //
     SettingsScreen: {
-      safeareaview : {
+      safeareaview: {
         flex: 1,
         backgroundColor: themeColors.BB_darkRedPurple
       },
@@ -352,7 +351,8 @@ export const getThemedStyles = (theme) => {
         height: '100%',
         backgroundColor: themeColors.BB_darkRedPurple,
         borderRightWidth: 2,
-        borderRightColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_orange,
+        borderRightColor:
+          theme === 'dark' ? Colors.BB_violet : Colors.BB_orange,
       },
       drawer: {
         alignSelf: 'center',
@@ -365,7 +365,8 @@ export const getThemedStyles = (theme) => {
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 12,
-        backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_darkRedPurple,
+        backgroundColor:
+          theme === 'dark' ? Colors.black : Colors.BB_darkRedPurple,
         ...Platform.select({
           ios: {
             shadowColor: themeColors.black,
@@ -479,7 +480,8 @@ export const getThemedStyles = (theme) => {
       },
       seperationText: {
         color: themeColors.white,
-        backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_darkRedPurple,
+        backgroundColor:
+          theme === 'dark' ? Colors.black : Colors.BB_darkRedPurple,
         fontSize: 12,
         fontWeight: 'bold',
         marginTop: 10,
@@ -506,7 +508,8 @@ export const getThemedStyles = (theme) => {
       },
       spacer: {
         position: 'relative',
-        height: Platform.OS == 'ios' ? 0.06 * screenHeight : 0.03 * screenHeight,
+        height:
+          Platform.OS == 'ios' ? 0.06 * screenHeight : 0.03 * screenHeight,
       },
     },
     ////////////////////////////////////////////
@@ -517,7 +520,7 @@ export const getThemedStyles = (theme) => {
       container: {
         flex: 1,
         paddingVertical: 20,
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
       },
       topBar: {
         alignItems: 'center',
@@ -562,7 +565,7 @@ export const getThemedStyles = (theme) => {
         backgroundColor: themeColors.BB_darkRedPurple,
         width: '100%',
         borderRadius: 5,
-        alignContent: 'center'
+        alignContent: 'center',
       },
     },
     ////////////////////////////////////////////
@@ -615,7 +618,7 @@ export const getThemedStyles = (theme) => {
       },
     },
     ////////////////////////////////////////////
-    NoListings : {
+    NoListings: {
       container: {
         flex: 1,
         justifyContent: 'center',
@@ -686,7 +689,7 @@ export const getThemedStyles = (theme) => {
       },
     },
     ////////////////////////////////////////////
-    Listing : {
+    Listing: {
       card: {
         height: screenHeight,
         width: screenWidth,
@@ -1110,7 +1113,7 @@ export const getThemedStyles = (theme) => {
         height: '100%',
         opacity: 0.1,
       },
-      },
+    },
     ////////////////////////////////////////////
     TopBarGeneric: {
       logo: {
@@ -1245,7 +1248,7 @@ export const getThemedStyles = (theme) => {
       },
       container: {
         paddingVertical: 10,
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
       },
       topBar: {
         alignItems: 'center',
@@ -1293,7 +1296,7 @@ export const getThemedStyles = (theme) => {
         backgroundColor: themeColors.BB_darkRedPurple,
         width: '100%',
         borderRadius: 5,
-        alignContent: 'center'
+        alignContent: 'center',
       },
       circleContainer: {
         position: 'absolute',
@@ -1539,7 +1542,7 @@ export const getThemedStyles = (theme) => {
           },
         }),
       },
-    
+
       label: {
         fontSize: 18,
         fontWeight: 'bold',
@@ -1561,7 +1564,7 @@ export const getThemedStyles = (theme) => {
         top: 0.008 * screenHeight,
         left: 0.05 * screenWidth,
       },
-    
+
       input: {
         height: 40,
         borderColor: themeColors.BB_black,
@@ -1624,7 +1627,7 @@ export const getThemedStyles = (theme) => {
         color: 'white',
         alignSelf: 'center',
       },
-    
+
       rowContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -1806,6 +1809,24 @@ export const getThemedStyles = (theme) => {
         justifyContent: 'center',
         paddingLeft: 8,
         marginBottom: 10,
+      },
+      itemTitle: {
+        color: Colors.BB_darkRedPurple,
+        fontWeight: 'bold',
+        fontSize: 18,
+        paddingBottom: 5,
+        paddingLeft: 10,
+      },
+      itemTextField: {
+        height: 50,
+        borderColor: Colors.BB_darkRedPurple,
+        borderWidth: 1,
+        borderRadius: 30,
+        justifyContent: 'center',
+        paddingLeft: 20,
+      },
+      itemContainer: {
+        paddingVertical: 5,
       },
       buttonContainer: {
         flexDirection: 'row',
