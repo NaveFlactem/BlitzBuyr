@@ -1671,7 +1671,7 @@ export const getThemedStyles = (theme) => {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: themeColors.BB_bone,
+        backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
       },
       currencyOption: {
         fontSize: 24,
@@ -1712,7 +1712,7 @@ export const getThemedStyles = (theme) => {
       },
       modalView: {
         margin: 20,
-        backgroundColor: 'white',
+        backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
         borderRadius: 20,
         padding: 35,
         alignItems: 'center',
@@ -1736,17 +1736,32 @@ export const getThemedStyles = (theme) => {
         width: 200,
         height: 50,
         marginBottom: 10,
-        backgroundColor: themeColors.BB_bone,
+        backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
         borderRadius: 10,
         borderColor: themeColors.black,
         alignContent: 'center',
         justifyContent: 'center',
         textAlign: 'center',
+        ...Platform.select({
+          ios: {
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.6,
+            shadowRadius: 4,
+          },
+          android: {
+            elevation: 5,
+          },
+        }),
       },
       imagePickerButtonText: {
         fontSize: 18,
         color: 'black',
         alignSelf: 'center',
+        color: theme === 'dark' ? Colors.BB_bone : Colors.black,
       },
       pickerBackground: {
         position: 'absolute',
