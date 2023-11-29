@@ -428,8 +428,6 @@ const handleLibraryPick = async () => {
    */
   const handleDragStart = () => {
     // When a drag starts, disable scrolling
-    console.log('Drag started');
-    console.log("data: " + data);
     setIsScrollEnabled(false);
   };
 
@@ -443,8 +441,6 @@ const handleLibraryPick = async () => {
     // When the drag is released, enable scrolling
     setData(data);
     setIsScrollEnabled(true);
-    console.log ('Drag released');
-    console.log ("data: " + data);
   };
 
   /**
