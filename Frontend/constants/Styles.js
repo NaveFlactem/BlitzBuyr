@@ -94,11 +94,15 @@ export const getThemedStyles = (theme) => {
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
+        backgroundColor:
+          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 1,
-        borderColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_darkRedPurple,
+        borderColor:
+          theme === 'dark'
+            ? themeColors.BB_darkRedPurple
+            : Colors.BB_darkRedPurple,
         position: 'absolute',
         ...Platform.select({
           ios: {
@@ -246,7 +250,7 @@ export const getThemedStyles = (theme) => {
     SettingsScreen: {
       safeareaview: {
         flex: 1,
-        backgroundColor: themeColors.BB_darkRedPurple
+        backgroundColor: themeColors.BB_darkRedPurple,
       },
       scrollViewContent: {
         flexGrow: 1,
@@ -322,14 +326,16 @@ export const getThemedStyles = (theme) => {
       },
       thinHorizontalBar: {
         height: 1,
-        backgroundColor: theme === 'dark' ? Colors.BB_bone : Colors.BB_darkRedPurple,
+        backgroundColor:
+          theme === 'dark' ? Colors.BB_bone : Colors.BB_darkRedPurple,
         width: '90%',
         borderRadius: 5,
         alignSelf: 'center',
       },
       horizontalBar: {
         height: 15,
-        backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
+        backgroundColor:
+          theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
         width: '90%',
         borderRadius: 5,
         alignSelf: 'center',
@@ -704,7 +710,8 @@ export const getThemedStyles = (theme) => {
         borderWidth: 0.005 * screenHeight,
         justifyContent: 'center',
         overflow: 'hidden',
-        borderColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
+        borderColor:
+          theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
         bottom: Platform.OS == 'ios' ? '28%' : '23%',
         ...Platform.select({
           ios: {
@@ -727,7 +734,8 @@ export const getThemedStyles = (theme) => {
         borderWidth: 0.005 * screenHeight,
         justifyContent: 'center',
         overflow: 'hidden',
-        borderColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
+        borderColor:
+          theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
         bottom: Platform.OS == 'ios' ? '15.5%' : '10%',
         ...Platform.select({
           ios: {
@@ -871,7 +879,8 @@ export const getThemedStyles = (theme) => {
         bottom: 0,
         left: -70,
         borderBottomWidth: 50,
-        borderBottomColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
+        borderBottomColor:
+          theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
         borderLeftWidth: 50,
         borderLeftColor: 'transparent',
         borderRightWidth: 50,
@@ -1156,7 +1165,8 @@ export const getThemedStyles = (theme) => {
       },
       dot: {
         top: 0.08 * screenHeight,
-        backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
+        backgroundColor:
+          theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
         width: 20,
         height: 20,
         borderRadius: 10,
@@ -1242,7 +1252,7 @@ export const getThemedStyles = (theme) => {
     },
     ////////////////////////////////////////////
     ContactInfoScreen: {
-      safeareaview : {
+      safeareaview: {
         flex: 1,
         backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
       },
@@ -1287,7 +1297,8 @@ export const getThemedStyles = (theme) => {
         borderColor: 'gray',
         borderRadius: 6,
         padding: 8,
-        backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.white,
+        backgroundColor:
+          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.white,
         color: theme === 'dark' ? Colors.BB_bone : Colors.black,
       },
       thinHorizontalBar: {
@@ -1317,10 +1328,39 @@ export const getThemedStyles = (theme) => {
       thinHorizontalBar: {
         height: 10,
         top: 2,
-        backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
+        backgroundColor:
+          theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
         width: '100%',
         borderRadius: 5,
-        alignContent: 'center'
+        alignContent: 'center',
+      },
+      buttonText: {
+        fontStyle: 'normal',
+        fontWeight: '500',
+        fontSize: 15,
+        color: themeColors.white,
+      },
+      button: {
+        width: 200,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: themeColors.BB_darkRedPurple,
+        borderRadius: 10,
+        marginHorizontal: 10,
+        marginBottom: 20,
+        marginVertical: 10,
+        ...Platform.select({
+          ios: {
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOffset: { width: 2, height: 2 },
+            shadowOpacity: 0.8,
+            shadowRadius: 2,
+          },
+          android: {
+            elevation: 10,
+          },
+        }),
       },
     },
     ////////////////////////////////////////////
@@ -1784,6 +1824,32 @@ export const getThemedStyles = (theme) => {
         color: themeColors.BB_darkRedPurple,
         textAlign: 'center',
       },
+      button: {
+        width: 130,
+        height: 45,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: themeColors.BB_darkRedPurple,
+        borderRadius: 10,
+        marginHorizontal: 10,
+        ...Platform.select({
+          ios: {
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOffset: { width: 2, height: 2 },
+            shadowOpacity: 0.8,
+            shadowRadius: 2,
+          },
+          android: {
+            elevation: 10,
+          },
+        }),
+      },
+      buttonText: {
+        fontStyle: 'normal',
+        fontWeight: '500',
+        fontSize: 15,
+        color: themeColors.white,
+      },
       topBar: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -1803,7 +1869,8 @@ export const getThemedStyles = (theme) => {
       input: {
         height: 44,
         width: '100%',
-        borderColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
+        borderColor:
+          theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
         borderWidth: 1,
         borderRadius: 6,
         justifyContent: 'center',
@@ -1815,15 +1882,15 @@ export const getThemedStyles = (theme) => {
         fontWeight: 'bold',
         fontSize: 18,
         paddingBottom: 5,
-        paddingLeft: 10,
+        paddingLeft: 5,
       },
       itemTextField: {
-        height: 50,
+        height: 45,
         borderColor: Colors.BB_darkRedPurple,
         borderWidth: 1,
-        borderRadius: 30,
+        borderRadius: 5,
         justifyContent: 'center',
-        paddingLeft: 20,
+        paddingLeft: 10,
       },
       itemContainer: {
         paddingVertical: 5,

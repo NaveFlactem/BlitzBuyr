@@ -785,6 +785,7 @@ function ProfileScreen({ navigation, route }) {
           renderTabBar={renderTabBar}
         />
       </View>
+      
 
       {/* Overlay for displaying selected listing */}
       {selectedListing && (
@@ -842,7 +843,7 @@ function ProfileScreen({ navigation, route }) {
       )}
 
       {/* Settings */}
-      <TouchableOpacity
+      {selfProfile && (<TouchableOpacity
         onPress={() => {
           setLoading(true);
           navigation.navigate('SettingsScreen', {
@@ -852,8 +853,8 @@ function ProfileScreen({ navigation, route }) {
         }}
         style={{
           position: 'absolute',
-          top: 10,
-          right: 10,
+          top: Platform.OS == 'ios' ? 10 : 15,
+          right: Platform.OS == 'ios' ? 10 : 50,
         }}
       >
         <View style={styles.circle}>
@@ -863,7 +864,7 @@ function ProfileScreen({ navigation, route }) {
             color={theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet}
           />
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity>)}
     </SafeAreaView>
   );
 }
