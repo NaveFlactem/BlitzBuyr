@@ -6,7 +6,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import {
-  Platform,
   SafeAreaView,
   ScrollView,
   Text,
@@ -14,6 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import { saveContactInfo } from '../network/Service';
 import { getStoredUsername } from './auth/Authenticate';
@@ -30,7 +30,7 @@ import { getThemedStyles } from '../constants/Styles';
  * @returns {JSX.Element} A screen for editing a users contact information.
  */
 const EditContactInfo = ({ navigation, route }) => {
-  const styles = getThemedStyles(useThemeContext().theme).EditContactInfo;
+  const styles = getThemedStyles(useThemeContext().theme).ContactInfoScreen;
   const [loading, setLoading] = useState(true);
   const [contactInfo, setContactInfo] = useState(route.params?.prevContactInfo);
 
@@ -56,101 +56,88 @@ const EditContactInfo = ({ navigation, route }) => {
       style={{
         flex: 1,
         backgroundColor: Colors.BB_bone,
-        paddingHorizontal: 22,
       }}
     >
-      <View
-        style={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginBottom: 25,
-          flexDirection: 'row',
-        }}
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        stickyHeaderIndices={[0]}
       >
-        <TouchableOpacity
-          onPress={() => {
-            setLoading(true);
-            navigation.navigate('BottomNavOverlay');
-          }}
-          style={styles.circleContainer}
-        >
-          <View style={styles.circle}>
-            <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
-          </View>
-        </TouchableOpacity>
-
-        <Text
-          style={{
-            position: 'absolute',
-            color: Colors.BB_darkRedPurple,
-            fontSize: 22.5,
-            fontWeight: 'bold',
-            top: 20,
-          }}
-        >
-          Edit Contact
-        </Text>
-      </View>
-
-      <ScrollView style={{ marginTop: 50 }}>
-        <View style={styles.container}>
-          {Object.keys(contactInfo).map((key) => (
-            <View key={key} style={styles.itemContainer}>
-              <Text style={styles.title}>
-                {key.charAt(0).toUpperCase() + key.substring(1)}
-              </Text>
-              <TextInput
-                style={styles.data}
-                value={contactInfo[key].data}
-                onChangeText={(value) => handleInputChange(key, value)}
-              />
-            </View>
-          ))}
-        </View>
-
-        {/* SAVE CHANGES BUTTON */}
-        <View style={{ flex: 1 }}>
-          <TouchableOpacity
-            onPress={() => {
-              try {
-                saveContactInfo(contactInfo);
-
-                navigation.setOptions({
-                  params: { profileName: getStoredUsername() },
-                });
-                navigation.goBack();
-              } catch (error) {
-                alert(error);
-              }
-            }}
-            style={{
-              width: 130,
-              height: 50,
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: Colors.BB_darkRedPurple,
-              borderRadius: 10,
-              borderWidth: 2,
-              borderColor: Colors.black,
-              marginVertical: 20,
-            }}
+        {/* TOP BAR */}
+        <View style={styles.topBar}>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
           >
-            <Text
-              style={{
-                fontStyle: 'normal',
-                color: Colors.white,
-                fontWeight: '500',
-                fontSize: 15,
+            <TouchableOpacity
+              onPress={() => {
+                setLoading(true);
+                navigation.navigate('SettingsScreen');
               }}
             >
-              Save Changes
-            </Text>
-          </TouchableOpacity>
+              <View style={styles.iconContainer}>
+                <MaterialCommunityIcons
+                  name="arrow-left"
+                  size={30}
+                  color={Colors.BB_bone}
+                />
+              </View>
+            </TouchableOpacity>
+            <Text style={styles.headerText}>Contact Info</Text>
+            <TouchableOpacity
+              onPress={() => {
+                setLoading(true);
+                try {
+                  saveContactInfo(contactInfo);
+
+                  navigation.setOptions({
+                    params: { profileName: getStoredUsername() },
+                  });
+                  navigation.navigate('SettingsScreen');
+                } catch (error) {
+                  alert(error);
+                }
+                navigation.navigate('BottomNavOverlay');
+              }}
+            >
+              <View style={styles.iconContainer}>
+                <MaterialCommunityIcons
+                  name="check"
+                  size={30}
+                  color={Colors.BB_bone}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* CONTENT */}
+        <View style={styles.container}>
+          {Object.keys(contactInfo).map((key) => (
+            <View key={key}>
+              <View style={styles.itemContainer}>
+                <View style={{ flexDirection: 'row' }}>
+                  <AntDesign
+                    name={contactInfo[key].icon}
+                    size={24}
+                    color="black"
+                    style={{ paddingRight: 10 }}
+                  />
+                  <Text style={styles.title}>
+                    {key.charAt(0).toUpperCase() + key.substring(1)}
+                  </Text>
+                </View>
+                <TextInput
+                  style={styles.data}
+                  value={contactInfo[key].data}
+                  onChangeText={(value) => handleInputChange(key, value)}
+                />
+              </View>
+              <View style={styles.thinHorizontalBar}></View>
+            </View>
+          ))}
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
-
 
 export default EditContactInfo;

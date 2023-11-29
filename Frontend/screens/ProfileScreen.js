@@ -175,7 +175,8 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
           {displayValues ? (
             Object.entries(contactInfo).map(([key, value]) => {
               if (value.data?.length > 0) {
-                const displayData = key === 'phone' ? formatPhoneNumber(value.data) : value.data;
+                const displayData =
+                  key === 'phone' ? formatPhoneNumber(value.data) : value.data;
                 return (
                   (selfProfile || (!selfProfile && !value.hidden)) && (
                     <View key={key}>
@@ -187,7 +188,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                       >
                         {/* Icon + Handle */}
                         <TouchableOpacity
-                      onPress={() => handleContactClick(key, displayData)}
+                          onPress={() => handleContactClick(key, displayData)}
                           style={styles.socialIcons}
                         >
                           <AntDesign
@@ -204,7 +205,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                               { opacity: value.hidden ? 0.25 : 1.0 },
                             ]}
                           >
-                        {displayData}
+                            {displayData}
                           </Text>
                         </TouchableOpacity>
                         {/* Visibility */}
@@ -369,7 +370,6 @@ function ProfileScreen({ navigation, route }) {
           coverPicture: profileData.coverPicture,
           email: profileData.email,
         });
-        console.log(profileData.contactInfo);
 
         // Set the contactInfo state
         const updatedContactInfo = { ...contactInfo };
@@ -659,42 +659,34 @@ function ProfileScreen({ navigation, route }) {
           <View
             style={{
               flexDirection: 'row',
-              marginTop: 5,
+              paddingVertical: 10,
               top: 0.28 * screenHeight,
               marginBottom: -100,
             }}
           >
             {/* Logout */}
-            <TouchableOpacity onPress={handleLogout} style={styles.button}>
-              <Text style={styles.buttonText}>Logout</Text>
-            </TouchableOpacity>
+            <View style={{paddingHorizontal: 10}}>
+              <TouchableOpacity onPress={handleLogout} style={styles.button}>
+                <Text style={styles.buttonText}>Logout</Text>
+              </TouchableOpacity>
+            </View>
             {/* Edit Profile */}
-            <TouchableOpacity
-              onPress={() => {
-                setLoading(true);
-                navigation.navigate('EditProfile', {
-                  profileName: profileName,
-                  profilePicture: profileInfo.profilePicture,
-                  coverPicture: profileInfo.coverPicture,
-                  email: profileInfo.email,
-                });
-              }}
-              style={{ ...styles.button, width: 114 }}
-            >
-              <Text style={styles.buttonText}>Edit Profile</Text>
-            </TouchableOpacity>
-            {/* Edit Contact */}
-            <TouchableOpacity
-              onPress={() => {
-                setLoading(true);
-                navigation.navigate('EditContactInfo', {
-                  prevContactInfo: contactInfo,
-                });
-              }}
-              style={styles.button}
-            >
-              <Text style={styles.buttonText}>Edit Contact</Text>
-            </TouchableOpacity>
+            <View style={{paddingHorizontal: 10}}>
+              <TouchableOpacity
+                onPress={() => {
+                  setLoading(true);
+                  navigation.navigate('EditProfile', {
+                    profileName: profileName,
+                    profilePicture: profileInfo.profilePicture,
+                    coverPicture: profileInfo.coverPicture,
+                    email: profileInfo.email,
+                  });
+                }}
+                style={{ ...styles.button, width: 114 }}
+              >
+                <Text style={styles.buttonText}>Edit Profile</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
         {/* Rate User Button */}
@@ -847,6 +839,23 @@ function ProfileScreen({ navigation, route }) {
           </TouchableOpacity>
         </View>
       )}
+
+      {/* Settings */}
+      <TouchableOpacity
+        onPress={() => {
+          setLoading(true);
+          navigation.navigate('SettingsScreen', {
+            prevContactInfo: contactInfo,
+          });
+        }}
+        style={{
+          position: 'absolute',
+          top: 0.28 * screenHeight,
+          right: 0.03 * screenHeight,
+        }}
+      >
+        <MaterialIcons name="settings" size={30} color="black" />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }

@@ -5,8 +5,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
-  StyleSheet,
-  Platform,
   Switch,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -15,32 +13,55 @@ import Colors from '../constants/Colors';
 import { getThemedStyles } from '../constants/Styles.js';
 import { useThemeContext } from '../components/visuals/ThemeProvider.js';
 
-const SettingsScreen = ({ navigation }) => {
+const SettingsScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
   const { theme } = useThemeContext();
   const { toggleTheme } = useThemeContext();
 
   const styles = getThemedStyles(useThemeContext().theme).SettingsScreen;
+  const [contactInfo, setContactInfo] = useState(route.params?.prevContactInfo);
 
   const titles = {
-    'Account Settings': ['Change Password', 'Account Info', 'Contact Info'],
+    'Account Settings': ['Change Password', 'Contact Info'],
     'Notifications': ['Account Activity', 'Notification Preferences'],
     'General': ['Dark Mode'],
-    'Privacy': ['Location'],
+    'More': ['About Us'],
   };
 
-  // const params = {
-  //   'ContactInfoScreen' : {
-  //     prevContactInfo: contactInfo,
-  //   }
-  // }
+  const toggleNotifications = () => {
+    console.log('notification toggle');
+  };
+
+  const toggleLocation = () => {
+    console.log('location toggle');
+  };
+
+  const toggleDarkMode = async () => {
+    try {
+      await toggleTheme();
+      setSwitchItemsState((prevState) => ({
+        ...prevState,
+        'Dark Mode': theme === 'light',
+      }));
+    } catch (error) {
+      console.error('Error toggling theme:', error);
+    }
+  };
 
   const toggleParams = {
-    'Dark Mode' : toggleTheme,
+    'Dark Mode': toggleDarkMode,
+    'Location': toggleLocation,
+    'Account Activity': toggleNotifications,
+  };
+
+  const params = {
+    'Contact Info' : {
+      prevContactInfo: contactInfo,
+    }
   }
-  
+
   const [switchItemsState, setSwitchItemsState] = useState({
-    'Dark Mode': false,
+    'Dark Mode': theme === 'light' ? false : true,
     'Account Activity': false,
     'Location': false,
   });
@@ -77,13 +98,13 @@ const SettingsScreen = ({ navigation }) => {
                 navigation.navigate('BottomNavOverlay');
               }}
             >
-                <View style={styles.iconContainer}>
+              <View style={styles.iconContainer}>
                 <MaterialCommunityIcons
                   name="check"
                   size={30}
                   color={Colors.BB_bone}
                 />
-                </View>
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -100,11 +121,16 @@ const SettingsScreen = ({ navigation }) => {
                 <View key={`${section}-${item}`}>
                   {/* IF KEY IS A REDIRECT TO DIFFERENT PAGE */}
                   {!switchItemsState.hasOwnProperty(item) ? (
-                    <TouchableOpacity key={item} style={styles.settingsItems} 
-                    onPress={() => {
-                      setLoading(true);
-                    navigation.navigate('BottomNavOverlay');
-                    }}>
+                    <TouchableOpacity
+                      key={item}
+                      style={styles.settingsItems}
+                      onPress={() => {
+                        setLoading(true);
+                        console.log(`${item.replace(' ', '')}Screen`);
+                        console.log(params[item]);
+                        navigation.navigate(`${item.replace(' ', '')}Screen`, params[item]);
+                      }}
+                    >
                       <Text style={styles.itemText}>{item}</Text>
                       <AntDesign
                         name="right"
@@ -141,7 +167,7 @@ const SettingsScreen = ({ navigation }) => {
                           bottom: 15,
                           left: 15,
                         }}
-                        value={theme === 'light' ? false : true}
+                        value={switchItemsState[item]}
                       />
                     </View>
                   )}

@@ -241,6 +241,10 @@ export const getThemedStyles = (theme) => {
       scrollViewContent: {
         flexGrow: 1,
       },
+      container: {
+        flex: 1,
+        paddingHorizontal: 20,
+      },
       topBar: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -250,10 +254,6 @@ export const getThemedStyles = (theme) => {
         paddingVertical: 15,
         borderBottomWidth: 2,
         borderBottomColor: themeColors.black,
-      },
-      container: {
-        flex: 1,
-        paddingHorizontal: 20,
       },
       headerText: {
         color: themeColors.BB_bone,
@@ -289,9 +289,6 @@ export const getThemedStyles = (theme) => {
         fontWeight: 'bold',
         flexDirection: 'row',
         justifyContent: 'space-between',
-      },
-      lastItem: {
-        borderBottomWidth: 0,
       },
       itemText: {
         fontWeight: '500',
@@ -1175,10 +1172,33 @@ export const getThemedStyles = (theme) => {
     ////////////////////////////////////////////
     ContactInfoScreen: {
       container: {
-        marginBottom: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 20
+      },
+      topBar: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        backgroundColor: Colors.BB_darkRedPurple,
+        paddingHorizontal: 15,
+        paddingVertical: 15,
+        borderBottomWidth: 2,
+        borderBottomColor: Colors.black,
+      },
+      headerText: {
+        color: Colors.BB_bone,
+        fontSize: 27.5,
+        fontWeight: 'bold',
+        alignSelf: 'center',
+      },
+      iconContainer: {
+        width: 40,
+        height: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
       },
       itemContainer: {
-        marginBottom: 16,
+        paddingVertical: 10,
       },
       title: {
         fontSize: 18,
@@ -1206,6 +1226,14 @@ export const getThemedStyles = (theme) => {
         justifyContent: 'center',
         borderWidth: 1,
         borderColor: 'black',
+      },
+      thinHorizontalBar: {
+        height: 10,
+        top: 2,
+        backgroundColor: themeColors.BB_darkRedPurple,
+        width: '100%',
+        borderRadius: 5,
+        alignContent: 'center'
       },
     },
     ////////////////////////////////////////////
@@ -1668,6 +1696,22 @@ export const getThemedStyles = (theme) => {
         marginBottom: 10,
         color: themeColors.BB_darkRedPurple,
         textAlign: 'center',
+      },
+      topBar: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        backgroundColor: themeColors.BB_darkRedPurple,
+        paddingHorizontal: 15,
+        paddingVertical: 15,
+        borderBottomWidth: 2,
+        borderBottomColor: themeColors.black,
+      },
+      headerText: {
+        color: themeColors.BB_bone,
+        fontSize: 27.5,
+        fontWeight: 'bold',
+        alignSelf: 'center',
       },
       input: {
         height: 44,
