@@ -676,9 +676,12 @@ const handleLibraryPick = async () => {
                     visible={showCurrencyOptions}
                     animationType="slide"
                   >
+                    <View style={styles.modalHeader} />
                     <ScrollView style={styles.currencyScrollView}>
                       <View style={styles.modalContent}>
+                        <View style={styles.currencyOptionsContainer}>
                         {renderCurrencyOptions()}
+                        </View>
                       </View>
                     </ScrollView>
                     <View style={styles.closeButtonContainer}>
