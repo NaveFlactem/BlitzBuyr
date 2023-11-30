@@ -528,7 +528,7 @@ function ProfileScreen({ navigation, route }) {
           source={{
             uri: profileInfo.profilePicture,
           }}
-          resizeMode="contain"
+          resizeMode="cover"
           style={{
             height: 0.38 * screenWidth,
             width: 0.38 * screenWidth,

@@ -676,9 +676,12 @@ const handleLibraryPick = async () => {
                     visible={showCurrencyOptions}
                     animationType="slide"
                   >
+                    <View style={styles.modalHeader} />
                     <ScrollView style={styles.currencyScrollView}>
                       <View style={styles.modalContent}>
+                        <View style={styles.currencyOptionsContainer}>
                         {renderCurrencyOptions()}
+                        </View>
                       </View>
                     </ScrollView>
                     <View style={styles.closeButtonContainer}>
@@ -879,7 +882,7 @@ const handleLibraryPick = async () => {
                   <MaterialIcons
                     name="camera-alt"
                     size={24}
-                    color="black"
+                    color={theme === 'dark' ? Colors.BB_violet : Colors.black}
                     style={{ top: 10, left: '90%' }}
                   />
                 </TouchableOpacity>
@@ -893,7 +896,7 @@ const handleLibraryPick = async () => {
                   <MaterialIcons
                     name="photo-library"
                     size={24}
-                    color="black"
+                    color={theme === 'dark' ? Colors.BB_violet : Colors.black}
                     style={{ top: 10, left: '50%' }}
                   />
                 </TouchableOpacity>
