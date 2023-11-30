@@ -630,7 +630,8 @@ export const getThemedStyles = (theme) => {
       },
       thinHorizontalBar: {
         height: 10,
-        backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
+        backgroundColor:
+          theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
         width: '100%',
         borderRadius: 5,
         alignContent: 'center',
@@ -1343,7 +1344,7 @@ export const getThemedStyles = (theme) => {
     ContactInfoScreen: {
       safeareaview: {
         flex: 1,
-        backgroundColor: themeColors.BB_darkRedPurple
+        backgroundColor: themeColors.BB_darkRedPurple,
       },
       container: {
         paddingVertical: 10,

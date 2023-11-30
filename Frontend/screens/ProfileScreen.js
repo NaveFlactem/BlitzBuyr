@@ -867,7 +867,7 @@ function ProfileScreen({ navigation, route }) {
             right: Platform.OS == 'ios' ? 10 : 50,
           }}
         >
-          <View style={styles.circle} >
+          <View style={styles.circle}>
             <MaterialIcons
               name="settings"
               size={30}

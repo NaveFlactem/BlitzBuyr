@@ -70,9 +70,7 @@ const SettingsScreen = ({ navigation, route }) => {
   });
 
   return (
-    <SafeAreaView
-      style={styles.safeareaview}
-    >
+    <SafeAreaView style={styles.safeareaview}>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         stickyHeaderIndices={[0]}
