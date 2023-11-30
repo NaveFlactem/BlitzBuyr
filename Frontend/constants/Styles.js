@@ -630,7 +630,7 @@ export const getThemedStyles = (theme) => {
       },
       thinHorizontalBar: {
         height: 10,
-        backgroundColor: themeColors.BB_darkRedPurple,
+        backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
         width: '100%',
         borderRadius: 5,
         alignContent: 'center',
@@ -1343,8 +1343,7 @@ export const getThemedStyles = (theme) => {
     ContactInfoScreen: {
       safeareaview: {
         flex: 1,
-        backgroundColor:
-          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
+        backgroundColor: themeColors.BB_darkRedPurple
       },
       container: {
         paddingVertical: 10,
@@ -1799,20 +1798,22 @@ export const getThemedStyles = (theme) => {
         alignSelf: 'center',
       },
       modalHeader: {
-        backgroundColor:
-          theme === 'dark' ? Colors.black : Colors.BB_bone,
+        backgroundColor: themeColors.BB_darkRedPurple,
         height: 0.1 * screenHeight,
         top: 0,
         width: screenWidth,
+        zIndex: -1,
       },
       modalContent: {
         flex: 1,
+        top: 0.03 * screenHeight,
         alignItems: 'center',
         width: '40%',
         height: 'auto',
         alignSelf: 'center',
         borderRadius: 20,
-        backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
+        backgroundColor:
+          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
         ...Platform.select({
           ios: {
             shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
@@ -1837,31 +1838,48 @@ export const getThemedStyles = (theme) => {
       },
       closeButtonContainer: {
         top: 0.7 * screenHeight,
-        backgroundColor:
-          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
         alignSelf: 'center',
         zIndex: 2,
         marginTop: 20,
         borderRadius: 20,
-        width: '40%',
-        height: 'auto',
-
       },
       closeButton: {
-        position: 'absolute',
-        fontSize: 24,
-        color: theme === 'dark' ? Colors.BB_bone : Colors.black,
-        borderRadius: 10,
-        textAlign: 'center',
+        borderRadius: 20,
+        alignSelf: 'center',
+        backgroundColor: themeColors.BB_darkRedPurple,
+        padding: 10,
+        paddingRight: 15,
+        paddingLeft: 15,
+        ...Platform.select({
+          ios: {
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOpacity: 0.6,
+            shadowRadius: 2,
+            shadowOffset: { height: 2, width: 2 },
+          },
+          android: {
+            elevation: 10,
+          },
+        }),
+      },
+      closeButtonText: {
+        fontSize: 20,
+        color: theme === 'dark' ? Colors.BB_violet : Colors.BB_bone,
         alignSelf: 'center',
       },
       currencyScrollView: {
         position: 'absolute',
-        backgroundColor:
-          theme === 'dark' ? Colors.black : Colors.BB_bone,
+        backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
         width: '100%',
         height: '100%',
         top: 0.1 * screenHeight,
+      },
+      modalFooter: {
+        position: 'absolute',
+        bottom: 0,
+        width: '100%',
+        height: 0.15 * screenHeight,
+        backgroundColor: themeColors.BB_darkRedPurple,
       },
       //Image Select Modal
       centeredView: {

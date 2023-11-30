@@ -705,13 +705,15 @@ const CreateListing = memo(({ navigation, route }) => {
                       </View>
                     </View>
                   </ScrollView>
-                    <TouchableOpacity
-                      onPress={() => setShowCurrencyOptions(false)}
-                    >
-                  <View style={styles.closeButtonContainer}>
-                      <Text style={styles.closeButton}>Close</Text>
-                  </View>
-                    </TouchableOpacity>
+                  <View style={styles.modalFooter} />
+                  <TouchableOpacity
+                    onPress={() => setShowCurrencyOptions(false)}
+                    style={styles.closeButtonContainer}
+                  >
+                    <View style={styles.closeButton}>
+                      <Text style={styles.closeButtonText}>Close</Text>
+                    </View>
+                  </TouchableOpacity>
                 </Modal>
               )}
             </View>
