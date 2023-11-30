@@ -60,9 +60,8 @@ const EditContactInfo = ({ navigation, route }) => {
       >
         {/* TOP BAR */}
         <View style={styles.topBar}>
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-          >
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+
             <TouchableOpacity
               onPress={() => {
                 setLoading(true);
@@ -94,13 +93,6 @@ const EditContactInfo = ({ navigation, route }) => {
                 navigation.navigate('BottomNavOverlay');
               }}
             >
-              <View style={styles.iconContainer}>
-                <MaterialCommunityIcons
-                  name="check"
-                  size={30}
-                  color={Colors.BB_bone}
-                />
-              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -114,7 +106,7 @@ const EditContactInfo = ({ navigation, route }) => {
                   <AntDesign
                     name={contactInfo[key].icon}
                     size={24}
-                    color={theme === 'dark' ? Colors.BB_violet : Colors.BB_bone}
+                    color={theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple}
                     style={{ paddingRight: 10 }}
                   />
                   <Text style={styles.title}>

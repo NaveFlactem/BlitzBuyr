@@ -49,12 +49,6 @@ const ChangePassword = ({ navigation, route }) => {
   }, [isFocused]);
 
   const changePassword = async () => {
-    // Verify password == confirmpassword
-    if (password !== confirmPassword) {
-      //Add visual prompt later
-      console.error('Password and Confirm Password do not match');
-      return;
-    }
     const formData = new FormData();
     formData.append('username', profileName);
     formData.append('password', password);
@@ -72,12 +66,17 @@ const ChangePassword = ({ navigation, route }) => {
   };
 
   const saveChanges = async () => {
-    console.log('saveChanges called');
+    if (password !== confirmPassword) {
+      // Add visual prompt later
+      console.error('Password and Confirm Password do not match');
+      return;
+    }
     try {
       await changePassword();
       navigation.setOptions({
         params: { profileName: profileName },
       });
+      navigation.navigate('SettingsScreen');
     } catch (error) {
       console.error(error);
       alert(error);
@@ -97,9 +96,7 @@ const ChangePassword = ({ navigation, route }) => {
       >
         {/* Top Bar */}
         <View style={styles.topBar}>
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-          >
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
             <TouchableOpacity
               onPress={() => {
                 setLoading(true);
@@ -114,16 +111,9 @@ const ChangePassword = ({ navigation, route }) => {
                 />
               </View>
             </TouchableOpacity>
-            <Text style={styles.headerText}>Reset Password</Text>
-            <TouchableOpacity onPress={saveChanges}>
-              <View style={styles.iconContainer}>
-                <MaterialCommunityIcons
-                  name="check"
-                  size={30}
-                  color={Colors.BB_bone}
-                />
-              </View>
-            </TouchableOpacity>
+            <View style={{paddingLeft: 10, alignContent: 'center', alignSelf: 'center'}}>
+              <Text style={styles.headerText}>Reset Password</Text>
+            </View>
           </View>
         </View>
         {/* CONTENT */}
@@ -220,6 +210,21 @@ const ChangePassword = ({ navigation, route }) => {
                   size={30}
                   color={Colors.BB_darkRedPurple}
                 />
+              </TouchableOpacity>
+            </View>
+            <View style={{ paddingVertical: 15 }}>
+              <View style={styles.thinHorizontalBar}></View>
+            </View>
+            {/* Apply Changes Button */}
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <TouchableOpacity style={styles.button} onPress={saveChanges}>
+                <Text style={styles.buttonText}>Apply Changes</Text>
               </TouchableOpacity>
             </View>
           </View>

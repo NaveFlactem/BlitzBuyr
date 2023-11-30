@@ -291,9 +291,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       >
         {/* Top Bar */}
         <View style={styles.topBar}>
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-          >
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
             <TouchableOpacity
               onPress={() => {
                 setLoading(true);
@@ -308,16 +306,15 @@ const EditProfileScreen = ({ navigation, route }) => {
                 />
               </View>
             </TouchableOpacity>
-            <Text style={styles.headerText}>Edit Profile</Text>
-            <TouchableOpacity onPress={saveChanges}>
-              <View style={styles.iconContainer}>
-                <MaterialCommunityIcons
-                  name="check"
-                  size={30}
-                  color={Colors.BB_bone}
-                />
-              </View>
-            </TouchableOpacity>
+            <View
+              style={{
+                paddingLeft: 15,
+                alignContent: 'center',
+                alignSelf: 'center',
+              }}
+            >
+              <Text style={styles.headerText}>Edit Profile</Text>
+            </View>
           </View>
         </View>
 
@@ -418,12 +415,15 @@ const EditProfileScreen = ({ navigation, route }) => {
                 />
               </View>
             </View>
+            <View style={{ paddingVertical: 15 }}>
+              <View style={styles.thinHorizontalBar}></View>
+            </View>
             {/* SAVE CHANGES + DELETE ACCOUNT */}
             <View
               style={{
+                marginTop: 5,
                 alignItems: 'center',
                 justifyContent: 'center',
-                paddingVertical: 20,
                 flexDirection: 'row',
               }}
             >

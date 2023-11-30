@@ -284,7 +284,6 @@ export const getThemedStyles = (theme) => {
         fontSize: 24,
         fontWeight: 'bold',
         alignSelf: 'center',
-        position: 'absolute',
       },
       iconContainer: {
         width: 40,
@@ -567,11 +566,37 @@ export const getThemedStyles = (theme) => {
       },
       thinHorizontalBar: {
         height: 10,
-        top: 2,
         backgroundColor: themeColors.BB_darkRedPurple,
         width: '100%',
         borderRadius: 5,
         alignContent: 'center',
+      },
+      buttonText: {
+        fontStyle: 'normal',
+        fontWeight: '500',
+        fontSize: 15,
+        color: themeColors.white,
+      },
+      button: {
+        width: 200,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: themeColors.BB_darkRedPurple,
+        borderRadius: 10,
+        marginHorizontal: 10,
+        marginBottom: 20,
+        ...Platform.select({
+          ios: {
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOffset: { width: 2, height: 2 },
+            shadowOpacity: 0.8,
+            shadowRadius: 2,
+          },
+          android: {
+            elevation: 10,
+          },
+        }),
       },
     },
     ////////////////////////////////////////////
@@ -1876,6 +1901,15 @@ export const getThemedStyles = (theme) => {
         justifyContent: 'center',
         paddingLeft: 8,
         marginBottom: 10,
+      },
+      thinHorizontalBar: {
+        height: 10,
+        top: 2,
+        backgroundColor:
+          theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
+        width: '100%',
+        borderRadius: 5,
+        alignContent: 'center',
       },
       itemTitle: {
         color: Colors.BB_darkRedPurple,
