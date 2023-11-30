@@ -71,10 +71,7 @@ const SettingsScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView
-      style={{
-        backgroundColor: Colors.BB_bone,
-        flex: 1,
-      }}
+      style={styles.safeareaview}
     >
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}

@@ -12,6 +12,13 @@ export const getThemedStyles = (theme) => {
   return StyleSheet.create({
     // PROFILE SCREEN //
     ProfileScreen: {
+      pageHeader: {
+        position: 'absolute',
+        top: 0,
+        height: 0.09 * screenHeight,
+        width: screenWidth,
+        backgroundColor: themeColors.BB_darkRedPurple,
+      },
       contactInfoContainer: {
         flexDirection: 'column',
         paddingVertical: 20,
@@ -1793,7 +1800,7 @@ export const getThemedStyles = (theme) => {
       },
       modalHeader: {
         backgroundColor:
-          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
+          theme === 'dark' ? Colors.black : Colors.BB_bone,
         height: 0.1 * screenHeight,
         top: 0,
         width: screenWidth,
@@ -1805,7 +1812,18 @@ export const getThemedStyles = (theme) => {
         height: 'auto',
         alignSelf: 'center',
         borderRadius: 20,
-        backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_bone,
+        backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
+        ...Platform.select({
+          ios: {
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOpacity: 0.5,
+            shadowRadius: 10,
+            shadowOffset: { height: 4, width: 0 },
+          },
+          android: {
+            elevation: 10,
+          },
+        }),
       },
       currencyOptionsContainer: {
         height: 'auto',
@@ -1814,7 +1832,7 @@ export const getThemedStyles = (theme) => {
       },
       currencyOption: {
         fontSize: 24,
-        color: 'black',
+        color: theme === 'dark' ? Colors.BB_violet : Colors.black,
         marginVertical: 10,
       },
       closeButtonContainer: {
@@ -1824,9 +1842,10 @@ export const getThemedStyles = (theme) => {
         alignSelf: 'center',
         zIndex: 2,
         marginTop: 20,
-        borderRadius: 10,
-        width: '50%',
-        height: '45%',
+        borderRadius: 20,
+        width: '40%',
+        height: 'auto',
+
       },
       closeButton: {
         position: 'absolute',
@@ -1839,7 +1858,7 @@ export const getThemedStyles = (theme) => {
       currencyScrollView: {
         position: 'absolute',
         backgroundColor:
-          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
+          theme === 'dark' ? Colors.black : Colors.BB_bone,
         width: '100%',
         height: '100%',
         top: 0.1 * screenHeight,

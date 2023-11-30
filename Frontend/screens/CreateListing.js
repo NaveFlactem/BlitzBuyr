@@ -705,13 +705,13 @@ const CreateListing = memo(({ navigation, route }) => {
                       </View>
                     </View>
                   </ScrollView>
-                  <View style={styles.closeButtonContainer}>
                     <TouchableOpacity
                       onPress={() => setShowCurrencyOptions(false)}
                     >
+                  <View style={styles.closeButtonContainer}>
                       <Text style={styles.closeButton}>Close</Text>
-                    </TouchableOpacity>
                   </View>
+                    </TouchableOpacity>
                 </Modal>
               )}
             </View>
@@ -779,6 +779,16 @@ const CreateListing = memo(({ navigation, route }) => {
                 { label: 'Delivery', value: 'Delivery' },
                 { label: 'No Preference', value: 'No Preference' },
               ]}
+              style={{
+                inputIOS: {
+                  color: theme === 'dark' ? Colors.white : Colors.black,
+                  left: 5,
+                },
+                inputAndroid: {
+                  color: theme === 'dark' ? Colors.white : Colors.black,
+                  left: 5,
+                },
+              }}
             />
           </View>
 
@@ -818,6 +828,16 @@ const CreateListing = memo(({ navigation, route }) => {
                 { label: 'Poor', value: 'Poor' },
                 { label: 'For Parts', value: 'For Parts' },
               ]}
+              style={{
+                inputIOS: {
+                  color: theme === 'dark' ? Colors.white : Colors.black,
+                  left: 5,
+                },
+                inputAndroid: {
+                  color: theme === 'dark' ? Colors.white : Colors.black,
+                  left: 5,
+                },
+              }}
             />
           </View>
 

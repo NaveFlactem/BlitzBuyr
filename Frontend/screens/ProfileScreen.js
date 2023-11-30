@@ -493,7 +493,7 @@ function ProfileScreen({ navigation, route }) {
         backgroundColor: theme === 'light' ? Colors.BB_bone : '#1e1e1e',
       }}
     >
-      <StatusBar backgroundColor={'black'} />
+      <View style={styles.pageHeader} />
       {/* //Cover Photo */}
       <View style={{ width: '100%' }}>
         <Image
@@ -863,11 +863,11 @@ function ProfileScreen({ navigation, route }) {
           }}
           style={{
             position: 'absolute',
-            top: Platform.OS == 'ios' ? 10 : 15,
+            top: Platform.OS == 'ios' ? 55 : 15,
             right: Platform.OS == 'ios' ? 10 : 50,
           }}
         >
-          <View style={styles.circle}>
+          <View style={styles.circle} >
             <MaterialIcons
               name="settings"
               size={30}
