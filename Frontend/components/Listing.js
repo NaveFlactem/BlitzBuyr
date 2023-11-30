@@ -30,6 +30,8 @@ import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import { handleDeleteListing, handleLike } from '../network/Service.js';
 import { getStoredUsername } from '../screens/auth/Authenticate.js';
 import { parallaxLayout } from './parallax.ts';
+import { useThemeContext } from './visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
 
 const default_blurhash = 'LEHLk~WB2yk8pyo0adR*.7kCMdnj';
 
@@ -57,21 +59,28 @@ function getDistance(lat1, lon1, lat2, lon2) {
   return Math.floor(distanceMiles);
 }
 
-const LikeButton = memo(({ isLiked, onLikePress }) => {
+const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
+  const { theme } = useThemeContext();
   return (
     <React.Fragment>
       <TouchableOpacity onPress={onLikePress} style={styles.likeButton}>
         <MaterialCommunityIcons
           name="heart"
           size={50}
-          color={isLiked ? 'red' : 'black'}
+          color={
+            isLiked
+              ? theme === 'dark'
+                ? Colors.BB_violet
+                : Colors.red
+              : Colors.black
+          }
         />
       </TouchableOpacity>
     </React.Fragment>
   );
 });
 
-const DeleteButton = ({ onDeletePress }) => {
+const DeleteButton = ({ onDeletePress, styles }) => {
   return (
     <TouchableOpacity style={styles.deleteButton} onPress={onDeletePress}>
       <MaterialCommunityIcons name="trash-can-outline" size={30} color="red" />
@@ -116,7 +125,7 @@ const calculateFontSizeLocation = (city) => {
   }
 };
 
-const TimeBox = memo(({ timeSince }) => {
+const TimeBox = memo(({ timeSince, styles }) => {
   return (
     <React.Fragment>
       <View style={styles.timeSinceContainer}>
@@ -124,18 +133,18 @@ const TimeBox = memo(({ timeSince }) => {
           {timeSince < 30
             ? 'Just now'
             : timeSince < 60
-            ? `${timeSince} seconds ago`
-            : timeSince < 120
-            ? `1 minute ago`
-            : timeSince < 3600
-            ? `${Math.floor(timeSince / 60)} minutes ago`
-            : timeSince < 7200
-            ? `1 hour ago`
-            : timeSince < 86400
-            ? `${Math.floor(timeSince / 3600)} hours ago`
-            : timeSince < 172800
-            ? `1 day ago`
-            : `${Math.floor(timeSince / 86400)} days ago`}
+              ? `${timeSince} seconds ago`
+              : timeSince < 120
+                ? `1 minute ago`
+                : timeSince < 3600
+                  ? `${Math.floor(timeSince / 60)} minutes ago`
+                  : timeSince < 7200
+                    ? `1 hour ago`
+                    : timeSince < 86400
+                      ? `${Math.floor(timeSince / 3600)} hours ago`
+                      : timeSince < 172800
+                        ? `1 day ago`
+                        : `${Math.floor(timeSince / 86400)} days ago`}
         </Text>
       </View>
     </React.Fragment>
@@ -143,7 +152,7 @@ const TimeBox = memo(({ timeSince }) => {
 });
 
 const CardOverlay = memo(
-  ({ children, currencySymbol, price, timeSince, cardStyle }) => {
+  ({ children, currencySymbol, price, timeSince, cardStyle, styles }) => {
     return (
       <View style={styles.card}>
         <View style={cardStyle}>
@@ -163,7 +172,7 @@ const CardOverlay = memo(
             </Text>
           </View>
           {children}
-          <TimeBox timeSince={timeSince} />
+          <TimeBox timeSince={timeSince} styles={styles} />
         </View>
       </View>
     );
@@ -197,6 +206,7 @@ const CustomItem = memo(
     onLikePress,
     onDeletePress,
     deleteVisible,
+    styles,
   }) => {
     const onZoomEvent = useCallback(
       AnimatedRN.event([{ nativeEvent: { scale: scale } }], {
@@ -221,6 +231,7 @@ const CustomItem = memo(
         currencySymbol={currencySymbol}
         timeSince={timeSince}
         cardStyle={styles.cardBackground}
+        styles={styles}
       >
         <View>
           <PinchGestureHandler
@@ -238,8 +249,14 @@ const CustomItem = memo(
             </AnimatedRN.View>
           </PinchGestureHandler>
         </View>
-        <LikeButton isLiked={isLiked} onLikePress={onLikePress} />
-        {deleteVisible && <DeleteButton onDeletePress={onDeletePress} />}
+        <LikeButton
+          isLiked={isLiked}
+          onLikePress={onLikePress}
+          styles={styles}
+        />
+        {deleteVisible && (
+          <DeleteButton onDeletePress={onDeletePress} styles={styles} />
+        )}
       </CardOverlay>
     );
   },
@@ -253,6 +270,8 @@ const Listing = ({
   handleInnerScolling,
   handleInnerScollingEnd,
 }) => {
+  const { theme } = useThemeContext();
+  const styles = getThemedStyles(useThemeContext().theme).Listing;
   const prevItemRef = useRef();
   useEffect(() => {
     if (prevItemRef.current === item) {
@@ -348,6 +367,7 @@ const Listing = ({
                 onDeletePress={() => toggleDeleteModal()}
                 deleteVisible={deleteVisible}
                 origin={origin}
+                styles={styles}
               />
             )}
             customAnimation={parallaxLayout(
@@ -370,6 +390,7 @@ const Listing = ({
           currencySymbol={currencySymbol}
           timeSince={timeSince}
           cardStyle={styles.cardBackground2}
+          styles={styles}
         >
           <Text style={styles.title}>{item.Title}</Text>
           <View style={styles.sellerInfoBox}>
@@ -386,7 +407,7 @@ const Listing = ({
               <Entypo
                 name="location-pin"
                 size={40}
-                color="white"
+                color={theme === 'dark' ? Colors.BB_violet : Colors.BB_bone}
                 style={styles.locationPin}
               />
               <Text
@@ -438,7 +459,7 @@ const Listing = ({
               <Entypo
                 name="star"
                 size={34}
-                color="gold"
+                color={theme === 'dark' ? Colors.BB_violet : 'gold'}
                 style={styles.ratingStar}
               />
 
@@ -545,7 +566,8 @@ const Listing = ({
 
           <LikeButton
             isLiked={isLiked}
-            onLikePress={() => handleLikePress(item.ListingId)}
+            onLikePress={handleLikePress}
+            styles={styles}
           />
         </CardOverlay>
       </FlipCard>
@@ -595,285 +617,3 @@ const Listing = ({
 export default memo(Listing);
 
 const PAGE_WIDTH = screenWidth / 2;
-//////////////////////////////////////////////////////////////////////////////////////
-const styles = StyleSheet.create({
-  card: {
-    height: screenHeight,
-    width: screenWidth,
-    alignItems: 'center',
-  },
-  cardBackground: {
-    position: 'absolute',
-    width: 0.9 * screenWidth,
-    height: 0.79 * screenHeight,
-    backgroundColor: Colors.BB_darkRedPurple,
-    borderRadius: 20,
-    borderWidth: 0.005 * screenHeight,
-    justifyContent: 'center',
-    overflow: 'hidden',
-    borderColor: Colors.BB_darkerRedPurple,
-    bottom: Platform.OS == 'ios' ? '28%' : '23%',
-  },
-  cardBackground2: {
-    position: 'absolute',
-    width: 0.9 * screenWidth,
-    height: 0.8 * screenHeight,
-    backgroundColor: Colors.BB_darkRedPurple,
-    borderRadius: 20,
-    borderWidth: 0.01 * screenHeight,
-    justifyContent: 'center',
-    overflow: 'hidden',
-    borderColor: Colors.BB_darkerRedPurple,
-    bottom: Platform.OS == 'ios' ? '15.5%' : '10%',
-  },
-  priceContainer: {
-    position: 'absolute',
-    zIndex: 5,
-    width: '60%',
-    height: 0,
-    bottom: 0,
-    left: -70,
-    borderBottomWidth: 50,
-    borderBottomColor: Colors.BB_darkerRedPurple,
-    borderLeftWidth: 50,
-    borderLeftColor: 'transparent',
-    borderRightWidth: 50,
-    borderRightColor: 'transparent',
-    borderStyle: 'solid',
-    alignSelf: 'center',
-  },
-  image: {
-    height: '100%',
-    width: '100%',
-  },
-  title: {
-    alignSelf: 'center',
-    position: 'absolute',
-    top: '5.5%',
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 0.02 * screenHeight,
-  },
-  sellerInfoBox: {
-    position: 'absolute',
-    alignSelf: 'center',
-    flexDirection: 'row',
-    top: '11%',
-    width: '90%',
-    height: '20%',
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    marginBottom: 0.1 * screenHeight,
-  },
-  sellerPic: {
-    alignSelf: 'center',
-    height: '80%',
-    bottom: -10,
-    aspectRatio: 1,
-    borderRadius: 20,
-  },
-  sellerName: {
-    alignSelf: 'center',
-    alignContent: 'center',
-    textAlign: 'center',
-    width: '300%',
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: 'white',
-    bottom: 5,
-  },
-  locationPin: {
-    position: 'absolute',
-    alignSelf: 'center',
-    width: '40%',
-    height: '60%',
-    borderRadius: 20,
-  },
-  city: {
-    alignSelf: 'center',
-    fontSize: 14,
-    color: 'white',
-    fontWeight: 'bold',
-    position: 'absolute',
-    top: '50%',
-  },
-  distance: {
-    alignSelf: 'center',
-    fontSize: 12,
-    color: 'white',
-    position: 'absolute',
-    top: '62%',
-  },
-  ratingStar: {
-    alignSelf: 'center',
-    position: 'absolute',
-    width: '30%',
-    height: '60%',
-    borderRadius: 20,
-  },
-  rating: {
-    alignSelf: 'center',
-    fontSize: 14,
-    color: 'white',
-    fontWeight: 'bold',
-    position: 'absolute',
-    top: '50%',
-  },
-  price: {
-    fontSize: (0.9 * screenWidth) / 3 / 5,
-    position: 'absolute',
-    color: 'white',
-    fontWeight: 'bold',
-    zIndex: 10,
-    left: '20%',
-    top: 0.01 * screenHeight,
-  },
-  lowerRow: {
-    position: 'absolute',
-    alignSelf: 'center',
-    flexDirection: 'row',
-    width: '90%',
-    height: '20%',
-    top: '31.5%',
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-  },
-  conditionText: {
-    top: '35%',
-    fontSize: 14,
-    color: 'white',
-    alignSelf: 'center',
-    textAlign: 'center',
-    width: '70%',
-  },
-  transactionText: {
-    top: '20%',
-    fontSize: 12,
-    color: 'white',
-    alignSelf: 'center',
-    textAlign: 'center',
-    width: '100%',
-  },
-  tagColumn: {
-    position: 'absolute',
-    alignSelf: 'center',
-    flexDirection: 'column',
-    bottom: '0%',
-    width: '100%',
-    height: '70%',
-  },
-  tagText: {
-    fontSize: 12,
-    color: 'white',
-    alignSelf: 'center',
-    textAlign: 'center',
-    width: '100%',
-    marginBottom: '2%',
-  },
-  descriptionContainer: {
-    position: 'absolute',
-    alignSelf: 'center',
-    height: '40%',
-    width: '90%',
-    bottom: '8%',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    padding: 5,
-    borderRadius: 20,
-  },
-  description: {
-    fontSize: 16,
-    color: 'white',
-  },
-  likeButton: {
-    position: 'absolute',
-    height: 0.15 * screenWidth,
-    width: 0.15 * screenWidth,
-    bottom: '1%',
-    right: '2%',
-    zIndex: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.BB_darkRedPurple,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOpacity: 0.5,
-        shadowRadius: 10,
-        shadowOffset: { height: 4, width: 0 },
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-    borderRadius: 80,
-  },
-  deleteButton: {
-    position: 'absolute',
-    height: 0.15 * screenWidth,
-    width: 0.15 * screenWidth,
-    bottom: '82%',
-    right: '-5%',
-    zIndex: 1,
-  },
-  modalContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    borderColor: 'black',
-    borderWidth: 2,
-    alignSelf: 'center',
-    marginTop: '80%',
-  },
-  modalText: {
-    fontSize: 18,
-    marginBottom: 15,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 15,
-  },
-  confirmButton: {
-    flex: 1,
-    backgroundColor: 'red',
-    padding: 10,
-    borderRadius: 5,
-  },
-  cancelButton: {
-    flex: 1,
-    backgroundColor: 'gray',
-    padding: 10,
-    borderRadius: 5,
-    marginLeft: 5,
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-  },
-  timeSinceContainer: {
-    alignContent: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    borderRadius: 20,
-    position: 'absolute',
-    right: '1%',
-    top: '0.5%',
-    height: '5%',
-    width: 'auto',
-  },
-  timeSinceText: {
-    fontSize: 12,
-    color: 'white',
-    fontWeight: 'bold',
-    marginRight: '2%',
-    marginLeft: '2%',
-  },
-  backgroundImage: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    opacity: 0.1,
-  },
-});

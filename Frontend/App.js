@@ -6,9 +6,11 @@ import {
   ThemeProvider,
   useThemeContext,
 } from './components/visuals/ThemeProvider';
+import { StatusBar } from 'react-native';
 
 const AppContainer = () => {
   const { theme } = useThemeContext();
+  StatusBar.setBarStyle(theme === 'dark' ? 'dark-content' : 'light-content');
 
   return (
     <NavigationContainer

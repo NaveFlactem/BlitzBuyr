@@ -102,7 +102,7 @@ const HomeScreen = ({ route }) => {
   const handleLocationPress = () => {
     console.log(
       'Location pressed, toggling slider visibility...',
-      isLocationSliderVisible
+      isLocationSliderVisible,
     );
     if (isLocationSliderVisible) {
       locationSliderHeight.value = withTiming(-100, { duration: 100 }); // Hide slider
@@ -228,7 +228,7 @@ const HomeScreen = ({ route }) => {
         selectedCurrency,
         setListings,
         setIsLoading,
-        setRefreshing
+        setRefreshing,
       );
     } catch (error) {
       console.error(error);
@@ -318,13 +318,18 @@ const HomeScreen = ({ route }) => {
         listings && listings.length > 0 ? (
           Platform.OS === 'ios' ? (
             <View style={styles.swiperContainer}>
+              <CustomRefreshControl
+                refreshing={refreshing}
+                scrollY={scrollY}
+                swiperRef={swiperRef}
+              />
               <IOSSwiperComponent
                 swiperRef={swiperRef}
                 listings={listings}
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId)
+                    prevListings.filter((item) => item.ListingId !== listingId),
                   );
                 }}
                 onScroll={onScroll}
@@ -350,7 +355,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId)
+                    prevListings.filter((item) => item.ListingId !== listingId),
                   );
                 }}
                 onScroll={onScroll}
@@ -417,13 +422,6 @@ const HomeScreen = ({ route }) => {
         setIsLocationSliderVisible={setIsLocationSliderVisible}
         locationSliderHeight={locationSliderHeight}
       />
-      {Platform.OS === 'ios' && (
-        <CustomRefreshControl
-          refreshing={refreshing}
-          scrollY={scrollY}
-          swiperRef={swiperRef}
-        />
-      )}
     </SafeAreaView>
   );
 };

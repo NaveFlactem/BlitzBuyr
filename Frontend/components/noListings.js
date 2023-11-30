@@ -2,14 +2,18 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { memo } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import Colors from '../constants/Colors';
+import { useThemeContext } from './visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
 
 const NoListings = memo(({ onRetry }) => {
+  const { theme } = useThemeContext();
+  const styles = getThemedStyles(theme).NoListings;
   return (
     <View style={styles.container}>
       <MaterialCommunityIcons
         name="file-document-outline"
         size={100}
-        color={Colors.BB_darkRedPurple}
+        color={theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_bone}
       />
       <Text style={styles.text}>No listings available</Text>
       <TouchableOpacity onPress={onRetry} style={styles.retryButton}>
@@ -18,45 +22,5 @@ const NoListings = memo(({ onRetry }) => {
     </View>
   );
 });
-
-const styles = {
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.BB_darkRedPurple,
-    textAlign: 'center',
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.BB_bone,
-    textAlign: 'center',
-  },
-  retryButton: {
-    marginTop: 20,
-    justifyContent: 'center',
-    backgroundColor: Colors.BB_darkRedPurple,
-    padding: 10,
-    borderRadius: 40,
-    width: '20%',
-    height: '7%',
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.5,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 5,
-      },
-    }),
-  },
-};
 
 export default NoListings;

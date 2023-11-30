@@ -10,6 +10,8 @@ import { checkListingExpiration } from '../../components/Notifications.js';
 import { serverIp } from '../../config.js';
 import Colors from '../../constants/Colors';
 import * as Settings from '../../hooks/UserSettings.js';
+import { useThemeContext } from '../../components/visuals/ThemeProvider.js';
+import { getThemedStyles } from '../../constants/Styles.js';
 
 const assetsToPreload = [
   require('../../assets/blitzbuyr_name_logo.png'),
@@ -97,7 +99,7 @@ const AuthenticateScreen = ({ navigation }) => {
     // Load and cache the assets when the component mounts
     async function loadAssetsAsync() {
       const assetPromises = assetsToPreload.map((asset) =>
-        Asset.fromModule(asset).downloadAsync()
+        Asset.fromModule(asset).downloadAsync(),
       );
       await Promise.all(assetPromises);
     }
@@ -162,17 +164,10 @@ const AuthenticateScreen = ({ navigation }) => {
     checkStoredCredentials();
   }, []);
 
+  const styles = getThemedStyles(useThemeContext().theme).Authentication;
+
   return <View style={styles.container}></View>;
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.BB_darkRedPurple,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 export {
   getStoredUsername,
