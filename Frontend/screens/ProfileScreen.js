@@ -864,7 +864,7 @@ function ProfileScreen({ navigation, route }) {
           style={{
             position: 'absolute',
             top: Platform.OS == 'ios' ? 55 : 15,
-            right: Platform.OS == 'ios' ? 10 : 50,
+            right: Platform.OS == 'ios' ? 10 : 15,
           }}
         >
           <View style={styles.circle}>
