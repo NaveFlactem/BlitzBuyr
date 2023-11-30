@@ -10,6 +10,7 @@ import { useThemeContext } from '../components/visuals/ThemeProvider.js';
 import { serverIp } from '../config.js';
 import { getThemedStyles } from '../constants/Styles.js';
 import { getStoredUsername } from './auth/Authenticate.js';
+import Colors from '../constants/Colors.js';
 
 /**
  * @function
@@ -23,6 +24,7 @@ import { getStoredUsername } from './auth/Authenticate.js';
  */
 
 const RatingScreen = ({ navigation, route }) => {
+  const { theme } = useThemeContext();
   const styles = getThemedStyles(useThemeContext().theme).RatingScreen;
   const [selectedRating, setSelectedRating] = useState(0);
   console.log(route.params);
@@ -105,21 +107,25 @@ const RatingScreen = ({ navigation, route }) => {
           onPress={() => handleRating(i)}
         >
           {i <= selectedRating ? (
-            <MaterialCommunityIcons name="star" size={60} color="black" />
+            <MaterialCommunityIcons
+              name="star"
+              size={60}
+              color={theme === 'dark' ? Colors.BB_violet : 'black'}
+            />
           ) : i - 0.5 === selectedRating ? (
             <MaterialCommunityIcons
               name="star-half-full"
               size={60}
-              color="black"
+              color={theme === 'dark' ? Colors.BB_violet : 'black'}
             />
           ) : (
             <MaterialCommunityIcons
               name="star-outline"
               size={60}
-              color="black"
+              color={theme === 'dark' ? Colors.BB_violet : 'black'}
             />
           )}
-        </TouchableOpacity>
+        </TouchableOpacity>,
       );
     }
     return starIcons;
@@ -131,15 +137,25 @@ const RatingScreen = ({ navigation, route }) => {
         onPress={() => navigation.goBack()}
         style={styles.backButton}
       >
-        <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
+        <MaterialCommunityIcons
+          name="arrow-left"
+          size={30}
+          color={theme === 'dark' ? Colors.BB_violet : 'black'}
+        />
       </TouchableOpacity>
-      <Text style={styles.title}>Rate User {route.params.username}</Text>
-      <Image
-        source={{ uri: route.params.profileInfo.profilePicture }}
-        style={styles.profilePic}
-      />
-      <View style={styles.ratingContainer}>{renderStars()}</View>
-      <Button title="Submit Rating" onPress={handleSubmitRating} />
+      <View style={styles.innerContainer}>
+        <Text style={styles.title}>Rate User {route.params.username}</Text>
+        <Image
+          source={{ uri: route.params.profileInfo.profilePicture }}
+          style={styles.profilePic}
+        />
+        <View style={styles.ratingContainer}>{renderStars()}</View>
+        <TouchableOpacity onPress={handleSubmitRating}>
+          <View style={styles.submitButton}>
+            <Text style={styles.submitText}>Submit Rating</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

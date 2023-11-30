@@ -38,7 +38,7 @@ const fetchListings = async (
   setListings,
   setIsLoading,
   setRefreshing,
-  route
+  route,
 ) => {
   console.log('Fetching listings...');
   console.log('Tags:', selectedTags);
@@ -61,7 +61,7 @@ const fetchListings = async (
     console.log('Currency:', selectedCurrency);
 
     const username = encodeURIComponent(
-      await SecureStore.getItemAsync('username')
+      await SecureStore.getItemAsync('username'),
     );
     let fetchUrl = `${serverIp}/api/listings?username=${username}&latitude=${latitude}&longitude=${longitude}`;
     if (distance < 510) fetchUrl += `&distance=${distance}`; // don't add distance on unlimited
@@ -84,7 +84,7 @@ const fetchListings = async (
             ...listing,
             TimeSince: timeSince,
           };
-        })
+        }),
       );
       console.log('Listings fetched successfully');
     } else {
@@ -192,7 +192,7 @@ const handleLike = async (listingId, isLiked) => {
 
     if (response.ok) {
       console.log(
-        `Listing ${listingId} ${isLiked ? 'unliked' : 'liked'} successfully!`
+        `Listing ${listingId} ${isLiked ? 'unliked' : 'liked'} successfully!`,
       );
     } else {
       throw `Status code ${response.status}, Error: ${responseData.error}`;
@@ -277,14 +277,14 @@ const handleDeleteAccount = async (username, password) => {
       {
         method: 'DELETE',
         timeout: 10000,
-      }
+      },
     );
 
     const responseData = await response.json();
 
     if (response.ok) {
       console.log(
-        `Account ${getStoredUsername()} deleted successfully: ${responseData}`
+        `Account ${getStoredUsername()} deleted successfully: ${responseData}`,
       );
     } else {
       throw `Status code ${response.status}, Error: ${responseData.error}`;

@@ -67,7 +67,13 @@ const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
         <MaterialCommunityIcons
           name="heart"
           size={50}
-          color={isLiked ? theme === 'dark' ? Colors.BB_violet : Colors.red : Colors.black}
+          color={
+            isLiked
+              ? theme === 'dark'
+                ? Colors.BB_violet
+                : Colors.red
+              : Colors.black
+          }
         />
       </TouchableOpacity>
     </React.Fragment>
@@ -127,18 +133,18 @@ const TimeBox = memo(({ timeSince, styles }) => {
           {timeSince < 30
             ? 'Just now'
             : timeSince < 60
-            ? `${timeSince} seconds ago`
-            : timeSince < 120
-            ? `1 minute ago`
-            : timeSince < 3600
-            ? `${Math.floor(timeSince / 60)} minutes ago`
-            : timeSince < 7200
-            ? `1 hour ago`
-            : timeSince < 86400
-            ? `${Math.floor(timeSince / 3600)} hours ago`
-            : timeSince < 172800
-            ? `1 day ago`
-            : `${Math.floor(timeSince / 86400)} days ago`}
+              ? `${timeSince} seconds ago`
+              : timeSince < 120
+                ? `1 minute ago`
+                : timeSince < 3600
+                  ? `${Math.floor(timeSince / 60)} minutes ago`
+                  : timeSince < 7200
+                    ? `1 hour ago`
+                    : timeSince < 86400
+                      ? `${Math.floor(timeSince / 3600)} hours ago`
+                      : timeSince < 172800
+                        ? `1 day ago`
+                        : `${Math.floor(timeSince / 86400)} days ago`}
         </Text>
       </View>
     </React.Fragment>
@@ -166,7 +172,7 @@ const CardOverlay = memo(
             </Text>
           </View>
           {children}
-          <TimeBox timeSince={timeSince} styles={styles} /> 
+          <TimeBox timeSince={timeSince} styles={styles} />
         </View>
       </View>
     );
@@ -243,14 +249,28 @@ const CustomItem = memo(
             </AnimatedRN.View>
           </PinchGestureHandler>
         </View>
-        <LikeButton isLiked={isLiked} onLikePress={onLikePress} styles={styles} />
-        {deleteVisible && <DeleteButton onDeletePress={onDeletePress} styles={styles} />}
+        <LikeButton
+          isLiked={isLiked}
+          onLikePress={onLikePress}
+          styles={styles}
+        />
+        {deleteVisible && (
+          <DeleteButton onDeletePress={onDeletePress} styles={styles} />
+        )}
       </CardOverlay>
     );
   },
 );
 
-const Listing = ({ item, origin, removeListing, userLocation, handleInnerScolling, handleInnerScollingEnd }) => {
+const Listing = ({
+  item,
+  origin,
+  removeListing,
+  userLocation,
+  handleInnerScolling,
+  handleInnerScollingEnd,
+}) => {
+  const { theme } = useThemeContext();
   const styles = getThemedStyles(useThemeContext().theme).Listing;
   const prevItemRef = useRef();
   useEffect(() => {
@@ -387,7 +407,7 @@ const Listing = ({ item, origin, removeListing, userLocation, handleInnerScollin
               <Entypo
                 name="location-pin"
                 size={40}
-                color="white"
+                color={theme === 'dark' ? Colors.BB_violet : Colors.BB_bone}
                 style={styles.locationPin}
               />
               <Text
@@ -439,7 +459,7 @@ const Listing = ({ item, origin, removeListing, userLocation, handleInnerScollin
               <Entypo
                 name="star"
                 size={34}
-                color="gold"
+                color={theme === 'dark' ? Colors.BB_violet : 'gold'}
                 style={styles.ratingStar}
               />
 
@@ -544,7 +564,11 @@ const Listing = ({ item, origin, removeListing, userLocation, handleInnerScollin
             <Text style={styles.description}>{item.Description}</Text>
           </ScrollView>
 
-          <LikeButton isLiked={isLiked} onLikePress={handleLikePress} styles={styles} />
+          <LikeButton
+            isLiked={isLiked}
+            onLikePress={handleLikePress}
+            styles={styles}
+          />
         </CardOverlay>
       </FlipCard>
 

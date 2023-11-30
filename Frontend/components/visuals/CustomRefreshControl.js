@@ -9,11 +9,14 @@ import BouncePulse from './BouncePulse';
 import { useThemeContext } from './ThemeProvider';
 import { getThemedStyles } from '../../constants/Styles';
 
-export const CustomRefreshControl = memo(({ refreshing, scrollY, swiperRef }) => {
-  const styles = getThemedStyles(useThemeContext().theme).CustomRefreshControl;
-  const bouncePulseStyle = useAnimatedStyle(() => {
-    let newYPosition = -100; // Initial off-screen position
-    let newOpacity = 1;
+export const CustomRefreshControl = memo(
+  ({ refreshing, scrollY, swiperRef }) => {
+    const styles = getThemedStyles(
+      useThemeContext().theme,
+    ).CustomRefreshControl;
+    const bouncePulseStyle = useAnimatedStyle(() => {
+      let newYPosition = -100; // Initial off-screen position
+      let newOpacity = 1;
 
       if (refreshing) {
         newYPosition = withTiming(0, { duration: 500 });
@@ -30,9 +33,10 @@ export const CustomRefreshControl = memo(({ refreshing, scrollY, swiperRef }) =>
       };
     });
 
-  return (
-    <Animated.View style={[styles.bouncePulseContainer, bouncePulseStyle]}>
-      <BouncePulse />
-    </Animated.View>
-  );
-});
+    return (
+      <Animated.View style={[styles.bouncePulseContainer, bouncePulseStyle]}>
+        <BouncePulse />
+      </Animated.View>
+    );
+  },
+);

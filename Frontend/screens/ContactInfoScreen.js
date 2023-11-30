@@ -53,18 +53,17 @@ const EditContactInfo = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView
-      style={styles.safeareaview}
-    >
+    <SafeAreaView style={styles.safeareaview}>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
-        style={{backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone}}
+        style={{
+          backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
+        }}
         stickyHeaderIndices={[0]}
       >
         {/* TOP BAR */}
         <View style={styles.topBar}>
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
             <TouchableOpacity
               onPress={() => {
                 setLoading(true);
@@ -95,8 +94,7 @@ const EditContactInfo = ({ navigation, route }) => {
                 }
                 navigation.navigate('BottomNavOverlay');
               }}
-            >
-            </TouchableOpacity>
+            ></TouchableOpacity>
           </View>
         </View>
 
@@ -109,7 +107,11 @@ const EditContactInfo = ({ navigation, route }) => {
                   <AntDesign
                     name={contactInfo[key].icon}
                     size={24}
-                    color={theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple}
+                    color={
+                      theme === 'dark'
+                        ? Colors.BB_violet
+                        : Colors.BB_darkRedPurple
+                    }
                     style={{ paddingRight: 10 }}
                   />
                   <Text style={styles.title}>

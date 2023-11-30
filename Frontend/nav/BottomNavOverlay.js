@@ -56,7 +56,6 @@ const TabButton = memo((props) => {
   const { item, onPress, accessibilityState, styles } = props;
   const focused = accessibilityState.selected;
   const { theme } = useThemeContext();
-  
 
   // Local shared values for scale and rotate
   const scale = useSharedValue(1);
@@ -90,13 +89,19 @@ const TabButton = memo((props) => {
         <Icon
           type={item.type}
           name={focused ? item.activeIcon : item.inActiveIcon}
-          color={focused ? theme === "dark" ? Colors.BB_violet : Colors.BB_darkOrange : Colors.BB_bone}
+          color={
+            focused
+              ? theme === 'dark'
+                ? Colors.BB_violet
+                : Colors.BB_darkOrange
+              : Colors.BB_bone
+          }
           size={20}
         />
       </Animated.View>
-      
-      {theme === "light" && <View style={styles.outerRhombus} />}
-      {theme === "light" && <View style={styles.innerRhombus} />}
+
+      {theme === 'light' && <View style={styles.outerRhombus} />}
+      {theme === 'light' && <View style={styles.innerRhombus} />}
     </TouchableOpacity>
   );
 });
@@ -125,7 +130,9 @@ function BottomNavOverlay() {
             component={item.component}
             options={{
               tabBarShowLabel: false,
-              tabBarButton: (props) => <TabButton {...props} item={item} styles={styles} />, 
+              tabBarButton: (props) => (
+                <TabButton {...props} item={item} styles={styles} />
+              ),
             }}
           />
         );

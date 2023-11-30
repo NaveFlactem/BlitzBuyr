@@ -138,17 +138,16 @@ const TagDrawer = memo(
         ...currency,
         selected: idx === index ? !currency.selected : false,
       }));
-    
+
       // Determine the new selected currency
       const newSelectedCurrency = newCurrencyData[index].selected
         ? newCurrencyData[index].name
         : null;
-    
+
       // Update state
       setCurrencyData(newCurrencyData);
       setSelectedCurrency(newSelectedCurrency);
     };
-    
 
     const X_OFFSET_THRESHOLD = 10; // You can adjust this value as needed
 
@@ -243,19 +242,23 @@ const TagDrawer = memo(
                     }}
                   >
                     <View
-                          style={[
-                            styles.tagSelected,
-                            theme === 'dark' ? { backgroundColor: Colors.BB_violet} : null,
-                            { opacity: tag.selected ? 1 : 0.3 },
-                          ]}
-                        />
-                        <View
-                          style={[
-                            styles.rhombus,
-                            theme === 'dark' ? { backgroundColor: Colors.white} : null,
-                            { opacity: tag.selected ? 0.15 : 0 },
-                          ]}
-                        />
+                      style={[
+                        styles.tagSelected,
+                        theme === 'dark'
+                          ? { backgroundColor: Colors.BB_violet }
+                          : null,
+                        { opacity: tag.selected ? 1 : 0.3 },
+                      ]}
+                    />
+                    <View
+                      style={[
+                        styles.rhombus,
+                        theme === 'dark'
+                          ? { backgroundColor: Colors.white }
+                          : null,
+                        { opacity: tag.selected ? 0.15 : 0 },
+                      ]}
+                    />
                     <Text style={styles.tagText}>{tag.name}</Text>
                   </TouchableOpacity>
                 ))}
@@ -274,14 +277,18 @@ const TagDrawer = memo(
                     <View
                       style={[
                         styles.tagSelected,
-                        theme === 'dark' ? { backgroundColor: Colors.BB_violet} : null,
+                        theme === 'dark'
+                          ? { backgroundColor: Colors.BB_violet }
+                          : null,
                         { opacity: condition.selected ? 1 : 0.3 },
                       ]}
                     />
                     <View
                       style={[
                         styles.rhombus,
-                        theme === 'dark' ? { backgroundColor: Colors.white} : null,
+                        theme === 'dark'
+                          ? { backgroundColor: Colors.white }
+                          : null,
                         { opacity: condition.selected ? 0.15 : 0 },
                       ]}
                     />
@@ -303,21 +310,25 @@ const TagDrawer = memo(
                     <View
                       style={[
                         styles.tagSelected,
-                        theme === 'dark' ? { backgroundColor: Colors.BB_violet} : null,
+                        theme === 'dark'
+                          ? { backgroundColor: Colors.BB_violet }
+                          : null,
                         { opacity: transaction.selected ? 1 : 0.3 },
                       ]}
                     />
                     <View
                       style={[
                         styles.rhombus,
-                        theme === 'dark' ? { backgroundColor: Colors.white} : null,
+                        theme === 'dark'
+                          ? { backgroundColor: Colors.white }
+                          : null,
                         { opacity: transaction.selected ? 0.15 : 0 },
                       ]}
                     />
                     <Text style={styles.tagText}>{transaction.name}</Text>
                   </TouchableOpacity>
                 ))}
-              <View style={styles.seperationContainer}>
+                <View style={styles.seperationContainer}>
                   <View style={styles.separatorLine} />
                   <Text style={styles.seperationText}>Currency</Text>
                 </View>
@@ -332,20 +343,26 @@ const TagDrawer = memo(
                     <View
                       style={[
                         styles.tagSelected,
-                        theme === 'dark' ? { backgroundColor: Colors.BB_violet} : null,
+                        theme === 'dark'
+                          ? { backgroundColor: Colors.BB_violet }
+                          : null,
 
                         { opacity: currency.selected ? 1 : 0.3 },
                       ]}
                     />
                     <View
-                      style={[  
+                      style={[
                         styles.rhombus,
-                        theme === 'dark' ? { backgroundColor: Colors.white} : null,
+                        theme === 'dark'
+                          ? { backgroundColor: Colors.white }
+                          : null,
 
                         { opacity: currency.selected ? 0.15 : 0 },
                       ]}
                     />
-                    <Text style={styles.tagText}>{currency.name} {currency.symbol}</Text>
+                    <Text style={styles.tagText}>
+                      {currency.name} {currency.symbol}
+                    </Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -359,7 +376,7 @@ const TagDrawer = memo(
 );
 
 export const SwipeArea = memo(
-  ({ translateX, isDrawerOpen, setIsDrawerOpen}) => {
+  ({ translateX, isDrawerOpen, setIsDrawerOpen }) => {
     const styles = getThemedStyles(useThemeContext().theme).TagDrawer;
     const onSwipeAreaGestureEvent = useAnimatedGestureHandler({
       onStart: (_, context) => {

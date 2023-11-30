@@ -90,6 +90,13 @@ export const getThemedStyles = (theme) => {
           },
         }),
       },
+      circleContainer: {
+        width: 0.1 * screenWidth,
+        height: 0.1 * screenWidth,
+        borderRadius: 25,
+        left: 10,
+        top: 10,
+      },
       circle: {
         width: 40,
         height: 40,
@@ -103,11 +110,8 @@ export const getThemedStyles = (theme) => {
           theme === 'dark'
             ? themeColors.BB_darkRedPurple
             : Colors.BB_darkRedPurple,
-        position: 'absolute',
         ...Platform.select({
           ios: {
-            top: 0.05 * screenHeight,
-            right: 0,
             shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
             shadowOffset: { width: 2, height: 2 },
             shadowOpacity: 0.8,
@@ -216,9 +220,31 @@ export const getThemedStyles = (theme) => {
         alignItems: 'center',
         justifyContent: 'center',
       },
+      innerContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: themeColors.BB_darkRedPurple,
+        height: 'auto',
+        paddingTop: 20,
+        paddingBottom: 20,
+        paddingHorizontal: 20,
+        borderRadius: 20,
+        ...Platform.select({
+          ios: {
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.5,
+            shadowRadius: 5,
+          },
+          android: {
+            elevation: 10,
+          },
+        }),
+      },
       title: {
         fontSize: 24,
         marginBottom: '5%',
+        color: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
       },
       profilePic: {
         width: 100,
@@ -243,6 +269,33 @@ export const getThemedStyles = (theme) => {
         position: 'absolute',
         top: '7%',
         left: '7%',
+      },
+      submitButton: {
+        backgroundColor: theme === 'dark' ? '#3e3e42' : Colors.BB_darkRedPurple,
+        width: 0.3 * screenWidth,
+        height: 0.06 * screenHeight,
+        alignSelf: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+        borderRadius: 20,
+        ...Platform.select({
+          ios: {
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.5,
+            shadowRadius: 5,
+          },
+          android: {
+            elevation: 10,
+          },
+        }),
+      },
+      submitText: {
+        color: Colors.BB_bone,
+        fontSize: 15,
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        textAlign: 'center',
       },
     },
 
@@ -1283,7 +1336,8 @@ export const getThemedStyles = (theme) => {
     ContactInfoScreen: {
       safeareaview: {
         flex: 1,
-        backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
+        backgroundColor:
+          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
       },
       container: {
         paddingVertical: 10,
@@ -1738,7 +1792,8 @@ export const getThemedStyles = (theme) => {
         alignSelf: 'center',
       },
       modalHeader: {
-        backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
+        backgroundColor:
+          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
         height: 0.1 * screenHeight,
         top: 0,
         width: screenWidth,
@@ -1746,15 +1801,15 @@ export const getThemedStyles = (theme) => {
       modalContent: {
         flex: 1,
         alignItems: 'center',
-        width: "40%",
-        height: "auto",
+        width: '40%',
+        height: 'auto',
         alignSelf: 'center',
         borderRadius: 20,
         backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_bone,
       },
       currencyOptionsContainer: {
-        height: "auto",
-        width: "100%",
+        height: 'auto',
+        width: '100%',
         alignItems: 'center',
       },
       currencyOption: {
@@ -1764,7 +1819,8 @@ export const getThemedStyles = (theme) => {
       },
       closeButtonContainer: {
         top: 0.7 * screenHeight,
-        backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
+        backgroundColor:
+          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
         alignSelf: 'center',
         zIndex: 2,
         marginTop: 20,
@@ -1782,7 +1838,8 @@ export const getThemedStyles = (theme) => {
       },
       currencyScrollView: {
         position: 'absolute',
-        backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
+        backgroundColor:
+          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
         width: '100%',
         height: '100%',
         top: 0.1 * screenHeight,
@@ -1796,7 +1853,8 @@ export const getThemedStyles = (theme) => {
       },
       modalView: {
         margin: 20,
-        backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
+        backgroundColor:
+          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
         borderRadius: 20,
         padding: 35,
         alignItems: 'center',
@@ -1863,7 +1921,8 @@ export const getThemedStyles = (theme) => {
     EditProfileScreen: {
       safeareaview: {
         flex: 1,
-        backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
+        backgroundColor:
+          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
       },
       modalHeader: {
         fontSize: 30,
@@ -1955,12 +2014,14 @@ export const getThemedStyles = (theme) => {
       },
       itemTextField: {
         height: 45,
-        borderColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
+        borderColor:
+          theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
         borderWidth: 1,
         borderRadius: 5,
         justifyContent: 'center',
         paddingLeft: 20,
-        backgroundColor: theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.white,
+        backgroundColor:
+          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.white,
       },
       itemContainer: {
         paddingVertical: 5,

@@ -20,7 +20,7 @@ const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
         <MaterialCommunityIcons
           name="menu"
           size={30}
-          color={theme === "dark" ? Colors.BB_violet : Colors.BB_bone}
+          color={theme === 'dark' ? Colors.BB_violet : Colors.BB_bone}
           style={(alignSelf = 'center')}
         />
       </TouchableOpacity>
@@ -28,7 +28,7 @@ const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
         <MaterialCommunityIcons
           name="map-marker"
           size={30}
-          color={theme === "dark" ? Colors.BB_violet : Colors.BB_bone}
+          color={theme === 'dark' ? Colors.BB_violet : Colors.BB_bone}
         />
       </TouchableOpacity>
       <Image

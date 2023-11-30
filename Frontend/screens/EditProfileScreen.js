@@ -55,7 +55,7 @@ const EditProfileScreen = ({ navigation, route }) => {
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const [selectedProfilePicture, setSelectedProfilePicture] = useState('');
   const [selectedCoverPicture, setSelectedCoverPicture] = useState('');
-  const {theme} = useThemeContext();
+  const { theme } = useThemeContext();
   const styles = getThemedStyles(useThemeContext().theme).EditProfileScreen;
 
   /**
@@ -121,7 +121,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         const manipulateResult = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
         );
         let localUri = manipulateResult.uri;
         let filename = localUri.split('/').pop();
@@ -162,7 +162,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         const manipulateResult = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
         );
         let localUri = manipulateResult.uri;
         let filename = localUri.split('/').pop();
@@ -280,13 +280,13 @@ const EditProfileScreen = ({ navigation, route }) => {
   }
 
   return (
-    <SafeAreaView
-      style={styles.safeareaview}
-    >
+    <SafeAreaView style={styles.safeareaview}>
       {/* Edit Profile and Go Back Arrow Column */}
       <ScrollView
         contentContainerStyle={styles.scrollViewContent}
-        style={{backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone}}
+        style={{
+          backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
+        }}
         stickyHeaderIndices={[0]}
       >
         {/* Top Bar */}
@@ -332,7 +332,10 @@ const EditProfileScreen = ({ navigation, route }) => {
                   width: '100%',
                   height: 180,
                   borderWidth: 1,
-                  borderColor: theme === "dark" ? Colors.BB_violet : Colors.BB_darkRedPurple,
+                  borderColor:
+                    theme === 'dark'
+                      ? Colors.BB_violet
+                      : Colors.BB_darkRedPurple,
                 }}
               />
               <View
@@ -364,7 +367,10 @@ const EditProfileScreen = ({ navigation, route }) => {
                     width: 145,
                     borderRadius: 85,
                     borderWidth: 2,
-                    borderColor: theme === "dark" ? Colors.BB_violet : Colors.BB_darkRedPurple,
+                    borderColor:
+                      theme === 'dark'
+                        ? Colors.BB_violet
+                        : Colors.BB_darkRedPurple,
                   }}
                 />
 
@@ -379,7 +385,7 @@ const EditProfileScreen = ({ navigation, route }) => {
                   <MaterialIcons
                     name="photo-camera"
                     size={30}
-                    color={theme === "dark" ? Colors.BB_violet : Colors.black}
+                    color={theme === 'dark' ? Colors.BB_violet : Colors.black}
                   />
                 </View>
               </TouchableOpacity>
@@ -400,7 +406,11 @@ const EditProfileScreen = ({ navigation, route }) => {
                   value={profileName}
                   onChangeText={(value) => setProfileName(value)}
                   editable={true}
-                  style={theme === "dark" ? {color: Colors.BB_bone} : {color: Colors.black}}
+                  style={
+                    theme === 'dark'
+                      ? { color: Colors.BB_bone }
+                      : { color: Colors.black }
+                  }
                 />
               </View>
             </View>
@@ -413,7 +423,11 @@ const EditProfileScreen = ({ navigation, route }) => {
                   value={email}
                   onChangeText={(value) => setEmail(value)}
                   editable={true}
-                  style={theme === "dark" ? {color: Colors.BB_bone} : {color: Colors.black}}
+                  style={
+                    theme === 'dark'
+                      ? { color: Colors.BB_bone }
+                      : { color: Colors.black }
+                  }
                 />
               </View>
             </View>
