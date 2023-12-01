@@ -28,6 +28,7 @@ const assetsToPreload = [
   require('../../assets/icon_transparent.png'),
   require('../../assets/icon.png'),
   require('../../assets/no_wifi_icon_transparent.png'),
+  require('../../assets/no_wifi_icon_transparent_darkmode.png'),
   require('../../assets/card_background.png'),
 ];
 

@@ -13,7 +13,7 @@ const NoListings = memo(({ onRetry }) => {
       <MaterialCommunityIcons
         name="file-document-outline"
         size={100}
-        color={theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_bone}
+        color={theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet}
       />
       <Text style={styles.text}>No listings available</Text>
       <TouchableOpacity onPress={onRetry} style={styles.retryButton}>

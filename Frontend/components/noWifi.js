@@ -6,12 +6,13 @@ import { useThemeContext } from './visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
 
 const NoWifi = memo(({ onRetry }) => {
+  const { theme } = useThemeContext();
   const styles = getThemedStyles(useThemeContext().theme).NoWifi;
   return (
     <View style={styles.noWifiContainer}>
       <Image
         style={styles.noWifiImage}
-        source={require('../assets/no_wifi_icon_transparent.png')}
+        source={ theme === 'dark' ? require('../assets/no_wifi_icon_transparent_darkmode.png') : require('../assets/no_wifi_icon_transparent.png')}
       />
       <Text style={styles.noWifiText}>No network connection available.</Text>
       <TouchableOpacity onPress={onRetry} style={styles.retryButton}>

@@ -149,6 +149,23 @@ const TagDrawer = memo(
       setSelectedCurrency(newSelectedCurrency);
     };
 
+    clearSelections = () => {
+      setTagsData(tagsData.map((tag) => ({ ...tag, selected: false })));
+      setConditionsData(
+        conditions.map((condition) => ({ ...condition, selected: false })),
+      );
+      setTransactionsData(
+        transactions.map((transaction) => ({
+          ...transaction,
+          selected: false,
+        })),
+      );
+      setCurrencyData(
+        currencyData.map((currency) => ({ ...currency, selected: false })),
+      );
+    };
+
+
     const X_OFFSET_THRESHOLD = 10; // You can adjust this value as needed
 
     const onGestureEvent = useAnimatedGestureHandler({
@@ -365,6 +382,23 @@ const TagDrawer = memo(
                     </Text>
                   </TouchableOpacity>
                 ))}
+                <View style={styles.seperationContainer}>
+                  <View style={styles.separatorLine} />
+                </View>
+              <TouchableOpacity
+                  style={styles.applyButton}
+                  onPress={() => {
+                    setSelectedTags([]);
+                    setSelectedConditions([]);
+                    setSelectedTransactions([]);
+                    setSelectedCurrency("");
+                    clearSelections();
+                    fetchListings();
+                    handleMenuPress();
+                  }}
+                >
+                  <Text style={styles.applyButtonText}>Clear</Text>
+                </TouchableOpacity>
               </View>
               <View style={styles.spacer} />
             </ScrollView>

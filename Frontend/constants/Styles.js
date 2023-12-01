@@ -676,7 +676,7 @@ export const getThemedStyles = (theme) => {
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: 'gray',
+        color: theme === 'dark' ? Colors.BB_bone : Colors.BB_darkRedPurple,
         marginTop: 20,
       },
       noWifiImage: {
@@ -685,16 +685,18 @@ export const getThemedStyles = (theme) => {
         height: 0.15 * screenHeight,
         alignSelf: 'center',
         top: 0.2 * screenHeight,
+        marginBottom: 0.1 * screenHeight,
       },
       buttonText: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: themeColors.BB_bone,
+        color: Colors.BB_bone,
         textAlign: 'center',
       },
       retryButton: {
         marginTop: 20,
         justifyContent: 'center',
+        alignSelf: 'center',
         backgroundColor: themeColors.BB_darkRedPurple,
         padding: 10,
         borderRadius: 40,
@@ -702,8 +704,8 @@ export const getThemedStyles = (theme) => {
         height: '7%',
         ...Platform.select({
           ios: {
-            shadowColor: themeColors.black,
-            shadowOffset: { width: 0, height: 1 },
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.5,
             shadowRadius: 2,
           },
@@ -742,10 +744,10 @@ export const getThemedStyles = (theme) => {
         height: '7%',
         ...Platform.select({
           ios: {
-            shadowColor: theme === 'dark' ? null : Colors.BB_bone,
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.5,
-            shadowRadius: 2,
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOffset: { width: 1, height: 2 },
+            shadowOpacity: 0.7,
+            shadowRadius: 4,
           },
           android: {
             elevation: 5,
