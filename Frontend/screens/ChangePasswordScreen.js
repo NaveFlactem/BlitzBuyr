@@ -12,6 +12,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Platform,
   Alert,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -24,6 +25,7 @@ import {
 } from './auth/Authenticate.js';
 import { useThemeContext } from '../components/visuals/ThemeProvider.js';
 import { saveProfileInfo } from '../network/Service.js';
+import { screenHeight } from '../constants/ScreenDimensions';
 
 const ChangePassword = ({ navigation, route }) => {
   const [password, setPassword] = useState('');
@@ -97,17 +99,13 @@ const ChangePassword = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.safeareaview}>
-      <ScrollView
-        contentContainerStyle={styles.scrollViewContent}
-        stickyHeaderIndices={[0]}
-      >
         {/* Top Bar */}
         <View style={styles.topBar}>
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+          <View style={styles.topBarContainer}>
             <TouchableOpacity
               onPress={() => {
                 setLoading(true);
-                navigation.navigate('SettingsScreen');
+                navigation.navigate('BottomNavOverlay');
               }}
             >
               <View style={styles.iconContainer}>
@@ -115,6 +113,7 @@ const ChangePassword = ({ navigation, route }) => {
                   name="arrow-left"
                   size={30}
                   color={Colors.BB_bone}
+                  style={{ top: Platform.OS === 'ios' ? 0.035 * screenHeight : 0.055 * screenHeight }}
                 />
               </View>
             </TouchableOpacity>
@@ -129,6 +128,14 @@ const ChangePassword = ({ navigation, route }) => {
             </View>
           </View>
         </View>
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1}}
+        stickyHeaderIndices={[0]}
+        style={{
+          backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
+        }}
+            
+      >
         {/* CONTENT */}
         <View
           style={styles.container}

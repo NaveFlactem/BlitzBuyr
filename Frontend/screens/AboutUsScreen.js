@@ -11,11 +11,13 @@ import {
   TouchableOpacity,
   View,
   StatusBar,
+  Platform,
 } from 'react-native';
 import Colors from '../constants/Colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useThemeContext } from '../components/visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
+import { screenHeight } from '../constants/ScreenDimensions';
 
 const AboutUsScreen = ({ navigation }) => {
 
@@ -33,15 +35,9 @@ const AboutUsScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={ styles.safeareaview }>
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        style={{
-          backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
-        }}
-        stickyHeaderIndices={[0]}
-      >
+        {/* Top Bar */}
         <View style={styles.topBar}>
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+          <View style={styles.topBarContainer}>
             <TouchableOpacity
               onPress={() => {
                 setLoading(true);
@@ -53,18 +49,28 @@ const AboutUsScreen = ({ navigation }) => {
                   name="arrow-left"
                   size={30}
                   color={Colors.BB_bone}
+                  style={{ top: Platform.OS === 'ios' ? 0.035 * screenHeight : 0.045 * screenHeight }}
                 />
               </View>
             </TouchableOpacity>
             <View
               style={{
                 paddingLeft: 10,
+                alignContent: 'center',
+                alignSelf: 'center',
               }}
             >
               <Text style={styles.headerText}>About Us</Text>
             </View>
           </View>
         </View>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        style={{
+          backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
+        }}
+        stickyHeaderIndices={[0]}
+      >
 
         <View style={styles.container}>
           <Text style={styles.header}>

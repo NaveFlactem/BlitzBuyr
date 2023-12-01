@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
   Switch,
+  Platform,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
@@ -13,6 +14,7 @@ import Colors from '../constants/Colors';
 import { getThemedStyles } from '../constants/Styles.js';
 import { useThemeContext } from '../components/visuals/ThemeProvider.js';
 import * as SecureStore from 'expo-secure-store';
+import { screenHeight } from '../constants/ScreenDimensions';
 
 const SettingsScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
@@ -107,15 +109,9 @@ const SettingsScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.safeareaview}>
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        Account
-        Activity
-        stickyHeaderIndices={[0]}
-      >
         {/* Top Bar */}
         <View style={styles.topBar}>
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+          <View style={styles.topBarContainer}>
             <TouchableOpacity
               onPress={() => {
                 setLoading(true);
@@ -127,6 +123,7 @@ const SettingsScreen = ({ navigation, route }) => {
                   name="arrow-left"
                   size={30}
                   color={Colors.BB_bone}
+                  style={{ top: Platform.OS === 'ios' ? 0.035 * screenHeight : 0.055 * screenHeight }}
                 />
               </View>
             </TouchableOpacity>
@@ -141,6 +138,15 @@ const SettingsScreen = ({ navigation, route }) => {
             </View>
           </View>
         </View>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        Account
+        Activity
+        stickyHeaderIndices={[0]}
+        style={{
+          backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
+        }}
+      >
 
         {/* CONTENT */}
         <View style={styles.container}>

@@ -318,8 +318,11 @@ export const getThemedStyles = (theme) => {
         paddingHorizontal: 15,
         paddingVertical: 15,
         borderBottomWidth: 2,
-        borderBottomColor: Colors.black,
-        paddingTop: 30,
+        borderBottomColor: themeColors.black,
+      },
+      topBarContainer: {
+        justifyContent: 'center',
+        width: '100%',
       },
       headerText: {
         color: Colors.BB_bone,
@@ -348,16 +351,19 @@ export const getThemedStyles = (theme) => {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
+        color: theme === 'dark' ? Colors.BB_bone : Colors.black,
       },
       sectionHeader: {
         fontSize: 20,
         fontWeight: 'bold',
         marginTop: 20,
         marginBottom: 10,
+        color: theme === 'dark' ? Colors.BB_bone : Colors.black,
       },
       paragraph: {
         fontSize: 16,
         marginBottom: 15,
+        color: theme === 'dark' ? Colors.BB_bone : Colors.black,
       },
       teamList: {
         marginLeft: 15,
@@ -365,6 +371,7 @@ export const getThemedStyles = (theme) => {
       teamMember: {
         fontSize: 16,
         marginBottom: 5,
+        color: theme === 'dark' ? Colors.BB_bone : Colors.black,
       },
     },
 
@@ -398,9 +405,13 @@ export const getThemedStyles = (theme) => {
         backgroundColor: themeColors.BB_darkRedPurple,
         paddingHorizontal: 15,
         paddingVertical: 15,
-        paddingTop: 30,
         borderBottomWidth: 2,
+        paddingTop: Platform.OS == 'android' ? 20 : 0,
         borderBottomColor: themeColors.black,
+      },
+      topBarContainer: {
+        justifyContent: 'center',
+        width: '100%',
       },
       headerText: {
         color: Colors.BB_bone,
@@ -645,14 +656,15 @@ export const getThemedStyles = (theme) => {
       safeareaview: {
         flex: 1,
         backgroundColor: themeColors.BB_darkRedPurple,
-      },
+            },
       scrollViewContent: {
         flexGrow: 1,
+        backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
       },
       container: {
         flex: 1,
-        paddingVertical: 20,
         paddingHorizontal: 20,
+        backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
       },
       topBar: {
         alignItems: 'center',
@@ -662,8 +674,12 @@ export const getThemedStyles = (theme) => {
         paddingHorizontal: 15,
         paddingVertical: 15,
         borderBottomWidth: 2,
-        paddingTop: 30,
+        paddingTop: Platform.OS == 'android' ? 20 : 0,
         borderBottomColor: themeColors.black,
+      },
+      topBarContainer: {
+        justifyContent: 'center',
+        width: '100%',
       },
       headerText: {
         color: Colors.BB_bone,
@@ -1421,9 +1437,13 @@ export const getThemedStyles = (theme) => {
         backgroundColor: themeColors.BB_darkRedPurple,
         paddingHorizontal: 15,
         paddingVertical: 15,
-        paddingTop: 30,
         borderBottomWidth: 2,
-        borderBottomColor: Colors.black,
+        paddingTop: Platform.OS == 'android' ? 20 : 0,
+        borderBottomColor: themeColors.black,
+      },
+      topBarContainer: {
+        justifyContent: 'center',
+        width: '100%',
       },
       headerText: {
         color: Colors.BB_bone,
@@ -2026,8 +2046,7 @@ export const getThemedStyles = (theme) => {
     EditProfileScreen: {
       safeareaview: {
         flex: 1,
-        backgroundColor:
-          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
+        backgroundColor: themeColors.BB_darkRedPurple,      
       },
       modalHeader: {
         fontSize: 30,
@@ -2083,7 +2102,10 @@ export const getThemedStyles = (theme) => {
         paddingVertical: 15,
         borderBottomWidth: 2,
         borderBottomColor: themeColors.black,
-        paddingTop: 30,
+      },
+      topBarContainer: {
+        justifyContent: 'center',
+        width: '100%',
       },
       headerText: {
         color: Colors.BB_bone,
@@ -2176,6 +2198,77 @@ export const getThemedStyles = (theme) => {
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 30,
+      },
+      centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor:
+          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        ...Platform.select({
+          ios: {
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+          },
+          android: {
+            elevation: 5,
+          },
+        }),
+      },
+      imagePickerButton: {
+        flexDirection: 'row',
+        width: 200,
+        height: 50,
+        marginBottom: 10,
+        backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
+        borderRadius: 10,
+        borderColor: themeColors.black,
+        alignContent: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+        ...Platform.select({
+          ios: {
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.6,
+            shadowRadius: 4,
+          },
+          android: {
+            elevation: 5,
+          },
+        }),
+      },
+      imagePickerButtonText: {
+        fontSize: 18,
+        color: 'black',
+        alignSelf: 'center',
+        color: theme === 'dark' ? Colors.BB_bone : Colors.black,
+      },
+      pickerBackground: {
+        position: 'absolute',
+        width: 0.9 * screenWidth,
+        height: 40,
+        borderRadius: 10,
+        backgroundColor: Colors.white,
+        shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.9,
+        shadowRadius: 2,
       },
     },
     ////////////////////////////////////////////

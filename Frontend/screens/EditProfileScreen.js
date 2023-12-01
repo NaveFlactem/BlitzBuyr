@@ -19,13 +19,14 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Platform,
 } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
 import BouncePulse from '../components/visuals/BouncePulse';
 import { useThemeContext } from '../components/visuals/ThemeProvider';
 import Colors from '../constants/Colors';
-import { screenWidth } from '../constants/ScreenDimensions.js';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import { getThemedStyles } from '../constants/Styles';
 import { handleDeleteAccount, saveProfileInfo } from '../network/Service.js';
 import {
@@ -34,7 +35,6 @@ import {
   getStoredUsername,
   setStoredCredentials,
 } from './auth/Authenticate.js';
-
 /**
  *
  * @function
@@ -351,17 +351,9 @@ const EditProfileScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.safeareaview}>
-      {/* Edit Profile and Go Back Arrow Column */}
-      <ScrollView
-        contentContainerStyle={styles.scrollViewContent}
-        style={{
-          backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
-        }}
-        stickyHeaderIndices={[0]}
-      >
         {/* Top Bar */}
         <View style={styles.topBar}>
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+          <View style={styles.topBarContainer}>
             <TouchableOpacity
               onPress={() => {
                 setLoading(true);
@@ -373,6 +365,7 @@ const EditProfileScreen = ({ navigation, route }) => {
                   name="arrow-left"
                   size={30}
                   color={Colors.BB_bone}
+                  style={{ top: Platform.OS === 'ios' ? 0.035 * screenHeight : 0.045 * screenHeight }}
                 />
               </View>
             </TouchableOpacity>
@@ -387,6 +380,14 @@ const EditProfileScreen = ({ navigation, route }) => {
             </View>
           </View>
         </View>
+      {/* Edit Profile and Go Back Arrow Column */}
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        style={{
+          backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
+        }}
+        stickyHeaderIndices={[0]}
+      >
 
         {/* CONTENT */}
         {/* Edit Cover Photo */}
