@@ -29,6 +29,7 @@ import { getThemedStyles } from '../constants/Styles';
 import { getLocationWithRetry } from '../constants/Utilities';
 import * as Settings from '../hooks/UserSettings.js';
 import { fetchListings } from '../network/Service';
+import Colors from '../constants/Colors';
 /**
  * @namespace HomeScreen
  * @description - HomeScreen is the home screen of the application
@@ -64,6 +65,7 @@ const HomeScreen = ({ route }) => {
   const [distance, setDistance] = useState(30);
   const [isLocationSliderVisible, setIsLocationSliderVisible] = useState(false);
   const locationSliderHeight = useSharedValue(-100); // Start off-screen
+  const { theme } = useThemeContext();
   const styles = getThemedStyles(useThemeContext().theme).HomeScreen;
 
   /**
@@ -318,11 +320,6 @@ const HomeScreen = ({ route }) => {
         listings && listings.length > 0 ? (
           Platform.OS === 'ios' ? (
             <View style={styles.swiperContainer}>
-              <CustomRefreshControl
-                refreshing={refreshing}
-                scrollY={scrollY}
-                swiperRef={swiperRef}
-              />
               <IOSSwiperComponent
                 swiperRef={swiperRef}
                 listings={listings}
@@ -334,14 +331,20 @@ const HomeScreen = ({ route }) => {
                 }}
                 onScroll={onScroll}
                 refreshControl={
+                  <View>
+                  <CustomRefreshControl
+                    refreshing={refreshing}
+                    scrollY={scrollY}
+                  />
                   <RefreshControl
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                     tintColor="transparent"
                     colors="transparent"
                     titleColor="transparent"
-                    progressViewOffset={50}
+                    progressViewOffset={30}
                   />
+                  </View>
                 }
                 handleInnerScolling={handleInnerScolling}
                 handleInnerScollingEnd={handleInnerScollingEnd}
@@ -364,6 +367,11 @@ const HomeScreen = ({ route }) => {
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                     progressViewOffset={60}
+                    colors={theme === 'dark' ? [Colors.BB_violet] : undefined}
+                    tintColor={
+                      theme === 'dark' ? Colors.BB_violet : undefined
+                    }
+                    progressBackgroundColor={theme === 'dark' ? "#3e3e42" : undefined}
                   />
                 }
                 handleInnerScolling={handleInnerScolling}

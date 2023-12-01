@@ -481,7 +481,6 @@ function ProfileScreen({ navigation, route }) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <BouncePulse />
-        <Text>Loading...</Text>
       </View>
     );
   }
@@ -882,4 +881,4 @@ function ProfileScreen({ navigation, route }) {
   );
 }
 
-export default ProfileScreen;
+export default memo(ProfileScreen);

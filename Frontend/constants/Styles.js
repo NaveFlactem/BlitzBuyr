@@ -573,8 +573,7 @@ export const getThemedStyles = (theme) => {
       },
       spacer: {
         position: 'relative',
-        height:
-          Platform.OS == 'ios' ? 0.06 * screenHeight : 0.03 * screenHeight,
+        height: 0.06 * screenHeight
       },
     },
     ////////////////////////////////////////////
@@ -676,7 +675,7 @@ export const getThemedStyles = (theme) => {
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',
-        color: 'gray',
+        color: theme === 'dark' ? Colors.BB_bone : Colors.BB_darkRedPurple,
         marginTop: 20,
       },
       noWifiImage: {
@@ -685,16 +684,18 @@ export const getThemedStyles = (theme) => {
         height: 0.15 * screenHeight,
         alignSelf: 'center',
         top: 0.2 * screenHeight,
+        marginBottom: 0.1 * screenHeight,
       },
       buttonText: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: themeColors.BB_bone,
+        color: Colors.BB_bone,
         textAlign: 'center',
       },
       retryButton: {
         marginTop: 20,
         justifyContent: 'center',
+        alignSelf: 'center',
         backgroundColor: themeColors.BB_darkRedPurple,
         padding: 10,
         borderRadius: 40,
@@ -702,8 +703,8 @@ export const getThemedStyles = (theme) => {
         height: '7%',
         ...Platform.select({
           ios: {
-            shadowColor: themeColors.black,
-            shadowOffset: { width: 0, height: 1 },
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.5,
             shadowRadius: 2,
           },
@@ -742,10 +743,10 @@ export const getThemedStyles = (theme) => {
         height: '7%',
         ...Platform.select({
           ios: {
-            shadowColor: theme === 'dark' ? null : Colors.BB_bone,
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.5,
-            shadowRadius: 2,
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOffset: { width: 1, height: 2 },
+            shadowOpacity: 0.7,
+            shadowRadius: 4,
           },
           android: {
             elevation: 5,
@@ -1239,7 +1240,7 @@ export const getThemedStyles = (theme) => {
       bouncePulseContainer: {
         position: 'absolute',
         alignSelf: 'center',
-        top: 0,
+        top: -0.04 * screenHeight,
         alignItems: 'center',
       },
     },
@@ -1803,7 +1804,6 @@ export const getThemedStyles = (theme) => {
         height: 0.1 * screenHeight,
         top: 0,
         width: screenWidth,
-        zIndex: -1,
       },
       modalContent: {
         flex: 1,
@@ -2108,6 +2108,77 @@ export const getThemedStyles = (theme) => {
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 30,
+      },
+      centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor:
+          theme === 'dark' ? themeColors.BB_darkRedPurple : Colors.BB_bone,
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        ...Platform.select({
+          ios: {
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+          },
+          android: {
+            elevation: 5,
+          },
+        }),
+      },
+      imagePickerButton: {
+        flexDirection: 'row',
+        width: 200,
+        height: 50,
+        marginBottom: 10,
+        backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
+        borderRadius: 10,
+        borderColor: themeColors.black,
+        alignContent: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+        ...Platform.select({
+          ios: {
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.6,
+            shadowRadius: 4,
+          },
+          android: {
+            elevation: 5,
+          },
+        }),
+      },
+      imagePickerButtonText: {
+        fontSize: 18,
+        color: 'black',
+        alignSelf: 'center',
+        color: theme === 'dark' ? Colors.BB_bone : Colors.black,
+      },
+      pickerBackground: {
+        position: 'absolute',
+        width: 0.9 * screenWidth,
+        height: 40,
+        borderRadius: 10,
+        backgroundColor: Colors.white,
+        shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity: 0.9,
+        shadowRadius: 2,
       },
     },
     ////////////////////////////////////////////

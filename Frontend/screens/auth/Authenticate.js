@@ -15,12 +15,12 @@ import { getThemedStyles } from '../../constants/Styles.js';
 
 const assetsToPreload = [
   require('../../assets/blitzbuyr_name_logo.png'),
-  require('../../assets/blitzbuyr_name_logo.png'),
+  require('../../assets/blitzbuyr_name_logo_darkmode.png'),
   require('../../assets/blitzbuyr_name_transparent_horizontal.png'),
   require('../../assets/blitzbuyr_name_transparent.png'),
   require('../../assets/blitzbuyr_name.png'),
   require('../../assets/icon_background_transparent_upright.png'),
-  require('../../assets/icon_background_transparent_upright_mini.png'),
+  require('../../assets/icon_background_transparent_upright_mini_darkmode.png'),
   require('../../assets/icon_background_transparent.png'),
   require('../../assets/icon_transparent_background_filled_upright.png'),
   require('../../assets/icon_transparent_background_filled_upright_mini.png'),
@@ -28,6 +28,7 @@ const assetsToPreload = [
   require('../../assets/icon_transparent.png'),
   require('../../assets/icon.png'),
   require('../../assets/no_wifi_icon_transparent.png'),
+  require('../../assets/no_wifi_icon_transparent_darkmode.png'),
   require('../../assets/card_background.png'),
 ];
 

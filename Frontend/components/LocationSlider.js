@@ -84,7 +84,7 @@ const LocationSlider = memo(
                 theme === 'dark' ? Colors.BB_violet : Colors.BB_pink
               }
               maximumTrackTintColor="#000000"
-              thumbImage={require('../assets/icon_transparent_background_filled_upright_mini.png')}
+              thumbImage={ theme === 'dark' ? require('../assets/icon_background_transparent_upright_mini_darkmode.png') : require('../assets/icon_transparent_background_filled_upright_mini.png')}
               onSlidingComplete={(value) => {
                 setDistance(value);
                 Settings.updateDistance(value);
