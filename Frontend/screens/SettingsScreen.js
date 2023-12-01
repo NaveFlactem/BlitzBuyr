@@ -1,4 +1,4 @@
-import React, { useState, memo } from 'react';
+import React, { useState, memo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import { AntDesign } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import { getThemedStyles } from '../constants/Styles.js';
 import { useThemeContext } from '../components/visuals/ThemeProvider.js';
+import * as SecureStore from 'expo-secure-store';
 
 const SettingsScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
@@ -21,6 +22,7 @@ const SettingsScreen = ({ navigation, route }) => {
   const styles = getThemedStyles(useThemeContext().theme).SettingsScreen;
   const [contactInfo] = useState(route.params?.prevContactInfo);
   const [profileName] = useState(route.params?.profileName);
+  const [accountActivityChecked, setAccountActivityChecked] = useState(false);
 
   const titles = {
     'Account Settings': ['Change Password', 'Contact Info'],
@@ -30,9 +32,49 @@ const SettingsScreen = ({ navigation, route }) => {
     More: ['About Us'],
   };
 
-  const toggleNotifications = () => {
-    console.log('notification toggle');
+  const toggleNotifications = async () => {
+    const accountActivityStatus = !switchItemsState['Account Activity'];
+
+    try {
+      if (!accountActivityStatus) {
+        setAccountActivityChecked(false);
+        await SecureStore.setItemAsync('accountActivityStatus', 'false');
+        setSwitchItemsState((prevState) => ({
+          ...prevState,
+          'Account Activity': false,
+        }));
+      } else {
+        setAccountActivityChecked(true);
+        await SecureStore.setItemAsync('accountActivityStatus', 'true');
+        setSwitchItemsState((prevState) => ({
+          ...prevState,
+          'Account Activity': true,
+        }));
+      }
+    } catch (error) {
+      console.error('Error setting secure store:', error);
+    }
   };
+
+  useEffect(() => {
+    const loadAccountActivityStatus = async () => {
+      try {
+        const storedStatus = await SecureStore.getItemAsync(
+          'accountActivityStatus'
+        );
+        const parsedStatus =
+          storedStatus !== null ? storedStatus === 'true' : false;
+        setSwitchItemsState((prevState) => ({
+          ...prevState,
+          'Account Activity': parsedStatus,
+        }));
+      } catch (error) {
+        console.error('Error loading account activity status:', error);
+      }
+    };
+
+    loadAccountActivityStatus();
+  }, []);
 
   const toggleLocation = () => {
     console.log('location toggle');
@@ -73,6 +115,8 @@ const SettingsScreen = ({ navigation, route }) => {
     <SafeAreaView style={styles.safeareaview}>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
+        Account
+        Activity
         stickyHeaderIndices={[0]}
       >
         {/* Top Bar */}
@@ -126,7 +170,7 @@ const SettingsScreen = ({ navigation, route }) => {
                           console.log(params[item]);
                           navigation.navigate(
                             `${item.replace(' ', '')}Screen`,
-                            params[item],
+                            params[item]
                           );
                         }}
                       >

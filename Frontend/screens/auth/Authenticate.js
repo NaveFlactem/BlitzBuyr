@@ -152,7 +152,10 @@ const AuthenticateScreen = ({ navigation }) => {
           loadSettings();
           console.log('Response data:', responseData);
           navigation.navigate('BottomNavOverlay');
-          checkListingExpiration();
+          const settingsStatus = await SecureStore.getItemAsync('accountActivityStatus');
+          if(settingsStatus === 'true'){
+            checkListingExpiration();
+          }
         } else {
           navigation.navigate('Login');
         }
