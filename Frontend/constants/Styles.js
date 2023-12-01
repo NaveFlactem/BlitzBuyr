@@ -337,6 +337,31 @@ export const getThemedStyles = (theme) => {
         alignSelf: 'center',
         textAlign: 'center',
       },
+      container: {
+        padding: 20,
+      },
+      header: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+      },
+      sectionHeader: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginTop: 20,
+        marginBottom: 10,
+      },
+      paragraph: {
+        fontSize: 16,
+        marginBottom: 15,
+      },
+      teamList: {
+        marginLeft: 15,
+      },
+      teamMember: {
+        fontSize: 16,
+        marginBottom: 5,
+      },
     },
 
     // SETTINGS SCREEN //
@@ -1398,7 +1423,7 @@ export const getThemedStyles = (theme) => {
       },
       headerText: {
         color: Colors.BB_bone,
-        fontSize: 27.5,
+        fontSize: 24,
         fontWeight: 'bold',
         alignSelf: 'center',
         paddingLeft: 10,
