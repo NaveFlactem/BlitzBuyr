@@ -83,7 +83,7 @@ const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
 const DeleteButton = ({ onDeletePress, styles }) => {
   return (
     <TouchableOpacity style={styles.deleteButton} onPress={onDeletePress}>
-      <MaterialCommunityIcons name="trash-can-outline" size={30} color="red" />
+      <MaterialCommunityIcons name="trash-can-outline" size={40} color="red" />
     </TouchableOpacity>
   );
 };

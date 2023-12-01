@@ -101,7 +101,7 @@ export const getThemedStyles = (theme) => {
         height: 0.1 * screenWidth,
         borderRadius: 25,
         left: 15,
-        top: 40,
+        top: "-44%",
       },
       circle: {
         width: 40,
@@ -1183,8 +1183,8 @@ export const getThemedStyles = (theme) => {
         position: 'absolute',
         height: 0.15 * screenWidth,
         width: 0.15 * screenWidth,
-        bottom: '82%',
-        right: '-5%',
+        top: 10,
+        left: '5%',
         zIndex: 1,
       },
       modalContainer: {
@@ -1274,7 +1274,7 @@ export const getThemedStyles = (theme) => {
       bouncePulseContainer: {
         position: 'absolute',
         alignSelf: 'center',
-        top: 0,
+        top: -0.04 * screenHeight,
         alignItems: 'center',
       },
     },
