@@ -32,7 +32,7 @@ const AboutUsScreen = ({ navigation }) => {
   ];
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.BB_bone }}>
+    <SafeAreaView style={ styles.safeareaview }>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         style={{
