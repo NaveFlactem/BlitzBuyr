@@ -306,6 +306,10 @@ export const getThemedStyles = (theme) => {
     },
 
     AboutUs: {
+      safeareaview: {
+        flex: 1,
+        backgroundColor: themeColors.BB_darkRedPurple,
+      },
       topBar: {
         alignItems: 'center',
         justifyContent: 'center',
