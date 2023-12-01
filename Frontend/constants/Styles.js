@@ -1798,9 +1798,10 @@ export const getThemedStyles = (theme) => {
       },
       characterCounter: {
         fontSize: 12,
-        color: 'black',
+        color: theme === 'dark' ? Colors.BB_bone : Colors.black,
         position: 'absolute',
         right: 0.05 * screenWidth,
+        bottom: 13,
       },
       loading: {
         height: screenHeight,
