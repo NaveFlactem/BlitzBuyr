@@ -55,8 +55,38 @@ const EditProfileScreen = ({ navigation, route }) => {
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const [selectedProfilePicture, setSelectedProfilePicture] = useState('');
   const [selectedCoverPicture, setSelectedCoverPicture] = useState('');
+  const [selectProfileImageModalVisible, setSelectProfileImageModalVisible] = useState(false);
+  const [selectCoverImageModalVisible, setSelectCoverImageModalVisible] = useState(false);
   const { theme } = useThemeContext();
   const styles = getThemedStyles(useThemeContext().theme).EditProfileScreen;
+
+  /**
+   * @function
+   * @showModalProfile - shows the modal for selecting a profile picture
+   * @setSelectProfileImageModalVisible - sets the modal for selecting a profile picture to visible
+   */
+  const showModalProfile = () => {
+    setSelectProfileImageModalVisible(true);
+  }
+  /**
+   * @function
+   * @showModalCover - shows the modal for selecting a cover picture
+   * @setSelectCoverImageModalVisible - sets the modal for selecting a cover picture to visible
+   */
+  const showModalCover = () => {
+    setSelectCoverImageModalVisible(true);
+  }
+  /**
+   * @function
+   * @hideModal - hides the modal for selecting a picture
+   * @setSelectProfileImageModalVisible - sets the modal for selecting a profile picture to invisible
+   * @setSelectCoverImageModalVisible - sets the modal for selecting a cover picture to invisible
+   */
+  const hideModal = () => {
+    setSelectProfileImageModalVisible(false);
+    setSelectCoverImageModalVisible(false);
+  }
+  
 
   /**
    *
@@ -97,6 +127,54 @@ const EditProfileScreen = ({ navigation, route }) => {
     }
   }, [profileName, selectedProfilePicture, selectedCoverPicture, password]);
 
+
+/**
+   * @function
+   * @handleCameraPick - allows the user to take photos with their camera
+   * @returns Returns the photos that the user took
+   * @description - allows the user to take photos with their camera
+   */
+const handleCameraPick = async () => {
+  const result = await ImagePicker.launchCameraAsync();
+
+  if (!result.canceled) {
+    if (selectProfileImageModalVisible) {
+      handleProfileImageSelection(result.assets);
+    }
+    else if (selectCoverImageModalVisible) {
+      handleCoverImageSelection(result.assets);
+    }
+  }
+
+  hideModal();
+};
+
+/**
+ * @function
+ * @handleLibraryPick - allows the user to select images from their library
+ * @returns Returns the images that the user selected
+ * @description - allows the user to select images from their library
+ */
+const handleLibraryPick = async () => {
+  const result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    allowsEditing: false,
+    aspect: [4, 4],
+    quality: 1,
+  });
+
+  if (!result.canceled && result.assets) {
+    if (selectProfileImageModalVisible) {
+      handleProfileImageSelection(result.assets);
+    }
+    else if (selectCoverImageModalVisible) {
+      handleCoverImageSelection(result.assets);
+    }
+  }
+
+  hideModal();
+};
+
   /**
    *
    * @function
@@ -108,33 +186,20 @@ const EditProfileScreen = ({ navigation, route }) => {
    * @throws {Error} Throws an error if there's an issue during image processing.
    */
   //Functions for touchable opacity prompts for changing profile/cover photo
-  const handleProfileImageSelection = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      try {
-        const manipulateResult = await ImageManipulator.manipulateAsync(
-          result.assets[0].uri,
-          [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
-        );
-        let localUri = manipulateResult.uri;
-        let filename = localUri.split('/').pop();
-
-        result = localUri;
-      } catch (error) {
-        console.error('Image processing error:', error);
-        return null;
-      }
-      setSelectedProfilePicture(result);
-      console.log(`Profile picture ${result} selected.`);
-    } else {
-      console.log('Profile Picture change function was canceled.');
+  const handleProfileImageSelection = async (images) => {
+    try {
+      const img = images[0]; // Assuming the first image is the one you want
+      const manipulateResult = await ImageManipulator.manipulateAsync(
+        img.uri,
+        [],
+        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
+      );
+  
+      setSelectedProfilePicture(manipulateResult.uri);
+      console.log(`Profile picture ${manipulateResult.uri} selected.`);
+    } catch (error) {
+      console.error('Image processing error:', error);
+      return null;
     }
   };
 
@@ -149,33 +214,20 @@ const EditProfileScreen = ({ navigation, route }) => {
    * @throws {Error} Throws an error if there's an issue during image processing.
    */
 
-  const handleCoverImageSelection = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      try {
-        const manipulateResult = await ImageManipulator.manipulateAsync(
-          result.assets[0].uri,
-          [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
-        );
-        let localUri = manipulateResult.uri;
-        let filename = localUri.split('/').pop();
-
-        result = localUri;
-      } catch (error) {
-        console.error('Image processing error:', error);
-        return null;
-      }
-      setSelectedCoverPicture(result);
-      console.log(`Cover picture ${result} selected.`);
-    } else {
-      console.log('Cover Picture change function was canceled.');
+  const handleCoverImageSelection = async (images) => {
+    try {
+      const img = images[0]; // Assuming the first image is the one you want
+      const manipulateResult = await ImageManipulator.manipulateAsync(
+        img.uri,
+        [],
+        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
+      );
+  
+      setSelectedCoverPicture(manipulateResult.uri);
+      console.log(`Cover picture ${manipulateResult.uri} selected.`);
+    } catch (error) {
+      console.error('Image processing error:', error);
+      return null;
     }
   };
 
@@ -321,7 +373,7 @@ const EditProfileScreen = ({ navigation, route }) => {
         {/* Edit Cover Photo */}
         <View style={{ paddingHorizontal: 20, paddingTop: 25 }}>
           <View style={{ marginTopwidth: '100%', position: 'relative' }}>
-            <TouchableOpacity onPress={handleCoverImageSelection}>
+            <TouchableOpacity onPress={showModalCover}>
               <Image
                 source={{
                   uri: selectedCoverPicture,
@@ -357,7 +409,7 @@ const EditProfileScreen = ({ navigation, route }) => {
                 left: screenWidth / 4,
               }}
             >
-              <TouchableOpacity onPress={handleProfileImageSelection}>
+              <TouchableOpacity onPress={showModalProfile}>
                 <Image
                   source={{ uri: selectedProfilePicture }}
                   resizeMode="cover"
@@ -443,7 +495,7 @@ const EditProfileScreen = ({ navigation, route }) => {
               }}
             >
               <View style={styles.button}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={saveChanges}>
                   <Text style={styles.buttonText}> Save Changes </Text>
                 </TouchableOpacity>
               </View>
@@ -491,6 +543,52 @@ const EditProfileScreen = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
       </Modal>
+
+
+      <Modal
+          animationType="slide"
+          transparent={true}
+          visible={selectCoverImageModalVisible || selectProfileImageModalVisible}
+          onRequestClose={() => {
+            hideModal();
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <TouchableOpacity
+                style={styles.imagePickerButton}
+                onPress={handleCameraPick}
+              >
+                <Text style={styles.imagePickerButtonText}>Camera</Text>
+                <MaterialIcons
+                  name="camera-alt"
+                  size={24}
+                  color={theme === 'dark' ? Colors.BB_violet : Colors.black}
+                  style={{ top: 10, left: '90%' }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.imagePickerButton}
+                onPress={handleLibraryPick}
+              >
+                <Text style={styles.imagePickerButtonText}>Photo Library</Text>
+                <MaterialIcons
+                  name="photo-library"
+                  size={24}
+                  color={theme === 'dark' ? Colors.BB_violet : Colors.black}
+                  style={{ top: 10, left: '50%' }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.imagePickerButton}
+                onPress={() => hideModal()}
+              >
+                <Text style={styles.imagePickerButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
     </SafeAreaView>
   );
 };

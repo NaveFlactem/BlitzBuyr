@@ -881,4 +881,4 @@ function ProfileScreen({ navigation, route }) {
   );
 }
 
-export default ProfileScreen;
+export default memo(ProfileScreen);
