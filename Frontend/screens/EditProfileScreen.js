@@ -13,18 +13,20 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import React, { memo, useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
+  Alert,
   Image,
   SafeAreaView,
   Text,
   TouchableOpacity,
   View,
-  Alert,
 } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
+import BouncePulse from '../components/visuals/BouncePulse';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
 import Colors from '../constants/Colors';
 import { screenWidth } from '../constants/ScreenDimensions.js';
+import { getThemedStyles } from '../constants/Styles';
 import { handleDeleteAccount, saveProfileInfo } from '../network/Service.js';
 import {
   clearStoredCredentials,
@@ -32,9 +34,6 @@ import {
   getStoredUsername,
   setStoredCredentials,
 } from './auth/Authenticate.js';
-import { useThemeContext } from '../components/visuals/ThemeProvider';
-import { getThemedStyles } from '../constants/Styles';
-import BouncePulse from '../components/visuals/BouncePulse';
 
 /**
  *
@@ -56,8 +55,10 @@ const EditProfileScreen = ({ navigation, route }) => {
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const [selectedProfilePicture, setSelectedProfilePicture] = useState('');
   const [selectedCoverPicture, setSelectedCoverPicture] = useState('');
-  const [selectProfileImageModalVisible, setSelectProfileImageModalVisible] = useState(false);
-  const [selectCoverImageModalVisible, setSelectCoverImageModalVisible] = useState(false);
+  const [selectProfileImageModalVisible, setSelectProfileImageModalVisible] =
+    useState(false);
+  const [selectCoverImageModalVisible, setSelectCoverImageModalVisible] =
+    useState(false);
   const { theme } = useThemeContext();
   const styles = getThemedStyles(useThemeContext().theme).EditProfileScreen;
 
@@ -68,7 +69,7 @@ const EditProfileScreen = ({ navigation, route }) => {
    */
   const showModalProfile = () => {
     setSelectProfileImageModalVisible(true);
-  }
+  };
   /**
    * @function
    * @showModalCover - shows the modal for selecting a cover picture
@@ -76,7 +77,7 @@ const EditProfileScreen = ({ navigation, route }) => {
    */
   const showModalCover = () => {
     setSelectCoverImageModalVisible(true);
-  }
+  };
   /**
    * @function
    * @hideModal - hides the modal for selecting a picture
@@ -86,8 +87,7 @@ const EditProfileScreen = ({ navigation, route }) => {
   const hideModal = () => {
     setSelectProfileImageModalVisible(false);
     setSelectCoverImageModalVisible(false);
-  }
-  
+  };
 
   /**
    *
@@ -128,53 +128,50 @@ const EditProfileScreen = ({ navigation, route }) => {
     }
   }, [profileName, selectedProfilePicture, selectedCoverPicture, password]);
 
-
-/**
+  /**
    * @function
    * @handleCameraPick - allows the user to take photos with their camera
    * @returns Returns the photos that the user took
    * @description - allows the user to take photos with their camera
    */
-const handleCameraPick = async () => {
-  const result = await ImagePicker.launchCameraAsync();
+  const handleCameraPick = async () => {
+    const result = await ImagePicker.launchCameraAsync();
 
-  if (!result.canceled) {
-    if (selectProfileImageModalVisible) {
-      handleProfileImageSelection(result.assets);
+    if (!result.canceled) {
+      if (selectProfileImageModalVisible) {
+        handleProfileImageSelection(result.assets);
+      } else if (selectCoverImageModalVisible) {
+        handleCoverImageSelection(result.assets);
+      }
     }
-    else if (selectCoverImageModalVisible) {
-      handleCoverImageSelection(result.assets);
+
+    hideModal();
+  };
+
+  /**
+   * @function
+   * @handleLibraryPick - allows the user to select images from their library
+   * @returns Returns the images that the user selected
+   * @description - allows the user to select images from their library
+   */
+  const handleLibraryPick = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets) {
+      if (selectProfileImageModalVisible) {
+        handleProfileImageSelection(result.assets);
+      } else if (selectCoverImageModalVisible) {
+        handleCoverImageSelection(result.assets);
+      }
     }
-  }
 
-  hideModal();
-};
-
-/**
- * @function
- * @handleLibraryPick - allows the user to select images from their library
- * @returns Returns the images that the user selected
- * @description - allows the user to select images from their library
- */
-const handleLibraryPick = async () => {
-  const result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsEditing: false,
-    aspect: [4, 4],
-    quality: 1,
-  });
-
-  if (!result.canceled && result.assets) {
-    if (selectProfileImageModalVisible) {
-      handleProfileImageSelection(result.assets);
-    }
-    else if (selectCoverImageModalVisible) {
-      handleCoverImageSelection(result.assets);
-    }
-  }
-
-  hideModal();
-};
+    hideModal();
+  };
 
   /**
    *
@@ -193,9 +190,9 @@ const handleLibraryPick = async () => {
       const manipulateResult = await ImageManipulator.manipulateAsync(
         img.uri,
         [],
-        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
+        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
       );
-  
+
       setSelectedProfilePicture(manipulateResult.uri);
       console.log(`Profile picture ${manipulateResult.uri} selected.`);
     } catch (error) {
@@ -221,9 +218,9 @@ const handleLibraryPick = async () => {
       const manipulateResult = await ImageManipulator.manipulateAsync(
         img.uri,
         [],
-        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
+        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
       );
-  
+
       setSelectedCoverPicture(manipulateResult.uri);
       console.log(`Cover picture ${manipulateResult.uri} selected.`);
     } catch (error) {
@@ -279,7 +276,7 @@ const handleLibraryPick = async () => {
       });
     }
 
-    if (selectedProfilePicture != route.params.ProfilePicture) {
+    if (selectedProfilePicture != route.params.profilePicture) {
       formData.append('profilePicture', {
         uri: selectedProfilePicture,
         name: 'profilePicture.jpg',
@@ -566,51 +563,49 @@ const handleLibraryPick = async () => {
         </View>
       </Modal>
 
-
       <Modal
-          animationType="slide"
-          transparent={true}
-          visible={selectCoverImageModalVisible || selectProfileImageModalVisible}
-          onRequestClose={() => {
-            hideModal();
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <TouchableOpacity
-                style={styles.imagePickerButton}
-                onPress={handleCameraPick}
-              >
-                <Text style={styles.imagePickerButtonText}>Camera</Text>
-                <MaterialIcons
-                  name="camera-alt"
-                  size={24}
-                  color={theme === 'dark' ? Colors.BB_violet : Colors.black}
-                  style={{ top: 10, left: '90%' }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.imagePickerButton}
-                onPress={handleLibraryPick}
-              >
-                <Text style={styles.imagePickerButtonText}>Photo Library</Text>
-                <MaterialIcons
-                  name="photo-library"
-                  size={24}
-                  color={theme === 'dark' ? Colors.BB_violet : Colors.black}
-                  style={{ top: 10, left: '50%' }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.imagePickerButton}
-                onPress={() => hideModal()}
-              >
-                <Text style={styles.imagePickerButtonText}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
+        animationType="slide"
+        transparent={true}
+        visible={selectCoverImageModalVisible || selectProfileImageModalVisible}
+        onRequestClose={() => {
+          hideModal();
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TouchableOpacity
+              style={styles.imagePickerButton}
+              onPress={handleCameraPick}
+            >
+              <Text style={styles.imagePickerButtonText}>Camera</Text>
+              <MaterialIcons
+                name="camera-alt"
+                size={24}
+                color={theme === 'dark' ? Colors.BB_violet : Colors.black}
+                style={{ top: 10, left: '90%' }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.imagePickerButton}
+              onPress={handleLibraryPick}
+            >
+              <Text style={styles.imagePickerButtonText}>Photo Library</Text>
+              <MaterialIcons
+                name="photo-library"
+                size={24}
+                color={theme === 'dark' ? Colors.BB_violet : Colors.black}
+                style={{ top: 10, left: '50%' }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.imagePickerButton}
+              onPress={() => hideModal()}
+            >
+              <Text style={styles.imagePickerButtonText}>Cancel</Text>
+            </TouchableOpacity>
           </View>
-        </Modal>
-
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
