@@ -19,6 +19,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
@@ -243,10 +244,31 @@ const handleLibraryPick = async () => {
    * @throws {Error} Throws an error if there's an issue during the editing process.
    */
   const saveChanges = async () => {
+    const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+
+    if (profileName === '' || email === '') {
+      Alert.alert('Invalid Input', 'Please fill out all fields.');
+      return;
+    }
+
+    if (!emailPattern.test(email)) {
+      Alert.alert('Invalid Email', 'Please enter a valid email address.');
+      return;
+    }
+
+    if (profileName.length > 20) {
+      Alert.alert('Invalid Input', 'Name must be less than 20 characters.');
+      return;
+    }
+
+    if (profileName.length < 4) {
+      Alert.alert('Invalid Input', 'Name must be at least 4 characters.');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('username', getStoredUsername());
     formData.append('profileName', profileName);
-    formData.append('password', password);
     formData.append('email', email);
 
     if (selectedCoverPicture != route.params.coverPicture) {

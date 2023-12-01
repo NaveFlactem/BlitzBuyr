@@ -12,6 +12,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
@@ -66,9 +67,20 @@ const ChangePassword = ({ navigation, route }) => {
   };
 
   const saveChanges = async () => {
+    if (password === '' || confirmPassword === '') {
+      Alert.alert('Invalid Input', 'Please fill out all fields.');
+      return;
+    }
     if (password !== confirmPassword) {
       // Add visual prompt later
-      console.error('Password and Confirm Password do not match');
+      Alert.alert(
+        'Password Mismatch',
+        'Password and Confirm Password do not match.'
+      );
+      return;
+    }
+    if (password.length < 8 || confirmPassword.length < 8) {
+      Alert.alert('Invalid Input', 'Password must be at least 8 characters.');
       return;
     }
     try {

@@ -78,7 +78,7 @@ const SettingsScreen = ({ navigation, route }) => {
 
   const toggleLocation = () => {
     console.log('location toggle');
-  };
+};
 
   const toggleDarkMode = async () => {
     try {
@@ -103,6 +103,9 @@ const SettingsScreen = ({ navigation, route }) => {
       prevContactInfo: contactInfo,
     },
     'Change Password': { profileName: profileName },
+    'About Us' : {
+      profileName : profileName
+    }
   };
 
   const [switchItemsState, setSwitchItemsState] = useState({
@@ -166,8 +169,8 @@ const SettingsScreen = ({ navigation, route }) => {
                         style={styles.settingsItems}
                         onPress={() => {
                           setLoading(true);
-                          console.log(`${item.replace(' ', '')}Screen`);
-                          console.log(params[item]);
+                          console.log(`navigating to => ${item.replace(' ', '')}Screen`);
+                          console.log(`with parameters => ${params[item]}`);
                           navigation.navigate(
                             `${item.replace(' ', '')}Screen`,
                             params[item]

@@ -305,6 +305,43 @@ export const getThemedStyles = (theme) => {
         textAlign: 'center',
       },
     },
+    AboutUs: {
+      topBar: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        backgroundColor: themeColors.BB_darkRedPurple,
+        paddingHorizontal: 15,
+        paddingVertical: 15,
+        borderBottomWidth: 2,
+        borderBottomColor: Colors.black,
+      },
+      headerText: {
+        color: Colors.BB_bone,
+        fontSize: 27.5,
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        justifyContent: 'center',
+      },
+      title: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: theme === 'dark' ? Colors.BB_bone : Colors.black,
+      },
+      text: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        alignContent: 'center',
+        alignSelf: 'center',
+        textAlign: 'center',
+      },
+      textContainer: {
+        paddingHorizontal: 10,
+        alignContent: 'center',
+        alignSelf: 'center',
+        textAlign: 'center',
+      },
+    },
 
     // SETTINGS SCREEN //
     SettingsScreen: {

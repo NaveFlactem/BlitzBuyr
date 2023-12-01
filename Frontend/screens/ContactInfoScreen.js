@@ -79,22 +79,6 @@ const EditContactInfo = ({ navigation, route }) => {
               </View>
             </TouchableOpacity>
             <Text style={styles.headerText}>Contact Info</Text>
-            <TouchableOpacity
-              onPress={() => {
-                setLoading(true);
-                try {
-                  saveContactInfo(contactInfo);
-
-                  navigation.setOptions({
-                    params: { profileName: getStoredUsername() },
-                  });
-                  navigation.navigate('SettingsScreen');
-                } catch (error) {
-                  alert(error);
-                }
-                navigation.navigate('BottomNavOverlay');
-              }}
-            ></TouchableOpacity>
           </View>
         </View>
 
