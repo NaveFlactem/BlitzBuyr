@@ -100,8 +100,8 @@ export const getThemedStyles = (theme) => {
         width: 0.1 * screenWidth,
         height: 0.1 * screenWidth,
         borderRadius: 25,
-        left: 10,
-        top: 10,
+        left: 15,
+        top: 40,
       },
       circle: {
         width: 40,
@@ -314,6 +314,7 @@ export const getThemedStyles = (theme) => {
         paddingVertical: 15,
         borderBottomWidth: 2,
         borderBottomColor: Colors.black,
+        paddingTop: 30,
       },
       headerText: {
         color: Colors.BB_bone,
@@ -321,6 +322,7 @@ export const getThemedStyles = (theme) => {
         fontWeight: 'bold',
         alignSelf: 'center',
         justifyContent: 'center',
+        paddingLeft: 10
       },
       title: {
         fontSize: 18,
@@ -372,6 +374,7 @@ export const getThemedStyles = (theme) => {
         backgroundColor: themeColors.BB_darkRedPurple,
         paddingHorizontal: 15,
         paddingVertical: 15,
+        paddingTop: 30,
         borderBottomWidth: 2,
         borderBottomColor: themeColors.black,
       },
@@ -635,6 +638,7 @@ export const getThemedStyles = (theme) => {
         paddingHorizontal: 15,
         paddingVertical: 15,
         borderBottomWidth: 2,
+        paddingTop: 30,
         borderBottomColor: themeColors.black,
       },
       headerText: {
@@ -1393,6 +1397,7 @@ export const getThemedStyles = (theme) => {
         backgroundColor: themeColors.BB_darkRedPurple,
         paddingHorizontal: 15,
         paddingVertical: 15,
+        paddingTop: 30,
         borderBottomWidth: 2,
         borderBottomColor: Colors.black,
       },
@@ -1401,6 +1406,7 @@ export const getThemedStyles = (theme) => {
         fontSize: 27.5,
         fontWeight: 'bold',
         alignSelf: 'center',
+        paddingLeft: 10
       },
       iconContainer: {
         width: 40,
@@ -2053,6 +2059,7 @@ export const getThemedStyles = (theme) => {
         paddingVertical: 15,
         borderBottomWidth: 2,
         borderBottomColor: themeColors.black,
+        paddingTop: 30,
       },
       headerText: {
         color: Colors.BB_bone,
