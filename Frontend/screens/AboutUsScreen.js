@@ -17,7 +17,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useThemeContext } from '../components/visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
 
-const AboutUsScreen = ({ navigation, route }) => {
+const AboutUsScreen = ({ navigation}) => {
   const content = `
   How Much Up-Front? A Grounded Theory of Agile Architecture Summary by Waterman, Noble, and Allan
   (from The School of Engineering and Computer Science at Victoria University of Wellington, New Zealand) 

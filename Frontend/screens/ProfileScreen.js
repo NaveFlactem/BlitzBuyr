@@ -79,8 +79,8 @@ const handleContactClick = async (key, data) => {
       try {
         await Linking.openURL(
           `mailto:${data}?subject=${encodeURIComponent(
-            'BlitzBuyr',
-          )}&body=${encodeURIComponent('')}`,
+            'BlitzBuyr'
+          )}&body=${encodeURIComponent('')}`
         );
       } catch (error) {
         console.error('Error opening email:', error);
@@ -107,7 +107,7 @@ const handleContactClick = async (key, data) => {
               onPress: () => console.log('Cancel Pressed'),
             },
           ],
-          { cancelable: true },
+          { cancelable: true }
         );
       } catch (error) {
         console.error('Error opening phoneNumber:', error);
@@ -134,7 +134,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
   const theme = useThemeContext().theme;
   const styles = getThemedStyles(theme).ProfileScreen;
   let displayValues = Object.values(contactInfo).some(
-    (value) => value.data?.length > 0,
+    (value) => value.data?.length > 0
   );
 
   if (!selfProfile && Object.values(contactInfo).every((value) => value.hidden))
@@ -154,10 +154,10 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
       saveContactInfo(newContactInfo);
 
       console.log(
-        `${newContactInfo[key].hidden ? 'Hidden' : 'Unhidden'} ${key}`,
+        `${newContactInfo[key].hidden ? 'Hidden' : 'Unhidden'} ${key}`
       );
     },
-    [contactInfo],
+    [contactInfo]
   );
 
   const formatPhoneNumber = (phoneNumberString) => {
@@ -289,7 +289,7 @@ function ProfileScreen({ navigation, route }) {
       const username = getStoredUsername();
       if (route.params?.username) {
         console.log(
-          `Setting username to passed username ${route.params.username}`,
+          `Setting username to passed username ${route.params.username}`
         );
         // we navigated with a username passed as param (i.e. clicking someone's profile)
         setProfileName(route.params.username);
@@ -346,7 +346,7 @@ function ProfileScreen({ navigation, route }) {
     console.log(`Fetching profile info for ${username}`);
     try {
       const fetchUrl = `${serverIp}/api/profile?username=${encodeURIComponent(
-        getStoredUsername(),
+        getStoredUsername()
       )}&password=${getStoredPassword()}&profileName=${username}`;
       console.log(fetchUrl);
       const profileResponse = await fetch(fetchUrl, {
@@ -373,7 +373,7 @@ function ProfileScreen({ navigation, route }) {
           }),
           userRatings: profileData.ratings.reduce(
             (acc, rating) => ({ ...acc, ...rating }),
-            {},
+            {}
           ),
           profilePicture: profileData.profilePicture,
           coverPicture: profileData.coverPicture,
@@ -390,8 +390,8 @@ function ProfileScreen({ navigation, route }) {
 
         const initialLikeStates = Object.fromEntries(
           [...profileData.likedListings, ...profileData.userListings].map(
-            (listing) => [listing.ListingId, listing.liked],
-          ),
+            (listing) => [listing.ListingId, listing.liked]
+          )
         );
         setLikeStates(initialLikeStates);
 
@@ -399,7 +399,7 @@ function ProfileScreen({ navigation, route }) {
       } else {
         console.log(
           'Error fetching profile:',
-          profileResponse.status,
+          profileResponse.status
           // profileData
         );
       }
@@ -438,7 +438,7 @@ function ProfileScreen({ navigation, route }) {
     console.log(
       `${
         newLikeStates[listingId] ? 'Likered' : 'UnLikered'
-      } listing ID ${listingId}`,
+      } listing ID ${listingId}`
     );
   };
 
@@ -830,10 +830,10 @@ function ProfileScreen({ navigation, route }) {
                 setProfileInfo((prevProfileInfo) => ({
                   ...prevProfileInfo,
                   likedListings: prevProfileInfo.likedListings.filter(
-                    (item) => item.ListingId !== listingId,
+                    (item) => item.ListingId !== listingId
                   ),
                   userListings: prevProfileInfo.userListings.filter(
-                    (item) => item.ListingId !== listingId,
+                    (item) => item.ListingId !== listingId
                   ),
                 }));
 

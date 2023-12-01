@@ -304,6 +304,7 @@ export const getThemedStyles = (theme) => {
         textAlign: 'center',
       },
     },
+
     AboutUs: {
       topBar: {
         alignItems: 'center',
@@ -318,16 +319,10 @@ export const getThemedStyles = (theme) => {
       },
       headerText: {
         color: Colors.BB_bone,
-        fontSize: 27.5,
+        fontSize: 24,
         fontWeight: 'bold',
         alignSelf: 'center',
-        justifyContent: 'center',
-        paddingLeft: 10
-      },
-      title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: theme === 'dark' ? Colors.BB_bone : Colors.black,
+        paddingLeft: 10,
       },
       text: {
         fontSize: 18,
@@ -1406,7 +1401,7 @@ export const getThemedStyles = (theme) => {
         fontSize: 27.5,
         fontWeight: 'bold',
         alignSelf: 'center',
-        paddingLeft: 10
+        paddingLeft: 10,
       },
       iconContainer: {
         width: 40,

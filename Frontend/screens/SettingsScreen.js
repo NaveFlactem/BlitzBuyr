@@ -18,18 +18,40 @@ const SettingsScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
   const { theme } = useThemeContext();
   const { toggleTheme } = useThemeContext();
-
   const styles = getThemedStyles(useThemeContext().theme).SettingsScreen;
   const [contactInfo] = useState(route.params?.prevContactInfo);
   const [profileName] = useState(route.params?.profileName);
   const [accountActivityChecked, setAccountActivityChecked] = useState(false);
 
+  const params = {
+    'Contact Info': {
+      prevContactInfo: contactInfo,
+    },
+    'Change Password': { profileName: profileName },
+  };
+
+  const [switchItemsState, setSwitchItemsState] = useState({
+    'Dark Mode': theme === 'light' ? false : true,
+    'Account Activity': false,
+  });
+
   const titles = {
     'Account Settings': ['Change Password', 'Contact Info'],
-    // Notifications: ['Account Activity', 'Notification Preferences'],
     Notifications: ['Account Activity'],
     General: ['Dark Mode'],
     More: ['About Us'],
+  };
+
+  const toggleDarkMode = async () => {
+    try {
+      await toggleTheme();
+      setSwitchItemsState((prevState) => ({
+        ...prevState,
+        'Dark Mode': theme === 'light',
+      }));
+    } catch (error) {
+      console.error('Error toggling theme:', error);
+    }
   };
 
   const toggleNotifications = async () => {
@@ -56,6 +78,11 @@ const SettingsScreen = ({ navigation, route }) => {
     }
   };
 
+  const toggleParams = {
+    'Dark Mode': toggleDarkMode,
+    'Account Activity': toggleNotifications,
+  };
+
   useEffect(() => {
     const loadAccountActivityStatus = async () => {
       try {
@@ -76,43 +103,7 @@ const SettingsScreen = ({ navigation, route }) => {
     loadAccountActivityStatus();
   }, []);
 
-  const toggleLocation = () => {
-    console.log('location toggle');
-};
 
-  const toggleDarkMode = async () => {
-    try {
-      await toggleTheme();
-      setSwitchItemsState((prevState) => ({
-        ...prevState,
-        'Dark Mode': theme === 'light',
-      }));
-    } catch (error) {
-      console.error('Error toggling theme:', error);
-    }
-  };
-
-  const toggleParams = {
-    'Dark Mode': toggleDarkMode,
-    Location: toggleLocation,
-    'Account Activity': toggleNotifications,
-  };
-
-  const params = {
-    'Contact Info': {
-      prevContactInfo: contactInfo,
-    },
-    'Change Password': { profileName: profileName },
-    'About Us' : {
-      profileName : profileName
-    }
-  };
-
-  const [switchItemsState, setSwitchItemsState] = useState({
-    'Dark Mode': theme === 'light' ? false : true,
-    'Account Activity': false,
-    Location: false,
-  });
 
   return (
     <SafeAreaView style={styles.safeareaview}>
@@ -169,7 +160,9 @@ const SettingsScreen = ({ navigation, route }) => {
                         style={styles.settingsItems}
                         onPress={() => {
                           setLoading(true);
-                          console.log(`navigating to => ${item.replace(' ', '')}Screen`);
+                          console.log(
+                            `navigating to => ${item.replace(' ', '')}Screen`
+                          );
                           console.log(`with parameters => ${params[item]}`);
                           navigation.navigate(
                             `${item.replace(' ', '')}Screen`,
