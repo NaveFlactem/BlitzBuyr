@@ -862,7 +862,7 @@ function ProfileScreen({ navigation, route }) {
           }}
           style={{
             position: 'absolute',
-            top: Platform.OS == 'ios' ? 55 : 15,
+            top: Platform.OS == 'ios' ? 55 : 40,
             right: Platform.OS == 'ios' ? 10 : 15,
           }}
         >
