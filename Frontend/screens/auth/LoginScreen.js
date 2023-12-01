@@ -1,6 +1,7 @@
-import { serverIp } from "../../config.js";
-import React, { useState, useEffect } from "react";
-import { checkListingExpiration } from '../../components/Notifications.js';
+/**
+ * @namespace Login
+ */
+import React, { useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -11,9 +12,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { checkListingExpiration } from '../../components/Notifications.js';
+import { serverIp } from '../../config.js';
 import Colors from '../../constants/Colors';
 import { setStoredCredentials } from './Authenticate.js';
 
+/**
+ * LoginScreen component.
+ * @memberof Login
+ * @param {object} navigation - React Navigation object.
+ */
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -24,6 +32,10 @@ const LoginScreen = ({ navigation }) => {
     setPassword('');
   };
 
+  /**
+   * Function to handle the login process.
+   * @memberof Login
+   */
   const handleLogin = async () => {
     // Handle manual login process when the "Login" button is pressed
     const loginData = {
@@ -45,13 +57,17 @@ const LoginScreen = ({ navigation }) => {
       console.log('Response data:', responseData);
       await setStoredCredentials(username, password);
       clearFields();
-      navigation.navigate("BottomNavOverlay");
+      navigation.navigate('BottomNavOverlay');
       checkListingExpiration();
     } else {
       Alert.alert(responseData.error);
     }
   };
 
+  /**
+   * Function to navigate to the create account screen.
+   * @memberof Login
+   */
   const handleCreateAccount = () => {
     navigation.navigate('CreateAccount');
   };
@@ -191,9 +207,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 1, height: 1 },
         shadowOpacity: 1,
         shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
       },
     }),
   },

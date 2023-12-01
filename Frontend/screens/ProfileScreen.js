@@ -6,14 +6,13 @@ import {
 } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
 import * as SecureStore from 'expo-secure-store';
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   Image,
   Linking,
   SafeAreaView,
   StatusBar,
-  StyleSheet,
   Text,
   TouchableOpacity,
   useWindowDimensions,
@@ -23,21 +22,22 @@ import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { TabBar, TabView } from 'react-native-tab-view';
 import Listing from '../components/Listing.js';
 import BouncePulse from '../components/visuals/BouncePulse.js';
+import { useThemeContext } from '../components/visuals/ThemeProvider.js';
 import { serverIp } from '../config.js';
-import Colors, { CustomLightTheme, CustomDarkTheme } from '../constants/Colors';
+import Colors from '../constants/Colors';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
+import { getThemedStyles } from '../constants/Styles.js';
 import {
   calculateTimeSince,
   getLocationWithRetry,
 } from '../constants/Utilities';
 import useBackButtonHandler from '../hooks/DisableBackButton.js';
+import { saveContactInfo } from '../network/Service';
 import {
   clearStoredCredentials,
   getStoredPassword,
   getStoredUsername,
 } from './auth/Authenticate.js';
-import { useThemeContext } from '../components/visuals/ThemeProvider.js';
-import { getThemedStyles } from '../constants/Styles.js';
 
 const ListingsRoute = ({ onPressListing, data, text, styles }) => (
   <View style={{ flex: 1 }}>
@@ -130,11 +130,31 @@ const handleContactClick = async (key, data) => {
 const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
   const styles = getThemedStyles(useThemeContext().theme).ProfileScreen;
   let displayValues = Object.values(contactInfo).some(
-    (value) => value.data.length > 0,
+    (value) => value.data?.length > 0,
   );
 
   if (!selfProfile && Object.values(contactInfo).every((value) => value.hidden))
     displayValues = false;
+
+  // hide settings
+  const updateHidden = useCallback(
+    async (key) => {
+      const newContactInfo = {
+        ...contactInfo,
+        [key]: {
+          ...contactInfo[key],
+          hidden: !contactInfo[key].hidden,
+        },
+      };
+      setContactInfo(newContactInfo);
+      saveContactInfo(newContactInfo);
+
+      console.log(
+        `${newContactInfo[key].hidden ? 'Hidden' : 'Unhidden'} ${key}`,
+      );
+    },
+    [contactInfo],
+  );
 
   return (
     <View style={styles.contactInfoContainer}>
@@ -142,7 +162,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
         <View>
           {displayValues ? (
             Object.entries(contactInfo).map(([key, value]) => {
-              if (value.data.length > 0) {
+              if (value.data?.length > 0) {
                 return (
                   (selfProfile || (!selfProfile && !value.hidden)) && (
                     <View key={key}>
@@ -177,16 +197,7 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                         {/* Visibility */}
                         {selfProfile && (
                           <TouchableOpacity
-                            onPress={() => {
-                              setContactInfo((prevContactInfo) => ({
-                                ...prevContactInfo,
-                                [key]: {
-                                  ...prevContactInfo[key],
-                                  hidden: !prevContactInfo[key].hidden,
-                                  // This is where the contact hidden table should be changed
-                                },
-                              }));
-                            }}
+                            onPress={() => updateHidden(key)}
                             style={[
                               styles.socialIcons,
                               { opacity: value.hidden ? 0.25 : 1.0 },
@@ -319,6 +330,7 @@ function ProfileScreen({ navigation, route }) {
         method: 'GET',
       });
       const profileData = await profileResponse.json();
+      console.log(profileData);
 
       if (profileResponse.status <= 201) {
         setProfileInfo({
@@ -342,6 +354,7 @@ function ProfileScreen({ navigation, route }) {
           ),
           profilePicture: profileData.profilePicture,
           coverPicture: profileData.coverPicture,
+          email: profileData.email,
         });
         console.log(profileData.contactInfo);
 
@@ -548,7 +561,7 @@ function ProfileScreen({ navigation, route }) {
                 color: Colors.BB_darkRedPurple,
               }}
             >
-              {profileInfo.userListings.length}
+              {profileInfo.userListings?.length}
             </Text>
             <Text
               style={{
@@ -615,7 +628,7 @@ function ProfileScreen({ navigation, route }) {
                   color: Colors.BB_darkRedPurple,
                 }}
               >
-                {profileInfo.likedListings.length}
+                {profileInfo.likedListings?.length}
               </Text>
               <Text
                 style={{
@@ -650,6 +663,7 @@ function ProfileScreen({ navigation, route }) {
                   profileName: profileName,
                   profilePicture: profileInfo.profilePicture,
                   coverPicture: profileInfo.coverPicture,
+                  email: profileInfo.email,
                 });
               }}
               style={{ ...styles.button, width: 114 }}
@@ -794,7 +808,7 @@ function ProfileScreen({ navigation, route }) {
               item={selectedListing}
               LikeStates={LikeStates}
               handleLikePress={handleLikePress}
-              numItems={selectedListing.images.length}
+              numItems={selectedListing.images?.length}
               userLocation={userLocation}
               origin={'profile'}
               removeListing={(listingId) => {

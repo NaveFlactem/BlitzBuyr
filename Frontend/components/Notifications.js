@@ -1,16 +1,14 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as SecureStore from "expo-secure-store";
-import * as BackgroundFetch from 'expo-background-fetch';
-import * as TaskManager from 'expo-task-manager';
-import { serverIp } from "../config.js";
+import * as SecureStore from 'expo-secure-store';
+import { serverIp } from '../config.js';
 
 //Still needs to be connected with backend
 export async function scheduleNotification(newListings) {
   await Permissions.askAsync(Permissions.NOTIFICATIONS);
 
-  const username = await SecureStore.getItemAsync("username");
+  const username = await SecureStore.getItemAsync('username');
   const userScheduledKey = `scheduledNotification_${username}`;
   const hasScheduledNotification = await AsyncStorage.getItem(userScheduledKey);
 
@@ -22,7 +20,7 @@ export async function scheduleNotification(newListings) {
     }),
   });
 
-  Notifications.addNotificationReceivedListener(notification => {
+  Notifications.addNotificationReceivedListener((notification) => {
     console.log('Received notification: ', notification);
   });
 
@@ -30,14 +28,16 @@ export async function scheduleNotification(newListings) {
     const messageAlternatives = [
       'New Listings!',
       "You're missing out!",
-      "Check out what's new!"
+      "Check out what's new!",
     ];
     const bodyAlternatives = [
       'Check out these' + newListings + ' new listings!',
       'There are' + newListings + ' new listings since your last login!',
-      '' + newListings + ' new listings have been posted!'
-    ]
-    const randomMessageIndex = Math.floor(Math.random() * messageAlternatives.length);
+      '' + newListings + ' new listings have been posted!',
+    ];
+    const randomMessageIndex = Math.floor(
+      Math.random() * messageAlternatives.length,
+    );
     const selectedMessage = messageAlternatives[randomMessageIndex];
 
     const randomBodyIndex = Math.floor(Math.random() * bodyAlternatives.length);
@@ -70,25 +70,29 @@ export async function likedNotification(likedListings) {
     }),
   });
 
-  Notifications.addNotificationReceivedListener(notification => {
+  Notifications.addNotificationReceivedListener((notification) => {
     console.log('Received notification: ', notification);
   });
 
   const schedulingOptions = {
-      content: {
-        title: "Your post has been liked!",
-        body: "Your post has been liked " + likedListings + " times in the past 24 hours",
-      },
-      trigger: {
-        seconds: 0,
-        repeats: true,
-        seconds: 60 * 60 * 24,
-      },
-    };
+    content: {
+      title: 'Your post has been liked!',
+      body:
+        'Your post has been liked ' +
+        likedListings +
+        ' times in the past 24 hours',
+    },
+    trigger: {
+      seconds: 0,
+      repeats: true,
+      seconds: 60 * 60 * 24,
+    },
+  };
   await Notifications.scheduleNotificationAsync(schedulingOptions);
 }
 
 export const checkListingExpiration = async () => {
+  //FIXME: this needs to be worked on
   try {
     const listingsResponse = await fetch(`${serverIp}/api/listings`, {
       method: 'GET',
@@ -128,12 +132,15 @@ const userNotification = async (userName, listingTitle) => {
   });
 
   try {
-    const currentUser = await SecureStore.getItemAsync("username");
+    const currentUser = await SecureStore.getItemAsync('username');
     if (currentUser == userName) {
       const schedulingOptions = {
         content: {
           title: 'Listing Expiry!',
-          body: "Your listing named: '"+ listingTitle  + "' is about to expire in 2 days!",
+          body:
+            "Your listing named: '" +
+            listingTitle +
+            "' is about to expire in 2 days!",
         },
         trigger: null,
       };

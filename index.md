@@ -1,4 +1,4 @@
-# <img src="http://blitzbuyr.lol/img/blitzbuyr_name_logo.png" alt="BlitzBuyr Logo" width="400">
+# <img src="http://blitzbuyr.lol/img/blitzbuyr_name_logo.png" alt="BlitzBuyr Logo" width="300">
 
 # BlitzBuyr Documentation
 

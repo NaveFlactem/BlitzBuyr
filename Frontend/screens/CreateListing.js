@@ -1,5 +1,6 @@
-
-
+/**
+ * @namespace CreateListing
+ */
 import * as FileSystem from 'expo-file-system';
 import { Image } from 'expo-image';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -19,15 +20,15 @@ import {
 } from 'react-native';
 import DraggableGrid from 'react-native-draggable-grid';
 import RNPickerSelect from 'react-native-picker-select';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import BouncePulse from '../components/visuals/BouncePulse.js';
 import TopBar from '../components/visuals/TopBarGeneric.js';
-import { serverIp } from '../config.js';
 import Colors from '../constants/Colors';
 import { currencies, tagOptions } from '../constants/ListingData.js';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import { getLocationWithRetry } from '../constants/Utilities';
+import { handleListingCreation } from '../network/Service.js';
 import { getStoredUsername } from './auth/Authenticate.js';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const blurhash = 'L5H2EC=PM+yV0g-mq.wG9c010J}I';
 
@@ -44,10 +45,11 @@ const MinorLoadingView = memo(() => (
 ));
 
 /**
- * @class
- * @classdesc - CreateListing is a screen that allows users to create a listing
+ * @function
+ * @name CreateListing
  * @extends Component
- * @returns Returns a CreateListing screen
+ * @returns {JSX.Element} A screen for creating a listing.
+ * @memberof CreateListing
  */
 class CreateListing extends Component {
   /**
@@ -56,6 +58,7 @@ class CreateListing extends Component {
    * @description - CreateListing constructor
    * @initialize state variables
    * @initialize refs
+   * @memberof CreateListing
    */
   constructor(props) {
     super(props);
@@ -96,6 +99,7 @@ class CreateListing extends Component {
   /**
    * @function
    * @destructor - resets state variables
+   * @memberof CreateListing
    */
   destructor() {
     this.setState({
@@ -128,6 +132,7 @@ class CreateListing extends Component {
    * @checkValidListing - checks if the listing is valid
    * @stateUpdates - updates the states of the variables that check if the listing is valid
    * @returns Returns 0 if the listing is valid, -1 if the listing is invalid and 1 if no images are selected and 2 if too many images are selected and 3 if no tags are selected
+   * @memberof CreateListing
    */
   checkValidListing = () => {
     let stateUpdates = {
@@ -180,6 +185,7 @@ class CreateListing extends Component {
    * @function
    * @handleCreateListing - sends user inputted data to server and checks if it ran smoothly
    * @param {Object} formData - object that is sent to the server with user inputted values
+   * @memberof CreateListing
    */
   handleCreateListing = async () => {
     this.setState({ isLoading: true });
@@ -244,25 +250,14 @@ class CreateListing extends Component {
       formData.append('currency', selectedCurrency);
       formData.append('currencySymbol', selectedCurrencySymbol);
 
-      console.log('Listing Data:', formData);
-      const response = await fetch(`${serverIp}/api/createlisting`, {
-        method: 'POST',
-        body: formData,
-        timeout: 10000,
-      });
+      console.log('Create Listing Data:', formData);
 
-      if (response.status <= 201) {
-        const responseData = await response.json();
-        console.log('Listing created successfully:', responseData);
-        this.destructor();
-        this.props.navigation.navigate('Home', { refresh: true });
-      } else {
-        console.error('HTTP error! Status: ', response.status);
-        Alert.alert('Error', 'Failed to create listing.');
-      }
+      await handleListingCreation(formData);
+      this.destructor();
+      this.props.navigation.navigate('Home', { refresh: true });
     } catch (error) {
-      console.error('Error creating listing:', error);
-      Alert.alert('Error', 'An unexpected error occurred.');
+      console.error(error);
+      alert(error);
     } finally {
       this.setState({ isLoading: false });
     }
@@ -279,6 +274,7 @@ class CreateListing extends Component {
   /**
    * @function
    * @getPermissionAsync - asks for permission to access camera roll
+   * @memberof CreateListing
    */
   getPermissionAsync = async () => {
     // Camera roll Permission
@@ -300,6 +296,7 @@ class CreateListing extends Component {
    * @function
    * @showModal - shows the modal that contains camera/photo library options, changes the state of selectImageModalVisible to true
    * @hideModal - hides the modal that contains camera/photo library options, changes the state of selectImageModalVisible to false
+   * @memberof CreateListing
    */
   showModal = () => this.setState({ selectImageModalVisible: true });
   hideModal = () => this.setState({ selectImageModalVisible: false });
@@ -309,12 +306,21 @@ class CreateListing extends Component {
    * @handleCameraPick - allows the user to take photos with their camera
    * @returns Returns the photos that the user took
    * @description - allows the user to take photos with their camera
+   * @memberof CreateListing
    */
   handleCameraPick = async () => {
-    const result = await ImagePicker.launchCameraAsync();
+    try {
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: false,
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      this.processImage(result); // Process the first (and only) image
+      if (!result.cancelled) {
+        this.processImage(result);
+      }
+    } catch (error) {
+      console.error('Error taking photo:', error);
     }
 
     this.hideModal();
@@ -325,6 +331,7 @@ class CreateListing extends Component {
    * @handleLibraryPick - allows the user to select images from their library
    * @returns Returns the images that the user selected
    * @description - allows the user to select images from their library
+   * @memberof CreateListing
    */
   handleLibraryPick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -348,6 +355,7 @@ class CreateListing extends Component {
    * @param {*} image
    * @returns Returns the image that the user selected
    * @description - processes the image that the user selected
+   * @memberof CreateListing
    */
   processImage = async (image) => {
     // Process a single image
@@ -363,11 +371,12 @@ class CreateListing extends Component {
    * @function
    * @processSelectedImages - processes the images that the user selected
    * @param {*} assets
+   * @memberof CreateListing
    */
   processSelectedImages = async (assets) => {
     // Process multiple images
     const processedImages = await Promise.all(
-      assets.map(async (asset) => this.manipulateImage(asset.uri)),
+      assets.map(async (asset) => this.manipulateImage(asset.uri))
     );
     this.setState((prevState) => ({
       data: [...prevState.data, ...processedImages.filter(Boolean)],
@@ -379,6 +388,7 @@ class CreateListing extends Component {
    * @manipulateImage - compresses the image that the user selected
    * @param {*} uri
    * @returns - an object with the name, key, and image file
+   * @memberof CreateListing
    */
   manipulateImage = async (uri) => {
     try {
@@ -388,7 +398,7 @@ class CreateListing extends Component {
         format: ImageManipulator.SaveFormat.JPEG,
       });
       const compressedSize = await FileSystem.getInfoAsync(
-        manipulateResult.uri,
+        manipulateResult.uri
       );
       const savedData = originalSize.size - compressedSize.size;
 
@@ -399,7 +409,7 @@ class CreateListing extends Component {
         `compressed to :`,
         (compressedSize.size / (1024 * 1024)).toFixed(2),
         'MB',
-        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`,
+        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`
       );
 
       return {
@@ -418,6 +428,7 @@ class CreateListing extends Component {
    * @handleDeletePhoto - deletes photos that the user no longer wants to post
    * @param {Number} index - index of the photo that the user wants to delete
    * @returns - prompts a box to confirm, then removes the photo
+   * @memberof CreateListing
    */
   handleDeletePhoto = (index) => {
     Alert.alert('Delete Photo', 'Are you sure you want to delete this photo?', [
@@ -437,11 +448,11 @@ class CreateListing extends Component {
   };
 
   /**
-   *
    * @param {*} item - contains image information
    * @param {*} index - index of the item in the list of images
    * @description - renders the images that the user selected
    * @returns Returns the images that the user selected
+   * @memberof CreateListing
    */
   render_item(item, index) {
     return (
@@ -472,16 +483,15 @@ class CreateListing extends Component {
    * @function
    * @handleDragStart - disables scrolling when the user is dragging an image
    * @description - basic handle function
+   * @memberof CreateListing
    */
-  handleDragStart = () => {
-    // When a drag starts, disable scrolling
-    this.setState({ isScrollEnabled: false });
-  };
+  handleDragStart = () => {};
 
   /**
    * @function
    * @handleDragRelease - enables scrolling when the user is done dragging an image
    * @description - basic handle function
+   * @memberof CreateListing
    */
   handleDragRelease = (data) => {
     // When the drag is released, enable scrolling
@@ -494,6 +504,7 @@ class CreateListing extends Component {
    * @param {string} text - text that hold the entered price
    * @description - handles when the user enters a price
    * @returns {void} This function doesn't return a value
+   * @memberof CreateListing
    */
   handlePriceChange = (text) => {
     const regex = /^(\d{0,6}(\.\d{2})?)$/;
@@ -519,6 +530,7 @@ class CreateListing extends Component {
    * @param {Array} selectedTags - array of the selected tags
    * @description - handles when the user presses a tag
    * @returns Returns the tags that the user selected
+   * @memberof CreateListing
    */
   handleTagPress = (index) => {
     this.setState((prevState) => {
@@ -540,7 +552,7 @@ class CreateListing extends Component {
       if (isAlreadySelected) {
         // If already selected, remove it from the array
         newSelectedTags = prevState.selectedTags.filter(
-          (tagName) => tagName !== pressedTagName,
+          (tagName) => tagName !== pressedTagName
         );
       } else {
         // If not selected, add it to the array
@@ -555,11 +567,13 @@ class CreateListing extends Component {
   };
 
   /**
-   *
-   * @groupTagsIntoRows - groups the tags into rows
+   * @function
+   * @name groupTagsIntoRows
+   * @description - Groups the tags into rows
    * @param {Array} tags - array of tags
    * @param {number} itemsPerRow - # of items to display per row
    * @returns {Array} - returns the array with tags grouped together
+   * @memberof CreateListing
    */
   groupTagsIntoRows = (tags, itemsPerRow) => {
     return tags.reduce((rows, tag, index) => {
@@ -570,13 +584,14 @@ class CreateListing extends Component {
   };
 
   /**
-  * @function
-  * @handleCurrencySelection - allows user to select a currency for their listing.
-  * @param {string} currencyName - The name of the selected currency.
-  * @param {string} currencySymbol - The symbol of the selected currency.
-  * @description Handles the selection of a currency, updating the component state with the chosen currency's name and symbol
-  * @returns {void} This function does not return a value
-  */
+   * @function
+   * @handleCurrencySelection - allows user to select a currency for their listing.
+   * @param {string} currencyName - The name of the selected currency.
+   * @param {string} currencySymbol - The symbol of the selected currency.
+   * @description Handles the selection of a currency, updating the component state with the chosen currency's name and symbol
+   * @returns {void} This function does not return a value
+   * @memberof CreateListing
+   */
   handleCurrencySelection = (currencyName, currencySymbol) => {
     this.setState({
       selectedCurrency: currencyName,
@@ -585,11 +600,12 @@ class CreateListing extends Component {
     });
   };
   /**
-  * @function
-  * @renderCurrencyOptions - renders the currecny option list
-  * @description Renders a list of currency options, allowing the user to select a currency by tapping on it.
-  * @returns {Array<JSX.Element>} Returns an array of JSX elements representing selectable currency options.
-  */
+   * @function
+   * @renderCurrencyOptions - renders the currecny option list
+   * @description Renders a list of currency options, allowing the user to select a currency by tapping on it.
+   * @returns {Array<JSX.Element>} Returns an array of JSX elements representing selectable currency options.
+   * @memberof CreateListing
+   */
   renderCurrencyOptions = () => {
     return this.state.currencies.map((currency) => (
       <TouchableOpacity
@@ -661,8 +677,8 @@ class CreateListing extends Component {
                       {this.state.title == ''
                         ? 'Title is required'
                         : this.state.title.length > 25
-                          ? 'Title too long'
-                          : 'Must enter a valid title'}
+                        ? 'Title too long'
+                        : 'Must enter a valid title'}
                     </Text>
                   </View>
                 ) : (
@@ -697,8 +713,8 @@ class CreateListing extends Component {
                       {this.state.description.length > 500
                         ? 'Description too long'
                         : this.state.description.length === 0
-                          ? 'Description is required'
-                          : 'Must enter a valid description'}
+                        ? 'Description is required'
+                        : 'Must enter a valid description'}
                     </Text>
                   </View>
                 )}
@@ -740,10 +756,10 @@ class CreateListing extends Component {
                     {this.state.price == ''
                       ? 'Price is required'
                       : this.state.price < 0
-                        ? 'Invalid price'
-                        : this.state.price.length >= 7
-                          ? 'Price too large'
-                          : 'Must enter a valid price'}
+                      ? 'Invalid price'
+                      : this.state.price.length >= 7
+                      ? 'Price too large'
+                      : 'Must enter a valid price'}
                   </Text>
                 </View>
               ) : (
