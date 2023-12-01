@@ -481,7 +481,6 @@ function ProfileScreen({ navigation, route }) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <BouncePulse />
-        <Text>Loading...</Text>
       </View>
     );
   }

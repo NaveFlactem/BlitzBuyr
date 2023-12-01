@@ -1239,7 +1239,7 @@ export const getThemedStyles = (theme) => {
       bouncePulseContainer: {
         position: 'absolute',
         alignSelf: 'center',
-        top: 0,
+        top: -0.04 * screenHeight,
         alignItems: 'center',
       },
     },
