@@ -1,3 +1,10 @@
+/**
+ * @namespace SettingsScreen
+ * @memberof Screens
+ * 
+ *
+ */
+
 import React, { memo } from 'react';
 import { View, Text, TouchableOpacity, Switch } from 'react-native';
 import { useThemeContext } from '../components/visuals/ThemeProvider.js';

@@ -1,5 +1,6 @@
 /**
- * @namespace Rating
+ * @namespace RatingScreen
+ * @memberof Screens
  * @description - RatingScreen is a screen that allows users to rate another user
  *
  */
