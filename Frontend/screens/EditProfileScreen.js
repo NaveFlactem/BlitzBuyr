@@ -1,5 +1,6 @@
 /**
  * @namespace EditProfile
+ * @memberof Screens
  * @description - EditProfileScreen is a screen that allows users to edit their own profile information
  *
  */

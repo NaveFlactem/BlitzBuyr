@@ -31,6 +31,7 @@ import * as Settings from '../hooks/UserSettings.js';
 import { fetchListings } from '../network/Service';
 /**
  * @namespace HomeScreen
+ * @memberof Screens
  * @description - HomeScreen is the home screen of the application
  *
  */

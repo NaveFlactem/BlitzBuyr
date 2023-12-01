@@ -1,5 +1,6 @@
 /**
  * @namespace EditContactInfo
+ * @memberof Screens
  * @description - EditContactInfo is a screen that allows users to edit their own contact information and decide what should be visable
  *
  */

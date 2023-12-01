@@ -39,6 +39,14 @@ import {
   getStoredUsername,
 } from './auth/Authenticate.js';
 
+
+/**
+ * @namespace ProfileScreen
+ * @memberof Screens
+ * 
+ *
+ */
+
 const ListingsRoute = ({ onPressListing, data, text, styles }) => (
   <View style={{ flex: 1 }}>
     {data.length > 0 ? (
