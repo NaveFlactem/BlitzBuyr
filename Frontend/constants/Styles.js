@@ -573,8 +573,7 @@ export const getThemedStyles = (theme) => {
       },
       spacer: {
         position: 'relative',
-        height:
-          Platform.OS == 'ios' ? 0.06 * screenHeight : 0.03 * screenHeight,
+        height: 0.06 * screenHeight
       },
     },
     ////////////////////////////////////////////
