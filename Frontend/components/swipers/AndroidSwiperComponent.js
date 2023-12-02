@@ -1,3 +1,19 @@
+
+/**
+ * @namespace Swipers
+ * 
+ *
+ */
+
+
+
+/**
+ * @namespace AndroidSwiperComponent
+ * @description - This component is designed to create a swiper/slider functionality for displaying listings in a Android mobile application.
+ * @memberof Swpiers
+ * 
+ */
+
 import React, { memo } from 'react';
 import { FlatList } from 'react-native';
 import Listing from '../Listing';
