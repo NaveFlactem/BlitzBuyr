@@ -352,8 +352,8 @@ const CustomItem = memo(
                 }
                 scaleCurrent.value = event.scale;
 
-                xCurrent.value = (1 - scaleCurrent.value) * (focalX.value - 500 / 2);
-                yCurrent.value = (1 - scaleCurrent.value) * (focalY.value - 500 / 2);
+                xCurrent.value = (1 - scaleCurrent.value) * (focalX.value - 400 / 2);
+                yCurrent.value = (1 - scaleCurrent.value) * (focalY.value - 700 / 2);
             }
         },
         /**
