@@ -1,3 +1,9 @@
+/**
+ * @namespace Listing
+ * 
+ */
+
+
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, {
@@ -49,6 +55,7 @@ const default_blurhash = 'LEHLk~WB2yk8pyo0adR*.7kCMdnj';
  * @function getDistance
  * @description Calculates the distance between two coordinates
  * @returns {number} distance
+ * @memberof Listing
  */
 function getDistance(lat1, lon1, lat2, lon2) {
   function toRadians(degrees) {
@@ -81,6 +88,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
  * @function LikeButton
  * @description Button to like a listing
  * @returns {object} TouchableOpacity and MaterialCommunityIcon wrapped in React.Fragment
+ * @memberof Listing
  */
 const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
   const { theme } = useThemeContext();
@@ -110,6 +118,7 @@ const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
  * @function DeleteButton
  * @description Button to delete a listing
  * @returns {object} TouchableOpacity and MaterialCommunityIcon
+ * @memberof Listing
  */
 const DeleteButton = ({ onDeletePress, styles }) => {
   return (
@@ -124,6 +133,7 @@ const DeleteButton = ({ onDeletePress, styles }) => {
  * @function calculateFontSize
  * @description Calculates the font size for the price based on the number of digits in the price
  * @returns {number} fontSize
+ * @memberof Listing
  */
 const calculateFontSize = (price) => {
   if (price === undefined || price === null) {
@@ -140,6 +150,7 @@ const calculateFontSize = (price) => {
  * @function calculateFontSizeLocation
  * @description Calculates the font size for the city name based on the length of the city name
  * @returns {number} fontSize
+ * @memberof Listing
  */
 const calculateFontSizeLocation = (city) => {
   if (city === undefined || city === null) {
@@ -156,6 +167,7 @@ const calculateFontSizeLocation = (city) => {
  * @function TimeBox
  * @description Displays the time since the listing was posted
  * @returns {object} View and Text wrapped in React.Fragment
+ * @memberof Listing
  */
 const TimeBox = memo(({ timeSince, styles }) => {
   return (
@@ -193,6 +205,7 @@ const TimeBox = memo(({ timeSince, styles }) => {
  * @function CardOverlay
  * @description Displays the price, time since, and children (image) of the listing
  * @returns {object} View and Image wrapped in React.Fragment
+ * @memberof Listing
  */
 const CardOverlay = memo(
   ({ children, currencySymbol, price, timeSince, cardStyle, styles }) => {
@@ -231,6 +244,7 @@ const CardOverlay = memo(
  * @function MemoizedImage
  * @description Displays the image of the listing
  * @returns {object} Image
+ * @memberof Listing
  */
 const MemoizedImage = memo(
   ({ source, blurhash, style, contentFit, transition }) => {
@@ -261,6 +275,7 @@ const MemoizedImage = memo(
  * @function CustomItem
  * @description Displays the image of the listing with the ability to zoom in and out and delete the listing if the user is the owner and the listing is being viewed from the profile screen
  * @returns {object} View and Image wrapped in React.Fragment
+ * @memberof Listing
  */
 const CustomItem = memo(
   ({
@@ -277,48 +292,56 @@ const CustomItem = memo(
     /**
      * @var {object} focalX
      * @description The x coordinate of the focal point of the pinch gesture
+     * @memberof Listing
      */
     const focalX = useSharedValue(0);
     /**
      * @var {object} focalY
      * @description The y coordinate of the focal point of the pinch gesture
      * @default 0
+     * @memberof Listing
      */
     const focalY = useSharedValue(0);
     /**
      * @var {object} xCurrent
      * @description The current x coordinate of the image
      * @default 0
+     * @memberof Listing
      */
     const xCurrent = useSharedValue(0);
     /**
      * @var {object} yCurrent
      * @description The current y coordinate of the image
      * @default 0
+     * @memberof Listing
      */
     const yCurrent = useSharedValue(0);
     /**
      * @var {object} xPrevious
      * @description The previous x coordinate of the image
      * @default 0
+     * @memberof Listing
      */
     const xPrevious = useSharedValue(0);
     /**
      * @var {object} yPrevious
      * @description The previous y coordinate of the image
      * @default 0
+     * @memberof Listing
      */
     const yPrevious = useSharedValue(0);
     /**
      * @var {object} scaleCurrent
      * @description The current scale of the image
      * @default 1
+     * @memberof Listing
      */
     const scaleCurrent = useSharedValue(1);
     /**
      * @var {object} scalePrevious
      * @description The previous scale of the image
      * @default 1
+     * @memberof Listing
      */
     const scalePrevious = useSharedValue(1);
 
@@ -326,12 +349,14 @@ const CustomItem = memo(
      * @function pinchHandler
      * @description Handles the pinch gesture on the image
      * @returns {void} if the image is at the original size
+     * @memberof Listing
      */
     const pinchHandler = useAnimatedGestureHandler({
       /**
        *
        * @param {object} event
        * @description Sets the focal point of the pinch gesture to the center of the image if the pinch gesture is started with two fingers
+       * @memberof Listing
        */
       onStart: (event) => {
         if (event.numberOfPointers == 2) {
@@ -343,6 +368,7 @@ const CustomItem = memo(
        * @param {object} event
        * @description Sets the current scale of the image to the previous scale of the image if the pinch gesture is ended with two fingers
        * @returns {void} if the image is at the original size
+       * @memberof Listing
        */
       onActive: (event) => {
         if (scaleCurrent.value * event.scale < 1) {
@@ -362,6 +388,7 @@ const CustomItem = memo(
       },
       /**
        * @description Resets the image to its original size and position if the pinch gesture is ended with two fingers
+       * @memberof Listing
        */
       onEnd: () => {
         scalePrevious.value = withTiming(1); // Reset previous scale to original
@@ -381,6 +408,7 @@ const CustomItem = memo(
      * @var {object} animatedStyle
      * @description The style of the image
      * @returns {object} transform
+     * @memberof Listing
      */
     const animatedStyle = useAnimatedStyle(() => {
       return {
@@ -438,6 +466,7 @@ const CustomItem = memo(
  * @function Listing
  * @description Displays the listing
  * @returns {object} SafeAreaView and FlipCard wrapped in React.Fragment
+ * @memberof Listing
  */
 const Listing = ({
   item,

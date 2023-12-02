@@ -1,3 +1,10 @@
+
+/**
+ * @namespace ThemeProvider
+ * @memberof Visuals
+ * @description -  File serves as a context provider to manage the theme state throughout the application. It ensures that components have access to the current theme and provides a method to toggle between light and dark themes.
+ */
+
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import * as Settings from '../../hooks/UserSettings';
 
@@ -12,6 +19,7 @@ export const useThemeContext = () => useContext(ThemeContext);
  * @param {Object} props.children
  * @returns {Object} ThemeContext.Provider
  * @description Provides the theme context to the application
+ * @memberof ThemeProvider
  */
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState('light'); // Default theme
