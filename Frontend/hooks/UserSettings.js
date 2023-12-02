@@ -1,3 +1,9 @@
+/**
+ * @namespace UserSettings
+ * @description - Functions to help with updating the User Preference
+ *
+ */
+
 import * as SecureStore from 'expo-secure-store';
 
 const USER_SETTINGS_KEY = 'USER_SETTINGS';
@@ -7,11 +13,27 @@ const defaultSettings = {
   distance: 30,
 };
 
+/**
+ * Set default user settings.
+ *
+ * @function
+ * @name setDefaultUserSettings
+ * @memberof UserSettings
+ * @returns {Promise<Object>} Default user settings
+ */
 export const setDefaultUserSettings = async () => {
   await saveUserSettings(defaultSettings);
   return defaultSettings;
 };
 
+/**
+ * Save user settings.
+ *
+ * @function
+ * @name saveUserSettings
+ * @memberof UserSettings
+ * @param {Object} settings - User settings to be saved
+ */
 export const saveUserSettings = async (settings) => {
   try {
     await SecureStore.setItemAsync(USER_SETTINGS_KEY, JSON.stringify(settings));
@@ -20,6 +42,14 @@ export const saveUserSettings = async (settings) => {
   }
 };
 
+/**
+ * Get user settings.
+ *
+ * @function
+ * @name getUserSettings
+ * @memberof UserSettings
+ * @returns {Promise<Object>} Retrieved user settings
+ */
 export const getUserSettings = async () => {
   try {
     const settings = await SecureStore.getItemAsync(USER_SETTINGS_KEY);
@@ -30,6 +60,13 @@ export const getUserSettings = async () => {
   }
 };
 
+/**
+ * Clear user settings.
+ *
+ * @function
+ * @name clearUserSettings
+ * @memberof UserSettings
+ */
 export const clearUserSettings = async () => {
   try {
     await SecureStore.deleteItemAsync(USER_SETTINGS_KEY);
@@ -38,11 +75,27 @@ export const clearUserSettings = async () => {
   }
 };
 
+/**
+ * Update user distance setting.
+ *
+ * @function
+ * @name updateDistance
+ * @memberof UserSettings
+ * @param {number} userDistance - User's preferred distance
+ */
 export const updateDistance = async (userDistance) => {
   const settings = await getUserSettings();
   await saveUserSettings({ ...settings, distance: userDistance });
 };
 
+/**
+ * Get user distance setting.
+ *
+ * @function
+ * @name getDistance
+ * @memberof UserSettings
+ * @returns {Promise<number>} User's preferred distance
+ */
 export const getDistance = async () => {
   const settings = await getUserSettings();
   console.log('Settings object:', JSON.stringify(settings));
@@ -51,11 +104,27 @@ export const getDistance = async () => {
   return distance;
 };
 
+/**
+ * Update user color mode setting.
+ *
+ * @function
+ * @name updateColorMode
+ * @memberof UserSettings
+ * @param {string} colorMode - User's preferred color mode
+ */
 export const updateColorMode = async (colorMode) => {
   const settings = await getUserSettings();
   await saveUserSettings({ ...settings, colorMode });
 };
 
+/**
+ * Get user color mode setting.
+ *
+ * @function
+ * @name getColorMode
+ * @memberof UserSettings
+ * @returns {Promise<string>} User's preferred color mode
+ */
 export const getColorMode = async () => {
   const settings = await getUserSettings();
   return settings.colorMode;

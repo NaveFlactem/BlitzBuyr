@@ -129,39 +129,6 @@ const DeleteButton = ({ onDeletePress, styles }) => {
   );
 };
 
-
-/**
- * @param {number} price
- * @function calculateFontSize
- * @description Calculates the font size for the price based on the number of digits in the price
- * @returns {number} fontSize
- * @memberof Listing
- */
-const calculateFontSize = (price) => {
-  if (price === undefined || price === null) {
-    return 16; // Default font size if price is not provided
-  }
-  const numberOfDigits = price.toString().length;
-
-  return Math.max(20 - (numberOfDigits - 4) * 2, 4);
-};
-
-/**
- *
- * @param {string} city
- * @function calculateFontSizeLocation
- * @description Calculates the font size for the city name based on the length of the city name
- * @returns {number} fontSize
- * @memberof Listing
- */
-const calculateFontSizeLocation = (city) => {
-  if (city === undefined || city === null) {
-    return 16; // Default font size if price is not provided
-  }
-  const numberOfCharacters = city.length;
-
-
-
 /**
  * @param {number} timeSince
  * @param {object} styles

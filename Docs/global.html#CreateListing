@@ -1,0 +1,2221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>CreateListing - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/NaveFlactem/BlitzBuyr" target="_blank" class="menu-item" id="repository" >Github repo</a></h2><h3>Modules</h3><ul><li><a href="module-API_Accounts.html">API/Accounts</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~authenticateUser">authenticateUser</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~getAccounts">getAccounts</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleDeleteAccounts">handleDeleteAccounts</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleLoginRequest">handleLoginRequest</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleRegistrationRequest">handleRegistrationRequest</a></li></ul></li><li><a href="module-API_Listings.html">API/Listings</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~createListing">createListing</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~encodeImageToBlurhash">encodeImageToBlurhash</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~getImages">getImages</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~getListings">getListings</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteImages">handleDeleteImages</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteListing">handleDeleteListing</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteListings">handleDeleteListings</a></li></ul></li><li><a href="module-API_Profile.html">API/Profile</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~deleteAllLikes">deleteAllLikes</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~deleteRating">deleteRating</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getLikes">getLikes</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getProfilePicture">getProfilePicture</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getRatings">getRatings</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getUserProfile">getUserProfile</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~handleLike">handleLike</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~handleUnlike">handleUnlike</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~rateUser">rateUser</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~updateContactInfo">updateContactInfo</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~updateProfile">updateProfile</a></li></ul></li><li><a href="module-Database.html">Database</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-Database.html#~areTableDefinitionsEqual">areTableDefinitionsEqual</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~createOrUpdateTable">createOrUpdateTable</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~createTables">createTables</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~extractColumnsFromDefinition">extractColumnsFromDefinition</a></li></ul></li><li><a href="module-Server.html">Server</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-Server.html#~getRoot">getRoot</a></li><li data-type='method' style='display: none;'><a href="module-Server.html#~requestLogger">requestLogger</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="Authenticate.html">Authenticate</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Authenticate.html#.AuthenticateScreen">AuthenticateScreen</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.checkStoredCredentials">checkStoredCredentials</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.clearStoredCredentials">clearStoredCredentials</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.getStoredPassword">getStoredPassword</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.getStoredUsername">getStoredUsername</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.loadSettings">loadSettings</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.setStoredCredentials">setStoredCredentials</a></li></ul></li><li><a href="ChangePassword.html">ChangePassword</a></li><li><a href="Components.html">Components</a><ul class='members'><li data-type='member' style='display: none;'><a href="Components.html#.onGestureEvent">onGestureEvent</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="Components.html#.NoWifi">NoWifi</a></li><li data-type='method' style='display: none;'><a href="Components.html#.clearSelections">clearSelections</a></li><li data-type='method' style='display: none;'><a href="Components.html#.handleConditionPress">handleConditionPress</a></li><li data-type='method' style='display: none;'><a href="Components.html#.handleCurrencyPress">handleCurrencyPress</a></li><li data-type='method' style='display: none;'><a href="Components.html#.handleTagPress">handleTagPress</a></li><li data-type='method' style='display: none;'><a href="Components.html#.handleTransactionPress">handleTransactionPress</a></li></ul></li><li><a href="CreateAccount.html">CreateAccount</a><ul class='methods'><li data-type='method' style='display: none;'><a href="CreateAccount.html#.CreateAccountScreen">CreateAccountScreen</a></li><li data-type='method' style='display: none;'><a href="CreateAccount.html#.handleCreateAccount">handleCreateAccount</a></li><li data-type='method' style='display: none;'><a href="CreateAccount.html#.handlePasswordChange">handlePasswordChange</a></li></ul></li><li><a href="global.html#CreateListing">CreateListing</a><ul class='methods'><li data-type='method' style='display: none;'><a href="global.html#CreateListing#.checkValidListing">checkValidListing</a></li><li data-type='method' style='display: none;'><a href="global.html#CreateListing#.destructor">destructor</a></li><li data-type='method' style='display: none;'><a href="global.html#CreateListing#.getPermissionAsync">getPermissionAsync</a></li><li data-type='method' style='display: none;'><a href="global.html#CreateListing#.groupTagsIntoRows">groupTagsIntoRows</a></li><li data-type='method' style='display: none;'><a href="global.html#CreateListing#.handleCreateListing">handleCreateListing</a></li><li data-type='method' style='display: none;'><a href="global.html#CreateListing#.handleDeletePhoto">handleDeletePhoto</a></li><li data-type='method' style='display: none;'><a href="global.html#CreateListing#.handleDragRelease">handleDragRelease</a></li><li data-type='method' style='display: none;'><a href="global.html#CreateListing#.handleDragStart">handleDragStart</a></li><li data-type='method' style='display: none;'><a href="global.html#CreateListing#.handlePriceChange">handlePriceChange</a></li><li data-type='method' style='display: none;'><a href="global.html#CreateListing#.handleTagPress">handleTagPress</a></li><li data-type='method' style='display: none;'><a href="global.html#CreateListing#.manipulateImage">manipulateImage</a></li><li data-type='method' style='display: none;'><a href="global.html#CreateListing#.processImage">processImage</a></li><li data-type='method' style='display: none;'><a href="global.html#CreateListing#.processSelectedImages">processSelectedImages</a></li><li data-type='method' style='display: none;'><a href="global.html#CreateListing#.render_item">render_item</a></li><li data-type='method' style='display: none;'><a href="global.html#CreateListing#.showModal">showModal</a></li></ul></li><li><a href="EditContactInfo.html">EditContactInfo</a><ul class='methods'><li data-type='method' style='display: none;'><a href="EditContactInfo.html#.EditContactInfo">EditContactInfo</a></li><li data-type='method' style='display: none;'><a href="EditContactInfo.html#.handleInputChange">handleInputChange</a></li></ul></li><li><a href="EditProfile.html">EditProfile</a><ul class='methods'><li data-type='method' style='display: none;'><a href="EditProfile.html#.EditProfileScreen">EditProfileScreen</a></li><li data-type='method' style='display: none;'><a href="EditProfile.html#.confirmDeletion">confirmDeletion</a></li><li data-type='method' style='display: none;'><a href="EditProfile.html#.deleteAccount">deleteAccount</a></li><li data-type='method' style='display: none;'><a href="EditProfile.html#.handleCoverImageSelection">handleCoverImageSelection</a></li><li data-type='method' style='display: none;'><a href="EditProfile.html#.handleProfileImageSelection">handleProfileImageSelection</a></li><li data-type='method' style='display: none;'><a href="EditProfile.html#.saveChanges">saveChanges</a></li><li data-type='method' style='display: none;'><a href="EditProfile.html#.togglePasswordVisibility">togglePasswordVisibility</a></li></ul></li><li><a href="HomeScreen.html">HomeScreen</a><ul class='members'><li data-type='member' style='display: none;'><a href="HomeScreen.html#.HomeScreen">HomeScreen</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="HomeScreen.html#.fetchListingsAsync">fetchListingsAsync</a></li><li data-type='method' style='display: none;'><a href="HomeScreen.html#.getUserLocation">getUserLocation</a></li><li data-type='method' style='display: none;'><a href="HomeScreen.html#.handleInnerScrolling">handleInnerScrolling</a></li><li data-type='method' style='display: none;'><a href="HomeScreen.html#.handleInnerScrollingEnd">handleInnerScrollingEnd</a></li><li data-type='method' style='display: none;'><a href="HomeScreen.html#.handleLocationPress">handleLocationPress</a></li><li data-type='method' style='display: none;'><a href="HomeScreen.html#.onRefresh">onRefresh</a></li><li data-type='method' style='display: none;'><a href="HomeScreen.html#.onScroll">onScroll</a></li><li data-type='method' style='display: none;'><a href="HomeScreen.html#.retryButtonHandler">retryButtonHandler</a></li><li data-type='method' style='display: none;'><a href="HomeScreen.html#.toggleTagDrawer">toggleTagDrawer</a></li></ul></li><li><a href="Login.html">Login</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Login.html#.LoginScreen">LoginScreen</a></li><li data-type='method' style='display: none;'><a href="Login.html#.handleCreateAccount">handleCreateAccount</a></li><li data-type='method' style='display: none;'><a href="Login.html#.handleLogin">handleLogin</a></li></ul></li><li><a href="Networking.html">Networking</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Networking.html#.fetchListings">fetchListings</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleDeleteAccount">handleDeleteAccount</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleDeleteAccount">handleDeleteAccount</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleLike">handleLike</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleListingCreation">handleListingCreation</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.saveContactInfo">saveContactInfo</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.saveProfileInfo">saveProfileInfo</a></li></ul></li><li><a href="Rating.html">Rating</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Rating.html#.RatingScreen">RatingScreen</a></li><li data-type='method' style='display: none;'><a href="Rating.html#.handleRating">handleRating</a></li><li data-type='method' style='display: none;'><a href="Rating.html#.handleSubmitRating">handleSubmitRating</a></li><li data-type='method' style='display: none;'><a href="Rating.html#.renderStars">renderStars</a></li></ul></li><li><a href="Utilities.html">Utilities</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Utilities.html#.calculateTimeSince">calculateTimeSince</a></li><li data-type='method' style='display: none;'><a href="Utilities.html#.getLocationWithRetry">getLocationWithRetry</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#TagDrawer">TagDrawer</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">CreateListing</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        
+            Namespace
+        
+        </h2>
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+
+    
+
+    <h4 class="name" id="CreateListing">CreateListing</h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_CreateListing.js.html">Frontend/screens/CreateListing.js</a>, <a href="Frontend_screens_CreateListing.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".checkValidListing"><span class="type-signature type-signature-async, static">(async, static) </span>checkValidListing<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_CreateListing.js.html">Frontend/screens/CreateListing.js</a>, <a href="Frontend_screens_CreateListing.js.html#line122">line 122</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Returns 0 if the listing is valid, -1 if the listing is invalid and 1 if no images are selected and 2 if too many images are selected and 3 if no tags are selected</p>
+</div>
+
+
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".destructor"><span class="type-signature type-signature-static">(static) </span>destructor<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_CreateListing.js.html">Frontend/screens/CreateListing.js</a>, <a href="Frontend_screens_CreateListing.js.html#line94">line 94</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".getPermissionAsync"><span class="type-signature type-signature-async, static">(async, static) </span>getPermissionAsync<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_CreateListing.js.html">Frontend/screens/CreateListing.js</a>, <a href="Frontend_screens_CreateListing.js.html#line251">line 251</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".groupTagsIntoRows"><span class="type-signature type-signature-static">(static) </span>groupTagsIntoRows<span class="signature">(tags, itemsPerRow)</span><span class="type-signature"> &rarr; {Array}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><ul>
+<li>Groups the tags into rows</li>
+</ul></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_CreateListing.js.html">Frontend/screens/CreateListing.js</a>, <a href="Frontend_screens_CreateListing.js.html#line523">line 523</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>tags</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>array of tags</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>itemsPerRow</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><h1>of items to display per row</h1></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>returns the array with tags grouped together</li>
+</ul>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".handleCreateListing"><span class="type-signature type-signature-async, static">(async, static) </span>handleCreateListing<span class="signature">(formData)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_CreateListing.js.html">Frontend/screens/CreateListing.js</a>, <a href="Frontend_screens_CreateListing.js.html#line172">line 172</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>formData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>object that is sent to the server with user inputted values</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".handleDeletePhoto"><span class="type-signature type-signature-static">(static) </span>handleDeletePhoto<span class="signature">(index)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_CreateListing.js.html">Frontend/screens/CreateListing.js</a>, <a href="Frontend_screens_CreateListing.js.html#line394">line 394</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>index of the photo that the user wants to delete</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>prompts a box to confirm, then removes the photo</li>
+</ul>
+</div>
+
+
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".handleDragRelease"><span class="type-signature type-signature-static">(static) </span>handleDragRelease<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><ul>
+<li>basic handle function</li>
+</ul></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_CreateListing.js.html">Frontend/screens/CreateListing.js</a>, <a href="Frontend_screens_CreateListing.js.html#line458">line 458</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".handleDragStart"><span class="type-signature type-signature-static">(static) </span>handleDragStart<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><ul>
+<li>basic handle function</li>
+</ul></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_CreateListing.js.html">Frontend/screens/CreateListing.js</a>, <a href="Frontend_screens_CreateListing.js.html#line447">line 447</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".handlePriceChange"><span class="type-signature type-signature-static">(static) </span>handlePriceChange<span class="signature">(text)</span><span class="type-signature"> &rarr; {void}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><ul>
+<li>handles when the user enters a price</li>
+</ul></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_CreateListing.js.html">Frontend/screens/CreateListing.js</a>, <a href="Frontend_screens_CreateListing.js.html#line472">line 472</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>text</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>text that hold the entered price</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>This function doesn't return a value</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">void</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".handleTagPress"><span class="type-signature type-signature-static">(static) </span>handleTagPress<span class="signature">(index, pressedTagName, isAlreadySelected, newSelectedTags, newTagsData, tagsData, selectedTags)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><ul>
+<li>handles when the user presses a tag</li>
+</ul></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_CreateListing.js.html">Frontend/screens/CreateListing.js</a>, <a href="Frontend_screens_CreateListing.js.html#line498">line 498</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>index of the tag that the user pressed</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pressedTagName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>name of the tag that the user pressed</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>isAlreadySelected</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>boolean that checks if the tag is already selected</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>newSelectedTags</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>array of the selected tags</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>newTagsData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>array of the tags data</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tagsData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>array of the tags data</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>selectedTags</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>array of the selected tags</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Returns the tags that the user selected</p>
+</div>
+
+
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".manipulateImage"><span class="type-signature type-signature-async, static">(async, static) </span>manipulateImage<span class="signature">(uri)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_CreateListing.js.html">Frontend/screens/CreateListing.js</a>, <a href="Frontend_screens_CreateListing.js.html#line353">line 353</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>uri</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>an object with the name, key, and image file</li>
+</ul>
+</div>
+
+
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".processImage"><span class="type-signature type-signature-async, static">(async, static) </span>processImage<span class="signature">(image)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><ul>
+<li>processes the image that the user selected</li>
+</ul></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_CreateListing.js.html">Frontend/screens/CreateListing.js</a>, <a href="Frontend_screens_CreateListing.js.html#line321">line 321</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>image</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Returns the image that the user selected</p>
+</div>
+
+
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".processSelectedImages"><span class="type-signature type-signature-async, static">(async, static) </span>processSelectedImages<span class="signature">(assets)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_CreateListing.js.html">Frontend/screens/CreateListing.js</a>, <a href="Frontend_screens_CreateListing.js.html#line335">line 335</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>assets</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".render_item"><span class="type-signature type-signature-static">(static) </span>render_item<span class="signature">(item, index)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><ul>
+<li>renders the images that the user selected</li>
+</ul></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_CreateListing.js.html">Frontend/screens/CreateListing.js</a>, <a href="Frontend_screens_CreateListing.js.html#line416">line 416</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>item</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>contains image information</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>index of the item in the list of images</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Returns the images that the user selected</p>
+</div>
+
+
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".showModal"><span class="type-signature type-signature-static">(static) </span>showModal<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_screens_CreateListing.js.html">Frontend/screens/CreateListing.js</a>, <a href="Frontend_screens_CreateListing.js.html#line273">line 273</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat Dec 02 2023 12:43:29 GMT-0800 (Pacific Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>

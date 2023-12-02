@@ -1,535 +1,53 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
+<head>
+    
+    <meta charset="utf-8">
     <title>Backend/listing.js - Documentation</title>
-
+    
+    
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify.css" />
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css" />
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
     <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  </head>
-  <body>
-    <input type="checkbox" id="nav-trigger" class="nav-trigger" />
-    <label for="nav-trigger" class="navicon-button x">
-      <div class="navicon"></div>
-    </label>
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <label for="nav-trigger" class="overlay"></label>
+<label for="nav-trigger" class="overlay"></label>
 
-    <nav>
-      <input type="text" id="nav-search" placeholder="Search" />
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/NaveFlactem/BlitzBuyr" target="_blank" class="menu-item" id="repository" >Github repo</a></h2><h3>Classes</h3><ul><li><a href="FlipCard.html">FlipCard</a></li></ul><h3>Modules</h3><ul><li><a href="module-API_Accounts.html">API/Accounts</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~authenticateUser">authenticateUser</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~getAccounts">getAccounts</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleDeleteAccounts">handleDeleteAccounts</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleLoginRequest">handleLoginRequest</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleRegistrationRequest">handleRegistrationRequest</a></li></ul></li><li><a href="module-API_Listings.html">API/Listings</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~createListing">createListing</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~encodeImageToBlurhash">encodeImageToBlurhash</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~getImages">getImages</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~getListings">getListings</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteImages">handleDeleteImages</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteListing">handleDeleteListing</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteListings">handleDeleteListings</a></li></ul></li><li><a href="module-API_Profile.html">API/Profile</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~deleteAllLikes">deleteAllLikes</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~deleteRating">deleteRating</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getLikes">getLikes</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getProfilePicture">getProfilePicture</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getRatings">getRatings</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getUserProfile">getUserProfile</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~handleLike">handleLike</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~handleUnlike">handleUnlike</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~rateUser">rateUser</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~updateContactInfo">updateContactInfo</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~updateProfile">updateProfile</a></li></ul></li><li><a href="module-Database.html">Database</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-Database.html#~areTableDefinitionsEqual">areTableDefinitionsEqual</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~createOrUpdateTable">createOrUpdateTable</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~createTables">createTables</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~extractColumnsFromDefinition">extractColumnsFromDefinition</a></li></ul></li><li><a href="module-Server.html">Server</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-Server.html#~getRoot">getRoot</a></li><li data-type='method' style='display: none;'><a href="module-Server.html#~requestLogger">requestLogger</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="AboutUs.html">AboutUs</a></li><li><a href="Authenticate.html">Authenticate</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Authenticate.html#.AuthenticateScreen">AuthenticateScreen</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.checkStoredCredentials">checkStoredCredentials</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.clearStoredCredentials">clearStoredCredentials</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.getStoredPassword">getStoredPassword</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.getStoredUsername">getStoredUsername</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.loadSettings">loadSettings</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.setStoredCredentials">setStoredCredentials</a></li></ul></li><li><a href="ChangePassword.html">ChangePassword</a></li><li><a href="Components.html">Components</a><ul class='members'><li data-type='member' style='display: none;'><a href="Components.html#.TagDrawer">TagDrawer</a></li><li data-type='member' style='display: none;'><a href="Components.html#.onGestureEvent">onGestureEvent</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="Components.html#.NoWifi">NoWifi</a></li><li data-type='method' style='display: none;'><a href="Components.html#.TopBar">TopBar</a></li><li data-type='method' style='display: none;'><a href="Components.html#.handleConditionPress">handleConditionPress</a></li><li data-type='method' style='display: none;'><a href="Components.html#.handleCurrencyPress">handleCurrencyPress</a></li><li data-type='method' style='display: none;'><a href="Components.html#.handleTagPress">handleTagPress</a></li><li data-type='method' style='display: none;'><a href="Components.html#.handleTransactionPress">handleTransactionPress</a></li></ul></li><li><a href="CreateAccount.html">CreateAccount</a><ul class='methods'><li data-type='method' style='display: none;'><a href="CreateAccount.html#.CreateAccountScreen">CreateAccountScreen</a></li><li data-type='method' style='display: none;'><a href="CreateAccount.html#.handleCreateAccount">handleCreateAccount</a></li><li data-type='method' style='display: none;'><a href="CreateAccount.html#.handlePasswordChange">handlePasswordChange</a></li></ul></li><li><a href="EditContactInfo.html">EditContactInfo</a><ul class='methods'><li data-type='method' style='display: none;'><a href="EditContactInfo.html#.EditContactInfo">EditContactInfo</a></li><li data-type='method' style='display: none;'><a href="EditContactInfo.html#.handleInputChange">handleInputChange</a></li></ul></li><li><a href="Hooks.html">Hooks</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Hooks.html#.useBackButtonHandler">useBackButtonHandler</a></li><li data-type='method' style='display: none;'><a href="Hooks.html#.useLocation">useLocation</a></li></ul></li><li><a href="Listing.html">Listing</a><ul class='members'><li data-type='member' style='display: none;'><a href="Listing.html#.animatedStyle">animatedStyle</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.focalX">focalX</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.focalY">focalY</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.scaleCurrent">scaleCurrent</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.scalePrevious">scalePrevious</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.xCurrent">xCurrent</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.xPrevious">xPrevious</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.yCurrent">yCurrent</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.yPrevious">yPrevious</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="Listing.html#.CardOverlay">CardOverlay</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.CustomItem">CustomItem</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.DeleteButton">DeleteButton</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.LikeButton">LikeButton</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.Listing">Listing</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.MemoizedImage">MemoizedImage</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.TimeBox">TimeBox</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.getDistance">getDistance</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.onActive">onActive</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.onEnd">onEnd</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.onStart">onStart</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.pinchHandler">pinchHandler</a></li></ul></li><li><a href="Login.html">Login</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Login.html#.LoginScreen">LoginScreen</a></li><li data-type='method' style='display: none;'><a href="Login.html#.handleCreateAccount">handleCreateAccount</a></li><li data-type='method' style='display: none;'><a href="Login.html#.handleLogin">handleLogin</a></li></ul></li><li><a href="Networking.html">Networking</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Networking.html#.fetchListings">fetchListings</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleDeleteAccount">handleDeleteAccount</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleDeleteAccount">handleDeleteAccount</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleLike">handleLike</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleListingCreation">handleListingCreation</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.saveContactInfo">saveContactInfo</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.saveProfileInfo">saveProfileInfo</a></li></ul></li><li><a href="Screens.CreateListing.html">Screens.CreateListing</a></li><li><a href="Screens.EditProfile.html">Screens.EditProfile</a></li><li><a href="Screens.HomeScreen.html">Screens.HomeScreen</a></li><li><a href="Screens.ProfileScreen.html">Screens.ProfileScreen</a></li><li><a href="Screens.RatingScreen.html">Screens.RatingScreen</a></li><li><a href="Screens.SettingsScreen.html">Screens.SettingsScreen</a></li><li><a href="Swipers.html">Swipers</a></li><li><a href="Swipers.AndroidSwiperComponent.html">Swipers.AndroidSwiperComponent</a></li><li><a href="Swpiers.IOSSwiperComponent.html">Swpiers.IOSSwiperComponent</a></li><li><a href="UserSettings.html">UserSettings</a><ul class='methods'><li data-type='method' style='display: none;'><a href="UserSettings.html#.clearUserSettings">clearUserSettings</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.getColorMode">getColorMode</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.getDistance">getDistance</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.getUserSettings">getUserSettings</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.saveUserSettings">saveUserSettings</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.setDefaultUserSettings">setDefaultUserSettings</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.updateColorMode">updateColorMode</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.updateDistance">updateDistance</a></li></ul></li><li><a href="Utilities.html">Utilities</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Utilities.html#.calculateTimeSince">calculateTimeSince</a></li><li data-type='method' style='display: none;'><a href="Utilities.html#.getLocationWithRetry">getLocationWithRetry</a></li></ul></li><li><a href="Visuals.html">Visuals</a></li><li><a href="Visuals.BouncePulse.html">Visuals.BouncePulse</a></li><li><a href="Visuals.CustomRefreshControl.html">Visuals.CustomRefreshControl</a></li><li><a href="Visuals.Icons.html">Visuals.Icons</a></li><li><a href="Visuals.ThemeProvider.html">Visuals.ThemeProvider</a></li><li><a href="Visuals.TopBarGeneric.html">Visuals.TopBarGeneric</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CreateListing">CreateListing</a></li><li><a href="global.html#calculateFontSize">calculateFontSize</a></li><li><a href="global.html#calculateFontSizeLocation">calculateFontSizeLocation</a></li><li><a href="global.html#calculateTagTextFontSize">calculateTagTextFontSize</a></li><li><a href="global.html#calculateTransactionFontSize">calculateTransactionFontSize</a></li><li><a href="global.html#getThemedStyles">getThemedStyles</a></li></ul>
+    
+</nav>
 
-      <h2><a href="index.html">Home</a></h2>
-      <h2>
-        <a
-          href="https://github.com/NaveFlactem/BlitzBuyr"
-          target="_blank"
-          class="menu-item"
-          id="repository"
-          >Github repo</a
-        >
-      </h2>
-      <h3>Classes</h3>
-      <ul>
-        <li>
-          <a href="CreateListing.html#.CreateListing"
-            >CreateListing.CreateListing</a
-          >
-        </li>
-      </ul>
-      <h3>Modules</h3>
-      <ul>
-        <li>
-          <a href="module-API_Accounts.html">API/Accounts</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="module-API_Accounts.html#~authenticateUser"
-                >authenticateUser</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Accounts.html#~getAccounts">getAccounts</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Accounts.html#~handleDeleteAccounts"
-                >handleDeleteAccounts</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Accounts.html#~handleLoginRequest"
-                >handleLoginRequest</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Accounts.html#~handleRegistrationRequest"
-                >handleRegistrationRequest</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="module-API_Listings.html">API/Listings</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="module-API_Listings.html#~createListing"
-                >createListing</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Listings.html#~encodeImageToBlurhash"
-                >encodeImageToBlurhash</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Listings.html#~getImages">getImages</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Listings.html#~getListings">getListings</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Listings.html#~handleDeleteImages"
-                >handleDeleteImages</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Listings.html#~handleDeleteListing"
-                >handleDeleteListing</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Listings.html#~handleDeleteListings"
-                >handleDeleteListings</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="module-API_Profile.html">API/Profile</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~deleteAllLikes"
-                >deleteAllLikes</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~deleteRating">deleteRating</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~getLikes">getLikes</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~getProfilePicture"
-                >getProfilePicture</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~getRatings">getRatings</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~getUserProfile"
-                >getUserProfile</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~handleLike">handleLike</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~handleUnlike">handleUnlike</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~rateUser">rateUser</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~updateContactInfo"
-                >updateContactInfo</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~updateProfile">updateProfile</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="module-Database.html">Database</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="module-Database.html#~areTableDefinitionsEqual"
-                >areTableDefinitionsEqual</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-Database.html#~createOrUpdateTable"
-                >createOrUpdateTable</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-Database.html#~createTables">createTables</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-Database.html#~extractColumnsFromDefinition"
-                >extractColumnsFromDefinition</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="module-Server.html">Server</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="module-Server.html#~getRoot">getRoot</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-Server.html#~requestLogger">requestLogger</a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-      <h3>Namespaces</h3>
-      <ul>
-        <li>
-          <a href="Authenticate.html">Authenticate</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="Authenticate.html#.AuthenticateScreen"
-                >AuthenticateScreen</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Authenticate.html#.checkStoredCredentials"
-                >checkStoredCredentials</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Authenticate.html#.clearStoredCredentials"
-                >clearStoredCredentials</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Authenticate.html#.getStoredPassword"
-                >getStoredPassword</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Authenticate.html#.getStoredUsername"
-                >getStoredUsername</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Authenticate.html#.loadSettings">loadSettings</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Authenticate.html#.setStoredCredentials"
-                >setStoredCredentials</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="CreateAccount.html">CreateAccount</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="CreateAccount.html#.CreateAccountScreen"
-                >CreateAccountScreen</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateAccount.html#.handleCreateAccount"
-                >handleCreateAccount</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateAccount.html#.handlePasswordChange"
-                >handlePasswordChange</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="CreateListing.html">CreateListing</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#componentDidMount"
-                >componentDidMount</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#destructor">destructor</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#render_item">render_item</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.CreateListing">CreateListing</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.checkValidListing"
-                >checkValidListing</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.getPermissionAsync"
-                >getPermissionAsync</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.groupTagsIntoRows"
-                >groupTagsIntoRows</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handleCameraPick"
-                >handleCameraPick</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handleCreateListing"
-                >handleCreateListing</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handleCurrencySelection"
-                >handleCurrencySelection</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handleDeletePhoto"
-                >handleDeletePhoto</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handleDragRelease"
-                >handleDragRelease</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handleDragStart">handleDragStart</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handleLibraryPick"
-                >handleLibraryPick</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handlePriceChange"
-                >handlePriceChange</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handleTagPress">handleTagPress</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.manipulateImage">manipulateImage</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.processImage">processImage</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.processSelectedImages"
-                >processSelectedImages</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.renderCurrencyOptions"
-                >renderCurrencyOptions</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.showModal">showModal</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="EditContactInfo.html">EditContactInfo</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="EditContactInfo.html#.EditContactInfo"
-                >EditContactInfo</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="EditContactInfo.html#.handleInputChange"
-                >handleInputChange</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="EditProfile.html">EditProfile</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="EditProfile.html#.EditProfileScreen"
-                >EditProfileScreen</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="EditProfile.html#.confirmDeletion">confirmDeletion</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="EditProfile.html#.deleteAccount">deleteAccount</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="EditProfile.html#.handleCoverImageSelection"
-                >handleCoverImageSelection</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="EditProfile.html#.handleProfileImageSelection"
-                >handleProfileImageSelection</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="EditProfile.html#.saveChanges">saveChanges</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="EditProfile.html#.togglePasswordVisibility"
-                >togglePasswordVisibility</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="HomeScreen.html">HomeScreen</a>
-          <ul class="members">
-            <li data-type="member" style="display: none">
-              <a href="HomeScreen.html#.HomeScreen">HomeScreen</a>
-            </li>
-          </ul>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.debouncedFetchListings"
-                >debouncedFetchListings</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.getUserLocation">getUserLocation</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.handleInnerScrolling"
-                >handleInnerScrolling</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.handleInnerScrollingEnd"
-                >handleInnerScrollingEnd</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.handleLocationPress"
-                >handleLocationPress</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.onRefresh">onRefresh</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.onScroll">onScroll</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.retryButtonHandler"
-                >retryButtonHandler</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.toggleTagDrawer">toggleTagDrawer</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="Login.html">Login</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="Login.html#.LoginScreen">LoginScreen</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Login.html#.handleCreateAccount">handleCreateAccount</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Login.html#.handleLogin">handleLogin</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="Networking.html">Networking</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="Networking.html#.fetchListings">fetchListings</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Networking.html#.handleDeleteAccount"
-                >handleDeleteAccount</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Networking.html#.handleDeleteAccount"
-                >handleDeleteAccount</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Networking.html#.handleLike">handleLike</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Networking.html#.handleListingCreation"
-                >handleListingCreation</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Networking.html#.saveContactInfo">saveContactInfo</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Networking.html#.saveProfileInfo">saveProfileInfo</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="Rating.html">Rating</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="Rating.html#.RatingScreen">RatingScreen</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Rating.html#.handleRating">handleRating</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Rating.html#.handleSubmitRating">handleSubmitRating</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Rating.html#.renderStars">renderStars</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="Utilities.html">Utilities</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="Utilities.html#.calculateTimeSince"
-                >calculateTimeSince</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Utilities.html#.getLocationWithRetry"
-                >getLocationWithRetry</a
-              >
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
+<div id="main">
+    
+    <h1 class="page-title">Backend/listing.js</h1>
+    
 
-    <div id="main">
-      <h1 class="page-title">Backend/listing.js</h1>
+    
 
-      <section>
+
+
+    
+    <section>
         <article>
-          <pre
-            class="prettyprint source linenums"
-          ><code>/** API endpoints related to Listings.
+            <pre class="prettyprint source linenums"><code>/** API endpoints related to Listings.
  * @module API/Listings
  */
 
@@ -581,7 +99,7 @@ const imageStorage = multer.diskStorage({
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     callback(
       null,
-      file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname)
+      file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname),
     );
   },
 });
@@ -606,7 +124,7 @@ const imageUpload = multer({
 const getCityFromCoords = async (latitude, longitude) => {
   try {
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&amp;lat=${latitude}&amp;lon=${longitude}`
+      `https://nominatim.openstreetmap.org/reverse?format=json&amp;lat=${latitude}&amp;lon=${longitude}`,
     );
     const data = await response.json();
     return data.address.city || 'Unknown';
@@ -733,11 +251,11 @@ router.post('/createListing', imageUpload, async function (req, res) {
                           .json({ error: 'Internal Server Error' });
                       }
                       // Tag associated with the listing successfully
-                    }
+                    },
                   );
-                }
+                },
               );
-            }
+            },
           );
         });
 
@@ -758,7 +276,7 @@ router.post('/createListing', imageUpload, async function (req, res) {
                     .status(500)
                     .json({ error: 'Internal Server Error' });
                 }
-              }
+              },
             );
           });
         }
@@ -766,7 +284,7 @@ router.post('/createListing', imageUpload, async function (req, res) {
           message: 'Listing created successfully',
           listingId: listingId,
         });
-      }
+      },
     );
   } catch (err) {
     console.log(err);
@@ -807,6 +325,7 @@ router.get('/listings', async function (req, res) {
     distance,
     conditions,
     transactions,
+    currency,
   } = req.query;
 
   try {
@@ -870,6 +389,12 @@ router.get('/listings', async function (req, res) {
         `;
     }
 
+    if (currency) {
+      query += `
+          AND Listings.Currency = '${currency}'
+        `;
+    }
+
     query += `
       GROUP BY Listings.ListingId
       ORDER BY Listings.ListingId DESC;
@@ -896,8 +421,8 @@ router.get('/listings', async function (req, res) {
             reject(err);
           }
           resolve(row);
-        }
-      )
+        },
+      ),
     );
 
     // Parse the rows
@@ -1019,7 +544,7 @@ router.get('/images', function (req, res) {
           return res.status(500).json({ error: 'Internal Server Error' });
         }
         return res.status(200).json({ Images: rows });
-      }
+      },
     );
   } else {
     // If 'listingId' is not provided, retrieve all images.
@@ -1120,7 +645,7 @@ router.delete('/deletelisting', async function (req, res) {
             reject(err);
           }
           resolve(row);
-        }
+        },
       );
     });
 
@@ -1144,7 +669,7 @@ router.delete('/deletelisting', async function (req, res) {
         return res
           .status(200)
           .json({ message: `Listing ${listingId} deleted` });
-      }
+      },
     );
   } catch (error) {
     return res.status(500).json({ error: 'Internal Server Error' });
@@ -1155,26 +680,30 @@ router.delete('/deletelisting', async function (req, res) {
 module.exports = { router, imageStorage, imageUpload };
 </code></pre>
         </article>
-      </section>
-    </div>
+    </section>
 
-    <br class="clear" />
 
-    <footer>
-      Documentation generated by
-      <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Tue Nov 28
-      2023 00:14:31 GMT-0800 (Pacific Standard Time) using the
-      <a href="https://github.com/clenemt/docdash">docdash</a> theme.
-    </footer>
 
-    <script>
-      prettyPrint();
-    </script>
-    <script src="scripts/polyfill.js"></script>
-    <script src="scripts/linenumber.js"></script>
 
-    <script src="scripts/search.js" defer></script>
+    
+    
+</div>
 
-    <script src="scripts/collapse.js" defer></script>
-  </body>
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat Dec 02 2023 14:31:47 GMT-0800 (Pacific Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
 </html>

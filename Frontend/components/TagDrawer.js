@@ -24,6 +24,7 @@ import { calculateTagTextFontSize } from './CalculateFontSize';
 /**
  * @component
  * @name TagDrawer
+ * @memberof Components
  * @param {Object} props
  * @param {Array} tagsData
  * @param {Array} conditions
@@ -76,6 +77,17 @@ const TagDrawer = memo(
     const theme = useThemeContext().theme;
     const styles = getThemedStyles(theme).TagDrawer;
 
+    /**
+     * Handles the press event for a tag.
+     *
+     * @function
+     * @name handleTagPress
+     * @memberof Components
+     * @param {number} index - The index of the tag being pressed.
+     * @description Toggles the selection state of a tag and manages selected tags for home screen layout.
+     * @returns {void}
+     */
+
     handleTagPress = (index) => {
       // Update the tagsData state
       const newTagsData = tagsData.map((tag, idx) => {
@@ -102,6 +114,16 @@ const TagDrawer = memo(
       console.log(selectedTags);
     };
 
+    /**
+     * Handles the press event for a condition.
+     *
+     * @function
+     * @name handleConditionPress
+     * @memberof Components
+     * @param {number} index - The index of the condition being pressed.
+     * @description Toggles the selection state of a condition and manages selected conditions.
+     * @returns {void}
+     */
     handleConditionPress = (index) => {
       //update selectedConditions state
       const newConditionsData = conditions.map((condition, idx) => {
@@ -129,6 +151,16 @@ const TagDrawer = memo(
       console.log(selectedConditions);
     };
 
+    /**
+     * Handles the press event for a transaction.
+     *
+     * @function
+     * @name handleTransactionPress
+     * @memberof Components
+     * @param {number} index - The index of the transaction being pressed.
+     * @description Toggles the selection state of a transaction and manages selected transactions.
+     * @returns {void}
+     */
     handleTransactionPress = (index) => {
       //update selectedTransactions state
       const newTransactionsData = transactions.map((transaction, idx) => {
@@ -160,6 +192,16 @@ const TagDrawer = memo(
       console.log(selectedTransactions);
     };
 
+    /**
+     * Handles the press event for a currency selection.
+     *
+     * @function
+     * @name handleCurrencyPress
+     * @memberof Components
+     * @param {number} index - The index of the currency being pressed.
+     * @description Toggles the selection state of a currency and updates the selected currency.
+     * @returns {void}
+     */
     handleCurrencyPress = (index) => {
       // Update the selection status of each currency in currencyData
       const newCurrencyData = currencyData.map((currency, idx) => ({
@@ -195,6 +237,14 @@ const TagDrawer = memo(
 
     const X_OFFSET_THRESHOLD = 10; // You can adjust this value as needed
 
+    /**
+     * Configuration object for handling animated gesture events.
+     *
+     * @constant {Object}
+     * @memberof Components
+     * @name onGestureEvent
+     * @description Manages gesture events such as start, active, and end for animations.
+     */
     const onGestureEvent = useAnimatedGestureHandler({
       onStart: (_, context) => {
         context.startX = translateX.value;

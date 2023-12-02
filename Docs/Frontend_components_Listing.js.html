@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Frontend/components/Listing.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/NaveFlactem/BlitzBuyr" target="_blank" class="menu-item" id="repository" >Github repo</a></h2><h3>Classes</h3><ul><li><a href="FlipCard.html">FlipCard</a></li></ul><h3>Modules</h3><ul><li><a href="module-API_Accounts.html">API/Accounts</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~authenticateUser">authenticateUser</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~getAccounts">getAccounts</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleDeleteAccounts">handleDeleteAccounts</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleLoginRequest">handleLoginRequest</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleRegistrationRequest">handleRegistrationRequest</a></li></ul></li><li><a href="module-API_Listings.html">API/Listings</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~createListing">createListing</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~encodeImageToBlurhash">encodeImageToBlurhash</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~getImages">getImages</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~getListings">getListings</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteImages">handleDeleteImages</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteListing">handleDeleteListing</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteListings">handleDeleteListings</a></li></ul></li><li><a href="module-API_Profile.html">API/Profile</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~deleteAllLikes">deleteAllLikes</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~deleteRating">deleteRating</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getLikes">getLikes</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getProfilePicture">getProfilePicture</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getRatings">getRatings</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getUserProfile">getUserProfile</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~handleLike">handleLike</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~handleUnlike">handleUnlike</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~rateUser">rateUser</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~updateContactInfo">updateContactInfo</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~updateProfile">updateProfile</a></li></ul></li><li><a href="module-Database.html">Database</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-Database.html#~areTableDefinitionsEqual">areTableDefinitionsEqual</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~createOrUpdateTable">createOrUpdateTable</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~createTables">createTables</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~extractColumnsFromDefinition">extractColumnsFromDefinition</a></li></ul></li><li><a href="module-Server.html">Server</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-Server.html#~getRoot">getRoot</a></li><li data-type='method' style='display: none;'><a href="module-Server.html#~requestLogger">requestLogger</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="AboutUs.html">AboutUs</a></li><li><a href="Authenticate.html">Authenticate</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Authenticate.html#.AuthenticateScreen">AuthenticateScreen</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.checkStoredCredentials">checkStoredCredentials</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.clearStoredCredentials">clearStoredCredentials</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.getStoredPassword">getStoredPassword</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.getStoredUsername">getStoredUsername</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.loadSettings">loadSettings</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.setStoredCredentials">setStoredCredentials</a></li></ul></li><li><a href="ChangePassword.html">ChangePassword</a></li><li><a href="Components.html">Components</a><ul class='members'><li data-type='member' style='display: none;'><a href="Components.html#.TagDrawer">TagDrawer</a></li><li data-type='member' style='display: none;'><a href="Components.html#.onGestureEvent">onGestureEvent</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="Components.html#.NoWifi">NoWifi</a></li><li data-type='method' style='display: none;'><a href="Components.html#.TopBar">TopBar</a></li><li data-type='method' style='display: none;'><a href="Components.html#.handleConditionPress">handleConditionPress</a></li><li data-type='method' style='display: none;'><a href="Components.html#.handleCurrencyPress">handleCurrencyPress</a></li><li data-type='method' style='display: none;'><a href="Components.html#.handleTagPress">handleTagPress</a></li><li data-type='method' style='display: none;'><a href="Components.html#.handleTransactionPress">handleTransactionPress</a></li></ul></li><li><a href="CreateAccount.html">CreateAccount</a><ul class='methods'><li data-type='method' style='display: none;'><a href="CreateAccount.html#.CreateAccountScreen">CreateAccountScreen</a></li><li data-type='method' style='display: none;'><a href="CreateAccount.html#.handleCreateAccount">handleCreateAccount</a></li><li data-type='method' style='display: none;'><a href="CreateAccount.html#.handlePasswordChange">handlePasswordChange</a></li></ul></li><li><a href="EditContactInfo.html">EditContactInfo</a><ul class='methods'><li data-type='method' style='display: none;'><a href="EditContactInfo.html#.EditContactInfo">EditContactInfo</a></li><li data-type='method' style='display: none;'><a href="EditContactInfo.html#.handleInputChange">handleInputChange</a></li></ul></li><li><a href="Hooks.html">Hooks</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Hooks.html#.useBackButtonHandler">useBackButtonHandler</a></li><li data-type='method' style='display: none;'><a href="Hooks.html#.useLocation">useLocation</a></li></ul></li><li><a href="Listing.html">Listing</a><ul class='members'><li data-type='member' style='display: none;'><a href="Listing.html#.animatedStyle">animatedStyle</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.focalX">focalX</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.focalY">focalY</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.scaleCurrent">scaleCurrent</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.scalePrevious">scalePrevious</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.xCurrent">xCurrent</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.xPrevious">xPrevious</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.yCurrent">yCurrent</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.yPrevious">yPrevious</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="Listing.html#.CardOverlay">CardOverlay</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.CustomItem">CustomItem</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.DeleteButton">DeleteButton</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.LikeButton">LikeButton</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.Listing">Listing</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.MemoizedImage">MemoizedImage</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.TimeBox">TimeBox</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.getDistance">getDistance</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.onActive">onActive</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.onEnd">onEnd</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.onStart">onStart</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.pinchHandler">pinchHandler</a></li></ul></li><li><a href="Login.html">Login</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Login.html#.LoginScreen">LoginScreen</a></li><li data-type='method' style='display: none;'><a href="Login.html#.handleCreateAccount">handleCreateAccount</a></li><li data-type='method' style='display: none;'><a href="Login.html#.handleLogin">handleLogin</a></li></ul></li><li><a href="Networking.html">Networking</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Networking.html#.fetchListings">fetchListings</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleDeleteAccount">handleDeleteAccount</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleDeleteAccount">handleDeleteAccount</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleLike">handleLike</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleListingCreation">handleListingCreation</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.saveContactInfo">saveContactInfo</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.saveProfileInfo">saveProfileInfo</a></li></ul></li><li><a href="Screens.CreateListing.html">Screens.CreateListing</a></li><li><a href="Screens.EditProfile.html">Screens.EditProfile</a></li><li><a href="Screens.HomeScreen.html">Screens.HomeScreen</a></li><li><a href="Screens.ProfileScreen.html">Screens.ProfileScreen</a></li><li><a href="Screens.RatingScreen.html">Screens.RatingScreen</a></li><li><a href="Screens.SettingsScreen.html">Screens.SettingsScreen</a></li><li><a href="Swipers.html">Swipers</a></li><li><a href="Swipers.AndroidSwiperComponent.html">Swipers.AndroidSwiperComponent</a></li><li><a href="Swpiers.IOSSwiperComponent.html">Swpiers.IOSSwiperComponent</a></li><li><a href="UserSettings.html">UserSettings</a><ul class='methods'><li data-type='method' style='display: none;'><a href="UserSettings.html#.clearUserSettings">clearUserSettings</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.getColorMode">getColorMode</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.getDistance">getDistance</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.getUserSettings">getUserSettings</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.saveUserSettings">saveUserSettings</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.setDefaultUserSettings">setDefaultUserSettings</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.updateColorMode">updateColorMode</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.updateDistance">updateDistance</a></li></ul></li><li><a href="Utilities.html">Utilities</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Utilities.html#.calculateTimeSince">calculateTimeSince</a></li><li data-type='method' style='display: none;'><a href="Utilities.html#.getLocationWithRetry">getLocationWithRetry</a></li></ul></li><li><a href="Visuals.html">Visuals</a></li><li><a href="Visuals.BouncePulse.html">Visuals.BouncePulse</a></li><li><a href="Visuals.CustomRefreshControl.html">Visuals.CustomRefreshControl</a></li><li><a href="Visuals.Icons.html">Visuals.Icons</a></li><li><a href="Visuals.ThemeProvider.html">Visuals.ThemeProvider</a></li><li><a href="Visuals.TopBarGeneric.html">Visuals.TopBarGeneric</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CreateListing">CreateListing</a></li><li><a href="global.html#calculateFontSize">calculateFontSize</a></li><li><a href="global.html#calculateFontSizeLocation">calculateFontSizeLocation</a></li><li><a href="global.html#calculateTagTextFontSize">calculateTagTextFontSize</a></li><li><a href="global.html#calculateTransactionFontSize">calculateTransactionFontSize</a></li><li><a href="global.html#getThemedStyles">getThemedStyles</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Frontend/components/Listing.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace Listing
+ * 
+ */
+
+
+import { useNavigation } from '@react-navigation/native';
+import { Image } from 'expo-image';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import {
+  Animated as AnimatedRN,
+  Modal,
+  Platform,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import FlipCard from './CustomFlipCard.js';
+import { PinchGestureHandler, ScrollView } from 'react-native-gesture-handler';
+import Carousel from 'react-native-reanimated-carousel';
+import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { serverIp } from '../config.js';
+import Colors from '../constants/Colors.js';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
+import { handleDeleteListing, handleLike } from '../network/Service.js';
+import { getStoredUsername } from '../screens/auth/Authenticate.js';
+import { parallaxLayout } from './parallax.ts';
+import { useThemeContext } from './visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
+import Animated, {
+  useAnimatedGestureHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import { calculateFontSize, calculateFontSizeLocation, calculateTransactionFontSize } from './CalculateFontSize.js';
+
+const default_blurhash = 'LEHLk~WB2yk8pyo0adR*.7kCMdnj';
+
+/**
+ * @param {number} lat1
+ * @param {number} lon1
+ * @param {number} lat2
+ * @param {number} lon2
+ * @function getDistance
+ * @description Calculates the distance between two coordinates
+ * @returns {number} distance
+ * @memberof Listing
+ */
+function getDistance(lat1, lon1, lat2, lon2) {
+  function toRadians(degrees) {
+    return degrees * (Math.PI / 180);
+  }
+
+  const R = 6371; // Radius of the Earth in kilometers
+  const dLat = toRadians(lat2 - lat1);
+  const dLon = toRadians(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRadians(lat1)) *
+      Math.cos(toRadians(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  const distance = R * c; // Distance in kilometers
+  const distanceMiles = distance * 0.621371; // Convert distance to miles
+
+  return Math.floor(distanceMiles);
+}
+
+/**
+ * @param {boolean} isLiked
+ * @param {function} onLikePress
+ * @param {object} styles
+ * @function LikeButton
+ * @description Button to like a listing
+ * @returns {object} TouchableOpacity and MaterialCommunityIcon wrapped in React.Fragment
+ * @memberof Listing
+ */
+const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
+  const { theme } = useThemeContext();
+  return (
+    &lt;React.Fragment>
+      &lt;TouchableOpacity onPress={onLikePress} style={styles.likeButton}>
+        &lt;MaterialCommunityIcons
+          name="heart"
+          size={50}
+          color={
+            isLiked
+              ? theme === 'dark'
+                ? Colors.BB_violet
+                : Colors.red
+              : Colors.black
+          }
+        />
+      &lt;/TouchableOpacity>
+    &lt;/React.Fragment>
+  );
+});
+
+/**
+ *
+ * @param {function} onDeletePress
+ * @param {object} styles
+ * @function DeleteButton
+ * @description Button to delete a listing
+ * @returns {object} TouchableOpacity and MaterialCommunityIcon
+ * @memberof Listing
+ */
+const DeleteButton = ({ onDeletePress, styles }) => {
+  return (
+    &lt;TouchableOpacity style={styles.deleteButton} onPress={onDeletePress}>
+      &lt;MaterialCommunityIcons name="trash-can-outline" size={40} color="red" />
+    &lt;/TouchableOpacity>
+  );
+};
+
+/**
+ * @param {number} timeSince
+ * @param {object} styles
+ * @function TimeBox
+ * @description Displays the time since the listing was posted
+ * @returns {object} View and Text wrapped in React.Fragment
+ * @memberof Listing
+ */
+const TimeBox = memo(({ timeSince, styles }) => {
+  return (
+    &lt;React.Fragment>
+      &lt;View style={styles.timeSinceContainer}>
+        &lt;Text style={styles.timeSinceText}>
+          {timeSince &lt; 30
+            ? 'Just now'
+            : timeSince &lt; 60
+            ? `${timeSince} seconds ago`
+            : timeSince &lt; 120
+            ? `1 minute ago`
+            : timeSince &lt; 3600
+            ? `${Math.floor(timeSince / 60)} minutes ago`
+            : timeSince &lt; 7200
+            ? `1 hour ago`
+            : timeSince &lt; 86400
+            ? `${Math.floor(timeSince / 3600)} hours ago`
+            : timeSince &lt; 172800
+            ? `1 day ago`
+            : `${Math.floor(timeSince / 86400)} days ago`}
+        &lt;/Text>
+      &lt;/View>
+    &lt;/React.Fragment>
+  );
+});
+
+/**
+ * @param {object} children
+ * @param {string} currencySymbol
+ * @param {number} price
+ * @param {number} timeSince
+ * @param {object} cardStyle
+ * @param {object} styles
+ * @function CardOverlay
+ * @description Displays the price, time since, and children (image) of the listing
+ * @returns {object} View and Image wrapped in React.Fragment
+ * @memberof Listing
+ */
+const CardOverlay = memo(
+  ({ children, currencySymbol, price, timeSince, cardStyle, styles }) => {
+    return (
+      &lt;View style={styles.card}>
+        &lt;View style={cardStyle}>
+          &lt;Image
+            source={require('../assets/card_background.png')}
+            style={styles.backgroundImage}
+          />
+          &lt;View style={styles.priceContainer}>
+            &lt;Text
+              style={[
+                styles.price,
+                { fontSize: calculateFontSize(price) },
+                price === 0 &amp;&amp; { fontWeight: 'bold' },
+              ]}
+            >
+              {price === 0 ? 'FREE' : `${currencySymbol}${price}`}
+            &lt;/Text>
+          &lt;/View>
+          {children}
+          &lt;TimeBox timeSince={timeSince} styles={styles} />
+        &lt;/View>
+      &lt;/View>
+    );
+  }
+);
+
+/**
+ * @param {object} source
+ * @param {string} blurhash
+ * @param {object} style
+ * @param {string} contentFit
+ * @param {number} transition
+ * @function MemoizedImage
+ * @description Displays the image of the listing
+ * @returns {object} Image
+ * @memberof Listing
+ */
+const MemoizedImage = memo(
+  ({ source, blurhash, style, contentFit, transition }) => {
+    //console.log(`${serverIp}/img/${source.uri}`);
+    return (
+      &lt;Image
+        source={{ uri: source }}
+        style={style}
+        contentFit={contentFit}
+        transition={transition}
+        placeholder={blurhash ? blurhash : default_blurhash}
+        cachePolicy="memory-disk"
+      />
+    );
+  }
+);
+
+/**
+ * @param {object} source
+ * @param {string} currencySymbol
+ * @param {number} price
+ * @param {number} timeSince
+ * @param {boolean} isLiked
+ * @param {function} onLikePress
+ * @param {function} onDeletePress
+ * @param {boolean} deleteVisible
+ * @param {object} styles
+ * @function CustomItem
+ * @description Displays the image of the listing with the ability to zoom in and out and delete the listing if the user is the owner and the listing is being viewed from the profile screen
+ * @returns {object} View and Image wrapped in React.Fragment
+ * @memberof Listing
+ */
+const CustomItem = memo(
+  ({
+    source,
+    currencySymbol,
+    price,
+    timeSince,
+    isLiked,
+    onLikePress,
+    onDeletePress,
+    deleteVisible,
+    styles,
+  }) => {
+    /**
+     * @var {object} focalX
+     * @description The x coordinate of the focal point of the pinch gesture
+     * @memberof Listing
+     */
+    const focalX = useSharedValue(0);
+    /**
+     * @var {object} focalY
+     * @description The y coordinate of the focal point of the pinch gesture
+     * @default 0
+     * @memberof Listing
+     */
+    const focalY = useSharedValue(0);
+    /**
+     * @var {object} xCurrent
+     * @description The current x coordinate of the image
+     * @default 0
+     * @memberof Listing
+     */
+    const xCurrent = useSharedValue(0);
+    /**
+     * @var {object} yCurrent
+     * @description The current y coordinate of the image
+     * @default 0
+     * @memberof Listing
+     */
+    const yCurrent = useSharedValue(0);
+    /**
+     * @var {object} xPrevious
+     * @description The previous x coordinate of the image
+     * @default 0
+     * @memberof Listing
+     */
+    const xPrevious = useSharedValue(0);
+    /**
+     * @var {object} yPrevious
+     * @description The previous y coordinate of the image
+     * @default 0
+     * @memberof Listing
+     */
+    const yPrevious = useSharedValue(0);
+    /**
+     * @var {object} scaleCurrent
+     * @description The current scale of the image
+     * @default 1
+     * @memberof Listing
+     */
+    const scaleCurrent = useSharedValue(1);
+    /**
+     * @var {object} scalePrevious
+     * @description The previous scale of the image
+     * @default 1
+     * @memberof Listing
+     */
+    const scalePrevious = useSharedValue(1);
+
+    /**
+     * @function pinchHandler
+     * @description Handles the pinch gesture on the image
+     * @returns {void} if the image is at the original size
+     * @memberof Listing
+     */
+    const pinchHandler = useAnimatedGestureHandler({
+      /**
+       *
+       * @param {object} event
+       * @description Sets the focal point of the pinch gesture to the center of the image if the pinch gesture is started with two fingers
+       * @memberof Listing
+       */
+      onStart: (event) => {
+        if (event.numberOfPointers == 2) {
+          focalX.value = event.focalX;
+          focalY.value = event.focalY;
+        }
+      },
+      /**
+       * @param {object} event
+       * @description Sets the current scale of the image to the previous scale of the image if the pinch gesture is ended with two fingers
+       * @returns {void} if the image is at the original size
+       * @memberof Listing
+       */
+      onActive: (event) => {
+        if (scaleCurrent.value * event.scale &lt; 1) {
+          return;
+        }
+
+        if (event.numberOfPointers == 2) {
+          if (event.oldState === 2) {
+            focalX.value = event.focalX;
+            focalY.value = event.focalY;
+          }
+          scaleCurrent.value = event.scale;
+
+          xCurrent.value = (1 - scaleCurrent.value) * (focalX.value - 400 / 2);
+          yCurrent.value = (1 - scaleCurrent.value) * (focalY.value - 700 / 2);
+        }
+      },
+      /**
+       * @description Resets the image to its original size and position if the pinch gesture is ended with two fingers
+       * @memberof Listing
+       */
+      onEnd: () => {
+        scalePrevious.value = withTiming(1); // Reset previous scale to original
+        scaleCurrent.value = withTiming(1); // Reset current scale to original
+
+        // Reset previous translations to original
+        xPrevious.value = withTiming(0);
+        yPrevious.value = withTiming(0);
+
+        // The current translations should also be reset to 0
+        xCurrent.value = withTiming(0);
+        yCurrent.value = withTiming(0);
+      },
+    });
+
+    /**
+     * @var {object} animatedStyle
+     * @description The style of the image
+     * @returns {object} transform
+     * @memberof Listing
+     */
+    const animatedStyle = useAnimatedStyle(() => {
+      return {
+        transform: [
+          { translateX: xCurrent.value },
+          { translateY: yCurrent.value },
+          { scale: scaleCurrent.value },
+          { translateX: xPrevious.value },
+          { translateY: yPrevious.value },
+          { scale: scalePrevious.value },
+        ],
+      };
+    });
+
+    /*FRONT CARD*/
+    return (
+      &lt;CardOverlay
+        price={price}
+        currencySymbol={currencySymbol}
+        timeSince={timeSince}
+        cardStyle={styles.cardBackground}
+        styles={styles}
+      >
+        &lt;PinchGestureHandler onGestureEvent={pinchHandler}>
+          &lt;Animated.View style={[styles.image, animatedStyle]}>
+            &lt;MemoizedImage
+              source={`${serverIp}/img/${source.uri}`}
+              blurhash={source.blurhash}
+              style={styles.image}
+              contentFit="contain"
+              transition={0}
+            />
+          &lt;/Animated.View>
+        &lt;/PinchGestureHandler>
+        &lt;LikeButton
+          isLiked={isLiked}
+          onLikePress={onLikePress}
+          styles={styles}
+        />
+        {deleteVisible &amp;&amp; (
+          &lt;DeleteButton onDeletePress={onDeletePress} styles={styles} />
+        )}
+      &lt;/CardOverlay>
+    );
+  }
+);
+
+/**
+ * @param {object} item
+ * @param {string} origin
+ * @param {function} removeListing
+ * @param {object} userLocation
+ * @param {function} handleInnerScolling
+ * @param {function} handleInnerScollingEnd
+ * @function Listing
+ * @description Displays the listing
+ * @returns {object} SafeAreaView and FlipCard wrapped in React.Fragment
+ * @memberof Listing
+ */
+const Listing = ({
+  item,
+  origin,
+  removeListing,
+  userLocation,
+  handleInnerScolling,
+  handleInnerScollingEnd,
+}) => {
+  const { theme } = useThemeContext();
+  const styles = getThemedStyles(useThemeContext().theme).Listing;
+  const prevItemRef = useRef();
+  useEffect(() => {
+    if (prevItemRef.current === item) {
+      return;
+    }
+    prevItemRef.current = item;
+  }, [item]);
+
+  const navigation = useNavigation();
+  const price = item.Price;
+  const currencySymbol = item.CurrencySymbol;
+  const [timeSince, setTimeSince] = useState(item.TimeSince);
+  useEffect(() => {
+    setTimeSince(item.TimeSince);
+  }, [item.TimeSince]);
+  const [isLiked, setIsLiked] = useState(item.liked); // Initially KNOWN
+  const distance = useMemo(() => {
+    return getDistance(
+      item.Latitude,
+      item.Longitude,
+      userLocation.latitude,
+      userLocation.longitude
+    );
+  }, [
+    item.Latitude,
+    item.Longitude,
+    userLocation.latitude,
+    userLocation.longitude,
+  ]);
+
+  const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [deleteVisible, setDeleteVisible] = useState(
+    origin == 'profile' &amp;&amp; item.Username == getStoredUsername()
+  );
+
+  const toggleDeleteModal = useCallback(() => {
+    setDeleteModalVisible(!isDeleteModalVisible);
+  }, [isDeleteModalVisible]);
+
+  const images = React.useMemo(() => item.images, [item.images]);
+  const carouselRef = useRef(null);
+
+  const handleLikePress = useCallback(async () => {
+    try {
+      await handleLike(item.ListingId, isLiked);
+      setIsLiked(!isLiked);
+    } catch (error) {
+      console.error(error);
+      alert(error);
+    }
+  }, [isLiked]);
+
+  return (
+    &lt;SafeAreaView>
+      &lt;FlipCard
+        friction={6}
+        perspective={1000}
+        flipHorizontal={true}
+        flipVertical={false}
+        flip={false}
+        clickable={true}
+        doubleTap={handleLikePress}
+      >
+        {/*FACE SIDE*/}
+        &lt;View style={styles.card}>
+          &lt;Carousel
+            ref={carouselRef}
+            current
+            pagingEnabled={true}
+            removeClippedSubviews={true}
+            initialNumToRender={1}
+            maxToRenderPerBatch={1}
+            panGestureHandlerProps={{
+              activeOffsetX: [-25, 25],
+            }}
+            loop={false}
+            style={styles.card}
+            vertical={false}
+            width={0.85 * screenWidth}
+            height={0.75 * screenHeight}
+            data={images}
+            windowSize={2}
+            mode="parallax"
+            scrollAnimationDuration={400}
+            renderItem={({ item }) => (
+              &lt;CustomItem
+                source={item}
+                price={price}
+                currencySymbol={currencySymbol}
+                timeSince={timeSince}
+                isLiked={isLiked}
+                onLikePress={() => handleLikePress()}
+                onDeletePress={() => toggleDeleteModal()}
+                deleteVisible={deleteVisible}
+                origin={origin}
+                styles={styles}
+              />
+            )}
+            customAnimation={parallaxLayout(
+              {
+                size: screenWidth / 2,
+                vertical: false,
+              },
+              {
+                parallaxScrollingScale: 1,
+                parallaxAdjacentItemScale: 0.5,
+                parallaxScrollingOffset: 10,
+              }
+            )}
+          />
+        &lt;/View>
+
+        {/*BACK SIDE*/}
+        &lt;CardOverlay
+          price={price}
+          currencySymbol={currencySymbol}
+          timeSince={timeSince}
+          cardStyle={styles.cardBackground2}
+          styles={styles}
+        >
+          &lt;Text style={styles.title}>{item.Title}&lt;/Text>
+          &lt;View style={styles.sellerInfoBox}>
+            &lt;View
+              style={[
+                {
+                  height: '100%',
+                  width: '33%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                },
+              ]}
+            >
+              &lt;Entypo
+                name="location-pin"
+                size={40}
+                color={theme === 'dark' ? Colors.BB_violet : Colors.BB_bone}
+                style={styles.locationPin}
+              />
+              &lt;Text
+                style={[
+                  styles.city,
+                  { fontSize: calculateFontSizeLocation(item.City) },
+                ]}
+              >
+                {item.City}
+              &lt;/Text>
+              &lt;Text style={styles.distance}>
+                {distance > 0 ? distance + ' miles' : 'Less than 1 mile'}{' '}
+              &lt;/Text>
+            &lt;/View>
+            &lt;View
+              style={[
+                {
+                  height: '100%',
+                  width: '33%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                },
+              ]}
+            >
+              &lt;TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('Profile', {
+                    username: item.Username,
+                  })
+                }
+              >
+                &lt;MemoizedImage
+                  source={item.ProfilePicture}
+                  style={styles.sellerPic}
+                />
+              &lt;/TouchableOpacity>
+              &lt;Text style={styles.sellerName}>{item.Username}&lt;/Text>
+            &lt;/View>
+            &lt;View
+              style={[
+                {
+                  height: '100%',
+                  width: '33%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                },
+              ]}
+            >
+              &lt;Entypo
+                name="star"
+                size={34}
+                color={theme === 'dark' ? Colors.BB_violet : 'gold'}
+                style={styles.ratingStar}
+              />
+
+              &lt;Text style={styles.rating}>
+                {item.ratings.averageRating
+                  ? item.ratings.averageRating
+                  : 'N/A'}{' '}
+                ({item.ratings.ratingCount ? item.ratings.ratingCount : '0'})
+              &lt;/Text>
+            &lt;/View>
+          &lt;/View>
+
+          &lt;View style={styles.lowerRow}>
+            &lt;View
+              style={[
+                {
+                  height: '100%',
+                  width: '33%',
+                  alignItems: 'center',
+                },
+              ]}
+            >
+              &lt;Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                  color: 'white',
+                  alignSelf: 'center',
+                  top: '10%',
+                }}
+              >
+                Condition:
+              &lt;/Text>
+              &lt;Text style={[styles.conditionText]}>{item.Condition}&lt;/Text>
+            &lt;/View>
+            &lt;View
+              style={[
+                {
+                  height: '100%',
+                  width: '33%',
+                  alignItems: 'center',
+                },
+              ]}
+            >
+              &lt;Text
+                style={{
+                  fontSize: 11,
+                  fontWeight: 'bold',
+                  color: 'white',
+                  alignSelf: 'center',
+                  top: '8%',
+                }}
+              >
+                Transaction Preference:
+              &lt;/Text>
+              &lt;Text
+                style={{
+                  ...styles.conditionText,
+                  top: '30%',
+                  fontSize: calculateTransactionFontSize(
+                    item.TransactionPreference
+                  ),
+                }}
+              >
+                {item.TransactionPreference}
+              &lt;/Text>
+            &lt;/View>
+            &lt;View
+              style={[
+                {
+                  height: '100%',
+                  width: '33%',
+                  alignItems: 'center',
+                },
+              ]}
+            >
+              &lt;Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                  color: 'white',
+                  alignSelf: 'center',
+                  top: '8%',
+                }}
+              >
+                Tags:
+              &lt;/Text>
+              &lt;ScrollView
+                style={styles.tagColumn}
+                onScrollBeginDrag={handleInnerScolling}
+                onScrollEndDrag={handleInnerScollingEnd}
+              >
+                &lt;Pressable>
+                  {item.tags &amp;&amp;
+                    item.tags.map((tag, index) => (
+                      &lt;Text key={index} style={styles.tagText}>
+                        {tag}
+                      &lt;/Text>
+                    ))}
+                &lt;/Pressable>
+              &lt;/ScrollView>
+            &lt;/View>
+          &lt;/View>
+
+          &lt;ScrollView
+            style={styles.descriptionContainer}
+            showsVerticalScrollIndicator={true}
+            scrollEnabled={true}
+          >
+            &lt;Text style={styles.description}>{item.Description}&lt;/Text>
+          &lt;/ScrollView>
+
+          &lt;LikeButton
+            isLiked={isLiked}
+            onLikePress={handleLikePress}
+            styles={styles}
+          />
+        &lt;/CardOverlay>
+      &lt;/FlipCard>
+
+      {/* Delete Confirmation Modal */}
+      &lt;Modal
+        transparent={true}
+        visible={isDeleteModalVisible}
+        animationType="slide"
+        onRequestClose={() => toggleDeleteModal()}
+      >
+        &lt;View style={styles.modalContainer}>
+          &lt;Text style={styles.modalText}>
+            Are you sure you want to delete this listing?
+          &lt;/Text>
+          &lt;View style={styles.buttonContainer}>
+            &lt;TouchableOpacity
+              style={styles.confirmButton}
+              onPress={async () => {
+                try {
+                  await handleDeleteListing(item.ListingId);
+                  removeListing(item.ListingId);
+                  alert('Listing deleted successfully.');
+                } catch (error) {
+                  console.error(error);
+                  alert(error);
+                } finally {
+                  toggleDeleteModal(); // Close the modal
+                }
+              }}
+            >
+              &lt;Text style={styles.buttonText}>Yes&lt;/Text>
+            &lt;/TouchableOpacity>
+            &lt;TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => toggleDeleteModal()}
+            >
+              &lt;Text style={styles.buttonText}>No&lt;/Text>
+            &lt;/TouchableOpacity>
+          &lt;/View>
+        &lt;/View>
+      &lt;/Modal>
+    &lt;/SafeAreaView>
+  );
+};
+
+export default memo(Listing);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat Dec 02 2023 14:31:47 GMT-0800 (Pacific Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>

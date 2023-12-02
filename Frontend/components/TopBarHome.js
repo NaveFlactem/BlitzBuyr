@@ -11,6 +11,17 @@ import Colors from '../constants/Colors';
 import { useThemeContext } from './visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
 
+/**
+ * Represents a memoized TopBar component for the home screen.
+ *
+ * @function
+ * @name TopBar
+ * @memberof Components
+ * @param {Object} props - Component props
+ * @param {Function} props.handleMenuPress - Function handling the menu press event
+ * @param {Function} props.handleLocationPress - Function handling the location press event
+ * @returns {JSX.Element} Memoized TopBar component for the home screen
+ */
 const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
   const { theme } = useThemeContext();
   const styles = getThemedStyles(theme).TopBarHome;

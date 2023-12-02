@@ -1,540 +1,66 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
+<head>
+    
+    <meta charset="utf-8">
     <title>Frontend/screens/CreateListing.js - Documentation</title>
-
+    
+    
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify.css" />
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css" />
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
     <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  </head>
-  <body>
-    <input type="checkbox" id="nav-trigger" class="nav-trigger" />
-    <label for="nav-trigger" class="navicon-button x">
-      <div class="navicon"></div>
-    </label>
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
 
-    <label for="nav-trigger" class="overlay"></label>
+<label for="nav-trigger" class="overlay"></label>
 
-    <nav>
-      <input type="text" id="nav-search" placeholder="Search" />
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/NaveFlactem/BlitzBuyr" target="_blank" class="menu-item" id="repository" >Github repo</a></h2><h3>Classes</h3><ul><li><a href="FlipCard.html">FlipCard</a></li></ul><h3>Modules</h3><ul><li><a href="module-API_Accounts.html">API/Accounts</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~authenticateUser">authenticateUser</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~getAccounts">getAccounts</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleDeleteAccounts">handleDeleteAccounts</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleLoginRequest">handleLoginRequest</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleRegistrationRequest">handleRegistrationRequest</a></li></ul></li><li><a href="module-API_Listings.html">API/Listings</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~createListing">createListing</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~encodeImageToBlurhash">encodeImageToBlurhash</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~getImages">getImages</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~getListings">getListings</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteImages">handleDeleteImages</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteListing">handleDeleteListing</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteListings">handleDeleteListings</a></li></ul></li><li><a href="module-API_Profile.html">API/Profile</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~deleteAllLikes">deleteAllLikes</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~deleteRating">deleteRating</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getLikes">getLikes</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getProfilePicture">getProfilePicture</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getRatings">getRatings</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getUserProfile">getUserProfile</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~handleLike">handleLike</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~handleUnlike">handleUnlike</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~rateUser">rateUser</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~updateContactInfo">updateContactInfo</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~updateProfile">updateProfile</a></li></ul></li><li><a href="module-Database.html">Database</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-Database.html#~areTableDefinitionsEqual">areTableDefinitionsEqual</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~createOrUpdateTable">createOrUpdateTable</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~createTables">createTables</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~extractColumnsFromDefinition">extractColumnsFromDefinition</a></li></ul></li><li><a href="module-Server.html">Server</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-Server.html#~getRoot">getRoot</a></li><li data-type='method' style='display: none;'><a href="module-Server.html#~requestLogger">requestLogger</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="AboutUs.html">AboutUs</a></li><li><a href="Authenticate.html">Authenticate</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Authenticate.html#.AuthenticateScreen">AuthenticateScreen</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.checkStoredCredentials">checkStoredCredentials</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.clearStoredCredentials">clearStoredCredentials</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.getStoredPassword">getStoredPassword</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.getStoredUsername">getStoredUsername</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.loadSettings">loadSettings</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.setStoredCredentials">setStoredCredentials</a></li></ul></li><li><a href="ChangePassword.html">ChangePassword</a></li><li><a href="Components.html">Components</a><ul class='members'><li data-type='member' style='display: none;'><a href="Components.html#.TagDrawer">TagDrawer</a></li><li data-type='member' style='display: none;'><a href="Components.html#.onGestureEvent">onGestureEvent</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="Components.html#.NoWifi">NoWifi</a></li><li data-type='method' style='display: none;'><a href="Components.html#.TopBar">TopBar</a></li><li data-type='method' style='display: none;'><a href="Components.html#.handleConditionPress">handleConditionPress</a></li><li data-type='method' style='display: none;'><a href="Components.html#.handleCurrencyPress">handleCurrencyPress</a></li><li data-type='method' style='display: none;'><a href="Components.html#.handleTagPress">handleTagPress</a></li><li data-type='method' style='display: none;'><a href="Components.html#.handleTransactionPress">handleTransactionPress</a></li></ul></li><li><a href="CreateAccount.html">CreateAccount</a><ul class='methods'><li data-type='method' style='display: none;'><a href="CreateAccount.html#.CreateAccountScreen">CreateAccountScreen</a></li><li data-type='method' style='display: none;'><a href="CreateAccount.html#.handleCreateAccount">handleCreateAccount</a></li><li data-type='method' style='display: none;'><a href="CreateAccount.html#.handlePasswordChange">handlePasswordChange</a></li></ul></li><li><a href="EditContactInfo.html">EditContactInfo</a><ul class='methods'><li data-type='method' style='display: none;'><a href="EditContactInfo.html#.EditContactInfo">EditContactInfo</a></li><li data-type='method' style='display: none;'><a href="EditContactInfo.html#.handleInputChange">handleInputChange</a></li></ul></li><li><a href="Hooks.html">Hooks</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Hooks.html#.useBackButtonHandler">useBackButtonHandler</a></li><li data-type='method' style='display: none;'><a href="Hooks.html#.useLocation">useLocation</a></li></ul></li><li><a href="Listing.html">Listing</a><ul class='members'><li data-type='member' style='display: none;'><a href="Listing.html#.animatedStyle">animatedStyle</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.focalX">focalX</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.focalY">focalY</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.scaleCurrent">scaleCurrent</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.scalePrevious">scalePrevious</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.xCurrent">xCurrent</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.xPrevious">xPrevious</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.yCurrent">yCurrent</a></li><li data-type='member' style='display: none;'><a href="Listing.html#.yPrevious">yPrevious</a></li></ul><ul class='methods'><li data-type='method' style='display: none;'><a href="Listing.html#.CardOverlay">CardOverlay</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.CustomItem">CustomItem</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.DeleteButton">DeleteButton</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.LikeButton">LikeButton</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.Listing">Listing</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.MemoizedImage">MemoizedImage</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.TimeBox">TimeBox</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.getDistance">getDistance</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.onActive">onActive</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.onEnd">onEnd</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.onStart">onStart</a></li><li data-type='method' style='display: none;'><a href="Listing.html#.pinchHandler">pinchHandler</a></li></ul></li><li><a href="Login.html">Login</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Login.html#.LoginScreen">LoginScreen</a></li><li data-type='method' style='display: none;'><a href="Login.html#.handleCreateAccount">handleCreateAccount</a></li><li data-type='method' style='display: none;'><a href="Login.html#.handleLogin">handleLogin</a></li></ul></li><li><a href="Networking.html">Networking</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Networking.html#.fetchListings">fetchListings</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleDeleteAccount">handleDeleteAccount</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleDeleteAccount">handleDeleteAccount</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleLike">handleLike</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleListingCreation">handleListingCreation</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.saveContactInfo">saveContactInfo</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.saveProfileInfo">saveProfileInfo</a></li></ul></li><li><a href="Screens.CreateListing.html">Screens.CreateListing</a></li><li><a href="Screens.EditProfile.html">Screens.EditProfile</a></li><li><a href="Screens.HomeScreen.html">Screens.HomeScreen</a></li><li><a href="Screens.ProfileScreen.html">Screens.ProfileScreen</a></li><li><a href="Screens.RatingScreen.html">Screens.RatingScreen</a></li><li><a href="Screens.SettingsScreen.html">Screens.SettingsScreen</a></li><li><a href="Swipers.html">Swipers</a></li><li><a href="Swipers.AndroidSwiperComponent.html">Swipers.AndroidSwiperComponent</a></li><li><a href="Swpiers.IOSSwiperComponent.html">Swpiers.IOSSwiperComponent</a></li><li><a href="UserSettings.html">UserSettings</a><ul class='methods'><li data-type='method' style='display: none;'><a href="UserSettings.html#.clearUserSettings">clearUserSettings</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.getColorMode">getColorMode</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.getDistance">getDistance</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.getUserSettings">getUserSettings</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.saveUserSettings">saveUserSettings</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.setDefaultUserSettings">setDefaultUserSettings</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.updateColorMode">updateColorMode</a></li><li data-type='method' style='display: none;'><a href="UserSettings.html#.updateDistance">updateDistance</a></li></ul></li><li><a href="Utilities.html">Utilities</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Utilities.html#.calculateTimeSince">calculateTimeSince</a></li><li data-type='method' style='display: none;'><a href="Utilities.html#.getLocationWithRetry">getLocationWithRetry</a></li></ul></li><li><a href="Visuals.html">Visuals</a></li><li><a href="Visuals.BouncePulse.html">Visuals.BouncePulse</a></li><li><a href="Visuals.CustomRefreshControl.html">Visuals.CustomRefreshControl</a></li><li><a href="Visuals.Icons.html">Visuals.Icons</a></li><li><a href="Visuals.ThemeProvider.html">Visuals.ThemeProvider</a></li><li><a href="Visuals.TopBarGeneric.html">Visuals.TopBarGeneric</a></li></ul><h3>Global</h3><ul><li><a href="global.html#CreateListing">CreateListing</a></li><li><a href="global.html#calculateFontSize">calculateFontSize</a></li><li><a href="global.html#calculateFontSizeLocation">calculateFontSizeLocation</a></li><li><a href="global.html#calculateTagTextFontSize">calculateTagTextFontSize</a></li><li><a href="global.html#calculateTransactionFontSize">calculateTransactionFontSize</a></li><li><a href="global.html#getThemedStyles">getThemedStyles</a></li></ul>
+    
+</nav>
 
-      <h2><a href="index.html">Home</a></h2>
-      <h2>
-        <a
-          href="https://github.com/NaveFlactem/BlitzBuyr"
-          target="_blank"
-          class="menu-item"
-          id="repository"
-          >Github repo</a
-        >
-      </h2>
-      <h3>Classes</h3>
-      <ul>
-        <li>
-          <a href="CreateListing.html#.CreateListing"
-            >CreateListing.CreateListing</a
-          >
-        </li>
-      </ul>
-      <h3>Modules</h3>
-      <ul>
-        <li>
-          <a href="module-API_Accounts.html">API/Accounts</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="module-API_Accounts.html#~authenticateUser"
-                >authenticateUser</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Accounts.html#~getAccounts">getAccounts</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Accounts.html#~handleDeleteAccounts"
-                >handleDeleteAccounts</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Accounts.html#~handleLoginRequest"
-                >handleLoginRequest</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Accounts.html#~handleRegistrationRequest"
-                >handleRegistrationRequest</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="module-API_Listings.html">API/Listings</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="module-API_Listings.html#~createListing"
-                >createListing</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Listings.html#~encodeImageToBlurhash"
-                >encodeImageToBlurhash</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Listings.html#~getImages">getImages</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Listings.html#~getListings">getListings</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Listings.html#~handleDeleteImages"
-                >handleDeleteImages</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Listings.html#~handleDeleteListing"
-                >handleDeleteListing</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Listings.html#~handleDeleteListings"
-                >handleDeleteListings</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="module-API_Profile.html">API/Profile</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~deleteAllLikes"
-                >deleteAllLikes</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~deleteRating">deleteRating</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~getLikes">getLikes</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~getProfilePicture"
-                >getProfilePicture</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~getRatings">getRatings</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~getUserProfile"
-                >getUserProfile</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~handleLike">handleLike</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~handleUnlike">handleUnlike</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~rateUser">rateUser</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~updateContactInfo"
-                >updateContactInfo</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-API_Profile.html#~updateProfile">updateProfile</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="module-Database.html">Database</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="module-Database.html#~areTableDefinitionsEqual"
-                >areTableDefinitionsEqual</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-Database.html#~createOrUpdateTable"
-                >createOrUpdateTable</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-Database.html#~createTables">createTables</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-Database.html#~extractColumnsFromDefinition"
-                >extractColumnsFromDefinition</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="module-Server.html">Server</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="module-Server.html#~getRoot">getRoot</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="module-Server.html#~requestLogger">requestLogger</a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-      <h3>Namespaces</h3>
-      <ul>
-        <li>
-          <a href="Authenticate.html">Authenticate</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="Authenticate.html#.AuthenticateScreen"
-                >AuthenticateScreen</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Authenticate.html#.checkStoredCredentials"
-                >checkStoredCredentials</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Authenticate.html#.clearStoredCredentials"
-                >clearStoredCredentials</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Authenticate.html#.getStoredPassword"
-                >getStoredPassword</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Authenticate.html#.getStoredUsername"
-                >getStoredUsername</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Authenticate.html#.loadSettings">loadSettings</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Authenticate.html#.setStoredCredentials"
-                >setStoredCredentials</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="CreateAccount.html">CreateAccount</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="CreateAccount.html#.CreateAccountScreen"
-                >CreateAccountScreen</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateAccount.html#.handleCreateAccount"
-                >handleCreateAccount</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateAccount.html#.handlePasswordChange"
-                >handlePasswordChange</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="CreateListing.html">CreateListing</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#componentDidMount"
-                >componentDidMount</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#destructor">destructor</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#render_item">render_item</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.CreateListing">CreateListing</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.checkValidListing"
-                >checkValidListing</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.getPermissionAsync"
-                >getPermissionAsync</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.groupTagsIntoRows"
-                >groupTagsIntoRows</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handleCameraPick"
-                >handleCameraPick</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handleCreateListing"
-                >handleCreateListing</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handleCurrencySelection"
-                >handleCurrencySelection</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handleDeletePhoto"
-                >handleDeletePhoto</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handleDragRelease"
-                >handleDragRelease</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handleDragStart">handleDragStart</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handleLibraryPick"
-                >handleLibraryPick</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handlePriceChange"
-                >handlePriceChange</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.handleTagPress">handleTagPress</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.manipulateImage">manipulateImage</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.processImage">processImage</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.processSelectedImages"
-                >processSelectedImages</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.renderCurrencyOptions"
-                >renderCurrencyOptions</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="CreateListing.html#.showModal">showModal</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="EditContactInfo.html">EditContactInfo</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="EditContactInfo.html#.EditContactInfo"
-                >EditContactInfo</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="EditContactInfo.html#.handleInputChange"
-                >handleInputChange</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="EditProfile.html">EditProfile</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="EditProfile.html#.EditProfileScreen"
-                >EditProfileScreen</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="EditProfile.html#.confirmDeletion">confirmDeletion</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="EditProfile.html#.deleteAccount">deleteAccount</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="EditProfile.html#.handleCoverImageSelection"
-                >handleCoverImageSelection</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="EditProfile.html#.handleProfileImageSelection"
-                >handleProfileImageSelection</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="EditProfile.html#.saveChanges">saveChanges</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="EditProfile.html#.togglePasswordVisibility"
-                >togglePasswordVisibility</a
-              >
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="HomeScreen.html">HomeScreen</a>
-          <ul class="members">
-            <li data-type="member" style="display: none">
-              <a href="HomeScreen.html#.HomeScreen">HomeScreen</a>
-            </li>
-          </ul>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.debouncedFetchListings"
-                >debouncedFetchListings</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.getUserLocation">getUserLocation</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.handleInnerScrolling"
-                >handleInnerScrolling</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.handleInnerScrollingEnd"
-                >handleInnerScrollingEnd</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.handleLocationPress"
-                >handleLocationPress</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.onRefresh">onRefresh</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.onScroll">onScroll</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.retryButtonHandler"
-                >retryButtonHandler</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="HomeScreen.html#.toggleTagDrawer">toggleTagDrawer</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="Login.html">Login</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="Login.html#.LoginScreen">LoginScreen</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Login.html#.handleCreateAccount">handleCreateAccount</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Login.html#.handleLogin">handleLogin</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="Networking.html">Networking</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="Networking.html#.fetchListings">fetchListings</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Networking.html#.handleDeleteAccount"
-                >handleDeleteAccount</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Networking.html#.handleDeleteAccount"
-                >handleDeleteAccount</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Networking.html#.handleLike">handleLike</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Networking.html#.handleListingCreation"
-                >handleListingCreation</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Networking.html#.saveContactInfo">saveContactInfo</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Networking.html#.saveProfileInfo">saveProfileInfo</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="Rating.html">Rating</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="Rating.html#.RatingScreen">RatingScreen</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Rating.html#.handleRating">handleRating</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Rating.html#.handleSubmitRating">handleSubmitRating</a>
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Rating.html#.renderStars">renderStars</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="Utilities.html">Utilities</a>
-          <ul class="methods">
-            <li data-type="method" style="display: none">
-              <a href="Utilities.html#.calculateTimeSince"
-                >calculateTimeSince</a
-              >
-            </li>
-            <li data-type="method" style="display: none">
-              <a href="Utilities.html#.getLocationWithRetry"
-                >getLocationWithRetry</a
-              >
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
+<div id="main">
+    
+    <h1 class="page-title">Frontend/screens/CreateListing.js</h1>
+    
 
-    <div id="main">
-      <h1 class="page-title">Frontend/screens/CreateListing.js</h1>
+    
 
-      <section>
+
+
+    
+    <section>
         <article>
-          <pre class="prettyprint source linenums"><code>/**
- * @namespace CreateListing
+            <pre class="prettyprint source linenums"><code>/**
+ * @namepace Screens
  */
+
+/**
+ * @namespace CreateListing
+ * @memberof Screens
+ */
+import { serverIp } from '../config';
 import * as FileSystem from 'expo-file-system';
 import { Image } from 'expo-image';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
-import React, { Component, memo } from 'react';
+import React, { useState, useEffect, useRef, memo } from 'react';
 import {
   Alert,
   Modal,
@@ -558,16 +84,18 @@ import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import { getLocationWithRetry } from '../constants/Utilities';
 import { handleListingCreation } from '../network/Service.js';
 import { getStoredUsername } from './auth/Authenticate.js';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
 
 const blurhash = 'L5H2EC=PM+yV0g-mq.wG9c010J}I';
 
-const LoadingView = memo(() => (
+const LoadingView = memo(({ styles }) => (
   &lt;View style={styles.loading}>
     &lt;BouncePulse />
   &lt;/View>
 ));
 
-const MinorLoadingView = memo(() => (
+const MinorLoadingView = memo(({ styles }) => (
   &lt;View style={styles.minorLoadingContainer}>
     &lt;BouncePulse />
   &lt;/View>
@@ -575,138 +103,117 @@ const MinorLoadingView = memo(() => (
 
 /**
  * @function
- * @name CreateListing
- * @extends Component
- * @returns {JSX.Element} A screen for creating a listing.
- * @memberof CreateListing
+ * @CreateListing - creates a listing
+ * @param {*} props
+ * @description - creates a listing
+ * @returns Returns a CreateListing screen
  */
-class CreateListing extends Component {
-  /**
-   * @param {*} props
-   * @constructor
-   * @description - CreateListing constructor
-   * @initialize state variables
-   * @initialize refs
-   * @memberof CreateListing
-   */
-  constructor(props) {
-    super(props);
-    this.state = {
-      title: '',
-      description: '',
-      price: '',
-      condition: '',
-      transactionPreference: '',
-      data: [],
-      selectedTags: [],
-      isScrollEnabled: true,
-      isTitleInvalid: false,
-      isDescriptionInvalid: false,
-      isPriceInvalid: false,
-      isImageInvalid: false,
-      isConditionInvalid: false,
-      isTransactionPreferenceInvalid: false,
-      isTagInvalid: false,
-      isMinorLoading: false,
-      isLoading: false,
-      selectedCurrency: 'USD',
-      selectedCurrencySymbol: '$',
-      showCurrencyOptions: false,
-      tagsData: [...tagOptions],
-      currencies: [...currencies],
-      selectImageModalVisible: false,
-    };
-    this.titleInput = React.createRef();
-    this.descriptionInput = React.createRef();
-    this.priceInput = React.createRef();
-    this.conditionInput = React.createRef();
-    this.transactionPreferenceInput = React.createRef();
-    this.imageInput = React.createRef();
-    this.tagInput = React.createRef();
-  }
+const CreateListing = memo(({ navigation, route }) => {
+  const { theme } = useThemeContext();
+  const styles = getThemedStyles(theme).CreateListing;
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState('');
+  const [condition, setCondition] = useState('');
+  const [transactionPreference, setTransactionPreference] = useState('');
+  const [data, setData] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [isScrollEnabled, setIsScrollEnabled] = useState(true);
+  const [isTitleInvalid, setIsTitleInvalid] = useState(false);
+  const [isDescriptionInvalid, setIsDescriptionInvalid] = useState(false);
+  const [isPriceInvalid, setIsPriceInvalid] = useState(false);
+  const [isConditionInvalid, setIsConditionInvalid] = useState(false);
+  const [isTransactionPreferenceInvalid, setIsTransactionPreferenceInvalid] =
+    useState(false);
+  const [isImageInvalid, setIsImageInvalid] = useState(false);
+  const [isTagInvalid, setIsTagInvalid] = useState(false);
+  const [isMinorLoading, setIsMinorLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
+  const [selectedCurrencySymbol, setSelectedCurrencySymbol] = useState('$');
+  const [showCurrencyOptions, setShowCurrencyOptions] = useState(false);
+  const [tagsData, setTagsData] = useState([...tagOptions]);
+  const [currencyOptions, setCurrencyOptions] = useState([...currencies]);
+  const [selectImageModalVisible, setSelectImageModalVisible] = useState(false);
+
+  const titleInput = useRef(null);
+  const descriptionInput = useRef(null);
+  const priceInput = useRef(null);
 
   /**
    * @function
    * @destructor - resets state variables
    * @memberof CreateListing
    */
-  destructor() {
-    this.setState({
-      title: '',
-      description: '',
-      price: '',
-      condition: '',
-      transactionPreference: '',
-      data: [],
-      selectedTags: [],
-      selectedCurrency: 'USD',
-      selectedCurrencySymbol: '$',
-      tagsData: [...tagOptions],
-      currencies: [...currencies],
-      selectImageModalVisible: false,
-      isTitleInvalid: false,
-      isDescriptionInvalid: false,
-      isPriceInvalid: false,
-      isConditionInvalid: false,
-      isTransactionPreferenceInvalid: false,
-      isImageInvalid: false,
-      isTagInvalid: false,
-      isMinorLoading: false,
-      isLoading: false,
-    });
-  }
+  const destructor = () => {
+    setTitle('');
+    setDescription('');
+    setPrice('');
+    setCondition('');
+    setTransactionPreference('');
+    setData([]);
+    setSelectedTags([]);
+    setSelectedCurrency('USD');
+    setSelectedCurrencySymbol('$');
+    setIsScrollEnabled(true);
+    setIsTitleInvalid(false);
+    setIsDescriptionInvalid(false);
+    setIsPriceInvalid(false);
+    setIsConditionInvalid(false);
+    setIsTransactionPreferenceInvalid(false);
+    setIsImageInvalid(false);
+    setIsTagInvalid(false);
+    setIsMinorLoading(false);
+    setIsLoading(false);
+  };
 
   /**
    * @function
    * @checkValidListing - checks if the listing is valid
-   * @stateUpdates - updates the states of the variables that check if the listing is valid
    * @returns Returns 0 if the listing is valid, -1 if the listing is invalid and 1 if no images are selected and 2 if too many images are selected and 3 if no tags are selected
    * @memberof CreateListing
    */
-  checkValidListing = () => {
-    let stateUpdates = {
-      isPriceInvalid:
-        this.state.price &lt; 0 ||
-        this.state.price.length > 7 ||
-        this.state.price === '',
-      isTitleInvalid:
-        this.state.title.length === 0 || this.state.title.length > 25,
-      isDescriptionInvalid:
-        this.state.description.length === 0 ||
-        this.state.description.length > 500,
-      isConditionInvalid: ![
-        'Excellent',
-        'Good',
-        'Fair',
-        'Poor',
-        'For Parts',
-      ].includes(this.state.condition),
-      isTransactionPreferenceInvalid: ![
-        'Pickup',
-        'Meetup',
-        'Delivery',
-        'No Preference',
-      ].includes(this.state.transactionPreference),
-      isImageInvalid:
-        this.state.data.length === 0 || this.state.data.length > 9,
-      isTagInvalid: this.state.selectedTags.length === 0,
-    };
+  const checkValidListing = async () => {
+    const regex = /^(\d{0,6}(\.\d{2})?)$/;
 
-    this.setState(stateUpdates);
+    setIsPriceInvalid(!regex.test(price) &amp;&amp; price.length !== 0);
+    setIsTitleInvalid(title.length === 0 || title.length > 25);
+    setIsDescriptionInvalid(
+      description.length === 0 || description.length > 500,
+    );
+    setIsConditionInvalid(
+      !['Excellent', 'Good', 'Fair', 'Poor', 'For Parts'].includes(condition),
+    );
+    setIsTransactionPreferenceInvalid(
+      !['Pickup', 'Meetup', 'Delivery', 'No Preference'].includes(
+        transactionPreference,
+      ),
+    );
+    setIsImageInvalid(data.length === 0 || data.length > 9);
+    setIsTagInvalid(selectedTags.length === 0);
 
-    if (Object.values(stateUpdates).includes(true)) {
+    if (
+      Object.values({
+        isPriceInvalid,
+        isTitleInvalid,
+        isDescriptionInvalid,
+        isConditionInvalid,
+        isTransactionPreferenceInvalid,
+        isImageInvalid,
+        isTagInvalid,
+      }).includes(true)
+    ) {
       return -1; // Invalid form
     }
-    if (this.state.data.length === 0) {
+    if (data.length === 0) {
       return 1; // No images selected
     }
-    if (this.state.data.length > 9) {
+    if (data.length > 9) {
       return 2; // Too many images
     }
-    if (this.state.selectedTags.length === 0) {
+    if (selectedTags.length === 0) {
       return 3; // No tags selected
     }
-
     return 0; // Valid form
   };
 
@@ -716,24 +223,12 @@ class CreateListing extends Component {
    * @param {Object} formData - object that is sent to the server with user inputted values
    * @memberof CreateListing
    */
-  handleCreateListing = async () => {
-    this.setState({ isLoading: true });
+  const handleCreateListing = async () => {
+    setIsLoading(true);
 
-    const {
-      title,
-      description,
-      price,
-      selectedTags,
-      data,
-      condition,
-      transactionPreference,
-      selectedCurrency,
-      selectedCurrencySymbol,
-    } = this.state; // Destructuring state
-
-    const returnCode = this.checkValidListing();
+    let returnCode = await checkValidListing();
     if (returnCode !== 0) {
-      this.setState({ isLoading: false });
+      setIsLoading(false); // Turn off loading if validation fails
       if (returnCode === -1) {
         Alert.alert('Error', 'Please correct the errors in the form.');
       } else if (returnCode === 1) {
@@ -750,24 +245,17 @@ class CreateListing extends Component {
       const formData = new FormData();
 
       data.forEach((image, index) => {
-        // Append each image as a file
         formData.append(`image_${index}`, {
-          uri: image.uri, // The URI of the image file
-          name: `image_${index}.jpg`, // The desired file name
-          type: 'image/jpeg', // The content type of the file
+          uri: image.uri,
+          name: `image_${index}.jpg`,
+          type: 'image/jpeg',
         });
       });
 
       let location = await getLocationWithRetry();
       const { latitude, longitude } = location.coords;
-
-      // Convert location to a JSON string
       const locationString = JSON.stringify({ latitude, longitude });
-
-      // Append the location to the formData
       formData.append('location', locationString);
-
-      console.log('Location:', latitude, longitude);
 
       formData.append('price', price);
       formData.append('title', title);
@@ -779,33 +267,42 @@ class CreateListing extends Component {
       formData.append('currency', selectedCurrency);
       formData.append('currencySymbol', selectedCurrencySymbol);
 
-      console.log('Create Listing Data:', formData);
+      const response = await fetch(`${serverIp}/api/createlisting`, {
+        method: 'POST',
+        body: formData,
+        timeout: 10000,
+      });
 
-      await handleListingCreation(formData);
-      this.destructor();
-      this.props.navigation.navigate('Home', { refresh: true });
+      if (response.status &lt;= 201) {
+        const responseData = await response.json();
+        destructor();
+        navigation.navigate('Home', { refresh: true });
+      } else {
+        console.error('HTTP error! Status: ', response.status);
+        Alert.alert('Error', 'Failed to create listing.');
+      }
     } catch (error) {
       console.error(error);
       alert(error);
     } finally {
-      this.setState({ isLoading: false });
+      setIsLoading(false);
     }
   };
 
   /**
    * @function
-   * @componentDidMount - calls getPermissionAsync() when component mounts
+   * @useEffect - asks for permission to access camera roll when the screen is loaded
    */
-  componentDidMount() {
-    this.getPermissionAsync();
-  }
+  useEffect(() => {
+    getPermissionAsync();
+  }, []);
 
   /**
    * @function
    * @getPermissionAsync - asks for permission to access camera roll
    * @memberof CreateListing
    */
-  getPermissionAsync = async () => {
+  const getPermissionAsync = async () => {
     // Camera roll Permission
     const { status: libraryStatus } =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -827,24 +324,22 @@ class CreateListing extends Component {
    * @hideModal - hides the modal that contains camera/photo library options, changes the state of selectImageModalVisible to false
    * @memberof CreateListing
    */
-  showModal = () => this.setState({ selectImageModalVisible: true });
-  hideModal = () => this.setState({ selectImageModalVisible: false });
-
+  const showModal = () => setSelectImageModalVisible(true);
+  const hideModal = () => setSelectImageModalVisible(false);
   /**
    * @function
    * @handleCameraPick - allows the user to take photos with their camera
    * @returns Returns the photos that the user took
    * @description - allows the user to take photos with their camera
-   * @memberof CreateListing
    */
-  handleCameraPick = async () => {
+  const handleCameraPick = async () => {
     const result = await ImagePicker.launchCameraAsync();
 
     if (!result.canceled) {
-      this.processImage(result); // Process the first (and only) image
+      processImage(result); // Process the first (and only) image
     }
 
-    this.hideModal();
+    hideModal();
   };
 
   /**
@@ -852,22 +347,21 @@ class CreateListing extends Component {
    * @handleLibraryPick - allows the user to select images from their library
    * @returns Returns the images that the user selected
    * @description - allows the user to select images from their library
-   * @memberof CreateListing
    */
-  handleLibraryPick = async () => {
+  const handleLibraryPick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
       quality: 1,
       allowsMultipleSelection: true,
-      selectionLimit: 9 - this.state.data.length,
+      selectionLimit: 9 - data.length,
     });
 
     if (!result.canceled &amp;&amp; result.assets) {
-      this.processSelectedImages(result.assets);
+      processSelectedImages(result.assets);
     }
 
-    this.hideModal();
+    hideModal();
   };
 
   /**
@@ -878,13 +372,11 @@ class CreateListing extends Component {
    * @description - processes the image that the user selected
    * @memberof CreateListing
    */
-  processImage = async (image) => {
+  const processImage = async (image) => {
     // Process a single image
-    const manipulatedImage = await this.manipulateImage(image.uri);
+    const manipulatedImage = await manipulateImage(image.uri);
     if (manipulatedImage) {
-      this.setState((prevState) => ({
-        data: [...prevState.data, manipulatedImage],
-      }));
+      setData((currentData) => [...currentData, manipulatedImage]);
     }
   };
 
@@ -894,14 +386,15 @@ class CreateListing extends Component {
    * @param {*} assets
    * @memberof CreateListing
    */
-  processSelectedImages = async (assets) => {
+  const processSelectedImages = async (assets) => {
     // Process multiple images
     const processedImages = await Promise.all(
-      assets.map(async (asset) => this.manipulateImage(asset.uri))
+      assets.map(async (asset) => manipulateImage(asset.uri)),
     );
-    this.setState((prevState) => ({
-      data: [...prevState.data, ...processedImages.filter(Boolean)],
-    }));
+    setData((currentData) => [
+      ...currentData,
+      ...processedImages.filter(Boolean),
+    ]);
   };
 
   /**
@@ -911,7 +404,7 @@ class CreateListing extends Component {
    * @returns - an object with the name, key, and image file
    * @memberof CreateListing
    */
-  manipulateImage = async (uri) => {
+  const manipulateImage = async (uri) => {
     try {
       const originalSize = await FileSystem.getInfoAsync(uri);
       const manipulateResult = await ImageManipulator.manipulateAsync(uri, [], {
@@ -919,7 +412,7 @@ class CreateListing extends Component {
         format: ImageManipulator.SaveFormat.JPEG,
       });
       const compressedSize = await FileSystem.getInfoAsync(
-        manipulateResult.uri
+        manipulateResult.uri,
       );
       const savedData = originalSize.size - compressedSize.size;
 
@@ -930,9 +423,10 @@ class CreateListing extends Component {
         `compressed to :`,
         (compressedSize.size / (1024 * 1024)).toFixed(2),
         'MB',
-        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`
+        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`,
       );
 
+      setIsImageInvalid(false);
       return {
         name: manipulateResult.uri.split('/').pop(),
         key: String(Date.now()),
@@ -951,7 +445,7 @@ class CreateListing extends Component {
    * @returns - prompts a box to confirm, then removes the photo
    * @memberof CreateListing
    */
-  handleDeletePhoto = (index) => {
+  const handleDeletePhoto = (index) => {
     Alert.alert('Delete Photo', 'Are you sure you want to delete this photo?', [
       {
         text: 'Cancel',
@@ -960,9 +454,7 @@ class CreateListing extends Component {
       {
         text: 'Delete',
         onPress: () => {
-          this.setState((prevState) => ({
-            data: prevState.data.filter((_, i) => i !== index),
-          }));
+          setData((currentData) => currentData.filter((_, i) => i !== index));
         },
       },
     ]);
@@ -975,7 +467,7 @@ class CreateListing extends Component {
    * @returns Returns the images that the user selected
    * @memberof CreateListing
    */
-  render_item(item, index) {
+  const render_item = (item, index) => {
     return (
       &lt;View style={styles.itemContainer} key={item.key}>
         {item.uri ? (
@@ -988,7 +480,7 @@ class CreateListing extends Component {
             />
             &lt;TouchableOpacity
               style={styles.deleteButton}
-              onPress={() => this.handleDeletePhoto(index)}
+              onPress={() => handleDeletePhoto(index)}
             >
               &lt;Text style={styles.deleteButtonText}>X&lt;/Text>
             &lt;/TouchableOpacity>
@@ -998,7 +490,7 @@ class CreateListing extends Component {
         )}
       &lt;/View>
     );
-  }
+  };
 
   /**
    * @function
@@ -1006,7 +498,10 @@ class CreateListing extends Component {
    * @description - basic handle function
    * @memberof CreateListing
    */
-  handleDragStart = () => {};
+  const handleDragStart = () => {
+    // When a drag starts, disable scrolling
+    setIsScrollEnabled(false);
+  };
 
   /**
    * @function
@@ -1014,9 +509,10 @@ class CreateListing extends Component {
    * @description - basic handle function
    * @memberof CreateListing
    */
-  handleDragRelease = (data) => {
+  const handleDragRelease = (data) => {
     // When the drag is released, enable scrolling
-    this.setState({ data, isScrollEnabled: true });
+    setData(data);
+    setIsScrollEnabled(true);
   };
 
   /**
@@ -1027,15 +523,15 @@ class CreateListing extends Component {
    * @returns {void} This function doesn't return a value
    * @memberof CreateListing
    */
-  handlePriceChange = (text) => {
+  const handlePriceChange = (text) => {
     const regex = /^(\d{0,6}(\.\d{2})?)$/;
 
     if (regex.test(text) || text === '') {
       // If text matches the format (4 digits before decimal, 2 after) or is empty
-      this.setState({ isPriceInvalid: false });
+      setIsPriceInvalid(false);
     } else {
       // If the text doesn't match the format
-      this.setState({ isPriceInvalid: true });
+      setIsPriceInvalid(true);
     }
   };
 
@@ -1053,38 +549,29 @@ class CreateListing extends Component {
    * @returns Returns the tags that the user selected
    * @memberof CreateListing
    */
-  handleTagPress = (index) => {
-    this.setState((prevState) => {
-      // Toggle the 'selected' state of the pressed tag
-      const newTagsData = prevState.tagsData.map((tag, idx) => {
-        if (idx === index) {
-          return { ...tag, selected: !tag.selected };
-        }
-        return tag;
-      });
-
-      // Get the name of the tag that was pressed
-      const pressedTagName = newTagsData[index].name;
-
-      // Check if the tag is already in the selectedTags array
-      const isAlreadySelected = prevState.selectedTags.includes(pressedTagName);
-
-      let newSelectedTags;
-      if (isAlreadySelected) {
-        // If already selected, remove it from the array
-        newSelectedTags = prevState.selectedTags.filter(
-          (tagName) => tagName !== pressedTagName
-        );
-      } else {
-        // If not selected, add it to the array
-        newSelectedTags = [...prevState.selectedTags, pressedTagName];
+  const handleTagPress = (index) => {
+    setIsTagInvalid(false);
+    const newTagsData = tagsData.map((tag, idx) => {
+      if (idx === index) {
+        return { ...tag, selected: !tag.selected };
       }
-
-      return {
-        tagsData: newTagsData, // Update tagsData with the new 'selected' state
-        selectedTags: newSelectedTags, // Update selectedTags array
-      };
+      return tag;
     });
+
+    const pressedTagName = newTagsData[index].name;
+    const isAlreadySelected = selectedTags.includes(pressedTagName);
+
+    let newSelectedTags;
+    if (isAlreadySelected) {
+      newSelectedTags = selectedTags.filter(
+        (tagName) => tagName !== pressedTagName,
+      );
+    } else {
+      newSelectedTags = [...selectedTags, pressedTagName];
+    }
+
+    setTagsData(newTagsData);
+    setSelectedTags(newSelectedTags);
   };
 
   /**
@@ -1096,7 +583,7 @@ class CreateListing extends Component {
    * @returns {Array} - returns the array with tags grouped together
    * @memberof CreateListing
    */
-  groupTagsIntoRows = (tags, itemsPerRow) => {
+  const groupTagsIntoRows = (tags, itemsPerRow) => {
     return tags.reduce((rows, tag, index) => {
       if (index % itemsPerRow === 0) rows.push([]);
       rows[rows.length - 1].push(tag);
@@ -1104,913 +591,479 @@ class CreateListing extends Component {
     }, []);
   };
 
-  /**
-   * @function
-   * @handleCurrencySelection - allows user to select a currency for their listing.
-   * @param {string} currencyName - The name of the selected currency.
-   * @param {string} currencySymbol - The symbol of the selected currency.
-   * @description Handles the selection of a currency, updating the component state with the chosen currency's name and symbol
-   * @returns {void} This function does not return a value
-   * @memberof CreateListing
-   */
-  handleCurrencySelection = (currencyName, currencySymbol) => {
-    this.setState({
-      selectedCurrency: currencyName,
-      selectedCurrencySymbol: currencySymbol,
-      showCurrencyOptions: false,
-    });
+  const handleCurrencySelection = (currencyName, currencySymbol) => {
+    setSelectedCurrency(currencyName);
+    setSelectedCurrencySymbol(currencySymbol);
+    setShowCurrencyOptions(false);
   };
-  /**
-   * @function
-   * @renderCurrencyOptions - renders the currecny option list
-   * @description Renders a list of currency options, allowing the user to select a currency by tapping on it.
-   * @returns {Array&lt;JSX.Element>} Returns an array of JSX elements representing selectable currency options.
-   * @memberof CreateListing
-   */
-  renderCurrencyOptions = () => {
-    return this.state.currencies.map((currency) => (
+
+  const renderCurrencyOptions = () => {
+    return currencyOptions.map((currency) => (
       &lt;TouchableOpacity
         key={currency.name}
-        onPress={() =>
-          this.handleCurrencySelection(currency.name, currency.symbol)
-        }
+        onPress={() => handleCurrencySelection(currency.name, currency.symbol)}
       >
         &lt;Text style={styles.currencyOption}>
-          {this.state.selectedCurrency === currency.name ? '✓ ' : ''}
+          {selectedCurrency === currency.name ? '✓ ' : ''}
           {`${currency.name} ${currency.symbol}`}
         &lt;/Text>
       &lt;/TouchableOpacity>
     ));
   };
 
-  render() {
-    const {
-      isTitleInvalid,
-      isDescriptionInvalid,
-      isPriceInvalid,
-      isConditionInvalid,
-      isTransactionPreferenceInvalid,
-      isImageInvalid,
-      isTagInvalid,
-      selectedCurrency,
-    } = this.state;
+  const rowsOfTags = groupTagsIntoRows(tagsData, 3);
+  return (
+    &lt;View style={styles.wrapper}>
+      {Platform.OS === 'android' ? (
+        &lt;TopBar imageVisible={!showCurrencyOptions} />
+      ) : (
+        &lt;TopBar imageVisible={true} />
+      )}
 
-    if (this.state.isLoading) {
-      return (
-        &lt;SafeAreaView>
-          &lt;TopBar />
-          &lt;LoadingView />
-        &lt;/SafeAreaView>
-      );
-    }
-
-    if (this.state.isMinorLoading) {
-      return (
-        &lt;SafeAreaView>
-          &lt;TopBar />
-          &lt;MinorLoadingView />
-        &lt;/SafeAreaView>
-      );
-    }
-
-    const rowsOfTags = this.groupTagsIntoRows(this.state.tagsData, 3);
-    return (
-      &lt;View style={styles.wrapper}>
-        &lt;TopBar />
-
-        &lt;View style={styles.scrollfield}>
-          &lt;ScrollView scrollEnabled={this.state.isScrollEnabled}>
-            {/* TOP BUTTON
-            &lt;TouchableOpacity onPress={this.handleCreateListing}>
-              &lt;View style={styles.createButton}>
-                &lt;Text style={styles.buttonText}>Create Listing&lt;/Text>
-              &lt;/View>
-            &lt;/TouchableOpacity>
-            */}
-
+      &lt;View style={styles.scrollfield}>
+        &lt;ScrollView scrollEnabled={isScrollEnabled}>
+          &lt;View style={styles.rowContainer}>
             &lt;View style={styles.rowContainer}>
-              &lt;View style={styles.rowContainer}>
-                &lt;Text style={styles.label}>Title&lt;/Text>
-                {isTitleInvalid ? (
-                  &lt;View style={styles.rowContainer}>
-                    &lt;Text style={styles.asterisk}> *&lt;/Text>
-                    &lt;Text style={styles.errorMessage}>
-                      {this.state.title == ''
-                        ? 'Title is required'
-                        : this.state.title.length > 25
+              &lt;Text style={styles.label}>Title&lt;/Text>
+              {isTitleInvalid ? (
+                &lt;View style={styles.rowContainer}>
+                  &lt;Text style={styles.asterisk}> *&lt;/Text>
+                  &lt;Text style={styles.errorMessage}>
+                    {title == ''
+                      ? 'Title is required'
+                      : title.length > 25
                         ? 'Title too long'
                         : 'Must enter a valid title'}
-                    &lt;/Text>
-                  &lt;/View>
-                ) : (
-                  ''
-                )}
-              &lt;/View>
-              &lt;Text style={styles.characterCounter}>
-                {this.state.title.length}/25
-              &lt;/Text>
+                  &lt;/Text>
+                &lt;/View>
+              ) : (
+                ''
+              )}
             &lt;/View>
-            &lt;TextInput
-              ref={this.titleInput}
-              style={[
-                styles.input,
-                isTitleInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
-              ]}
-              value={this.state.title}
-              onChangeText={(text) => {
-                this.setState({ title: text, isTitleInvalid: false });
-              }}
-              returnKeyType="next"
-              onSubmitEditing={() => this.descriptionInput.current.focus()}
-              maxLength={25}
-            />
+            &lt;Text style={styles.characterCounter}>{title.length}/25&lt;/Text>
+          &lt;/View>
+          &lt;TextInput
+            ref={titleInput}
+            style={[
+              styles.input,
+              isTitleInvalid
+                ? theme === 'dark'
+                  ? { borderColor: Colors.BB_violet, borderWidth: 1 }
+                  : { borderColor: Colors.BB_red, borderWidth: 1 }
+                : null,
+              theme === 'dark'
+                ? { backgroundColor: '#2d2d30', color: Colors.white }
+                : null,
+            ]}
+            value={title}
+            onChangeText={(text) => {
+              setTitle(text);
+              setIsTitleInvalid(false);
+            }}
+            returnKeyType="next"
+            onSubmitEditing={() => descriptionInput.current.focus()}
+            maxLength={25}
+          />
+          &lt;View style={styles.rowContainer}>
             &lt;View style={styles.rowContainer}>
-              &lt;View style={styles.rowContainer}>
-                &lt;Text style={styles.label}>Description&lt;/Text>
-                {isDescriptionInvalid &amp;&amp; (
-                  &lt;View style={styles.rowContainer}>
-                    &lt;Text style={styles.asterisk}> *&lt;/Text>
-                    &lt;Text style={styles.errorMessage}>
-                      {this.state.description.length > 500
-                        ? 'Description too long'
-                        : this.state.description.length === 0
+              &lt;Text style={styles.label}>Description&lt;/Text>
+              {isDescriptionInvalid &amp;&amp; (
+                &lt;View style={styles.rowContainer}>
+                  &lt;Text style={styles.asterisk}> *&lt;/Text>
+                  &lt;Text style={styles.errorMessage}>
+                    {description.length > 500
+                      ? 'Description too long'
+                      : description.length === 0
                         ? 'Description is required'
                         : 'Must enter a valid description'}
-                    &lt;/Text>
-                  &lt;/View>
-                )}
-              &lt;/View>
-              &lt;Text style={styles.characterCounter}>
-                {this.state.description.length}/500
-              &lt;/Text>
-            &lt;/View>
-            &lt;TextInput
-              ref={this.descriptionInput}
-              style={[
-                styles.input,
-                styles.multilineInput,
-                (textAlign = 'left'),
-                isDescriptionInvalid
-                  ? { borderColor: 'red', borderWidth: 1 }
-                  : null,
-              ]}
-              value={this.state.description}
-              onChangeText={(text) => {
-                this.setState({
-                  description: text,
-                  isDescriptionInvalid: false,
-                });
-              }}
-              multiline={true}
-              textAlignVertical="top"
-              returnKeyType="next"
-              onSubmitEditing={() => this.priceInput.current.focus()}
-              maxLength={500}
-            />
-
-            &lt;View style={styles.rowContainer}>
-              &lt;Text style={styles.label}>Price&lt;/Text>
-              {isPriceInvalid ? (
-                &lt;View style={styles.rowContainer}>
-                  &lt;Text style={styles.asterisk}> *&lt;/Text>
-                  &lt;Text style={styles.errorMessage}>
-                    {this.state.price == ''
-                      ? 'Price is required'
-                      : this.state.price &lt; 0
-                      ? 'Invalid price'
-                      : this.state.price.length >= 7
-                      ? 'Price too large'
-                      : 'Must enter a valid price'}
                   &lt;/Text>
                 &lt;/View>
-              ) : (
-                ''
               )}
             &lt;/View>
+            &lt;Text style={styles.characterCounter}>
+              {description.length}/500
+            &lt;/Text>
+          &lt;/View>
+          &lt;TextInput
+            ref={descriptionInput}
+            style={[
+              styles.input,
+              styles.multilineInput,
+              (textAlign = 'left'),
+              isDescriptionInvalid
+                ? theme === 'dark'
+                  ? { borderColor: Colors.BB_violet, borderWidth: 1 }
+                  : { borderColor: Colors.BB_red, borderWidth: 1 }
+                : null,
+              theme === 'dark'
+                ? { backgroundColor: '#2d2d30', color: Colors.white }
+                : null,
+            ]}
+            value={description}
+            onChangeText={(text) => {
+              setDescription(text);
+              setIsDescriptionInvalid(false);
+            }}
+            multiline={true}
+            textAlignVertical="top"
+            returnKeyType="next"
+            onSubmitEditing={() => priceInput.current.focus()}
+            maxLength={500}
+          />
 
-            &lt;View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginLeft: 20,
-              }}
-            >
-              &lt;View style={{ ...styles.currencyButtonContainer }}>
-                &lt;TouchableOpacity
-                  onPress={() => this.setState({ showCurrencyOptions: true })}
-                >
-                  &lt;View style={styles.currencyButton}>
-                    &lt;Text style={styles.currencyButtonText}>
-                      {this.state.selectedCurrency}{' '}
-                      {this.state.selectedCurrencySymbol}
-                    &lt;/Text>
-                  &lt;/View>
-                &lt;/TouchableOpacity>
-                {this.state.showCurrencyOptions &amp;&amp; (
-                  &lt;Modal
-                    visible={this.state.showCurrencyOptions}
-                    animationType="slide"
-                  >
-                    &lt;ScrollView style={styles.currencyScrollView}>
-                      &lt;View style={styles.modalContent}>
-                        {this.renderCurrencyOptions()}
-                      &lt;/View>
-                    &lt;/ScrollView>
-                    &lt;View style={styles.closeButtonContainer}>
-                      &lt;TouchableOpacity
-                        onPress={() =>
-                          this.setState({ showCurrencyOptions: false })
-                        }
-                      >
-                        &lt;Text style={styles.closeButton}>Close&lt;/Text>
-                      &lt;/TouchableOpacity>
-                    &lt;/View>
-                  &lt;/Modal>
-                )}
+          &lt;View style={styles.rowContainer}>
+            &lt;Text style={styles.label}>Price&lt;/Text>
+            {isPriceInvalid ? (
+              &lt;View style={styles.rowContainer}>
+                &lt;Text style={styles.asterisk}> *&lt;/Text>
+                &lt;Text style={styles.errorMessage}>
+                  {price == ''
+                    ? 'Price is required'
+                    : /^(\d{0,6}(\.\d{2})?)$/.test(price)
+                      ? 'Must enter a valid price'
+                      : price &lt; 0
+                        ? 'Invalid price'
+                        : price.length >= 7
+                          ? 'Price too large'
+                          : 'Must enter a valid price'}
+                &lt;/Text>
               &lt;/View>
-              &lt;TextInput
-                ref={this.priceInput}
-                style={[
-                  styles.input,
-                  { width: '94.5%', marginLeft: -101.5 },
-                  isPriceInvalid
-                    ? { borderColor: 'red', borderWidth: 1 }
-                    : null,
-                ]}
-                value={this.state.price}
-                onChangeText={(text) => {
-                  this.setState({ price: text, isPriceInvalid: false });
-                  this.handlePriceChange(text);
-                }}
-                keyboardType="numeric"
-                returnKeyType="done"
-                placeholder={`0.00`}
-                maxLength={9}
-              />
-            &lt;/View>
+            ) : (
+              ''
+            )}
+          &lt;/View>
 
-            {/* TRANSACTION PREFERENCE*/}
-            &lt;View style={styles.rowContainer}>
-              &lt;Text style={{ ...styles.label, marginBottom: 0 }}>
-                Transaction Preference
-              &lt;/Text>
-              {isTransactionPreferenceInvalid ? (
-                &lt;View style={styles.rowContainer}>
-                  &lt;Text style={styles.asterisk}> *&lt;/Text>
-                  &lt;Text style={styles.errorMessage}>
-                    Must select a preference
-                  &lt;/Text>
-                &lt;/View>
-              ) : (
-                ''
-              )}
-            &lt;/View>
-            &lt;View style={styles.pickerStyle}>
-              {Platform.OS == 'ios' &amp;&amp; &lt;View style={styles.pickerBackground} />}
-              &lt;RNPickerSelect
-                selectedValue={this.state.transactionPreference}
-                onValueChange={(itemValue, itemIndex) => {
-                  this.setState({ transactionPreference: itemValue });
-                  this.setState({ isTransactionPreferenceInvalid: false });
-                }}
-                items={[
-                  { label: 'Pickup', value: 'Pickup' },
-                  { label: 'Meetup', value: 'Meetup' },
-                  { label: 'Delivery', value: 'Delivery' },
-                  { label: 'No Preference', value: 'No Preference' },
-                ]}
-              />
-            &lt;/View>
-
-            {/* ITEM CONDITON */}
-            &lt;View style={styles.rowContainer}>
-              &lt;Text style={{ ...styles.label, marginTop: 10, marginBottom: 0 }}>
-                Condition
-              &lt;/Text>
-              {isConditionInvalid ? (
-                &lt;View style={styles.rowContainer}>
-                  &lt;Text style={styles.asterisk}> *&lt;/Text>
-                  &lt;Text style={styles.errorMessage}>
-                    Must select a condition
-                  &lt;/Text>
-                &lt;/View>
-              ) : (
-                ''
-              )}
-            &lt;/View>
-            &lt;View style={{ ...styles.pickerStyle }}>
-              {Platform.OS == 'ios' &amp;&amp; &lt;View style={styles.pickerBackground} />}
-              &lt;RNPickerSelect
-                selectedValue={this.state.condition}
-                onValueChange={(itemValue, itemIndex) => {
-                  this.setState({ condition: itemValue });
-                  this.setState({ isConditionInvalid: false });
-                }}
-                items={[
-                  { label: 'Excellent', value: 'Excellent' },
-                  { label: 'Good', value: 'Good' },
-                  { label: 'Fair', value: 'Fair' },
-                  { label: 'Poor', value: 'Poor' },
-                  { label: 'For Parts', value: 'For Parts' },
-                ]}
-              />
-            &lt;/View>
-
-            &lt;TouchableOpacity onPress={this.showModal} style={styles.button}>
-              &lt;Text style={styles.buttonText}>Select Images&lt;/Text>
-            &lt;/TouchableOpacity>
-            &lt;View
-              style={[
-                styles.imageField,
-                isImageInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
-              ]}
-            >
-              &lt;View style={styles.innerField}>
-                &lt;DraggableGrid
-                  numColumns={3}
-                  renderItem={(item, index) => this.render_item(item, index)}
-                  data={this.state.data}
-                  onDragRelease={this.handleDragRelease}
-                  onDragStart={this.handleDragStart}
-                />
-              &lt;/View>
-            &lt;/View>
-            &lt;ScrollView
-              style={[
-                styles.tagField,
-                isTagInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
-              ]}
-            >
-              &lt;View>
-                {rowsOfTags.map((row, rowIndex) => (
-                  &lt;View key={rowIndex} style={styles.tagRowContainer}>
-                    {row.map((tag, tagIndex) => (
-                      &lt;TouchableOpacity
-                        key={tagIndex}
-                        style={styles.tagContainer}
-                        onPress={() => {
-                          this.handleTagPress(tagIndex + rowIndex * 3);
-                          if (this.state.selectedTags.length > 0) {
-                            this.setState({ isTagInvalid: false });
-                          }
-                        }}
-                      >
-                        &lt;View
-                          style={[
-                            styles.tagSelected,
-                            { opacity: tag.selected ? 1 : 0.3 },
-                          ]}
-                        />
-                        &lt;View
-                          style={[
-                            styles.rhombus,
-                            { opacity: tag.selected ? 0.15 : 0 },
-                          ]}
-                        />
-                        &lt;Text style={styles.tagText}>{tag.name}&lt;/Text>
-                      &lt;/TouchableOpacity>
-                    ))}
-                  &lt;/View>
-                ))}
-              &lt;/View>
-            &lt;/ScrollView>
-
-            &lt;TouchableOpacity onPress={this.handleCreateListing}>
-              &lt;View style={[styles.createButton, (top = 30), (bottom = 0)]}>
-                &lt;Text style={styles.buttonText}>Create Listing&lt;/Text>
-              &lt;/View>
-            &lt;/TouchableOpacity>
-
-            &lt;Text style={styles.spacer} />
-          &lt;/ScrollView>
-
-          &lt;Modal
-            animationType="slide"
-            transparent={true}
-            visible={this.state.selectImageModalVisible}
-            onRequestClose={() => {
-              this.hideModal();
+          &lt;View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginLeft: 20,
             }}
           >
-            &lt;View style={styles.centeredView}>
-              &lt;View style={styles.modalView}>
-                &lt;TouchableOpacity
-                  style={styles.imagePickerButton}
-                  onPress={this.handleCameraPick}
+            &lt;View style={{ ...styles.currencyButtonContainer }}>
+              &lt;TouchableOpacity onPress={() => setShowCurrencyOptions(true)}>
+                &lt;View
+                  style={[
+                    styles.currencyButton,
+                    theme === 'dark' ? { backgroundColor: '#1e1e1e' } : null,
+                  ]}
                 >
-                  &lt;Text style={styles.imagePickerButtonText}>Camera&lt;/Text>
-                  &lt;MaterialIcons
-                    name="camera-alt"
-                    size={24}
-                    color="black"
-                    style={{ top: 10, left: '90%' }}
-                  />
-                &lt;/TouchableOpacity>
-                &lt;TouchableOpacity
-                  style={styles.imagePickerButton}
-                  onPress={this.handleLibraryPick}
-                >
-                  &lt;Text style={styles.imagePickerButtonText}>
-                    Photo Library
+                  &lt;Text style={styles.currencyButtonText}>
+                    {selectedCurrency} {selectedCurrencySymbol}
                   &lt;/Text>
-                  &lt;MaterialIcons
-                    name="photo-library"
-                    size={24}
-                    color="black"
-                    style={{ top: 10, left: '50%' }}
-                  />
-                &lt;/TouchableOpacity>
-                &lt;TouchableOpacity
-                  style={styles.imagePickerButton}
-                  onPress={() => this.hideModal()}
-                >
-                  &lt;Text style={styles.imagePickerButtonText}>Cancel&lt;/Text>
-                &lt;/TouchableOpacity>
-              &lt;/View>
+                &lt;/View>
+              &lt;/TouchableOpacity>
             &lt;/View>
+            &lt;TextInput
+              ref={priceInput}
+              style={[
+                styles.input,
+                { width: '94.5%', marginLeft: -101.5 },
+                isPriceInvalid
+                  ? theme === 'dark'
+                    ? { borderColor: Colors.BB_violet, borderWidth: 1 }
+                    : { borderColor: Colors.BB_red, borderWidth: 1 }
+                  : null,
+                theme === 'dark'
+                  ? { backgroundColor: '#2d2d30', color: Colors.white }
+                  : null,
+              ]}
+              value={price}
+              onChangeText={(text) => {
+                setPrice(text);
+                setIsPriceInvalid(false);
+                handlePriceChange(text);
+              }}
+              keyboardType="numeric"
+              returnKeyType="done"
+              placeholder={`0.00`}
+              maxLength={9}
+            />
+          &lt;/View>
+
+          {/* TRANSACTION PREFERENCE*/}
+          &lt;View style={styles.rowContainer}>
+            &lt;Text style={{ ...styles.label, marginBottom: 0 }}>
+              Transaction Preference
+            &lt;/Text>
+            {isTransactionPreferenceInvalid ? (
+              &lt;View style={styles.rowContainer}>
+                &lt;Text style={styles.asterisk}> *&lt;/Text>
+                &lt;Text style={styles.errorMessage}>
+                  Must select a preference
+                &lt;/Text>
+              &lt;/View>
+            ) : (
+              ''
+            )}
+          &lt;/View>
+          &lt;View style={styles.pickerStyle}>
+            {Platform.OS == 'ios' &amp;&amp; (
+              &lt;View
+                style={[
+                  styles.pickerBackground,
+                  theme === 'dark' ? { backgroundColor: '#2d2d30' } : null,
+                ]}
+              />
+            )}
+            &lt;RNPickerSelect
+              selectedValue={transactionPreference}
+              onValueChange={(itemValue, itemIndex) => {
+                setTransactionPreference(itemValue);
+                setIsTransactionPreferenceInvalid(false);
+              }}
+              items={[
+                { label: 'Pickup', value: 'Pickup' },
+                { label: 'Meetup', value: 'Meetup' },
+                { label: 'Delivery', value: 'Delivery' },
+                { label: 'No Preference', value: 'No Preference' },
+              ]}
+              style={{
+                inputIOS: {
+                  color: theme === 'dark' ? Colors.white : Colors.black,
+                  left: 5,
+                },
+                inputAndroid: {
+                  color: theme === 'dark' ? Colors.white : Colors.black,
+                  left: 5,
+                },
+              }}
+            />
+          &lt;/View>
+
+          {/* ITEM CONDITON */}
+          &lt;View style={styles.rowContainer}>
+            &lt;Text style={{ ...styles.label, marginTop: 10, marginBottom: 0 }}>
+              Condition
+            &lt;/Text>
+            {isConditionInvalid ? (
+              &lt;View style={styles.rowContainer}>
+                &lt;Text style={styles.asterisk}> *&lt;/Text>
+                &lt;Text style={styles.errorMessage}>Must select a condition&lt;/Text>
+              &lt;/View>
+            ) : (
+              ''
+            )}
+          &lt;/View>
+          &lt;View style={{ ...styles.pickerStyle }}>
+            {Platform.OS == 'ios' &amp;&amp; (
+              &lt;View
+                style={[
+                  styles.pickerBackground,
+                  theme === 'dark' ? { backgroundColor: '#2d2d30' } : null,
+                ]}
+              />
+            )}
+            &lt;RNPickerSelect
+              selectedValue={condition}
+              onValueChange={(itemValue, itemIndex) => {
+                setCondition(itemValue);
+                setIsConditionInvalid(false);
+              }}
+              items={[
+                { label: 'Excellent', value: 'Excellent' },
+                { label: 'Good', value: 'Good' },
+                { label: 'Fair', value: 'Fair' },
+                { label: 'Poor', value: 'Poor' },
+                { label: 'For Parts', value: 'For Parts' },
+              ]}
+              style={{
+                inputIOS: {
+                  color: theme === 'dark' ? Colors.white : Colors.black,
+                  left: 5,
+                },
+                inputAndroid: {
+                  color: theme === 'dark' ? Colors.white : Colors.black,
+                  left: 5,
+                },
+              }}
+            />
+          &lt;/View>
+
+          &lt;TouchableOpacity onPress={showModal} style={styles.button}>
+            &lt;Text style={styles.buttonText}>Select Images&lt;/Text>
+          &lt;/TouchableOpacity>
+          &lt;View
+            style={[
+              styles.imageField,
+              isImageInvalid
+                ? theme === 'dark'
+                  ? { borderColor: Colors.BB_violet, borderWidth: 1 }
+                  : { borderColor: Colors.BB_red, borderWidth: 1 }
+                : null,
+              theme === 'dark' ? { backgroundColor: '#2d2d30' } : null,
+            ]}
+          >
+            &lt;View style={styles.innerField}>
+              &lt;DraggableGrid
+                numColumns={3}
+                renderItem={(item, index) => render_item(item, index)}
+                data={data}
+                onDragRelease={handleDragRelease}
+                onDragStart={handleDragStart}
+              />
+            &lt;/View>
+          &lt;/View>
+          &lt;ScrollView
+            style={[
+              styles.tagField,
+              isTagInvalid
+                ? theme === 'dark'
+                  ? { borderColor: Colors.BB_violet, borderWidth: 1 }
+                  : { borderColor: Colors.BB_red, borderWidth: 1 }
+                : null,
+              theme === 'dark' ? { backgroundColor: '#2d2d30' } : null,
+            ]}
+          >
+            &lt;View>
+              {rowsOfTags.map((row, rowIndex) => (
+                &lt;View key={rowIndex} style={styles.tagRowContainer}>
+                  {row.map((tag, tagIndex) => (
+                    &lt;TouchableOpacity
+                      key={tagIndex}
+                      style={styles.tagContainer}
+                      onPress={() => {
+                        handleTagPress(tagIndex + rowIndex * 3);
+                        if (selectedTags.length > 0) {
+                          setIsTagInvalid(false);
+                        }
+                      }}
+                    >
+                      &lt;View
+                        style={[
+                          styles.tagSelected,
+                          theme === 'dark'
+                            ? { backgroundColor: Colors.BB_violet }
+                            : null,
+                          { opacity: tag.selected ? 1 : 0.3 },
+                        ]}
+                      />
+                      &lt;View
+                        style={[
+                          styles.rhombus,
+                          theme === 'dark'
+                            ? { backgroundColor: Colors.white }
+                            : null,
+                          { opacity: tag.selected ? 0.15 : 0 },
+                        ]}
+                      />
+                      &lt;Text style={styles.tagText}>{tag.name}&lt;/Text>
+                    &lt;/TouchableOpacity>
+                  ))}
+                &lt;/View>
+              ))}
+            &lt;/View>
+          &lt;/ScrollView>
+
+          &lt;TouchableOpacity onPress={handleCreateListing}>
+            &lt;View style={[styles.createButton, (top = 30), (bottom = 0)]}>
+              &lt;Text style={styles.buttonText}>Create Listing&lt;/Text>
+            &lt;/View>
+          &lt;/TouchableOpacity>
+
+          &lt;Text style={styles.spacer} />
+        &lt;/ScrollView>
+
+        {showCurrencyOptions &amp;&amp; (
+          &lt;Modal visible={showCurrencyOptions} animationType="slide">
+            &lt;View style={styles.modalHeader} />
+            &lt;ScrollView style={styles.currencyScrollView}>
+              &lt;View style={styles.modalContent}>
+                &lt;View style={styles.currencyOptionsContainer}>
+                  {renderCurrencyOptions()}
+                &lt;/View>
+              &lt;/View>
+            &lt;/ScrollView>
+            &lt;View style={styles.modalFooter} />
+            &lt;TouchableOpacity
+              onPress={() => setShowCurrencyOptions(false)}
+              style={styles.closeButtonContainer}
+            >
+              &lt;View style={styles.closeButton}>
+                &lt;Text style={styles.closeButtonText}>Close&lt;/Text>
+              &lt;/View>
+            &lt;/TouchableOpacity>
           &lt;/Modal>
-        &lt;/View>
+        )}
+
+        &lt;Modal
+          animationType="slide"
+          transparent={true}
+          visible={selectImageModalVisible}
+          onRequestClose={() => {
+            hideModal();
+          }}
+        >
+          &lt;View style={styles.centeredView}>
+            &lt;View style={styles.modalView}>
+              &lt;TouchableOpacity
+                style={styles.imagePickerButton}
+                onPress={handleCameraPick}
+              >
+                &lt;Text style={styles.imagePickerButtonText}>Camera&lt;/Text>
+                &lt;MaterialIcons
+                  name="camera-alt"
+                  size={24}
+                  color={theme === 'dark' ? Colors.BB_violet : Colors.black}
+                  style={{ top: 10, left: '90%' }}
+                />
+              &lt;/TouchableOpacity>
+              &lt;TouchableOpacity
+                style={styles.imagePickerButton}
+                onPress={handleLibraryPick}
+              >
+                &lt;Text style={styles.imagePickerButtonText}>Photo Library&lt;/Text>
+                &lt;MaterialIcons
+                  name="photo-library"
+                  size={24}
+                  color={theme === 'dark' ? Colors.BB_violet : Colors.black}
+                  style={{ top: 10, left: '50%' }}
+                />
+              &lt;/TouchableOpacity>
+              &lt;TouchableOpacity
+                style={styles.imagePickerButton}
+                onPress={() => hideModal()}
+              >
+                &lt;Text style={styles.imagePickerButtonText}>Cancel&lt;/Text>
+              &lt;/TouchableOpacity>
+            &lt;/View>
+          &lt;/View>
+        &lt;/Modal>
       &lt;/View>
-    );
-  }
-}
+
+      {isMinorLoading &amp;&amp; &lt;MinorLoadingView styles={styles} />}
+      {isLoading &amp;&amp; &lt;LoadingView styles={styles} />}
+    &lt;/View>
+  );
+});
 
 export default CreateListing;
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    width: '100%',
-    marginTop: 0,
-    backgroundColor: Colors.BB_bone,
-  },
-  scrollfield: {
-    top: 0.08 * screenHeight,
-    height: 'auto',
-    backgroundColor: Colors.BB_bone,
-  },
-  buttonText2: {
-    marginTop: 10,
-    color: Colors.black,
-    fontSize: 22,
-    alignSelf: 'center',
-    fontWeight: 'bold',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.white,
-  },
-  minorLoadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-  },
-  imageField: {
-    alignSelf: 'center',
-    width: '95%',
-    height: 0.95 * screenWidth,
-    backgroundColor: Colors.white,
-    borderRadius: 20,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'gray',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.9,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  deleteButton: {
-    position: 'absolute',
-    alignContent: 'center',
-    justifyContent: 'center',
-    width: 20,
-    height: 20,
-    top: 2,
-    right: 2,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-    borderRadius: 12,
-    zIndex: 2,
-    textAlign: 'center',
-  },
-  deleteButtonText: {
-    color: 'red',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    alignSelf: 'center',
-  },
-  ///////////////
-  tagField: {
-    alignSelf: 'center',
-    width: '95%',
-    height: 0.4 * screenHeight,
-    backgroundColor: Colors.white,
-    borderRadius: 20,
-    top: 30,
-    marginBottom: 50,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  tagRowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 10,
-    marginTop: 10,
-  },
-  tagContainer: {
-    marginLeft: 10,
-    marginRight: 10,
-    borderRadius: 20,
-    alignContent: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-    height: 0.075 * screenHeight,
-    width: 0.3 * screenWidth,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'gray',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.9,
-        shadowRadius: 2,
-      },
-    }),
-  },
-  tagText: {
-    color: Colors.white,
-    fontSize: 18,
-    alignSelf: 'center',
-    fontWeight: 'bold',
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  rhombus: {
-    alignSelf: 'center',
-    position: 'absolute',
-    width: 0.055 * screenHeight,
-    aspectRatio: 1,
-    backgroundColor: Colors.BB_darkPink,
-    opacity: 0.15,
-    transform: [{ rotate: '45deg' }],
-  },
-  tagSelected: {
-    alignSelf: 'center',
-    backgroundColor: Colors.BB_darkRedPurple,
-    borderRadius: 20,
-    height: '100%',
-    width: '100%',
-    position: 'absolute',
-  },
-  ///////////////////////////
-  innerField: {
-    margin: 10,
-    marginTop: 20,
-    width: '95%',
-    height: '95%',
-  },
-  itemContainer: {
-    width: '33%',
-    height: '33%',
-    alignContent: 'center',
-    justifyContent: 'center',
-  },
-  item: {
-    marginTop: 10,
-    width: 0.25 * screenWidth,
-    height: 0.25 * screenWidth,
-    borderRadius: 8,
-    borderColor: Colors.BB_darkRedPurple,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'gray',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.9,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-    backgroundColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 8,
-  },
-  container: {
-    flex: 1,
-    paddingTop: 50, //top of page
-    padding: 30, //all around
-    backgroundColor: '#D6447F',
-  },
-  createButton: {
-    marginTop: 20,
-    alignSelf: 'center',
-    width: screenWidth * 0.4,
-    backgroundColor: Colors.BB_darkRedPurple,
-    padding: 5,
-    borderRadius: 10,
-    fontWeight: 'bold',
-    height: 36,
-    width: 150,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'gray',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.9,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-
-  label: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: 'black',
-    marginTop: 20,
-    left: 0.05 * screenWidth,
-  },
-  asterisk: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'red',
-    left: 0.05 * screenWidth,
-  },
-  errorMessage: {
-    fontSize: 12,
-    color: 'red',
-    marginLeft: 10,
-    top: 0.008 * screenHeight,
-    left: 0.05 * screenWidth,
-  },
-
-  input: {
-    height: 40,
-    borderColor: Colors.BB_black,
-    borderRadius: 10,
-    backgroundColor: 'white',
-    opacity: 0.9,
-    //marginBottom: 10,
-    width: '90%',
-    left: '5%',
-    ...Platform.select({
-      ios: {
-        shadowColor: 'gray',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.9,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-    textAlign: 'center',
-    color: 'black',
-  },
-  multilineInput: {
-    height: 120,
-  },
-  pickerStyle: {
-    //bottomMargin: 10,
-    width: '90%',
-    left: 0.05 * screenWidth,
-    color: Colors.white,
-    justifyContent: 'center',
-    borderRadius: 10,
-    ...Platform.select({
-      ios: {
-        height: 40,
-        marginTop: 10,
-        marginBottom: 10,
-        padding: 10,
-      },
-    }),
-    android: {
-      elevation: 10,
-    },
-  },
-  pickerBackground: {
-    position: 'absolute',
-    width: 0.9 * screenWidth,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: Colors.white,
-    shadowColor: 'gray',
-    shadowOffset: { width: 1, height: 1 },
-    shadowOpacity: 0.9,
-    shadowRadius: 2,
-  },
-  button: {
-    width: 150,
-    height: 36,
-    backgroundColor: Colors.BB_darkRedPurple,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 30,
-    alignSelf: 'center',
-    borderRadius: 10,
-    marginTop: 20,
-    borderColor: Colors.black,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'gray',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.9,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  buttonText: {
-    fontSize: 18,
-    color: 'white',
-    alignSelf: 'center',
-  },
-
-  rowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  characterCounter: {
-    fontSize: 12,
-    color: 'black',
-    position: 'absolute',
-    right: 0.05 * screenWidth,
-  },
-  loading: {
-    height: screenHeight,
-    width: screenWidth,
-    position: 'absolute',
-    backgroundColor: 'rgba(0,0,0,0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1,
-  },
-  spacer: {
-    height: 0.15 * screenHeight,
-  },
-  currencyButtonContainer: {
-    alignItems: 'center',
-    zIndex: 2,
-    //marginTop: 20,
-  },
-  currencyButton: {
-    width: 100,
-    height: 40,
-    backgroundColor: Colors.BB_darkRedPurple,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    borderColor: 'black',
-    //marginTop: -29.5
-  },
-  currencyButtonText: {
-    fontSize: 18,
-    color: 'white',
-    alignSelf: 'center',
-  },
-  modalContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.BB_bone,
-  },
-  currencyOption: {
-    fontSize: 24,
-    color: 'black',
-    marginVertical: 10,
-  },
-  closeButtonContainer: {
-    top: 0.8 * screenHeight,
-    backgroundColor: Colors.BB_bone,
-    alignSelf: 'center',
-    zIndex: 2,
-    marginTop: 20,
-    borderRadius: 10,
-    width: '25%',
-    height: '20%',
-  },
-  closeButton: {
-    position: 'absolute',
-    fontSize: 24,
-    color: 'black',
-    borderRadius: 10,
-    textAlign: 'center',
-    alignSelf: 'center',
-  },
-  currencyScrollView: {
-    position: 'absolute',
-    backgroundColor: Colors.BB_bone,
-    width: '100%',
-    height: '100%',
-    top: 0.1 * screenHeight,
-  },
-  //Image Select Modal
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 5,
-      },
-    }),
-  },
-  imagePickerButton: {
-    flexDirection: 'row',
-    width: 200,
-    height: 50,
-    marginBottom: 10,
-    backgroundColor: Colors.BB_bone,
-    borderRadius: 10,
-    borderColor: Colors.black,
-    alignContent: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-  },
-  imagePickerButtonText: {
-    fontSize: 18,
-    color: 'black',
-    alignSelf: 'center',
-  },
-});
 </code></pre>
         </article>
-      </section>
-    </div>
+    </section>
 
-    <br class="clear" />
 
-    <footer>
-      Documentation generated by
-      <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Tue Nov 28
-      2023 00:14:31 GMT-0800 (Pacific Standard Time) using the
-      <a href="https://github.com/clenemt/docdash">docdash</a> theme.
-    </footer>
 
-    <script>
-      prettyPrint();
-    </script>
-    <script src="scripts/polyfill.js"></script>
-    <script src="scripts/linenumber.js"></script>
 
-    <script src="scripts/search.js" defer></script>
+    
+    
+</div>
 
-    <script src="scripts/collapse.js" defer></script>
-  </body>
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sat Dec 02 2023 14:31:47 GMT-0800 (Pacific Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
 </html>
