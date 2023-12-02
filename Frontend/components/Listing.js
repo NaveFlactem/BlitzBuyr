@@ -44,6 +44,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
+import { calculateFontSize, calculateFontSizeLocation, calculateTransactionFontSize } from './CalculateFontSize.js';
 
 const default_blurhash = 'LEHLk~WB2yk8pyo0adR*.7kCMdnj';
 
@@ -128,6 +129,7 @@ const DeleteButton = ({ onDeletePress, styles }) => {
   );
 };
 
+
 /**
  * @param {number} price
  * @function calculateFontSize
@@ -158,8 +160,7 @@ const calculateFontSizeLocation = (city) => {
   }
   const numberOfCharacters = city.length;
 
-  return Math.max(20 - (numberOfCharacters - 2), 10);
-};
+
 
 /**
  * @param {number} timeSince
@@ -177,18 +178,18 @@ const TimeBox = memo(({ timeSince, styles }) => {
           {timeSince < 30
             ? 'Just now'
             : timeSince < 60
-              ? `${timeSince} seconds ago`
-              : timeSince < 120
-                ? `1 minute ago`
-                : timeSince < 3600
-                  ? `${Math.floor(timeSince / 60)} minutes ago`
-                  : timeSince < 7200
-                    ? `1 hour ago`
-                    : timeSince < 86400
-                      ? `${Math.floor(timeSince / 3600)} hours ago`
-                      : timeSince < 172800
-                        ? `1 day ago`
-                        : `${Math.floor(timeSince / 86400)} days ago`}
+            ? `${timeSince} seconds ago`
+            : timeSince < 120
+            ? `1 minute ago`
+            : timeSince < 3600
+            ? `${Math.floor(timeSince / 60)} minutes ago`
+            : timeSince < 7200
+            ? `1 hour ago`
+            : timeSince < 86400
+            ? `${Math.floor(timeSince / 3600)} hours ago`
+            : timeSince < 172800
+            ? `1 day ago`
+            : `${Math.floor(timeSince / 86400)} days ago`}
         </Text>
       </View>
     </React.Fragment>
@@ -232,7 +233,7 @@ const CardOverlay = memo(
         </View>
       </View>
     );
-  },
+  }
 );
 
 /**
@@ -259,7 +260,7 @@ const MemoizedImage = memo(
         cachePolicy="memory-disk"
       />
     );
-  },
+  }
 );
 
 /**
@@ -453,7 +454,7 @@ const CustomItem = memo(
         )}
       </CardOverlay>
     );
-  },
+  }
 );
 
 /**
@@ -499,7 +500,7 @@ const Listing = ({
       item.Latitude,
       item.Longitude,
       userLocation.latitude,
-      userLocation.longitude,
+      userLocation.longitude
     );
   }, [
     item.Latitude,
@@ -510,7 +511,7 @@ const Listing = ({
 
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
-    origin == 'profile' && item.Username == getStoredUsername(),
+    origin == 'profile' && item.Username == getStoredUsername()
   );
 
   const toggleDeleteModal = useCallback(() => {
@@ -585,7 +586,7 @@ const Listing = ({
                 parallaxScrollingScale: 1,
                 parallaxAdjacentItemScale: 0.5,
                 parallaxScrollingOffset: 10,
-              },
+              }
             )}
           />
         </View>
@@ -721,7 +722,15 @@ const Listing = ({
               >
                 Transaction Preference:
               </Text>
-              <Text style={{ ...styles.conditionText, top: '30%' }}>
+              <Text
+                style={{
+                  ...styles.conditionText,
+                  top: '30%',
+                  fontSize: calculateTransactionFontSize(
+                    item.TransactionPreference
+                  ),
+                }}
+              >
                 {item.TransactionPreference}
               </Text>
             </View>
