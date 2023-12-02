@@ -367,11 +367,11 @@ const HomeScreen = ({ route }) => {
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                     progressViewOffset={60}
-                    colors={theme === 'dark' ? [Colors.BB_violet] : undefined}
+                    colors={theme === 'dark' ? [Colors.BB_violet] : [Colors.BB_bone]}
                     tintColor={
-                      theme === 'dark' ? Colors.BB_violet : undefined
+                      theme === 'dark' ? Colors.BB_violet : Colors.BB_bone
                     }
-                    progressBackgroundColor={theme === 'dark' ? "#3e3e42" : undefined}
+                    progressBackgroundColor={theme === 'dark' ? "#3e3e42" : Colors.BB_darkRedPurple}
                   />
                 }
                 handleInnerScolling={handleInnerScolling}

@@ -647,8 +647,7 @@ export const getThemedStyles = (theme) => {
       },
       spacer: {
         position: 'relative',
-        height:
-          Platform.OS == 'ios' ? 0.06 * screenHeight : 0.03 * screenHeight,
+        height: 0.06 * screenHeight
       },
     },
     ////////////////////////////////////////////
@@ -845,6 +844,7 @@ export const getThemedStyles = (theme) => {
         width: screenWidth * 0.7,
         height: screenHeight * 0.07,
         borderRadius: 80,
+        paddingTop : Platform.OS == 'ios' ? 0 : 3,
         ...Platform.select({
           ios: {
             shadowColor: themeColors.black,
