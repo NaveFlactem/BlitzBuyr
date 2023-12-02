@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Frontend/screens/RatingScreen.js - Documentation</title>
+    <title>Frontend/components/noWifi.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -37,7 +37,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Frontend/screens/RatingScreen.js</h1>
+    <h1 class="page-title">Frontend/components/noWifi.js</h1>
     
 
     
@@ -48,168 +48,45 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * @namespace Rating
- * @description - RatingScreen is a screen that allows users to rate another user
+ * @namespace Components
+ * @description - Components is a folder where we have different features
  *
  */
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import React, { useState } from 'react';
-import { Button, Image, Text, TouchableOpacity, View } from 'react-native'; // Import the Button component
-import { useThemeContext } from '../components/visuals/ThemeProvider.js';
-import { serverIp } from '../config.js';
-import { getThemedStyles } from '../constants/Styles.js';
-import { getStoredUsername } from './auth/Authenticate.js';
-import Colors from '../constants/Colors.js';
+
+import React, { memo } from 'react';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
+import Colors from '../constants/Colors';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
+import { useThemeContext } from './visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
 
 /**
- * @function
- * @name RatingScreen
- * @memberof Rating
- * @param {Object} navigation - The navigation object used to navigate between screens.
- * @param {Object} route - Information about the current route.
- * @returns {void}
- * @description - A screen that allows users to rate a listing.
  *
+ * @function
+ * @name NoWifi
+ * @memberof Components
+ * @param {Object} onRetry - The object that signifies if the app is reloading
+ * @description - Shows the user that they have no wifi
+ * @returns {JSX.Element} A logo that signifies no wifi.
  */
 
-const RatingScreen = ({ navigation, route }) => {
-  const { theme } = useThemeContext();
-  const styles = getThemedStyles(useThemeContext().theme).RatingScreen;
-  const [selectedRating, setSelectedRating] = useState(0);
-  console.log(route.params);
-
-  /**
-   * @function
-   * @memberof Rating
-   * @param {number} value - The value containing the rating
-   * @returns {void}
-   * @description Handles the selection of a rating value.  Allows the rating to be deducted by half if selected again.
-   *                - If the value matches the current selectedRating, decreases the selectedRating by 0.5 thus allowing for half ratings
-   *                - If the value differs from the current selectedRating, sets the selectedRating to the provided value.
-   */
-
-  const handleRating = (value) => {
-    if (selectedRating === value) {
-      setSelectedRating(selectedRating - 0.5);
-    } else {
-      setSelectedRating(value);
-    }
-  };
-
-  /**
-   * @function
-   * @name handleSubmitRating
-   * @memberof Rating
-   * @returns {void}
-   * @description Handles the submission of a rating to the backend API.
-   *              Sends a POST request to the backend API
-   *              Handles the response from the backend
-   *              Logs errors if there's an issue while submitting the rating.
-   */
-
-  const handleSubmitRating = () => {
-    const ratingPayload = {
-      username: getStoredUsername(),
-      userRated: route.params.username,
-      rating: selectedRating,
-    };
-
-    // Make a POST request to your backend API to submit the rating
-    fetch(`${serverIp}/api/rate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(ratingPayload),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data); // Handle the response from the backend
-        // show some indicator that the rating was successful
-
-        // then we go back
-        navigation.goBack();
-      })
-      .catch((error) => {
-        console.error('Error submitting rating:', error);
-      });
-  };
-
-  /**
-   * @function
-   * @name renderStars
-   * @memberof Rating
-   * @returns {Array&lt;JSX.Element>} Returns an array of JSX elements representing star icons for rating.
-   * @description Dynamically generates an array of star icons based on the selected rating.
-   *              Uses TouchableOpacity components to allow the user to press their desirred rating.
-   *              Renders star icons filled, half-filled, or outlined based on the selected rating value.
-   *              Uses MaterialCommunityIcons for star visualization.
-   */
-
-  const renderStars = () => {
-    const starIcons = [];
-    for (let i = 1; i &lt;= 5; i++) {
-      starIcons.push(
-        &lt;TouchableOpacity
-          key={i}
-          style={[styles.starButton, i &lt; 5 &amp;&amp; styles.starMargin]}
-          onPress={() => handleRating(i)}
-        >
-          {i &lt;= selectedRating ? (
-            &lt;MaterialCommunityIcons
-              name="star"
-              size={60}
-              color={theme === 'dark' ? Colors.BB_violet : 'black'}
-            />
-          ) : i - 0.5 === selectedRating ? (
-            &lt;MaterialCommunityIcons
-              name="star-half-full"
-              size={60}
-              color={theme === 'dark' ? Colors.BB_violet : 'black'}
-            />
-          ) : (
-            &lt;MaterialCommunityIcons
-              name="star-outline"
-              size={60}
-              color={theme === 'dark' ? Colors.BB_violet : 'black'}
-            />
-          )}
-        &lt;/TouchableOpacity>,
-      );
-    }
-    return starIcons;
-  };
-
+const NoWifi = memo(({ onRetry }) => {
+  const styles = getThemedStyles(useThemeContext().theme).NoWifi;
   return (
-    &lt;View style={styles.container}>
-      &lt;TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={styles.backButton}
-      >
-        &lt;MaterialCommunityIcons
-          name="arrow-left"
-          size={30}
-          color={theme === 'dark' ? Colors.BB_violet : 'black'}
-        />
+    &lt;View style={styles.noWifiContainer}>
+      &lt;Image
+        style={styles.noWifiImage}
+        source={require('../assets/no_wifi_icon_transparent.png')}
+      />
+      &lt;Text style={styles.noWifiText}>No network connection available.&lt;/Text>
+      &lt;TouchableOpacity onPress={onRetry} style={styles.retryButton}>
+        &lt;Text style={styles.buttonText}>Retry&lt;/Text>
       &lt;/TouchableOpacity>
-      &lt;View style={styles.innerContainer}>
-        &lt;Text style={styles.title}>Rate User {route.params.username}&lt;/Text>
-        &lt;Image
-          source={{ uri: route.params.profileInfo.profilePicture }}
-          style={styles.profilePic}
-        />
-        &lt;View style={styles.ratingContainer}>{renderStars()}&lt;/View>
-        &lt;TouchableOpacity onPress={handleSubmitRating}>
-          &lt;View style={styles.submitButton}>
-            &lt;Text style={styles.submitText}>Submit Rating&lt;/Text>
-          &lt;/View>
-        &lt;/TouchableOpacity>
-      &lt;/View>
     &lt;/View>
   );
-};
+});
 
-export default RatingScreen;
+export default NoWifi;
 </code></pre>
         </article>
     </section>

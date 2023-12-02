@@ -32,6 +32,15 @@ export type TParallaxModeProps = IComputedDirectionTypes<{
   modeConfig?: ILayoutConfig;
 }>;
 
+/**
+ *
+ * @function
+ * @name parallaxLayout
+ * @memberof Components
+ * @description - Custom Layout to help with home screen layout
+ * @returns {JSX.Element} home screen layout
+ */
+
 export function parallaxLayout(
   baseConfig: TBaseConfig,
   modeConfig: ILayoutConfig = {},

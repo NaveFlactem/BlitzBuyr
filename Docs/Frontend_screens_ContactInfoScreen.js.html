@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Frontend/screens/RatingScreen.js - Documentation</title>
+    <title>Frontend/screens/ContactInfoScreen.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -37,7 +37,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Frontend/screens/RatingScreen.js</h1>
+    <h1 class="page-title">Frontend/screens/ContactInfoScreen.js</h1>
     
 
     
@@ -48,168 +48,164 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * @namespace Rating
- * @description - RatingScreen is a screen that allows users to rate another user
+ * @namespace EditContactInfo
+ * @description - EditContactInfo is a screen that allows users to edit their own contact information and decide what should be visable
  *
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { Button, Image, Text, TouchableOpacity, View } from 'react-native'; // Import the Button component
-import { useThemeContext } from '../components/visuals/ThemeProvider.js';
-import { serverIp } from '../config.js';
-import { getThemedStyles } from '../constants/Styles.js';
-import { getStoredUsername } from './auth/Authenticate.js';
-import Colors from '../constants/Colors.js';
+import {
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
+import Colors from '../constants/Colors';
+import { saveContactInfo } from '../network/Service';
+import { getStoredUsername } from './auth/Authenticate';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
 
 /**
+ * Represents a screen for editing contact information.
  * @function
- * @name RatingScreen
- * @memberof Rating
- * @param {Object} navigation - The navigation object used to navigate between screens.
- * @param {Object} route - Information about the current route.
- * @returns {void}
- * @description - A screen that allows users to rate a listing.
- *
+ * @name EditContactInfo
+ * @memberof EditContactInfo
+ * @param {Object} navigation - The object used to navigate between screens.
+ * @param {Object} route - Information about the current route
+ * @returns {JSX.Element} A screen for editing a users contact information.
  */
-
-const RatingScreen = ({ navigation, route }) => {
+const EditContactInfo = ({ navigation, route }) => {
   const { theme } = useThemeContext();
-  const styles = getThemedStyles(useThemeContext().theme).RatingScreen;
-  const [selectedRating, setSelectedRating] = useState(0);
-  console.log(route.params);
+  const styles = getThemedStyles(useThemeContext().theme).ContactInfoScreen;
+  const [loading, setLoading] = useState(true);
+  const [contactInfo, setContactInfo] = useState(route.params?.prevContactInfo);
 
   /**
+   *
    * @function
-   * @memberof Rating
-   * @param {number} value - The value containing the rating
+   * @name handleInputChange
+   * @memberof EditContactInfo
+   * @param {string} key - The key representing the type of contact information to update.
+   * @param {string} value - The new value to be set for the specified contact information.
    * @returns {void}
-   * @description Handles the selection of a rating value.  Allows the rating to be deducted by half if selected again.
-   *                - If the value matches the current selectedRating, decreases the selectedRating by 0.5 thus allowing for half ratings
-   *                - If the value differs from the current selectedRating, sets the selectedRating to the provided value.
+   * @description Updates the contact information state by modifying a specific key-value pair.
    */
-
-  const handleRating = (value) => {
-    if (selectedRating === value) {
-      setSelectedRating(selectedRating - 0.5);
-    } else {
-      setSelectedRating(value);
-    }
-  };
-
-  /**
-   * @function
-   * @name handleSubmitRating
-   * @memberof Rating
-   * @returns {void}
-   * @description Handles the submission of a rating to the backend API.
-   *              Sends a POST request to the backend API
-   *              Handles the response from the backend
-   *              Logs errors if there's an issue while submitting the rating.
-   */
-
-  const handleSubmitRating = () => {
-    const ratingPayload = {
-      username: getStoredUsername(),
-      userRated: route.params.username,
-      rating: selectedRating,
-    };
-
-    // Make a POST request to your backend API to submit the rating
-    fetch(`${serverIp}/api/rate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(ratingPayload),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data); // Handle the response from the backend
-        // show some indicator that the rating was successful
-
-        // then we go back
-        navigation.goBack();
-      })
-      .catch((error) => {
-        console.error('Error submitting rating:', error);
-      });
-  };
-
-  /**
-   * @function
-   * @name renderStars
-   * @memberof Rating
-   * @returns {Array&lt;JSX.Element>} Returns an array of JSX elements representing star icons for rating.
-   * @description Dynamically generates an array of star icons based on the selected rating.
-   *              Uses TouchableOpacity components to allow the user to press their desirred rating.
-   *              Renders star icons filled, half-filled, or outlined based on the selected rating value.
-   *              Uses MaterialCommunityIcons for star visualization.
-   */
-
-  const renderStars = () => {
-    const starIcons = [];
-    for (let i = 1; i &lt;= 5; i++) {
-      starIcons.push(
-        &lt;TouchableOpacity
-          key={i}
-          style={[styles.starButton, i &lt; 5 &amp;&amp; styles.starMargin]}
-          onPress={() => handleRating(i)}
-        >
-          {i &lt;= selectedRating ? (
-            &lt;MaterialCommunityIcons
-              name="star"
-              size={60}
-              color={theme === 'dark' ? Colors.BB_violet : 'black'}
-            />
-          ) : i - 0.5 === selectedRating ? (
-            &lt;MaterialCommunityIcons
-              name="star-half-full"
-              size={60}
-              color={theme === 'dark' ? Colors.BB_violet : 'black'}
-            />
-          ) : (
-            &lt;MaterialCommunityIcons
-              name="star-outline"
-              size={60}
-              color={theme === 'dark' ? Colors.BB_violet : 'black'}
-            />
-          )}
-        &lt;/TouchableOpacity>,
-      );
-    }
-    return starIcons;
+  const handleInputChange = (key, value) => {
+    setContactInfo((prevContactInfo) => ({
+      ...prevContactInfo,
+      [key]: { ...prevContactInfo[key], data: value },
+    }));
   };
 
   return (
-    &lt;View style={styles.container}>
-      &lt;TouchableOpacity
-        onPress={() => navigation.goBack()}
-        style={styles.backButton}
+    &lt;SafeAreaView style={styles.safeareaview}>
+      &lt;ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        style={{
+          backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
+        }}
+        stickyHeaderIndices={[0]}
       >
-        &lt;MaterialCommunityIcons
-          name="arrow-left"
-          size={30}
-          color={theme === 'dark' ? Colors.BB_violet : 'black'}
-        />
-      &lt;/TouchableOpacity>
-      &lt;View style={styles.innerContainer}>
-        &lt;Text style={styles.title}>Rate User {route.params.username}&lt;/Text>
-        &lt;Image
-          source={{ uri: route.params.profileInfo.profilePicture }}
-          style={styles.profilePic}
-        />
-        &lt;View style={styles.ratingContainer}>{renderStars()}&lt;/View>
-        &lt;TouchableOpacity onPress={handleSubmitRating}>
-          &lt;View style={styles.submitButton}>
-            &lt;Text style={styles.submitText}>Submit Rating&lt;/Text>
+        {/* TOP BAR */}
+        &lt;View style={styles.topBar}>
+          &lt;View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+            &lt;TouchableOpacity
+              onPress={() => {
+                setLoading(true);
+                navigation.navigate('SettingsScreen');
+              }}
+            >
+              &lt;View style={styles.iconContainer}>
+                &lt;MaterialCommunityIcons
+                  name="arrow-left"
+                  size={30}
+                  color={Colors.BB_bone}
+                />
+              &lt;/View>
+            &lt;/TouchableOpacity>
+            &lt;Text style={styles.headerText}>Contact Info&lt;/Text>
+            &lt;TouchableOpacity
+              onPress={() => {
+                setLoading(true);
+                try {
+                  saveContactInfo(contactInfo);
+
+                  navigation.setOptions({
+                    params: { profileName: getStoredUsername() },
+                  });
+                  navigation.navigate('SettingsScreen');
+                } catch (error) {
+                  alert(error);
+                }
+                navigation.navigate('BottomNavOverlay');
+              }}
+            >&lt;/TouchableOpacity>
           &lt;/View>
-        &lt;/TouchableOpacity>
-      &lt;/View>
-    &lt;/View>
+        &lt;/View>
+
+        {/* CONTENT */}
+        &lt;View style={styles.container}>
+          {Object.keys(contactInfo).map((key) => (
+            &lt;View key={key}>
+              &lt;View style={styles.itemContainer}>
+                &lt;View style={{ flexDirection: 'row' }}>
+                  &lt;AntDesign
+                    name={contactInfo[key].icon}
+                    size={24}
+                    color={
+                      theme === 'dark'
+                        ? Colors.BB_violet
+                        : Colors.BB_darkRedPurple
+                    }
+                    style={{ paddingRight: 10 }}
+                  />
+                  &lt;Text style={styles.title}>
+                    {key.charAt(0).toUpperCase() + key.substring(1)}
+                  &lt;/Text>
+                &lt;/View>
+                &lt;TextInput
+                  style={styles.data}
+                  value={contactInfo[key].data}
+                  onChangeText={(value) => handleInputChange(key, value)}
+                />
+              &lt;/View>
+              &lt;View style={styles.thinHorizontalBar}>&lt;/View>
+            &lt;/View>
+          ))}
+        &lt;/View>
+        &lt;View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        >
+          &lt;TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              setLoading(true);
+              try {
+                saveContactInfo(contactInfo);
+
+                navigation.setOptions({
+                  params: { profileName: getStoredUsername() },
+                });
+                navigation.navigate('SettingsScreen');
+              } catch (error) {
+                alert(error);
+              }
+              navigation.navigate('BottomNavOverlay');
+            }}
+          >
+            &lt;Text style={styles.buttonText}>Apply Changes&lt;/Text>
+          &lt;/TouchableOpacity>
+        &lt;/View>
+      &lt;/ScrollView>
+    &lt;/SafeAreaView>
   );
 };
 
-export default RatingScreen;
+export default EditContactInfo;
 </code></pre>
         </article>
     </section>

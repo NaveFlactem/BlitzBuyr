@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 import { getLocationWithRetry } from '../constants/Utilities';
 
+/**
+ * Custom hook for retrieving user location.
+ *
+ * @function
+ * @name useLocation
+ * @returns {Object | null} User location object containing latitude and longitude
+ * @description Retrieves the user's location using the device's geolocation API.
+ */
 const useLocation = () => {
   const [userLocation, setUserLocation] = useState(null);
 
