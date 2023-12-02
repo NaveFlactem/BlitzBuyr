@@ -245,7 +245,6 @@ const MemoizedImage = memo(
 
 /**
  * @param {object} source
- * @param {object} scale
  * @param {string} currencySymbol
  * @param {number} price
  * @param {number} timeSince
@@ -255,7 +254,7 @@ const MemoizedImage = memo(
  * @param {boolean} deleteVisible
  * @param {object} styles
  * @function CustomItem
- * @description Displays the image of the listing with the ability to zoom in and out
+ * @description Displays the image of the listing with the ability to zoom in and out and delete the listing if the user is the owner and the listing is being viewed from the profile screen
  * @returns {object} View and Image wrapped in React.Fragment
  */
 const CustomItem = memo(
@@ -270,24 +269,78 @@ const CustomItem = memo(
     deleteVisible,
     styles,
   }) => {
+    /**
+     * @var {object} focalX
+     * @description The x coordinate of the focal point of the pinch gesture
+     */
     const focalX = useSharedValue(0);
+    /**
+     * @var {object} focalY
+     * @description The y coordinate of the focal point of the pinch gesture
+     * @default 0 
+      */
     const focalY = useSharedValue(0);
+    /**
+     * @var {object} xCurrent
+     * @description The current x coordinate of the image
+     * @default 0
+     */
     const xCurrent = useSharedValue(0);
+    /**
+     * @var {object} yCurrent
+     * @description The current y coordinate of the image
+     * @default 0
+     */
     const yCurrent = useSharedValue(0);
+    /**
+     * @var {object} xPrevious
+     * @description The previous x coordinate of the image
+     * @default 0
+     */
     const xPrevious = useSharedValue(0);
+    /**
+     * @var {object} yPrevious
+     * @description The previous y coordinate of the image
+     * @default 0
+     */
     const yPrevious = useSharedValue(0);
+    /**
+     * @var {object} scaleCurrent
+     * @description The current scale of the image
+     * @default 1
+     */
     const scaleCurrent = useSharedValue(1);
+    /**
+     * @var {object} scalePrevious
+     * @description The previous scale of the image
+     * @default 1
+     */
     const scalePrevious = useSharedValue(1);
 
+
+    /**
+     * @function pinchHandler
+     * @description Handles the pinch gesture on the image
+     * @returns {void} if the image is at the original size
+     */
     const pinchHandler = useAnimatedGestureHandler({
+        /**
+         * 
+         * @param {object} event
+         * @description Sets the focal point of the pinch gesture to the center of the image if the pinch gesture is started with two fingers
+         */
         onStart: (event) => {
             if (event.numberOfPointers == 2) {
                 focalX.value = event.focalX;
                 focalY.value = event.focalY;
             }
         },
+        /**
+         * @param {object} event
+         * @description Sets the current scale of the image to the previous scale of the image if the pinch gesture is ended with two fingers
+         * @returns {void} if the image is at the original size
+         */
         onActive: (event) => {
-            //prevent zooming out greater than 1
             if (scaleCurrent.value * event.scale < 1) {
                 return;
             }
@@ -303,6 +356,9 @@ const CustomItem = memo(
                 yCurrent.value = (1 - scaleCurrent.value) * (focalY.value - 500 / 2);
             }
         },
+        /**
+         * @description Resets the image to its original size and position if the pinch gesture is ended with two fingers
+         */
         onEnd: () => {
           scalePrevious.value = withTiming(1); // Reset previous scale to original
           scaleCurrent.value = withTiming(1);  // Reset current scale to original
@@ -317,6 +373,11 @@ const CustomItem = memo(
         },
     });
 
+    /**
+     * @var {object} animatedStyle
+     * @description The style of the image
+     * @returns {object} transform
+     */
     const animatedStyle = useAnimatedStyle(() => {
         return {
             transform: [
