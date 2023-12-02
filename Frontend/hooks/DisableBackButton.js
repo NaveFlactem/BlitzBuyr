@@ -6,6 +6,7 @@ import { BackHandler } from 'react-native';
  *
  * @function
  * @name useBackButtonHandler
+ * @memberof Hooks
  * @param {Function} handler - Function to be executed when the hardware back button is pressed
  * @returns {void}
  * @description Listens for hardware back button press events and invokes the provided handler function.

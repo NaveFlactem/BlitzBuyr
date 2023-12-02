@@ -24,6 +24,7 @@ import { calculateTagTextFontSize } from './CalculateFontSize';
 /**
  * @component
  * @name TagDrawer
+ * @memberof Components
  * @param {Object} props
  * @param {Array} tagsData
  * @param {Array} conditions

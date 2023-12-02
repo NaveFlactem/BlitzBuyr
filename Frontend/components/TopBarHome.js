@@ -16,6 +16,7 @@ import { getThemedStyles } from '../constants/Styles';
  *
  * @function
  * @name TopBar
+ * @memberof Components
  * @param {Object} props - Component props
  * @param {Function} props.handleMenuPress - Function handling the menu press event
  * @param {Function} props.handleLocationPress - Function handling the location press event

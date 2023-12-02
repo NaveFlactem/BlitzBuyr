@@ -1,3 +1,8 @@
+/**
+ * @namespace Hooks
+ * @description - Hooks allow use to use in-built features
+ *
+ */
 import { useEffect, useState } from 'react';
 import { getLocationWithRetry } from '../constants/Utilities';
 
@@ -6,6 +11,7 @@ import { getLocationWithRetry } from '../constants/Utilities';
  *
  * @function
  * @name useLocation
+ * @memberof Hooks
  * @returns {Object | null} User location object containing latitude and longitude
  * @description Retrieves the user's location using the device's geolocation API.
  */
