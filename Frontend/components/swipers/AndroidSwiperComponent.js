@@ -1,6 +1,22 @@
+
+/**
+ * @namespace Swipers
+ *
+ */
+
+
+/**
+ * @namespace AndroidSwiperComponent
+ * @memberof Swipers
+ * @description - Android swiper, displays a swiping list,  shows listings that users can swipe through
+ *
+ */
+
 import React, { memo } from 'react';
 import { FlatList } from 'react-native';
 import Listing from '../Listing';
+
+
 
 const AndroidSwiperComponent = memo(
   ({
@@ -24,6 +40,8 @@ const AndroidSwiperComponent = memo(
       />
     );
 
+
+    
     const keyExtractor = (item) => item.ListingId.toString();
 
     return (

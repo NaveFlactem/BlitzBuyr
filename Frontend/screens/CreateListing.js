@@ -1,12 +1,16 @@
 /**
- * @namepace Screens
+ * 
+ * @namespace Screens
+ * 
  */
 
 
 /**
  * @namespace CreateListing
  * @memberof Screens
+ * 
  */
+
 import * as FileSystem from 'expo-file-system';
 import { Image } from 'expo-image';
 import * as ImageManipulator from 'expo-image-manipulator';

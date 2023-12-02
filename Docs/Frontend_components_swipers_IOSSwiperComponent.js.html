@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Frontend/components/swipers/IOSSwiperComponent.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/NaveFlactem/BlitzBuyr" target="_blank" class="menu-item" id="repository" >Github repo</a></h2><h3>Classes</h3><ul><li><a href="CreateListing.html#.CreateListing">CreateListing.CreateListing</a></li></ul><h3>Modules</h3><ul><li><a href="module-API_Accounts.html">API/Accounts</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~authenticateUser">authenticateUser</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~getAccounts">getAccounts</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleDeleteAccounts">handleDeleteAccounts</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleLoginRequest">handleLoginRequest</a></li><li data-type='method' style='display: none;'><a href="module-API_Accounts.html#~handleRegistrationRequest">handleRegistrationRequest</a></li></ul></li><li><a href="module-API_Listings.html">API/Listings</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~createListing">createListing</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~encodeImageToBlurhash">encodeImageToBlurhash</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~getImages">getImages</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~getListings">getListings</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteImages">handleDeleteImages</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteListing">handleDeleteListing</a></li><li data-type='method' style='display: none;'><a href="module-API_Listings.html#~handleDeleteListings">handleDeleteListings</a></li></ul></li><li><a href="module-API_Profile.html">API/Profile</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~deleteAllLikes">deleteAllLikes</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~deleteRating">deleteRating</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getLikes">getLikes</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getProfilePicture">getProfilePicture</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getRatings">getRatings</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~getUserProfile">getUserProfile</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~handleLike">handleLike</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~handleUnlike">handleUnlike</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~rateUser">rateUser</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~updateContactInfo">updateContactInfo</a></li><li data-type='method' style='display: none;'><a href="module-API_Profile.html#~updateProfile">updateProfile</a></li></ul></li><li><a href="module-Database.html">Database</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-Database.html#~areTableDefinitionsEqual">areTableDefinitionsEqual</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~createOrUpdateTable">createOrUpdateTable</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~createTables">createTables</a></li><li data-type='method' style='display: none;'><a href="module-Database.html#~extractColumnsFromDefinition">extractColumnsFromDefinition</a></li></ul></li><li><a href="module-Server.html">Server</a><ul class='methods'><li data-type='method' style='display: none;'><a href="module-Server.html#~getRoot">getRoot</a></li><li data-type='method' style='display: none;'><a href="module-Server.html#~requestLogger">requestLogger</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="Authenticate.html">Authenticate</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Authenticate.html#.AuthenticateScreen">AuthenticateScreen</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.checkStoredCredentials">checkStoredCredentials</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.clearStoredCredentials">clearStoredCredentials</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.getStoredPassword">getStoredPassword</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.getStoredUsername">getStoredUsername</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.loadSettings">loadSettings</a></li><li data-type='method' style='display: none;'><a href="Authenticate.html#.setStoredCredentials">setStoredCredentials</a></li></ul></li><li><a href="CreateAccount.html">CreateAccount</a><ul class='methods'><li data-type='method' style='display: none;'><a href="CreateAccount.html#.CreateAccountScreen">CreateAccountScreen</a></li><li data-type='method' style='display: none;'><a href="CreateAccount.html#.handleCreateAccount">handleCreateAccount</a></li><li data-type='method' style='display: none;'><a href="CreateAccount.html#.handlePasswordChange">handlePasswordChange</a></li></ul></li><li><a href="Login.html">Login</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Login.html#.LoginScreen">LoginScreen</a></li><li data-type='method' style='display: none;'><a href="Login.html#.handleCreateAccount">handleCreateAccount</a></li><li data-type='method' style='display: none;'><a href="Login.html#.handleLogin">handleLogin</a></li></ul></li><li><a href="Networking.html">Networking</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Networking.html#.fetchListings">fetchListings</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleDeleteAccount">handleDeleteAccount</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleDeleteAccount">handleDeleteAccount</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleLike">handleLike</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.handleListingCreation">handleListingCreation</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.saveContactInfo">saveContactInfo</a></li><li data-type='method' style='display: none;'><a href="Networking.html#.saveProfileInfo">saveProfileInfo</a></li></ul></li><li><a href="Screens.html">Screens</a></li><li><a href="Screens.CreateListing.html">Screens.CreateListing</a></li><li><a href="Screens.EditContactInfo.html">Screens.EditContactInfo</a></li><li><a href="Screens.EditProfile.html">Screens.EditProfile</a></li><li><a href="Screens.HomeScreen.html">Screens.HomeScreen</a></li><li><a href="Screens.ProfileScreen.html">Screens.ProfileScreen</a></li><li><a href="Screens.RatingScreen.html">Screens.RatingScreen</a></li><li><a href="Screens.SettingsScreen.html">Screens.SettingsScreen</a></li><li><a href="Swipers.html">Swipers</a></li><li><a href="Swipers.AndroidSwiperComponent.html">Swipers.AndroidSwiperComponent</a></li><li><a href="Swipers.IOSSwiperComponent.html">Swipers.IOSSwiperComponent</a></li><li><a href="Utilities.html">Utilities</a><ul class='methods'><li data-type='method' style='display: none;'><a href="Utilities.html#.calculateTimeSince">calculateTimeSince</a></li><li data-type='method' style='display: none;'><a href="Utilities.html#.getLocationWithRetry">getLocationWithRetry</a></li></ul></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Frontend/components/swipers/IOSSwiperComponent.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace IOSSwiperComponent
+ * @memberof Swipers
+ * @description - IOS swiper, displays a swiping list,  shows listings that users can swipe through
+ *
+ */
+
+
+import React, { memo } from 'react';
+import Swiper from 'react-native-swiper';
+import Listing from '../Listing';
+import BouncePulse from '../visuals/BouncePulse';
+import { FlatList } from 'react-native';
+/**
+ * Represents a component that displays a swiper for iOS.
+ * @function IOSSwiperComponentfunc
+ * @memberof IOSSwiperComponent
+ * @param {object} props - Component props.
+ * @param {React.Ref} props.swiperRef - Reference for the swiper component.
+ * @param {Array} props.listings - Array of listings to be displayed.
+ * @param {React.Component} props.refreshControl - Refresh control component.
+ * @param {Function} props.removeListing - Function to remove a listing.
+ * @param {object} props.userLocation - User's location information.
+ * @param {Function} props.onScroll - Function to handle scroll events.
+ * @param {Function} props.handleInnerScrolling - Function to handle inner scrolling.
+ * @param {Function} props.handleInnerScrollingEnd - Function to handle inner scroll end.
+ * @returns {React.Component} A React component representing the IOSSwiper.
+ * @description
+ * This component renders a swiper for iOS, displaying a list of listings.
+ * It provides functionality for scrolling, refreshing, and handling user interactions.
+ */
+const IOSSwiperComponent = memo(
+  ({
+    swiperRef,
+    listings,
+    refreshControl,
+    removeListing,
+    userLocation,
+    onScroll,
+    handleInnerScolling,
+    handleInnerScollingEnd,
+  }) => {
+    const renderItem = ({ item }) => (
+      &lt;Listing
+        item={item}
+        removeListing={removeListing}
+        userLocation={userLocation}
+        handleInnerScolling={handleInnerScolling}
+        handleInnerScollingEnd={handleInnerScollingEnd}
+      />
+    );
+  /**
+   * Generates a key for each item in the FlatList.
+   * @function KeyExtractorFunction
+   * @memberof IOSSwiperComponent
+   * @param {object} item - Data for the item.
+   * @returns {string} A unique key for the item.
+   * @description
+   * This function is used by FlatList to generate unique keys for each item based on the ListingId property.
+   */
+
+    const keyExtractor = (item) => item.ListingId.toString();
+
+    return (
+      &lt;FlatList
+        ref={swiperRef}
+        initialNumToRender={1}
+        maxToRenderPerBatch={1}
+        windowSize={2}
+        decelerationRate="normal"
+        disableIntervalMomentum={true}
+        pagingEnabled={true}
+        removeClippedSubviews={true}
+        data={listings}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        refreshControl={refreshControl}
+        onScroll={onScroll}
+      />
+    );
+  },
+);
+
+export default IOSSwiperComponent;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri Dec 01 2023 13:36:03 GMT-0800 (Pacific Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+<script src="scripts/collapse.js" defer></script>
+
+
+</body>
+</html>
