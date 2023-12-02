@@ -1,3 +1,12 @@
+/**
+ * @namespace TopBarGeneric
+ * @memberof Visuals
+ * @description - File defines a TopBar component used to display a generic top bar/header within the application. It primarily contains an image logo, which may or may not be visible based on the imageVisible prop.
+ */
+
+
+
+
 import React from 'react';
 import { View, Image, Dimensions, StyleSheet, Platform } from 'react-native';
 import { memo } from 'react';
