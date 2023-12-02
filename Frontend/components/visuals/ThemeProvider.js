@@ -5,6 +5,14 @@ const ThemeContext = createContext();
 
 export const useThemeContext = () => useContext(ThemeContext);
 
+/**
+ * @component
+ * @name ThemeProvider
+ * @param {Object} props
+ * @param {Object} props.children
+ * @returns {Object} ThemeContext.Provider
+ * @description Provides the theme context to the application
+ */
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState('light'); // Default theme
 

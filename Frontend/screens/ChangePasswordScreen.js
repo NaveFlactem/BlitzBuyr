@@ -77,7 +77,7 @@ const ChangePassword = ({ navigation, route }) => {
       // Add visual prompt later
       Alert.alert(
         'Password Mismatch',
-        'Password and Confirm Password do not match.'
+        'Password and Confirm Password do not match.',
       );
       return;
     }
@@ -99,41 +99,45 @@ const ChangePassword = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.safeareaview}>
-        {/* Top Bar */}
-        <View style={styles.topBar}>
-          <View style={styles.topBarContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                setLoading(true);
-                navigation.navigate('BottomNavOverlay');
-              }}
-            >
-              <View style={styles.iconContainer}>
-                <MaterialCommunityIcons
-                  name="arrow-left"
-                  size={30}
-                  color={Colors.BB_bone}
-                  style={{ top: Platform.OS === 'ios' ? 0.035 * screenHeight : 0.055 * screenHeight }}
-                />
-              </View>
-            </TouchableOpacity>
-            <View
-              style={{
-                paddingLeft: 10,
-                alignContent: 'center',
-                alignSelf: 'center',
-              }}
-            >
-              <Text style={styles.headerText}>Reset Password</Text>
+      {/* Top Bar */}
+      <View style={styles.topBar}>
+        <View style={styles.topBarContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              setLoading(true);
+              navigation.navigate('BottomNavOverlay');
+            }}
+          >
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons
+                name="arrow-left"
+                size={30}
+                color={Colors.BB_bone}
+                style={{
+                  top:
+                    Platform.OS === 'ios'
+                      ? 0.035 * screenHeight
+                      : 0.055 * screenHeight,
+                }}
+              />
             </View>
+          </TouchableOpacity>
+          <View
+            style={{
+              paddingLeft: 10,
+              alignContent: 'center',
+              alignSelf: 'center',
+            }}
+          >
+            <Text style={styles.headerText}>Reset Password</Text>
           </View>
         </View>
+      </View>
       <ScrollView
-        contentContainerStyle={{flexGrow: 1}}
+        contentContainerStyle={{ flexGrow: 1 }}
         style={{
           backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
         }}
-            
       >
         {/* CONTENT */}
         <View

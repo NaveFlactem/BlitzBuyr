@@ -12,7 +12,11 @@ const NoWifi = memo(({ onRetry }) => {
     <View style={styles.noWifiContainer}>
       <Image
         style={styles.noWifiImage}
-        source={ theme === 'dark' ? require('../assets/no_wifi_icon_transparent_darkmode.png') : require('../assets/no_wifi_icon_transparent.png')}
+        source={
+          theme === 'dark'
+            ? require('../assets/no_wifi_icon_transparent_darkmode.png')
+            : require('../assets/no_wifi_icon_transparent.png')
+        }
       />
       <Text style={styles.noWifiText}>No network connection available.</Text>
       <TouchableOpacity onPress={onRetry} style={styles.retryButton}>

@@ -33,7 +33,11 @@ const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {
       </TouchableOpacity>
       <Image
         style={styles.logo}
-        source={ theme === 'dark' ? require('../assets/blitzbuyr_name_logo_darkmode.png') : require('../assets/blitzbuyr_name_logo.png')}
+        source={
+          theme === 'dark'
+            ? require('../assets/blitzbuyr_name_logo_darkmode.png')
+            : require('../assets/blitzbuyr_name_logo.png')
+        }
       />
     </View>
   );

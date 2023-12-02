@@ -21,6 +21,34 @@ import { useThemeContext } from './visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
 import { currencies } from '../constants/ListingData';
 
+/**
+ * @component
+ * @name TagDrawer
+ * @param {Object} props
+ * @param {Array} tagsData
+ * @param {Array} conditions
+ * @param {Array} transactions
+ * @param {Array} currencyData
+ * @param {Function} setTagsData
+ * @param {Function} setConditionsData
+ * @param {Function} setTransactionsData
+ * @param {Function} setCurrencyData
+ * @param {Array} selectedTags
+ * @param {Array} selectedConditions
+ * @param {Array} selectedTransactions
+ * @param {String} selectedCurrency
+ * @param {Function} setSelectedConditions
+ * @param {Function} setSelectedTransactions
+ * @param {Function} setSelectedTags
+ * @param {Function} setSelectedCurrency
+ * @param {Function} fetchListings
+ * @param {Function} handleMenuPress
+ * @param {Function} setIsDrawerOpen
+ * @param {Boolean} isDrawerOpen
+ * @param {Animated.SharedValue} translateX
+ * @returns {React.Component} <TagDrawer />
+ * @description This component renders the tag drawer that appears when the user presses the menu button on the home screen or drags the screen to the right.
+ */
 const TagDrawer = memo(
   ({
     tagsData,
@@ -164,7 +192,6 @@ const TagDrawer = memo(
         currencyData.map((currency) => ({ ...currency, selected: false })),
       );
     };
-
 
     const X_OFFSET_THRESHOLD = 10; // You can adjust this value as needed
 
@@ -385,13 +412,13 @@ const TagDrawer = memo(
                 <View style={styles.seperationContainer}>
                   <View style={styles.separatorLine} />
                 </View>
-              <TouchableOpacity
+                <TouchableOpacity
                   style={styles.applyButton}
                   onPress={() => {
                     setSelectedTags([]);
                     setSelectedConditions([]);
                     setSelectedTransactions([]);
-                    setSelectedCurrency("");
+                    setSelectedCurrency('');
                     clearSelections();
                     fetchListings();
                     handleMenuPress();

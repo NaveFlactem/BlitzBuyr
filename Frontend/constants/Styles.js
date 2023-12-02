@@ -2,6 +2,12 @@ import { Platform, StyleSheet } from 'react-native';
 import Colors, { CustomDarkTheme, CustomLightTheme } from './Colors.js';
 import { screenHeight, screenWidth } from './ScreenDimensions.js';
 
+/**
+ * @function getThemedStyles
+ * @param {string} theme
+ * @returns {Object} StyleSheet
+ * @description Returns the styles for the current theme (light or dark). Holds all predefined styles for the app.
+ */
 export const getThemedStyles = (theme) => {
   let themeColors;
   if (theme === 'light') {
@@ -101,7 +107,7 @@ export const getThemedStyles = (theme) => {
         height: 0.1 * screenWidth,
         borderRadius: 25,
         left: 15,
-        top: "-44%",
+        top: '-44%',
       },
       circle: {
         width: 40,
@@ -647,7 +653,7 @@ export const getThemedStyles = (theme) => {
       },
       spacer: {
         position: 'relative',
-        height: 0.06 * screenHeight
+        height: 0.06 * screenHeight,
       },
     },
     ////////////////////////////////////////////
@@ -655,7 +661,7 @@ export const getThemedStyles = (theme) => {
       safeareaview: {
         flex: 1,
         backgroundColor: themeColors.BB_darkRedPurple,
-            },
+      },
       scrollViewContent: {
         flexGrow: 1,
         backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
@@ -844,7 +850,7 @@ export const getThemedStyles = (theme) => {
         width: screenWidth * 0.7,
         height: screenHeight * 0.07,
         borderRadius: 80,
-        paddingTop : Platform.OS == 'ios' ? 0 : 3,
+        paddingTop: Platform.OS == 'ios' ? 0 : 3,
         ...Platform.select({
           ios: {
             shadowColor: themeColors.black,
@@ -2046,7 +2052,7 @@ export const getThemedStyles = (theme) => {
     EditProfileScreen: {
       safeareaview: {
         flex: 1,
-        backgroundColor: themeColors.BB_darkRedPurple,      
+        backgroundColor: themeColors.BB_darkRedPurple,
       },
       modalHeader: {
         fontSize: 30,
@@ -2480,74 +2486,3 @@ export const getThemedStyles = (theme) => {
     },
   });
 };
-
-export const shapes = StyleSheet.create({
-  circle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  diamond: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderLeftWidth: 20,
-    borderRightWidth: 20,
-    borderBottomWidth: 40,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: 'red',
-    transform: [{ rotate: '45deg' }],
-  },
-  rhombus: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderLeftWidth: 20,
-    borderRightWidth: 20,
-    borderBottomWidth: 40,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: 'red',
-  },
-  oval: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  hexagon: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderLeftWidth: 20,
-    borderRightWidth: 20,
-    borderBottomWidth: 40,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: 'red',
-    transform: [{ rotate: '45deg' }],
-  },
-  square: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  rectangle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  triangle: {
-    width: 0,
-    height: 0,
-    borderLeftWidth: 20,
-    borderRightWidth: 20,
-    borderBottomWidth: 40,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: 'red',
-  },
-});

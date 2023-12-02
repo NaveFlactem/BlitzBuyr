@@ -333,18 +333,18 @@ const HomeScreen = ({ route }) => {
                 onScroll={onScroll}
                 refreshControl={
                   <View>
-                  <CustomRefreshControl
-                    refreshing={refreshing}
-                    scrollY={scrollY}
-                  />
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                    tintColor="transparent"
-                    colors="transparent"
-                    titleColor="transparent"
-                    progressViewOffset={30}
-                  />
+                    <CustomRefreshControl
+                      refreshing={refreshing}
+                      scrollY={scrollY}
+                    />
+                    <RefreshControl
+                      refreshing={refreshing}
+                      onRefresh={onRefresh}
+                      tintColor="transparent"
+                      colors="transparent"
+                      titleColor="transparent"
+                      progressViewOffset={30}
+                    />
                   </View>
                 }
                 handleInnerScolling={handleInnerScolling}
@@ -368,11 +368,15 @@ const HomeScreen = ({ route }) => {
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                     progressViewOffset={60}
-                    colors={theme === 'dark' ? [Colors.BB_violet] : [Colors.BB_bone]}
+                    colors={
+                      theme === 'dark' ? [Colors.BB_violet] : [Colors.BB_bone]
+                    }
                     tintColor={
                       theme === 'dark' ? Colors.BB_violet : Colors.BB_bone
                     }
-                    progressBackgroundColor={theme === 'dark' ? "#3e3e42" : Colors.BB_darkRedPurple}
+                    progressBackgroundColor={
+                      theme === 'dark' ? '#3e3e42' : Colors.BB_darkRedPurple
+                    }
                   />
                 }
                 handleInnerScolling={handleInnerScolling}

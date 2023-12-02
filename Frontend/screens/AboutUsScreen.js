@@ -20,7 +20,6 @@ import { getThemedStyles } from '../constants/Styles';
 import { screenHeight } from '../constants/ScreenDimensions';
 
 const AboutUsScreen = ({ navigation }) => {
-
   const styles = getThemedStyles(useThemeContext().theme).AboutUs;
   const [loading, setLoading] = useState(false);
   const { theme } = useThemeContext();
@@ -34,43 +33,47 @@ const AboutUsScreen = ({ navigation }) => {
   ];
 
   return (
-    <SafeAreaView style={ styles.safeareaview }>
-        {/* Top Bar */}
-        <View style={styles.topBar}>
-          <View style={styles.topBarContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                setLoading(true);
-                navigation.navigate('BottomNavOverlay');
-              }}
-            >
-              <View style={styles.iconContainer}>
-                <MaterialCommunityIcons
-                  name="arrow-left"
-                  size={30}
-                  color={Colors.BB_bone}
-                  style={{ top: Platform.OS === 'ios' ? 0.035 * screenHeight : 0.045 * screenHeight }}
-                />
-              </View>
-            </TouchableOpacity>
-            <View
-              style={{
-                paddingLeft: 10,
-                alignContent: 'center',
-                alignSelf: 'center',
-              }}
-            >
-              <Text style={styles.headerText}>About Us</Text>
+    <SafeAreaView style={styles.safeareaview}>
+      {/* Top Bar */}
+      <View style={styles.topBar}>
+        <View style={styles.topBarContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              setLoading(true);
+              navigation.navigate('BottomNavOverlay');
+            }}
+          >
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons
+                name="arrow-left"
+                size={30}
+                color={Colors.BB_bone}
+                style={{
+                  top:
+                    Platform.OS === 'ios'
+                      ? 0.035 * screenHeight
+                      : 0.045 * screenHeight,
+                }}
+              />
             </View>
+          </TouchableOpacity>
+          <View
+            style={{
+              paddingLeft: 10,
+              alignContent: 'center',
+              alignSelf: 'center',
+            }}
+          >
+            <Text style={styles.headerText}>About Us</Text>
           </View>
         </View>
+      </View>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         style={{
           backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
         }}
       >
-
         <View style={styles.container}>
           <Text style={styles.header}>
             Welcome to BBCers: BlitzBuyrCoders Marketplace
@@ -116,7 +119,6 @@ const AboutUsScreen = ({ navigation }) => {
             speed, simplicity, and satisfaction.
           </Text>
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );

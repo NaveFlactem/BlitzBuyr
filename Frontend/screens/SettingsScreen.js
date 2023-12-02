@@ -1,7 +1,7 @@
 /**
  * @namespace SettingsScreen
  * @memberof Screens
- * 
+ *
  *
  */
 
@@ -96,7 +96,7 @@ const SettingsScreen = ({ navigation, route }) => {
     const loadAccountActivityStatus = async () => {
       try {
         const storedStatus = await SecureStore.getItemAsync(
-          'accountActivityStatus'
+          'accountActivityStatus',
         );
         const parsedStatus =
           storedStatus !== null ? storedStatus === 'true' : false;
@@ -112,39 +112,42 @@ const SettingsScreen = ({ navigation, route }) => {
     loadAccountActivityStatus();
   }, []);
 
-
-
   return (
     <SafeAreaView style={styles.safeareaview}>
-        {/* Top Bar */}
-        <View style={styles.topBar}>
-          <View style={styles.topBarContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                setLoading(true);
-                navigation.navigate('BottomNavOverlay');
-              }}
-            >
-              <View style={styles.iconContainer}>
-                <MaterialCommunityIcons
-                  name="arrow-left"
-                  size={30}
-                  color={Colors.BB_bone}
-                  style={{ top: Platform.OS === 'ios' ? 0.035 * screenHeight : 0.055 * screenHeight }}
-                />
-              </View>
-            </TouchableOpacity>
-            <View
-              style={{
-                paddingLeft: 10,
-                alignContent: 'center',
-                alignSelf: 'center',
-              }}
-            >
-              <Text style={styles.headerText}>Settings</Text>
+      {/* Top Bar */}
+      <View style={styles.topBar}>
+        <View style={styles.topBarContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              setLoading(true);
+              navigation.navigate('BottomNavOverlay');
+            }}
+          >
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons
+                name="arrow-left"
+                size={30}
+                color={Colors.BB_bone}
+                style={{
+                  top:
+                    Platform.OS === 'ios'
+                      ? 0.035 * screenHeight
+                      : 0.055 * screenHeight,
+                }}
+              />
             </View>
+          </TouchableOpacity>
+          <View
+            style={{
+              paddingLeft: 10,
+              alignContent: 'center',
+              alignSelf: 'center',
+            }}
+          >
+            <Text style={styles.headerText}>Settings</Text>
           </View>
         </View>
+      </View>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         Account
@@ -153,7 +156,6 @@ const SettingsScreen = ({ navigation, route }) => {
           backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
         }}
       >
-
         {/* CONTENT */}
         <View style={styles.container}>
           <View style={styles.settingsContent}>
@@ -173,12 +175,12 @@ const SettingsScreen = ({ navigation, route }) => {
                         onPress={() => {
                           setLoading(true);
                           console.log(
-                            `navigating to => ${item.replace(' ', '')}Screen`
+                            `navigating to => ${item.replace(' ', '')}Screen`,
                           );
                           console.log(`with parameters => ${params[item]}`);
                           navigation.navigate(
                             `${item.replace(' ', '')}Screen`,
-                            params[item]
+                            params[item],
                           );
                         }}
                       >

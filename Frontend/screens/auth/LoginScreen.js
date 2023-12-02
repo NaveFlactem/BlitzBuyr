@@ -62,8 +62,10 @@ const LoginScreen = ({ navigation }) => {
       await setStoredCredentials(username, password);
       clearFields();
       navigation.navigate('BottomNavOverlay');
-      const settingsStatus = await SecureStore.getItemAsync('accountActivityStatus');
-      if(settingsStatus === 'true'){
+      const settingsStatus = await SecureStore.getItemAsync(
+        'accountActivityStatus',
+      );
+      if (settingsStatus === 'true') {
         checkListingExpiration();
       }
     } else {

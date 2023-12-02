@@ -191,7 +191,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       const manipulateResult = await ImageManipulator.manipulateAsync(
         img.uri,
         [],
-        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
       );
 
       setSelectedProfilePicture(manipulateResult.uri);
@@ -219,7 +219,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       const manipulateResult = await ImageManipulator.manipulateAsync(
         img.uri,
         [],
-        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
       );
 
       setSelectedCoverPicture(manipulateResult.uri);
@@ -352,35 +352,40 @@ const EditProfileScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.safeareaview}>
-        {/* Top Bar */}
-        <View style={styles.topBar}>
-          <View style={styles.topBarContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                setLoading(true);
-                navigation.navigate('BottomNavOverlay');
-              }}
-            >
-              <View style={styles.iconContainer}>
-                <MaterialCommunityIcons
-                  name="arrow-left"
-                  size={30}
-                  color={Colors.BB_bone}
-                  style={{ top: Platform.OS === 'ios' ? 0.035 * screenHeight : 0.045 * screenHeight }}
-                />
-              </View>
-            </TouchableOpacity>
-            <View
-              style={{
-                paddingLeft: 15,
-                alignContent: 'center',
-                alignSelf: 'center',
-              }}
-            >
-              <Text style={styles.headerText}>Edit Profile</Text>
+      {/* Top Bar */}
+      <View style={styles.topBar}>
+        <View style={styles.topBarContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              setLoading(true);
+              navigation.navigate('BottomNavOverlay');
+            }}
+          >
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons
+                name="arrow-left"
+                size={30}
+                color={Colors.BB_bone}
+                style={{
+                  top:
+                    Platform.OS === 'ios'
+                      ? 0.035 * screenHeight
+                      : 0.045 * screenHeight,
+                }}
+              />
             </View>
+          </TouchableOpacity>
+          <View
+            style={{
+              paddingLeft: 15,
+              alignContent: 'center',
+              alignSelf: 'center',
+            }}
+          >
+            <Text style={styles.headerText}>Edit Profile</Text>
           </View>
         </View>
+      </View>
       {/* Edit Profile and Go Back Arrow Column */}
       <ScrollView
         contentContainerStyle={styles.scrollViewContent}
@@ -388,7 +393,6 @@ const EditProfileScreen = ({ navigation, route }) => {
           backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
         }}
       >
-
         {/* CONTENT */}
         {/* Edit Cover Photo */}
         <View style={{ paddingHorizontal: 20, paddingTop: 25 }}>

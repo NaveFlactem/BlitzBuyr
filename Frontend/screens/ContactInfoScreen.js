@@ -56,34 +56,38 @@ const EditContactInfo = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.safeareaview}>
-        {/* TOP BAR */}
-        <View style={styles.topBar}>
-          <View style={styles.topBarContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                setLoading(true);
-                navigation.navigate('BottomNavOverlay');
-              }}
-            >
-              <View style={styles.iconContainer}>
-                <MaterialCommunityIcons
-                  name="arrow-left"
-                  size={30}
-                  color={Colors.BB_bone}
-                  style={{ top: Platform.OS === 'ios' ? 0.035 * screenHeight : 0.055 * screenHeight }}
-                />
-              </View>
-            </TouchableOpacity>
-            <Text style={styles.headerText}>Contact Info</Text>
-          </View>
+      {/* TOP BAR */}
+      <View style={styles.topBar}>
+        <View style={styles.topBarContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              setLoading(true);
+              navigation.navigate('BottomNavOverlay');
+            }}
+          >
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons
+                name="arrow-left"
+                size={30}
+                color={Colors.BB_bone}
+                style={{
+                  top:
+                    Platform.OS === 'ios'
+                      ? 0.035 * screenHeight
+                      : 0.055 * screenHeight,
+                }}
+              />
+            </View>
+          </TouchableOpacity>
+          <Text style={styles.headerText}>Contact Info</Text>
         </View>
+      </View>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         style={{
           backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
         }}
       >
-
         {/* CONTENT */}
         <View style={styles.container}>
           {Object.keys(contactInfo).map((key) => (

@@ -32,7 +32,12 @@ import { getStoredUsername } from '../screens/auth/Authenticate.js';
 import { parallaxLayout } from './parallax.ts';
 import { useThemeContext } from './visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
-import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, {
+  useAnimatedGestureHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 const default_blurhash = 'LEHLk~WB2yk8pyo0adR*.7kCMdnj';
 
@@ -99,11 +104,11 @@ const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
 });
 
 /**
- * 
+ *
  * @param {function} onDeletePress
  * @param {object} styles
  * @function DeleteButton
- * @description Button to delete a listing 
+ * @description Button to delete a listing
  * @returns {object} TouchableOpacity and MaterialCommunityIcon
  */
 const DeleteButton = ({ onDeletePress, styles }) => {
@@ -130,10 +135,10 @@ const calculateFontSize = (price) => {
 };
 
 /**
- * 
+ *
  * @param {string} city
  * @function calculateFontSizeLocation
- * @description Calculates the font size for the city name based on the length of the city name 
+ * @description Calculates the font size for the city name based on the length of the city name
  * @returns {number} fontSize
  */
 const calculateFontSizeLocation = (city) => {
@@ -277,8 +282,8 @@ const CustomItem = memo(
     /**
      * @var {object} focalY
      * @description The y coordinate of the focal point of the pinch gesture
-     * @default 0 
-      */
+     * @default 0
+     */
     const focalY = useSharedValue(0);
     /**
      * @var {object} xCurrent
@@ -317,60 +322,59 @@ const CustomItem = memo(
      */
     const scalePrevious = useSharedValue(1);
 
-
     /**
      * @function pinchHandler
      * @description Handles the pinch gesture on the image
      * @returns {void} if the image is at the original size
      */
     const pinchHandler = useAnimatedGestureHandler({
-        /**
-         * 
-         * @param {object} event
-         * @description Sets the focal point of the pinch gesture to the center of the image if the pinch gesture is started with two fingers
-         */
-        onStart: (event) => {
-            if (event.numberOfPointers == 2) {
-                focalX.value = event.focalX;
-                focalY.value = event.focalY;
-            }
-        },
-        /**
-         * @param {object} event
-         * @description Sets the current scale of the image to the previous scale of the image if the pinch gesture is ended with two fingers
-         * @returns {void} if the image is at the original size
-         */
-        onActive: (event) => {
-            if (scaleCurrent.value * event.scale < 1) {
-                return;
-            }
+      /**
+       *
+       * @param {object} event
+       * @description Sets the focal point of the pinch gesture to the center of the image if the pinch gesture is started with two fingers
+       */
+      onStart: (event) => {
+        if (event.numberOfPointers == 2) {
+          focalX.value = event.focalX;
+          focalY.value = event.focalY;
+        }
+      },
+      /**
+       * @param {object} event
+       * @description Sets the current scale of the image to the previous scale of the image if the pinch gesture is ended with two fingers
+       * @returns {void} if the image is at the original size
+       */
+      onActive: (event) => {
+        if (scaleCurrent.value * event.scale < 1) {
+          return;
+        }
 
-            if (event.numberOfPointers == 2) {
-                if (event.oldState === 2) {
-                    focalX.value = event.focalX;
-                    focalY.value = event.focalY;
-                }
-                scaleCurrent.value = event.scale;
+        if (event.numberOfPointers == 2) {
+          if (event.oldState === 2) {
+            focalX.value = event.focalX;
+            focalY.value = event.focalY;
+          }
+          scaleCurrent.value = event.scale;
 
-                xCurrent.value = (1 - scaleCurrent.value) * (focalX.value - 400 / 2);
-                yCurrent.value = (1 - scaleCurrent.value) * (focalY.value - 700 / 2);
-            }
-        },
-        /**
-         * @description Resets the image to its original size and position if the pinch gesture is ended with two fingers
-         */
-        onEnd: () => {
-          scalePrevious.value = withTiming(1); // Reset previous scale to original
-          scaleCurrent.value = withTiming(1);  // Reset current scale to original
-      
-          // Reset previous translations to original
-          xPrevious.value = withTiming(0);
-          yPrevious.value = withTiming(0);
-      
-          // The current translations should also be reset to 0
-          xCurrent.value = withTiming(0);
-          yCurrent.value = withTiming(0);
-        },
+          xCurrent.value = (1 - scaleCurrent.value) * (focalX.value - 400 / 2);
+          yCurrent.value = (1 - scaleCurrent.value) * (focalY.value - 700 / 2);
+        }
+      },
+      /**
+       * @description Resets the image to its original size and position if the pinch gesture is ended with two fingers
+       */
+      onEnd: () => {
+        scalePrevious.value = withTiming(1); // Reset previous scale to original
+        scaleCurrent.value = withTiming(1); // Reset current scale to original
+
+        // Reset previous translations to original
+        xPrevious.value = withTiming(0);
+        yPrevious.value = withTiming(0);
+
+        // The current translations should also be reset to 0
+        xCurrent.value = withTiming(0);
+        yCurrent.value = withTiming(0);
+      },
     });
 
     /**
@@ -379,16 +383,16 @@ const CustomItem = memo(
      * @returns {object} transform
      */
     const animatedStyle = useAnimatedStyle(() => {
-        return {
-            transform: [
-                { translateX: xCurrent.value },
-                { translateY: yCurrent.value },
-                { scale: scaleCurrent.value },
-                { translateX: xPrevious.value },
-                { translateY: yPrevious.value },
-                { scale: scalePrevious.value },
-            ],
-        };
+      return {
+        transform: [
+          { translateX: xCurrent.value },
+          { translateY: yCurrent.value },
+          { scale: scaleCurrent.value },
+          { translateX: xPrevious.value },
+          { translateY: yPrevious.value },
+          { scale: scalePrevious.value },
+        ],
+      };
     });
 
     /*FRONT CARD*/
@@ -400,19 +404,17 @@ const CustomItem = memo(
         cardStyle={styles.cardBackground}
         styles={styles}
       >
-          <PinchGestureHandler
-            onGestureEvent={pinchHandler}
-          >
-            <Animated.View style={[styles.image, animatedStyle]}>
-              <MemoizedImage
-                source={`${serverIp}/img/${source.uri}`}
-                blurhash={source.blurhash}
-                style={styles.image}
-                contentFit="contain"
-                transition={0}
-              />
-            </Animated.View>
-          </PinchGestureHandler>
+        <PinchGestureHandler onGestureEvent={pinchHandler}>
+          <Animated.View style={[styles.image, animatedStyle]}>
+            <MemoizedImage
+              source={`${serverIp}/img/${source.uri}`}
+              blurhash={source.blurhash}
+              style={styles.image}
+              contentFit="contain"
+              transition={0}
+            />
+          </Animated.View>
+        </PinchGestureHandler>
         <LikeButton
           isLiked={isLiked}
           onLikePress={onLikePress}
