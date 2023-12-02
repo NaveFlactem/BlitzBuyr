@@ -130,7 +130,6 @@ const ChangePassword = ({ navigation, route }) => {
         </View>
       <ScrollView
         contentContainerStyle={{flexGrow: 1}}
-        stickyHeaderIndices={[0]}
         style={{
           backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
         }}
@@ -145,6 +144,7 @@ const ChangePassword = ({ navigation, route }) => {
             <Text
               style={{
                 color: theme === 'dark' ? Colors.BB_bone : Colors.black,
+                marginTop: 10,
               }}
             >
               At least 9 characters with uppercase and lowercase letters.

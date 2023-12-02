@@ -149,7 +149,6 @@ const SettingsScreen = ({ navigation, route }) => {
         contentContainerStyle={{ flexGrow: 1 }}
         Account
         Activity
-        stickyHeaderIndices={[0]}
         style={{
           backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
         }}

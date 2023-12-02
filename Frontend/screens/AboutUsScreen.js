@@ -69,7 +69,6 @@ const AboutUsScreen = ({ navigation }) => {
         style={{
           backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
         }}
-        stickyHeaderIndices={[0]}
       >
 
         <View style={styles.container}>
@@ -117,6 +116,7 @@ const AboutUsScreen = ({ navigation }) => {
             speed, simplicity, and satisfaction.
           </Text>
         </View>
+
       </ScrollView>
     </SafeAreaView>
   );

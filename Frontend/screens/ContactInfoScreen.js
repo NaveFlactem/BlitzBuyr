@@ -82,7 +82,6 @@ const EditContactInfo = ({ navigation, route }) => {
         style={{
           backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
         }}
-        stickyHeaderIndices={[0]}
       >
 
         {/* CONTENT */}
