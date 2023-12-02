@@ -1,5 +1,11 @@
 /**
+ * @namepace Screens
+ */
+
+
+/**
  * @namespace CreateListing
+ * @memberof Screens
  */
 import { serverIp } from '../config';
 import * as FileSystem from 'expo-file-system';

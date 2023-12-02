@@ -1,3 +1,10 @@
+/**
+ * @namespace SettingsScreen
+ * @memberof Screens
+ * 
+ *
+ */
+
 import React, { useState, memo, useEffect } from 'react';
 import {
   View,
@@ -8,6 +15,8 @@ import {
   Switch,
   Platform,
 } from 'react-native';
+import { useThemeContext } from '../components/visuals/ThemeProvider.js';
+import { getThemedStyles } from '../constants/Styles.js';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import Colors from '../constants/Colors';

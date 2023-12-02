@@ -32,6 +32,7 @@ import { fetchListings } from '../network/Service';
 import Colors from '../constants/Colors';
 /**
  * @namespace HomeScreen
+ * @memberof Screens
  * @description - HomeScreen is the home screen of the application
  *
  */
