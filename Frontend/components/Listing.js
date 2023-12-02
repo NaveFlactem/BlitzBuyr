@@ -129,7 +129,6 @@ const DeleteButton = ({ onDeletePress, styles }) => {
   );
 };
 
-
 /**
  * @param {number} timeSince
  * @param {object} styles
