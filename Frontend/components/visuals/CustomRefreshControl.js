@@ -6,24 +6,25 @@ import Animated, {
 } from 'react-native-reanimated';
 import { screenHeight } from '../../constants/ScreenDimensions.js';
 import BouncePulse from './BouncePulse';
+import { useThemeContext } from './ThemeProvider';
+import { getThemedStyles } from '../../constants/Styles';
 
 export const CustomRefreshControl = memo(
-  ({ refreshing, scrollY, swiperRef }) => {
+  ({ refreshing, scrollY}) => {
+    const styles = getThemedStyles(
+      useThemeContext().theme
+    ).CustomRefreshControl;
     const bouncePulseStyle = useAnimatedStyle(() => {
-      let newYPosition = -100; // Initial off-screen position
       let newOpacity = 1;
 
-      if (refreshing) {
-        newYPosition = withTiming(0, { duration: 500 });
-      } else {
-        // Normalize and adjust opacity based on scrollY
-        const normalizedScrollY = Math.abs(scrollY.value); // Convert to positive value
-        newOpacity = Math.min(normalizedScrollY / 100, 1); // Adjust 100 to control fade speed
-        newYPosition = -100 - scrollY.value;
+      // Normalize and adjust opacity based on scrollY
+      if (refreshing) { 
+        opacity = 1;
+      } else { 
+      const normalizedScrollY = Math.abs(scrollY.value); // Convert to positive value
+      newOpacity = Math.min(normalizedScrollY / 100, 1); // Adjust 100 to control fade speed
       }
-
       return {
-        transform: [{ translateY: newYPosition }],
         opacity: newOpacity,
       };
     });
@@ -33,14 +34,5 @@ export const CustomRefreshControl = memo(
         <BouncePulse />
       </Animated.View>
     );
-  },
+  }
 );
-
-const styles = StyleSheet.create({
-  bouncePulseContainer: {
-    position: 'absolute',
-    alignSelf: 'center',
-    top: 0,
-    alignItems: 'center',
-  },
-});

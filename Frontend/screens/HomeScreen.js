@@ -29,6 +29,7 @@ import { getThemedStyles } from '../constants/Styles';
 import { getLocationWithRetry } from '../constants/Utilities';
 import * as Settings from '../hooks/UserSettings.js';
 import { fetchListings } from '../network/Service';
+import Colors from '../constants/Colors';
 /**
  * @namespace HomeScreen
  * @memberof Screens
@@ -65,6 +66,7 @@ const HomeScreen = ({ route }) => {
   const [distance, setDistance] = useState(30);
   const [isLocationSliderVisible, setIsLocationSliderVisible] = useState(false);
   const locationSliderHeight = useSharedValue(-100); // Start off-screen
+  const { theme } = useThemeContext();
   const styles = getThemedStyles(useThemeContext().theme).HomeScreen;
 
   /**
@@ -103,7 +105,7 @@ const HomeScreen = ({ route }) => {
   const handleLocationPress = () => {
     console.log(
       'Location pressed, toggling slider visibility...',
-      isLocationSliderVisible
+      isLocationSliderVisible,
     );
     if (isLocationSliderVisible) {
       locationSliderHeight.value = withTiming(-100, { duration: 100 }); // Hide slider
@@ -229,7 +231,7 @@ const HomeScreen = ({ route }) => {
         selectedCurrency,
         setListings,
         setIsLoading,
-        setRefreshing
+        setRefreshing,
       );
     } catch (error) {
       console.error(error);
@@ -325,19 +327,25 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId)
+                    prevListings.filter((item) => item.ListingId !== listingId),
                   );
                 }}
                 onScroll={onScroll}
                 refreshControl={
+                  <View>
+                  <CustomRefreshControl
+                    refreshing={refreshing}
+                    scrollY={scrollY}
+                  />
                   <RefreshControl
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                     tintColor="transparent"
                     colors="transparent"
                     titleColor="transparent"
-                    progressViewOffset={50}
+                    progressViewOffset={30}
                   />
+                  </View>
                 }
                 handleInnerScolling={handleInnerScolling}
                 handleInnerScollingEnd={handleInnerScollingEnd}
@@ -351,7 +359,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId)
+                    prevListings.filter((item) => item.ListingId !== listingId),
                   );
                 }}
                 onScroll={onScroll}
@@ -360,6 +368,11 @@ const HomeScreen = ({ route }) => {
                     refreshing={refreshing}
                     onRefresh={onRefresh}
                     progressViewOffset={60}
+                    colors={theme === 'dark' ? [Colors.BB_violet] : [Colors.BB_bone]}
+                    tintColor={
+                      theme === 'dark' ? Colors.BB_violet : Colors.BB_bone
+                    }
+                    progressBackgroundColor={theme === 'dark' ? "#3e3e42" : Colors.BB_darkRedPurple}
                   />
                 }
                 handleInnerScolling={handleInnerScolling}
@@ -418,13 +431,6 @@ const HomeScreen = ({ route }) => {
         setIsLocationSliderVisible={setIsLocationSliderVisible}
         locationSliderHeight={locationSliderHeight}
       />
-      {Platform.OS === 'ios' && (
-        <CustomRefreshControl
-          refreshing={refreshing}
-          scrollY={scrollY}
-          swiperRef={swiperRef}
-        />
-      )}
     </SafeAreaView>
   );
 };

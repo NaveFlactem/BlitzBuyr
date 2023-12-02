@@ -16,8 +16,14 @@ export const ThemeProvider = ({ children }) => {
   }, []);
 
   const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-    Settings.updateColorMode(theme === 'light' ? 'dark' : 'light');
+    return new Promise((resolve) => {
+      setTheme((prevTheme) => {
+        const newTheme = prevTheme === 'light' ? 'dark' : 'light';
+        Settings.updateColorMode(newTheme);
+        return newTheme;
+      });
+      resolve();
+    });
   };
 
   return (

@@ -36,7 +36,7 @@ export async function scheduleNotification(newListings) {
       '' + newListings + ' new listings have been posted!',
     ];
     const randomMessageIndex = Math.floor(
-      Math.random() * messageAlternatives.length,
+      Math.random() * messageAlternatives.length
     );
     const selectedMessage = messageAlternatives[randomMessageIndex];
 

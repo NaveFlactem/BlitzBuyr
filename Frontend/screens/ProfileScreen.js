@@ -87,8 +87,8 @@ const handleContactClick = async (key, data) => {
       try {
         await Linking.openURL(
           `mailto:${data}?subject=${encodeURIComponent(
-            'BlitzBuyr',
-          )}&body=${encodeURIComponent('')}`,
+            'BlitzBuyr'
+          )}&body=${encodeURIComponent('')}`
         );
       } catch (error) {
         console.error('Error opening email:', error);
@@ -98,7 +98,6 @@ const handleContactClick = async (key, data) => {
       try {
         // Assuming `data` is your phone number
         const phoneNumber = data;
-
         Alert.alert(
           'Choose an action',
           'Would you like to call or text this number?',
@@ -111,8 +110,12 @@ const handleContactClick = async (key, data) => {
               text: 'Text',
               onPress: () => Linking.openURL(`sms:${phoneNumber}`),
             },
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+            },
           ],
-          { cancelable: true },
+          { cancelable: true }
         );
       } catch (error) {
         console.error('Error opening phoneNumber:', error);
@@ -136,9 +139,10 @@ const handleContactClick = async (key, data) => {
 };
 
 const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
-  const styles = getThemedStyles(useThemeContext().theme).ProfileScreen;
+  const theme = useThemeContext().theme;
+  const styles = getThemedStyles(theme).ProfileScreen;
   let displayValues = Object.values(contactInfo).some(
-    (value) => value.data?.length > 0,
+    (value) => value.data?.length > 0
   );
 
   if (!selfProfile && Object.values(contactInfo).every((value) => value.hidden))
@@ -158,11 +162,20 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
       saveContactInfo(newContactInfo);
 
       console.log(
-        `${newContactInfo[key].hidden ? 'Hidden' : 'Unhidden'} ${key}`,
+        `${newContactInfo[key].hidden ? 'Hidden' : 'Unhidden'} ${key}`
       );
     },
-    [contactInfo],
+    [contactInfo]
   );
+
+  const formatPhoneNumber = (phoneNumberString) => {
+    var cleaned = ('' + phoneNumberString).replace(/\D/g, '');
+    var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      return '(' + match[1] + ')-' + match[2] + '-' + match[3];
+    }
+    return null;
+  };
 
   return (
     <View style={styles.contactInfoContainer}>
@@ -171,6 +184,8 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
           {displayValues ? (
             Object.entries(contactInfo).map(([key, value]) => {
               if (value.data?.length > 0) {
+                const displayData =
+                  key === 'phone' ? formatPhoneNumber(value.data) : value.data;
                 return (
                   (selfProfile || (!selfProfile && !value.hidden)) && (
                     <View key={key}>
@@ -182,13 +197,13 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                       >
                         {/* Icon + Handle */}
                         <TouchableOpacity
-                          onPress={() => handleContactClick(key, value.data)}
+                          onPress={() => handleContactClick(key, displayData)}
                           style={styles.socialIcons}
                         >
                           <AntDesign
                             name={value.icon}
                             size={24}
-                            color="black"
+                            color={theme === 'light' ? 'black' : Colors.BB_bone}
                             style={{
                               opacity: value.hidden ? 0.25 : 1.0,
                             }}
@@ -196,10 +211,13 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                           <Text
                             style={[
                               styles.socialText,
+                              theme === 'light'
+                                ? { color: 'black' }
+                                : { color: Colors.BB_bone },
                               { opacity: value.hidden ? 0.25 : 1.0 },
                             ]}
                           >
-                            {value.data}
+                            {displayData}
                           </Text>
                         </TouchableOpacity>
                         {/* Visibility */}
@@ -214,7 +232,11 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
                             <MaterialIcons
                               name="visibility"
                               size={24}
-                              color={Colors.BB_darkRedPurple}
+                              color={
+                                theme === 'light'
+                                  ? Colors.BB_darkRedPurple
+                                  : Colors.BB_violet
+                              }
                             />
                           </TouchableOpacity>
                         )}
@@ -247,7 +269,8 @@ function ProfileScreen({ navigation, route }) {
   const [selectedListing, setSelectedListing] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [LikeStates, setLikeStates] = useState({});
-  const styles = getThemedStyles(useThemeContext().theme).ProfileScreen;
+  const theme = useThemeContext().theme;
+  const styles = getThemedStyles(theme).ProfileScreen;
 
   // Use states for contact info
   const [contactInfo, setContactInfo] = useState({
@@ -274,7 +297,7 @@ function ProfileScreen({ navigation, route }) {
       const username = getStoredUsername();
       if (route.params?.username) {
         console.log(
-          `Setting username to passed username ${route.params.username}`,
+          `Setting username to passed username ${route.params.username}`
         );
         // we navigated with a username passed as param (i.e. clicking someone's profile)
         setProfileName(route.params.username);
@@ -331,14 +354,14 @@ function ProfileScreen({ navigation, route }) {
     console.log(`Fetching profile info for ${username}`);
     try {
       const fetchUrl = `${serverIp}/api/profile?username=${encodeURIComponent(
-        getStoredUsername(),
+        getStoredUsername()
       )}&password=${getStoredPassword()}&profileName=${username}`;
       console.log(fetchUrl);
       const profileResponse = await fetch(fetchUrl, {
         method: 'GET',
       });
       const profileData = await profileResponse.json();
-      console.log(profileData);
+      // console.log(profileData);
 
       if (profileResponse.status <= 201) {
         setProfileInfo({
@@ -358,13 +381,12 @@ function ProfileScreen({ navigation, route }) {
           }),
           userRatings: profileData.ratings.reduce(
             (acc, rating) => ({ ...acc, ...rating }),
-            {},
+            {}
           ),
           profilePicture: profileData.profilePicture,
           coverPicture: profileData.coverPicture,
           email: profileData.email,
         });
-        console.log(profileData.contactInfo);
 
         // Set the contactInfo state
         const updatedContactInfo = { ...contactInfo };
@@ -376,8 +398,8 @@ function ProfileScreen({ navigation, route }) {
 
         const initialLikeStates = Object.fromEntries(
           [...profileData.likedListings, ...profileData.userListings].map(
-            (listing) => [listing.ListingId, listing.liked],
-          ),
+            (listing) => [listing.ListingId, listing.liked]
+          )
         );
         setLikeStates(initialLikeStates);
 
@@ -385,8 +407,8 @@ function ProfileScreen({ navigation, route }) {
       } else {
         console.log(
           'Error fetching profile:',
-          profileResponse.status,
-          profileData,
+          profileResponse.status
+          // profileData
         );
       }
     } catch (err) {
@@ -424,7 +446,7 @@ function ProfileScreen({ navigation, route }) {
     console.log(
       `${
         newLikeStates[listingId] ? 'Likered' : 'UnLikered'
-      } listing ID ${listingId}`,
+      } listing ID ${listingId}`
     );
   };
 
@@ -432,7 +454,8 @@ function ProfileScreen({ navigation, route }) {
     <TabBar
       {...props}
       indicatorStyle={{
-        backgroundColor: Colors.BB_darkRedPurple,
+        backgroundColor:
+          theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet,
       }}
       style={{
         backgroundColor: Colors.bone,
@@ -442,7 +465,8 @@ function ProfileScreen({ navigation, route }) {
         <Text
           style={[
             {
-              color: Colors.BB_darkRedPurple,
+              color:
+                theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet,
               fontWeight: 'bold',
               fontSize: 14,
               textAlign: 'center',
@@ -465,7 +489,6 @@ function ProfileScreen({ navigation, route }) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <BouncePulse />
-        <Text>Loading...</Text>
       </View>
     );
   }
@@ -474,10 +497,10 @@ function ProfileScreen({ navigation, route }) {
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: Colors.bone,
+        backgroundColor: theme === 'light' ? Colors.BB_bone : '#1e1e1e',
       }}
     >
-      <StatusBar backgroundColor={'black'} />
+      <View style={styles.pageHeader} />
       {/* //Cover Photo */}
       <View style={{ width: '100%' }}>
         <Image
@@ -489,28 +512,11 @@ function ProfileScreen({ navigation, route }) {
             width: '100%',
             height: 0.2 * screenHeight,
             borderWidth: 1,
-            borderColor: Colors.BB_darkRedPurple,
+            borderColor:
+              theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet,
             position: 'absolute',
           }}
         />
-        {/* Back button */}
-        {!selfProfile && (
-          <TouchableOpacity
-            onPress={() => {
-              setLoading(true);
-              navigation.navigate('BottomNavOverlay');
-            }}
-            style={styles.circleContainer}
-          >
-            <View style={styles.circle}>
-              <MaterialCommunityIcons
-                name="arrow-left"
-                size={30}
-                color="black"
-              />
-            </View>
-          </TouchableOpacity>
-        )}
       </View>
 
       {/* //Profile Picture */}
@@ -519,16 +525,18 @@ function ProfileScreen({ navigation, route }) {
           source={{
             uri: profileInfo.profilePicture,
           }}
-          resizeMode="contain"
+          resizeMode="cover"
           style={{
             height: 0.38 * screenWidth,
             width: 0.38 * screenWidth,
             borderRadius: 999,
-            borderColor: Colors.BB_darkRedPurple,
+            borderColor:
+              theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet,
             borderWidth: 2,
             marginTop: -90,
             position: 'absolute',
             top: 0.2 * screenHeight,
+            backgroundColor: theme === 'light' ? 'white' : '#2d2d30',
           }}
         />
         <Text
@@ -539,7 +547,7 @@ function ProfileScreen({ navigation, route }) {
             fontStyle: 'normal',
             fontWeight: 'bold',
             fontSize: 25,
-            color: Colors.BB_darkRedPurple,
+            color: theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_bone,
           }}
         >
           {profileName}
@@ -566,7 +574,8 @@ function ProfileScreen({ navigation, route }) {
                 fontStyle: 'normal',
                 fontWeight: 'bold',
                 fontSize: 20,
-                color: Colors.BB_darkRedPurple,
+                color:
+                  theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_bone,
               }}
             >
               {profileInfo.userListings?.length}
@@ -574,7 +583,8 @@ function ProfileScreen({ navigation, route }) {
             <Text
               style={{
                 fontStyle: 'normal',
-                color: Colors.BB_darkRedPurple,
+                color:
+                  theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_bone,
               }}
             >
               Listings
@@ -594,7 +604,8 @@ function ProfileScreen({ navigation, route }) {
                 fontStyle: 'normal',
                 fontWeight: 'bold',
                 fontSize: 20,
-                color: Colors.BB_darkRedPurple,
+                color:
+                  theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_bone,
               }}
             >
               {profileInfo.userRatings.AverageRating
@@ -604,7 +615,7 @@ function ProfileScreen({ navigation, route }) {
                 <Entypo
                   name="star"
                   size={20}
-                  color="gold"
+                  color={theme === 'light' ? 'gold' : Colors.BB_violet}
                   style={styles.ratingStar}
                 />
               )}
@@ -613,7 +624,8 @@ function ProfileScreen({ navigation, route }) {
               style={{
                 alignContent: 'center',
                 fontStyle: 'normal',
-                color: Colors.BB_darkRedPurple,
+                color:
+                  theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_bone,
               }}
             >
               Rating ({profileInfo.userRatings.RatingCount})
@@ -633,7 +645,10 @@ function ProfileScreen({ navigation, route }) {
                   fontStyle: 'normal',
                   fontWeight: 'bold',
                   fontSize: 20,
-                  color: Colors.BB_darkRedPurple,
+                  color:
+                    theme === 'light'
+                      ? Colors.BB_darkRedPurple
+                      : Colors.BB_bone,
                 }}
               >
                 {profileInfo.likedListings?.length}
@@ -641,7 +656,10 @@ function ProfileScreen({ navigation, route }) {
               <Text
                 style={{
                   fontStyle: 'normal',
-                  color: Colors.BB_darkRedPurple,
+                  color:
+                    theme === 'light'
+                      ? Colors.BB_darkRedPurple
+                      : Colors.BB_bone,
                 }}
               >
                 Liked
@@ -654,42 +672,34 @@ function ProfileScreen({ navigation, route }) {
           <View
             style={{
               flexDirection: 'row',
-              marginTop: 5,
+              paddingVertical: 10,
               top: 0.28 * screenHeight,
               marginBottom: -100,
             }}
           >
             {/* Logout */}
-            <TouchableOpacity onPress={handleLogout} style={styles.button}>
-              <Text style={styles.buttonText}>Logout</Text>
-            </TouchableOpacity>
+            <View style={{ paddingHorizontal: 10 }}>
+              <TouchableOpacity onPress={handleLogout} style={styles.button}>
+                <Text style={styles.buttonText}>Logout</Text>
+              </TouchableOpacity>
+            </View>
             {/* Edit Profile */}
-            <TouchableOpacity
-              onPress={() => {
-                setLoading(true);
-                navigation.navigate('EditProfile', {
-                  profileName: profileName,
-                  profilePicture: profileInfo.profilePicture,
-                  coverPicture: profileInfo.coverPicture,
-                  email: profileInfo.email,
-                });
-              }}
-              style={{ ...styles.button, width: 114 }}
-            >
-              <Text style={styles.buttonText}>Edit Profile</Text>
-            </TouchableOpacity>
-            {/* Edit Contact */}
-            <TouchableOpacity
-              onPress={() => {
-                setLoading(true);
-                navigation.navigate('EditContactInfo', {
-                  prevContactInfo: contactInfo,
-                });
-              }}
-              style={styles.button}
-            >
-              <Text style={styles.buttonText}>Edit Contact</Text>
-            </TouchableOpacity>
+            <View style={{ paddingHorizontal: 10 }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setLoading(true);
+                  navigation.navigate('EditProfile', {
+                    profileName: profileName,
+                    profilePicture: profileInfo.profilePicture,
+                    coverPicture: profileInfo.coverPicture,
+                    email: profileInfo.email,
+                  });
+                }}
+                style={{ ...styles.button, width: 114 }}
+              >
+                <Text style={styles.buttonText}>Edit Profile</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
         {/* Rate User Button */}
@@ -725,20 +735,26 @@ function ProfileScreen({ navigation, route }) {
         )}
       </View>
 
-      {/* Settings */}
-      <TouchableOpacity
-        onPress={() => {
-          setLoading(true);
-          navigation.navigate('SettingsScreen');
-        }}
-        style={{
-          position: 'absolute',
-          top: 0.28 * screenHeight,
-          right: 0.03 * screenHeight,
-        }}
-      >
-        <MaterialIcons name="settings" size={30} color="black" />
-      </TouchableOpacity>
+      {/* Back button */}
+      {!selfProfile && (
+          <TouchableOpacity
+            onPress={() => {
+              setLoading(true);
+              navigation.navigate('BottomNavOverlay');
+            }}
+            style={styles.circleContainer}
+          >
+            <View style={styles.circle}>
+              <MaterialCommunityIcons
+                name="arrow-left"
+                size={30}
+                color={
+                  theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet
+                }
+              />
+            </View>
+          </TouchableOpacity>
+        )}
 
       <View
         style={{
@@ -788,6 +804,34 @@ function ProfileScreen({ navigation, route }) {
         />
       </View>
 
+          {/* Settings */}
+      {selfProfile && (
+        <TouchableOpacity
+          onPress={() => {
+            setLoading(true);
+            navigation.navigate('SettingsScreen', {
+              prevContactInfo: contactInfo,
+              profileName: profileName,
+            });
+          }}
+          style={{
+            position: 'absolute',
+            top: Platform.OS == 'ios' ? 55 : 40,
+            right: Platform.OS == 'ios' ? 10 : 15,
+          }}
+        >
+          <View style={styles.circle}>
+            <MaterialIcons
+              name="settings"
+              size={30}
+              color={
+                theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet
+              }
+            />
+          </View>
+        </TouchableOpacity>
+      )}
+
       {/* Overlay for displaying selected listing */}
       {selectedListing && (
         <View
@@ -823,10 +867,10 @@ function ProfileScreen({ navigation, route }) {
                 setProfileInfo((prevProfileInfo) => ({
                   ...prevProfileInfo,
                   likedListings: prevProfileInfo.likedListings.filter(
-                    (item) => item.ListingId !== listingId,
+                    (item) => item.ListingId !== listingId
                   ),
                   userListings: prevProfileInfo.userListings.filter(
-                    (item) => item.ListingId !== listingId,
+                    (item) => item.ListingId !== listingId
                   ),
                 }));
 
@@ -836,12 +880,13 @@ function ProfileScreen({ navigation, route }) {
           </View>
           <TouchableOpacity
             onPress={() => setSelectedListing(null)}
-            style={{ ...styles.button, bottom: '4%' }}
+            style={{ ...styles.button, top: selfProfile ? Platform.OS === "ios" ? -0.035 * screenHeight : -0.05 * screenHeight : Platform.OS === "ios" ? -0.1 * screenHeight : -0.12 * screenHeight }}
           >
             <Text style={styles.buttonText}>Close</Text>
           </TouchableOpacity>
         </View>
       )}
+
     </SafeAreaView>
   );
 }

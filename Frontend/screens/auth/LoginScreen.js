@@ -16,6 +16,9 @@ import { checkListingExpiration } from '../../components/Notifications.js';
 import { serverIp } from '../../config.js';
 import Colors from '../../constants/Colors';
 import { setStoredCredentials } from './Authenticate.js';
+import { useThemeContext } from '../../components/visuals/ThemeProvider.js';
+import { getThemedStyles } from '../../constants/Styles.js';
+import * as SecureStore from 'expo-secure-store';
 
 /**
  * LoginScreen component.
@@ -23,6 +26,7 @@ import { setStoredCredentials } from './Authenticate.js';
  * @param {object} navigation - React Navigation object.
  */
 const LoginScreen = ({ navigation }) => {
+  const styles = getThemedStyles(useThemeContext().theme).LoginScreen;
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loggedIn, setLoggedIn] = useState(false);
@@ -58,7 +62,10 @@ const LoginScreen = ({ navigation }) => {
       await setStoredCredentials(username, password);
       clearFields();
       navigation.navigate('BottomNavOverlay');
-      checkListingExpiration();
+      const settingsStatus = await SecureStore.getItemAsync('accountActivityStatus');
+      if(settingsStatus === 'true'){
+        checkListingExpiration();
+      }
     } else {
       Alert.alert(responseData.error);
     }
@@ -110,106 +117,5 @@ const LoginScreen = ({ navigation }) => {
     </View>
   );
 };
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: Colors.BB_darkRedPurple,
-    alignItems: 'center',
-    padding: 16,
-  },
-  loginContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.BB_pink,
-    padding: 20,
-    borderRadius: 10,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 1,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  input: {
-    width: windowWidth * 0.45,
-    height: windowHeight * 0.04,
-    borderColor: 'gray',
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    borderRadius: 7,
-    backgroundColor: 'white',
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 1,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  loginTextContainer: {
-    width: windowWidth * 0.2,
-    backgroundColor: Colors.BB_rangeYellow,
-    padding: 5,
-    width: '100%',
-    borderColor: Colors.black,
-    borderRadius: 10,
-    fontWeight: 'bold',
-    shadowColor: 'black',
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 1,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  loginText: {
-    fontSize: 15,
-  },
-  createAccountTextContainer: {
-    marginTop: 10,
-    padding: 5,
-    borderColor: Colors.black,
-    borderRadius: 10,
-    color: 'black',
-    fontWeight: 'bold',
-  },
-  createAccountText: {
-    fontSize: 8,
-    color: 'white',
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-    shadowRadius: 3,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 1,
-        shadowRadius: 2,
-      },
-    }),
-  },
-});
 
 export default LoginScreen;

@@ -7,11 +7,12 @@
  * @namespace CreateListing
  * @memberof Screens
  */
+import { serverIp } from '../config';
 import * as FileSystem from 'expo-file-system';
 import { Image } from 'expo-image';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
-import React, { Component, memo } from 'react';
+import React, { useState, useEffect, useRef, memo } from 'react';
 import {
   Alert,
   Modal,
@@ -35,16 +36,18 @@ import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import { getLocationWithRetry } from '../constants/Utilities';
 import { handleListingCreation } from '../network/Service.js';
 import { getStoredUsername } from './auth/Authenticate.js';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
 
 const blurhash = 'L5H2EC=PM+yV0g-mq.wG9c010J}I';
 
-const LoadingView = memo(() => (
+const LoadingView = memo(({ styles }) => (
   <View style={styles.loading}>
     <BouncePulse />
   </View>
 ));
 
-const MinorLoadingView = memo(() => (
+const MinorLoadingView = memo(({ styles }) => (
   <View style={styles.minorLoadingContainer}>
     <BouncePulse />
   </View>
@@ -52,138 +55,117 @@ const MinorLoadingView = memo(() => (
 
 /**
  * @function
- * @name CreateListing
- * @extends Component
- * @returns {JSX.Element} A screen for creating a listing.
- * @memberof CreateListing
+ * @CreateListing - creates a listing
+ * @param {*} props
+ * @description - creates a listing
+ * @returns Returns a CreateListing screen
  */
-class CreateListing extends Component {
-  /**
-   * @param {*} props
-   * @constructor
-   * @description - CreateListing constructor
-   * @initialize state variables
-   * @initialize refs
-   * @memberof CreateListing
-   */
-  constructor(props) {
-    super(props);
-    this.state = {
-      title: '',
-      description: '',
-      price: '',
-      condition: '',
-      transactionPreference: '',
-      data: [],
-      selectedTags: [],
-      isScrollEnabled: true,
-      isTitleInvalid: false,
-      isDescriptionInvalid: false,
-      isPriceInvalid: false,
-      isImageInvalid: false,
-      isConditionInvalid: false,
-      isTransactionPreferenceInvalid: false,
-      isTagInvalid: false,
-      isMinorLoading: false,
-      isLoading: false,
-      selectedCurrency: 'USD',
-      selectedCurrencySymbol: '$',
-      showCurrencyOptions: false,
-      tagsData: [...tagOptions],
-      currencies: [...currencies],
-      selectImageModalVisible: false,
-    };
-    this.titleInput = React.createRef();
-    this.descriptionInput = React.createRef();
-    this.priceInput = React.createRef();
-    this.conditionInput = React.createRef();
-    this.transactionPreferenceInput = React.createRef();
-    this.imageInput = React.createRef();
-    this.tagInput = React.createRef();
-  }
+const CreateListing = memo(({ navigation, route }) => {
+  const { theme } = useThemeContext();
+  const styles = getThemedStyles(theme).CreateListing;
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState('');
+  const [condition, setCondition] = useState('');
+  const [transactionPreference, setTransactionPreference] = useState('');
+  const [data, setData] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [isScrollEnabled, setIsScrollEnabled] = useState(true);
+  const [isTitleInvalid, setIsTitleInvalid] = useState(false);
+  const [isDescriptionInvalid, setIsDescriptionInvalid] = useState(false);
+  const [isPriceInvalid, setIsPriceInvalid] = useState(false);
+  const [isConditionInvalid, setIsConditionInvalid] = useState(false);
+  const [isTransactionPreferenceInvalid, setIsTransactionPreferenceInvalid] =
+    useState(false);
+  const [isImageInvalid, setIsImageInvalid] = useState(false);
+  const [isTagInvalid, setIsTagInvalid] = useState(false);
+  const [isMinorLoading, setIsMinorLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
+  const [selectedCurrencySymbol, setSelectedCurrencySymbol] = useState('$');
+  const [showCurrencyOptions, setShowCurrencyOptions] = useState(false);
+  const [tagsData, setTagsData] = useState([...tagOptions]);
+  const [currencyOptions, setCurrencyOptions] = useState([...currencies]);
+  const [selectImageModalVisible, setSelectImageModalVisible] = useState(false);
+
+  const titleInput = useRef(null);
+  const descriptionInput = useRef(null);
+  const priceInput = useRef(null);
 
   /**
    * @function
    * @destructor - resets state variables
    * @memberof CreateListing
    */
-  destructor() {
-    this.setState({
-      title: '',
-      description: '',
-      price: '',
-      condition: '',
-      transactionPreference: '',
-      data: [],
-      selectedTags: [],
-      selectedCurrency: 'USD',
-      selectedCurrencySymbol: '$',
-      tagsData: [...tagOptions],
-      currencies: [...currencies],
-      selectImageModalVisible: false,
-      isTitleInvalid: false,
-      isDescriptionInvalid: false,
-      isPriceInvalid: false,
-      isConditionInvalid: false,
-      isTransactionPreferenceInvalid: false,
-      isImageInvalid: false,
-      isTagInvalid: false,
-      isMinorLoading: false,
-      isLoading: false,
-    });
-  }
+  const destructor = () => {
+    setTitle('');
+    setDescription('');
+    setPrice('');
+    setCondition('');
+    setTransactionPreference('');
+    setData([]);
+    setSelectedTags([]);
+    setSelectedCurrency('USD');
+    setSelectedCurrencySymbol('$');
+    setIsScrollEnabled(true);
+    setIsTitleInvalid(false);
+    setIsDescriptionInvalid(false);
+    setIsPriceInvalid(false);
+    setIsConditionInvalid(false);
+    setIsTransactionPreferenceInvalid(false);
+    setIsImageInvalid(false);
+    setIsTagInvalid(false);
+    setIsMinorLoading(false);
+    setIsLoading(false);
+  };
 
   /**
    * @function
    * @checkValidListing - checks if the listing is valid
-   * @stateUpdates - updates the states of the variables that check if the listing is valid
    * @returns Returns 0 if the listing is valid, -1 if the listing is invalid and 1 if no images are selected and 2 if too many images are selected and 3 if no tags are selected
    * @memberof CreateListing
    */
-  checkValidListing = () => {
-    let stateUpdates = {
-      isPriceInvalid:
-        this.state.price < 0 ||
-        this.state.price.length > 7 ||
-        this.state.price === '',
-      isTitleInvalid:
-        this.state.title.length === 0 || this.state.title.length > 25,
-      isDescriptionInvalid:
-        this.state.description.length === 0 ||
-        this.state.description.length > 500,
-      isConditionInvalid: ![
-        'Excellent',
-        'Good',
-        'Fair',
-        'Poor',
-        'For Parts',
-      ].includes(this.state.condition),
-      isTransactionPreferenceInvalid: ![
-        'Pickup',
-        'Meetup',
-        'Delivery',
-        'No Preference',
-      ].includes(this.state.transactionPreference),
-      isImageInvalid:
-        this.state.data.length === 0 || this.state.data.length > 9,
-      isTagInvalid: this.state.selectedTags.length === 0,
-    };
+  const checkValidListing = async () => {
+    const regex = /^(\d{0,6}(\.\d{2})?)$/;
 
-    this.setState(stateUpdates);
+    setIsPriceInvalid(!regex.test(price) && price.length !== 0);
+    setIsTitleInvalid(title.length === 0 || title.length > 25);
+    setIsDescriptionInvalid(
+      description.length === 0 || description.length > 500,
+    );
+    setIsConditionInvalid(
+      !['Excellent', 'Good', 'Fair', 'Poor', 'For Parts'].includes(condition),
+    );
+    setIsTransactionPreferenceInvalid(
+      !['Pickup', 'Meetup', 'Delivery', 'No Preference'].includes(
+        transactionPreference,
+      ),
+    );
+    setIsImageInvalid(data.length === 0 || data.length > 9);
+    setIsTagInvalid(selectedTags.length === 0);
 
-    if (Object.values(stateUpdates).includes(true)) {
+    if (
+      Object.values({
+        isPriceInvalid,
+        isTitleInvalid,
+        isDescriptionInvalid,
+        isConditionInvalid,
+        isTransactionPreferenceInvalid,
+        isImageInvalid,
+        isTagInvalid,
+      }).includes(true)
+    ) {
       return -1; // Invalid form
     }
-    if (this.state.data.length === 0) {
+    if (data.length === 0) {
       return 1; // No images selected
     }
-    if (this.state.data.length > 9) {
+    if (data.length > 9) {
       return 2; // Too many images
     }
-    if (this.state.selectedTags.length === 0) {
+    if (selectedTags.length === 0) {
       return 3; // No tags selected
     }
-
     return 0; // Valid form
   };
 
@@ -193,24 +175,12 @@ class CreateListing extends Component {
    * @param {Object} formData - object that is sent to the server with user inputted values
    * @memberof CreateListing
    */
-  handleCreateListing = async () => {
-    this.setState({ isLoading: true });
+  const handleCreateListing = async () => {
+    setIsLoading(true);
 
-    const {
-      title,
-      description,
-      price,
-      selectedTags,
-      data,
-      condition,
-      transactionPreference,
-      selectedCurrency,
-      selectedCurrencySymbol,
-    } = this.state; // Destructuring state
-
-    const returnCode = this.checkValidListing();
+    let returnCode = await checkValidListing();
     if (returnCode !== 0) {
-      this.setState({ isLoading: false });
+      setIsLoading(false); // Turn off loading if validation fails
       if (returnCode === -1) {
         Alert.alert('Error', 'Please correct the errors in the form.');
       } else if (returnCode === 1) {
@@ -227,24 +197,17 @@ class CreateListing extends Component {
       const formData = new FormData();
 
       data.forEach((image, index) => {
-        // Append each image as a file
         formData.append(`image_${index}`, {
-          uri: image.uri, // The URI of the image file
-          name: `image_${index}.jpg`, // The desired file name
-          type: 'image/jpeg', // The content type of the file
+          uri: image.uri,
+          name: `image_${index}.jpg`,
+          type: 'image/jpeg',
         });
       });
 
       let location = await getLocationWithRetry();
       const { latitude, longitude } = location.coords;
-
-      // Convert location to a JSON string
       const locationString = JSON.stringify({ latitude, longitude });
-
-      // Append the location to the formData
       formData.append('location', locationString);
-
-      console.log('Location:', latitude, longitude);
 
       formData.append('price', price);
       formData.append('title', title);
@@ -256,33 +219,42 @@ class CreateListing extends Component {
       formData.append('currency', selectedCurrency);
       formData.append('currencySymbol', selectedCurrencySymbol);
 
-      console.log('Create Listing Data:', formData);
+      const response = await fetch(`${serverIp}/api/createlisting`, {
+        method: 'POST',
+        body: formData,
+        timeout: 10000,
+      });
 
-      await handleListingCreation(formData);
-      this.destructor();
-      this.props.navigation.navigate('Home', { refresh: true });
+      if (response.status <= 201) {
+        const responseData = await response.json();
+        destructor();
+        navigation.navigate('Home', { refresh: true });
+      } else {
+        console.error('HTTP error! Status: ', response.status);
+        Alert.alert('Error', 'Failed to create listing.');
+      }
     } catch (error) {
       console.error(error);
       alert(error);
     } finally {
-      this.setState({ isLoading: false });
+      setIsLoading(false);
     }
   };
 
   /**
    * @function
-   * @componentDidMount - calls getPermissionAsync() when component mounts
+   * @useEffect - asks for permission to access camera roll when the screen is loaded
    */
-  componentDidMount() {
-    this.getPermissionAsync();
-  }
+  useEffect(() => {
+    getPermissionAsync();
+  }, []);
 
   /**
    * @function
    * @getPermissionAsync - asks for permission to access camera roll
    * @memberof CreateListing
    */
-  getPermissionAsync = async () => {
+  const getPermissionAsync = async () => {
     // Camera roll Permission
     const { status: libraryStatus } =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -304,32 +276,22 @@ class CreateListing extends Component {
    * @hideModal - hides the modal that contains camera/photo library options, changes the state of selectImageModalVisible to false
    * @memberof CreateListing
    */
-  showModal = () => this.setState({ selectImageModalVisible: true });
-  hideModal = () => this.setState({ selectImageModalVisible: false });
-
+  const showModal = () => setSelectImageModalVisible(true);
+  const hideModal = () => setSelectImageModalVisible(false);
   /**
    * @function
    * @handleCameraPick - allows the user to take photos with their camera
    * @returns Returns the photos that the user took
    * @description - allows the user to take photos with their camera
-   * @memberof CreateListing
    */
-  handleCameraPick = async () => {
-    try {
-      const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: false,
-        quality: 1,
-      });
+  const handleCameraPick = async () => {
+    const result = await ImagePicker.launchCameraAsync();
 
-      if (!result.cancelled) {
-        this.processImage(result);
-      }
-    } catch (error) {
-      console.error('Error taking photo:', error);
+    if (!result.canceled) {
+      processImage(result); // Process the first (and only) image
     }
 
-    this.hideModal();
+    hideModal();
   };
 
   /**
@@ -337,22 +299,21 @@ class CreateListing extends Component {
    * @handleLibraryPick - allows the user to select images from their library
    * @returns Returns the images that the user selected
    * @description - allows the user to select images from their library
-   * @memberof CreateListing
    */
-  handleLibraryPick = async () => {
+  const handleLibraryPick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
       quality: 1,
       allowsMultipleSelection: true,
-      selectionLimit: 9 - this.state.data.length,
+      selectionLimit: 9 - data.length,
     });
 
     if (!result.canceled && result.assets) {
-      this.processSelectedImages(result.assets);
+      processSelectedImages(result.assets);
     }
 
-    this.hideModal();
+    hideModal();
   };
 
   /**
@@ -363,13 +324,11 @@ class CreateListing extends Component {
    * @description - processes the image that the user selected
    * @memberof CreateListing
    */
-  processImage = async (image) => {
+  const processImage = async (image) => {
     // Process a single image
-    const manipulatedImage = await this.manipulateImage(image.uri);
+    const manipulatedImage = await manipulateImage(image.uri);
     if (manipulatedImage) {
-      this.setState((prevState) => ({
-        data: [...prevState.data, manipulatedImage],
-      }));
+      setData((currentData) => [...currentData, manipulatedImage]);
     }
   };
 
@@ -379,14 +338,15 @@ class CreateListing extends Component {
    * @param {*} assets
    * @memberof CreateListing
    */
-  processSelectedImages = async (assets) => {
+  const processSelectedImages = async (assets) => {
     // Process multiple images
     const processedImages = await Promise.all(
-      assets.map(async (asset) => this.manipulateImage(asset.uri))
+      assets.map(async (asset) => manipulateImage(asset.uri)),
     );
-    this.setState((prevState) => ({
-      data: [...prevState.data, ...processedImages.filter(Boolean)],
-    }));
+    setData((currentData) => [
+      ...currentData,
+      ...processedImages.filter(Boolean),
+    ]);
   };
 
   /**
@@ -396,7 +356,7 @@ class CreateListing extends Component {
    * @returns - an object with the name, key, and image file
    * @memberof CreateListing
    */
-  manipulateImage = async (uri) => {
+  const manipulateImage = async (uri) => {
     try {
       const originalSize = await FileSystem.getInfoAsync(uri);
       const manipulateResult = await ImageManipulator.manipulateAsync(uri, [], {
@@ -404,7 +364,7 @@ class CreateListing extends Component {
         format: ImageManipulator.SaveFormat.JPEG,
       });
       const compressedSize = await FileSystem.getInfoAsync(
-        manipulateResult.uri
+        manipulateResult.uri,
       );
       const savedData = originalSize.size - compressedSize.size;
 
@@ -415,9 +375,10 @@ class CreateListing extends Component {
         `compressed to :`,
         (compressedSize.size / (1024 * 1024)).toFixed(2),
         'MB',
-        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`
+        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`,
       );
 
+      setIsImageInvalid(false);
       return {
         name: manipulateResult.uri.split('/').pop(),
         key: String(Date.now()),
@@ -436,7 +397,7 @@ class CreateListing extends Component {
    * @returns - prompts a box to confirm, then removes the photo
    * @memberof CreateListing
    */
-  handleDeletePhoto = (index) => {
+  const handleDeletePhoto = (index) => {
     Alert.alert('Delete Photo', 'Are you sure you want to delete this photo?', [
       {
         text: 'Cancel',
@@ -445,9 +406,7 @@ class CreateListing extends Component {
       {
         text: 'Delete',
         onPress: () => {
-          this.setState((prevState) => ({
-            data: prevState.data.filter((_, i) => i !== index),
-          }));
+          setData((currentData) => currentData.filter((_, i) => i !== index));
         },
       },
     ]);
@@ -460,7 +419,7 @@ class CreateListing extends Component {
    * @returns Returns the images that the user selected
    * @memberof CreateListing
    */
-  render_item(item, index) {
+  const render_item = (item, index) => {
     return (
       <View style={styles.itemContainer} key={item.key}>
         {item.uri ? (
@@ -473,7 +432,7 @@ class CreateListing extends Component {
             />
             <TouchableOpacity
               style={styles.deleteButton}
-              onPress={() => this.handleDeletePhoto(index)}
+              onPress={() => handleDeletePhoto(index)}
             >
               <Text style={styles.deleteButtonText}>X</Text>
             </TouchableOpacity>
@@ -483,7 +442,7 @@ class CreateListing extends Component {
         )}
       </View>
     );
-  }
+  };
 
   /**
    * @function
@@ -491,7 +450,10 @@ class CreateListing extends Component {
    * @description - basic handle function
    * @memberof CreateListing
    */
-  handleDragStart = () => {};
+  const handleDragStart = () => {
+    // When a drag starts, disable scrolling
+    setIsScrollEnabled(false);
+  };
 
   /**
    * @function
@@ -499,9 +461,10 @@ class CreateListing extends Component {
    * @description - basic handle function
    * @memberof CreateListing
    */
-  handleDragRelease = (data) => {
+  const handleDragRelease = (data) => {
     // When the drag is released, enable scrolling
-    this.setState({ data, isScrollEnabled: true });
+    setData(data);
+    setIsScrollEnabled(true);
   };
 
   /**
@@ -512,15 +475,15 @@ class CreateListing extends Component {
    * @returns {void} This function doesn't return a value
    * @memberof CreateListing
    */
-  handlePriceChange = (text) => {
+  const handlePriceChange = (text) => {
     const regex = /^(\d{0,6}(\.\d{2})?)$/;
 
     if (regex.test(text) || text === '') {
       // If text matches the format (4 digits before decimal, 2 after) or is empty
-      this.setState({ isPriceInvalid: false });
+      setIsPriceInvalid(false);
     } else {
       // If the text doesn't match the format
-      this.setState({ isPriceInvalid: true });
+      setIsPriceInvalid(true);
     }
   };
 
@@ -538,38 +501,29 @@ class CreateListing extends Component {
    * @returns Returns the tags that the user selected
    * @memberof CreateListing
    */
-  handleTagPress = (index) => {
-    this.setState((prevState) => {
-      // Toggle the 'selected' state of the pressed tag
-      const newTagsData = prevState.tagsData.map((tag, idx) => {
-        if (idx === index) {
-          return { ...tag, selected: !tag.selected };
-        }
-        return tag;
-      });
-
-      // Get the name of the tag that was pressed
-      const pressedTagName = newTagsData[index].name;
-
-      // Check if the tag is already in the selectedTags array
-      const isAlreadySelected = prevState.selectedTags.includes(pressedTagName);
-
-      let newSelectedTags;
-      if (isAlreadySelected) {
-        // If already selected, remove it from the array
-        newSelectedTags = prevState.selectedTags.filter(
-          (tagName) => tagName !== pressedTagName
-        );
-      } else {
-        // If not selected, add it to the array
-        newSelectedTags = [...prevState.selectedTags, pressedTagName];
+  const handleTagPress = (index) => {
+    setIsTagInvalid(false);
+    const newTagsData = tagsData.map((tag, idx) => {
+      if (idx === index) {
+        return { ...tag, selected: !tag.selected };
       }
-
-      return {
-        tagsData: newTagsData, // Update tagsData with the new 'selected' state
-        selectedTags: newSelectedTags, // Update selectedTags array
-      };
+      return tag;
     });
+
+    const pressedTagName = newTagsData[index].name;
+    const isAlreadySelected = selectedTags.includes(pressedTagName);
+
+    let newSelectedTags;
+    if (isAlreadySelected) {
+      newSelectedTags = selectedTags.filter(
+        (tagName) => tagName !== pressedTagName,
+      );
+    } else {
+      newSelectedTags = [...selectedTags, pressedTagName];
+    }
+
+    setTagsData(newTagsData);
+    setSelectedTags(newSelectedTags);
   };
 
   /**
@@ -581,7 +535,7 @@ class CreateListing extends Component {
    * @returns {Array} - returns the array with tags grouped together
    * @memberof CreateListing
    */
-  groupTagsIntoRows = (tags, itemsPerRow) => {
+  const groupTagsIntoRows = (tags, itemsPerRow) => {
     return tags.reduce((rows, tag, index) => {
       if (index % itemsPerRow === 0) rows.push([]);
       rows[rows.length - 1].push(tag);
@@ -589,888 +543,453 @@ class CreateListing extends Component {
     }, []);
   };
 
-  /**
-   * @function
-   * @handleCurrencySelection - allows user to select a currency for their listing.
-   * @param {string} currencyName - The name of the selected currency.
-   * @param {string} currencySymbol - The symbol of the selected currency.
-   * @description Handles the selection of a currency, updating the component state with the chosen currency's name and symbol
-   * @returns {void} This function does not return a value
-   * @memberof CreateListing
-   */
-  handleCurrencySelection = (currencyName, currencySymbol) => {
-    this.setState({
-      selectedCurrency: currencyName,
-      selectedCurrencySymbol: currencySymbol,
-      showCurrencyOptions: false,
-    });
+  const handleCurrencySelection = (currencyName, currencySymbol) => {
+    setSelectedCurrency(currencyName);
+    setSelectedCurrencySymbol(currencySymbol);
+    setShowCurrencyOptions(false);
   };
-  /**
-   * @function
-   * @renderCurrencyOptions - renders the currecny option list
-   * @description Renders a list of currency options, allowing the user to select a currency by tapping on it.
-   * @returns {Array<JSX.Element>} Returns an array of JSX elements representing selectable currency options.
-   * @memberof CreateListing
-   */
-  renderCurrencyOptions = () => {
-    return this.state.currencies.map((currency) => (
+
+  const renderCurrencyOptions = () => {
+    return currencyOptions.map((currency) => (
       <TouchableOpacity
         key={currency.name}
-        onPress={() =>
-          this.handleCurrencySelection(currency.name, currency.symbol)
-        }
+        onPress={() => handleCurrencySelection(currency.name, currency.symbol)}
       >
         <Text style={styles.currencyOption}>
-          {this.state.selectedCurrency === currency.name ? '✓ ' : ''}
+          {selectedCurrency === currency.name ? '✓ ' : ''}
           {`${currency.name} ${currency.symbol}`}
         </Text>
       </TouchableOpacity>
     ));
   };
 
-  render() {
-    const {
-      isTitleInvalid,
-      isDescriptionInvalid,
-      isPriceInvalid,
-      isConditionInvalid,
-      isTransactionPreferenceInvalid,
-      isImageInvalid,
-      isTagInvalid,
-      selectedCurrency,
-    } = this.state;
+  const rowsOfTags = groupTagsIntoRows(tagsData, 3);
+  return (
+    <View style={styles.wrapper}>
+      {
+        Platform.OS === 'android' ? (
+          <TopBar imageVisible={!showCurrencyOptions} />
+        ) : (
+          <TopBar imageVisible={true} />
+        ) 
+      }
 
-    if (this.state.isLoading) {
-      return (
-        <SafeAreaView>
-          <TopBar />
-          <LoadingView />
-        </SafeAreaView>
-      );
-    }
-
-    if (this.state.isMinorLoading) {
-      return (
-        <SafeAreaView>
-          <TopBar />
-          <MinorLoadingView />
-        </SafeAreaView>
-      );
-    }
-
-    const rowsOfTags = this.groupTagsIntoRows(this.state.tagsData, 3);
-    return (
-      <View style={styles.wrapper}>
-        <TopBar />
-
-        <View style={styles.scrollfield}>
-          <ScrollView scrollEnabled={this.state.isScrollEnabled}>
-            {/* TOP BUTTON
-            <TouchableOpacity onPress={this.handleCreateListing}>
-              <View style={styles.createButton}>
-                <Text style={styles.buttonText}>Create Listing</Text>
-              </View>
-            </TouchableOpacity>
-            */}
-
+      <View style={styles.scrollfield}>
+        <ScrollView scrollEnabled={isScrollEnabled}>
+          <View style={styles.rowContainer}>
             <View style={styles.rowContainer}>
-              <View style={styles.rowContainer}>
-                <Text style={styles.label}>Title</Text>
-                {isTitleInvalid ? (
-                  <View style={styles.rowContainer}>
-                    <Text style={styles.asterisk}> *</Text>
-                    <Text style={styles.errorMessage}>
-                      {this.state.title == ''
-                        ? 'Title is required'
-                        : this.state.title.length > 25
+              <Text style={styles.label}>Title</Text>
+              {isTitleInvalid ? (
+                <View style={styles.rowContainer}>
+                  <Text style={styles.asterisk}> *</Text>
+                  <Text style={styles.errorMessage}>
+                    {title == ''
+                      ? 'Title is required'
+                      : title.length > 25
                         ? 'Title too long'
                         : 'Must enter a valid title'}
-                    </Text>
-                  </View>
-                ) : (
-                  ''
-                )}
-              </View>
-              <Text style={styles.characterCounter}>
-                {this.state.title.length}/25
-              </Text>
+                  </Text>
+                </View>
+              ) : (
+                ''
+              )}
             </View>
-            <TextInput
-              ref={this.titleInput}
-              style={[
-                styles.input,
-                isTitleInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
-              ]}
-              value={this.state.title}
-              onChangeText={(text) => {
-                this.setState({ title: text, isTitleInvalid: false });
-              }}
-              returnKeyType="next"
-              onSubmitEditing={() => this.descriptionInput.current.focus()}
-              maxLength={25}
-            />
+            <Text style={styles.characterCounter}>{title.length}/25</Text>
+          </View>
+          <TextInput
+            ref={titleInput}
+            style={[
+              styles.input,
+              isTitleInvalid
+                ? theme === 'dark'
+                  ? { borderColor: Colors.BB_violet, borderWidth: 1 }
+                  : { borderColor: Colors.BB_red, borderWidth: 1 }
+                : null,
+              theme === 'dark'
+                ? { backgroundColor: '#2d2d30', color: Colors.white }
+                : null,
+            ]}
+            value={title}
+            onChangeText={(text) => {
+              setTitle(text);
+              setIsTitleInvalid(false);
+            }}
+            returnKeyType="next"
+            onSubmitEditing={() => descriptionInput.current.focus()}
+            maxLength={25}
+          />
+          <View style={styles.rowContainer}>
             <View style={styles.rowContainer}>
-              <View style={styles.rowContainer}>
-                <Text style={styles.label}>Description</Text>
-                {isDescriptionInvalid && (
-                  <View style={styles.rowContainer}>
-                    <Text style={styles.asterisk}> *</Text>
-                    <Text style={styles.errorMessage}>
-                      {this.state.description.length > 500
-                        ? 'Description too long'
-                        : this.state.description.length === 0
+              <Text style={styles.label}>Description</Text>
+              {isDescriptionInvalid && (
+                <View style={styles.rowContainer}>
+                  <Text style={styles.asterisk}> *</Text>
+                  <Text style={styles.errorMessage}>
+                    {description.length > 500
+                      ? 'Description too long'
+                      : description.length === 0
                         ? 'Description is required'
                         : 'Must enter a valid description'}
-                    </Text>
-                  </View>
-                )}
-              </View>
-              <Text style={styles.characterCounter}>
-                {this.state.description.length}/500
-              </Text>
-            </View>
-            <TextInput
-              ref={this.descriptionInput}
-              style={[
-                styles.input,
-                styles.multilineInput,
-                (textAlign = 'left'),
-                isDescriptionInvalid
-                  ? { borderColor: 'red', borderWidth: 1 }
-                  : null,
-              ]}
-              value={this.state.description}
-              onChangeText={(text) => {
-                this.setState({
-                  description: text,
-                  isDescriptionInvalid: false,
-                });
-              }}
-              multiline={true}
-              textAlignVertical="top"
-              returnKeyType="next"
-              onSubmitEditing={() => this.priceInput.current.focus()}
-              maxLength={500}
-            />
-
-            <View style={styles.rowContainer}>
-              <Text style={styles.label}>Price</Text>
-              {isPriceInvalid ? (
-                <View style={styles.rowContainer}>
-                  <Text style={styles.asterisk}> *</Text>
-                  <Text style={styles.errorMessage}>
-                    {this.state.price == ''
-                      ? 'Price is required'
-                      : this.state.price < 0
-                      ? 'Invalid price'
-                      : this.state.price.length >= 7
-                      ? 'Price too large'
-                      : 'Must enter a valid price'}
                   </Text>
                 </View>
-              ) : (
-                ''
               )}
             </View>
+            <Text style={styles.characterCounter}>
+              {description.length}/500
+            </Text>
+          </View>
+          <TextInput
+            ref={descriptionInput}
+            style={[
+              styles.input,
+              styles.multilineInput,
+              (textAlign = 'left'),
+              isDescriptionInvalid
+                ? theme === 'dark'
+                  ? { borderColor: Colors.BB_violet, borderWidth: 1 }
+                  : { borderColor: Colors.BB_red, borderWidth: 1 }
+                : null,
+              theme === 'dark'
+                ? { backgroundColor: '#2d2d30', color: Colors.white }
+                : null,
+            ]}
+            value={description}
+            onChangeText={(text) => {
+              setDescription(text);
+              setIsDescriptionInvalid(false);
+            }}
+            multiline={true}
+            textAlignVertical="top"
+            returnKeyType="next"
+            onSubmitEditing={() => priceInput.current.focus()}
+            maxLength={500}
+          />
 
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginLeft: 20,
-              }}
-            >
-              <View style={{ ...styles.currencyButtonContainer }}>
-                <TouchableOpacity
-                  onPress={() => this.setState({ showCurrencyOptions: true })}
-                >
-                  <View style={styles.currencyButton}>
-                    <Text style={styles.currencyButtonText}>
-                      {this.state.selectedCurrency}{' '}
-                      {this.state.selectedCurrencySymbol}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-                {this.state.showCurrencyOptions && (
-                  <Modal
-                    visible={this.state.showCurrencyOptions}
-                    animationType="slide"
-                  >
-                    <ScrollView style={styles.currencyScrollView}>
-                      <View style={styles.modalContent}>
-                        {this.renderCurrencyOptions()}
-                      </View>
-                    </ScrollView>
-                    <View style={styles.closeButtonContainer}>
-                      <TouchableOpacity
-                        onPress={() =>
-                          this.setState({ showCurrencyOptions: false })
-                        }
-                      >
-                        <Text style={styles.closeButton}>Close</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </Modal>
-                )}
+          <View style={styles.rowContainer}>
+            <Text style={styles.label}>Price</Text>
+            {isPriceInvalid ? (
+              <View style={styles.rowContainer}>
+                <Text style={styles.asterisk}> *</Text>
+                <Text style={styles.errorMessage}>
+                  {price == ''
+                    ? 'Price is required'
+                    : /^(\d{0,6}(\.\d{2})?)$/.test(price)
+                      ? 'Must enter a valid price'
+                      : price < 0
+                        ? 'Invalid price'
+                        : price.length >= 7
+                          ? 'Price too large'
+                          : 'Must enter a valid price'}
+                </Text>
               </View>
-              <TextInput
-                ref={this.priceInput}
-                style={[
-                  styles.input,
-                  { width: '94.5%', marginLeft: -101.5 },
-                  isPriceInvalid
-                    ? { borderColor: 'red', borderWidth: 1 }
-                    : null,
-                ]}
-                value={this.state.price}
-                onChangeText={(text) => {
-                  this.setState({ price: text, isPriceInvalid: false });
-                  this.handlePriceChange(text);
-                }}
-                keyboardType="numeric"
-                returnKeyType="done"
-                placeholder={`0.00`}
-                maxLength={9}
-              />
-            </View>
+            ) : (
+              ''
+            )}
+          </View>
 
-            {/* TRANSACTION PREFERENCE*/}
-            <View style={styles.rowContainer}>
-              <Text style={{ ...styles.label, marginBottom: 0 }}>
-                Transaction Preference
-              </Text>
-              {isTransactionPreferenceInvalid ? (
-                <View style={styles.rowContainer}>
-                  <Text style={styles.asterisk}> *</Text>
-                  <Text style={styles.errorMessage}>
-                    Must select a preference
-                  </Text>
-                </View>
-              ) : (
-                ''
-              )}
-            </View>
-            <View style={styles.pickerStyle}>
-              {Platform.OS == 'ios' && <View style={styles.pickerBackground} />}
-              <RNPickerSelect
-                selectedValue={this.state.transactionPreference}
-                onValueChange={(itemValue, itemIndex) => {
-                  this.setState({ transactionPreference: itemValue });
-                  this.setState({ isTransactionPreferenceInvalid: false });
-                }}
-                items={[
-                  { label: 'Pickup', value: 'Pickup' },
-                  { label: 'Meetup', value: 'Meetup' },
-                  { label: 'Delivery', value: 'Delivery' },
-                  { label: 'No Preference', value: 'No Preference' },
-                ]}
-              />
-            </View>
-
-            {/* ITEM CONDITON */}
-            <View style={styles.rowContainer}>
-              <Text style={{ ...styles.label, marginTop: 10, marginBottom: 0 }}>
-                Condition
-              </Text>
-              {isConditionInvalid ? (
-                <View style={styles.rowContainer}>
-                  <Text style={styles.asterisk}> *</Text>
-                  <Text style={styles.errorMessage}>
-                    Must select a condition
-                  </Text>
-                </View>
-              ) : (
-                ''
-              )}
-            </View>
-            <View style={{ ...styles.pickerStyle }}>
-              {Platform.OS == 'ios' && <View style={styles.pickerBackground} />}
-              <RNPickerSelect
-                selectedValue={this.state.condition}
-                onValueChange={(itemValue, itemIndex) => {
-                  this.setState({ condition: itemValue });
-                  this.setState({ isConditionInvalid: false });
-                }}
-                items={[
-                  { label: 'Excellent', value: 'Excellent' },
-                  { label: 'Good', value: 'Good' },
-                  { label: 'Fair', value: 'Fair' },
-                  { label: 'Poor', value: 'Poor' },
-                  { label: 'For Parts', value: 'For Parts' },
-                ]}
-              />
-            </View>
-
-            <TouchableOpacity onPress={this.showModal} style={styles.button}>
-              <Text style={styles.buttonText}>Select Images</Text>
-            </TouchableOpacity>
-            <View
-              style={[
-                styles.imageField,
-                isImageInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
-              ]}
-            >
-              <View style={styles.innerField}>
-                <DraggableGrid
-                  numColumns={3}
-                  renderItem={(item, index) => this.render_item(item, index)}
-                  data={this.state.data}
-                  onDragRelease={this.handleDragRelease}
-                  onDragStart={this.handleDragStart}
-                />
-              </View>
-            </View>
-            <ScrollView
-              style={[
-                styles.tagField,
-                isTagInvalid ? { borderColor: 'red', borderWidth: 1 } : null,
-              ]}
-            >
-              <View>
-                {rowsOfTags.map((row, rowIndex) => (
-                  <View key={rowIndex} style={styles.tagRowContainer}>
-                    {row.map((tag, tagIndex) => (
-                      <TouchableOpacity
-                        key={tagIndex}
-                        style={styles.tagContainer}
-                        onPress={() => {
-                          this.handleTagPress(tagIndex + rowIndex * 3);
-                          if (this.state.selectedTags.length > 0) {
-                            this.setState({ isTagInvalid: false });
-                          }
-                        }}
-                      >
-                        <View
-                          style={[
-                            styles.tagSelected,
-                            { opacity: tag.selected ? 1 : 0.3 },
-                          ]}
-                        />
-                        <View
-                          style={[
-                            styles.rhombus,
-                            { opacity: tag.selected ? 0.15 : 0 },
-                          ]}
-                        />
-                        <Text style={styles.tagText}>{tag.name}</Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                ))}
-              </View>
-            </ScrollView>
-
-            <TouchableOpacity onPress={this.handleCreateListing}>
-              <View style={[styles.createButton, (top = 30), (bottom = 0)]}>
-                <Text style={styles.buttonText}>Create Listing</Text>
-              </View>
-            </TouchableOpacity>
-
-            <Text style={styles.spacer} />
-          </ScrollView>
-
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={this.state.selectImageModalVisible}
-            onRequestClose={() => {
-              this.hideModal();
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginLeft: 20,
             }}
           >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <TouchableOpacity
-                  style={styles.imagePickerButton}
-                  onPress={this.handleCameraPick}
+            <View style={{ ...styles.currencyButtonContainer }}>
+              <TouchableOpacity onPress={() => setShowCurrencyOptions(true)}>
+                <View
+                  style={[
+                    styles.currencyButton,
+                    theme === 'dark' ? { backgroundColor: '#1e1e1e' } : null,
+                  ]}
                 >
-                  <Text style={styles.imagePickerButtonText}>Camera</Text>
-                  <MaterialIcons
-                    name="camera-alt"
-                    size={24}
-                    color="black"
-                    style={{ top: 10, left: '90%' }}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.imagePickerButton}
-                  onPress={this.handleLibraryPick}
-                >
-                  <Text style={styles.imagePickerButtonText}>
-                    Photo Library
+                  <Text style={styles.currencyButtonText}>
+                    {selectedCurrency} {selectedCurrencySymbol}
                   </Text>
-                  <MaterialIcons
-                    name="photo-library"
-                    size={24}
-                    color="black"
-                    style={{ top: 10, left: '50%' }}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.imagePickerButton}
-                  onPress={() => this.hideModal()}
-                >
-                  <Text style={styles.imagePickerButtonText}>Cancel</Text>
-                </TouchableOpacity>
-              </View>
+                </View>
+              </TouchableOpacity>
+              
             </View>
-          </Modal>
-        </View>
+            <TextInput
+              ref={priceInput}
+              style={[
+                styles.input,
+                { width: '94.5%', marginLeft: -101.5 },
+                isPriceInvalid
+                  ? theme === 'dark'
+                    ? { borderColor: Colors.BB_violet, borderWidth: 1 }
+                    : { borderColor: Colors.BB_red, borderWidth: 1 }
+                  : null,
+                theme === 'dark'
+                  ? { backgroundColor: '#2d2d30', color: Colors.white }
+                  : null,
+              ]}
+              value={price}
+              onChangeText={(text) => {
+                setPrice(text);
+                setIsPriceInvalid(false);
+                handlePriceChange(text);
+              }}
+              keyboardType="numeric"
+              returnKeyType="done"
+              placeholder={`0.00`}
+              maxLength={9}
+            />
+          </View>
+
+          {/* TRANSACTION PREFERENCE*/}
+          <View style={styles.rowContainer}>
+            <Text style={{ ...styles.label, marginBottom: 0 }}>
+              Transaction Preference
+            </Text>
+            {isTransactionPreferenceInvalid ? (
+              <View style={styles.rowContainer}>
+                <Text style={styles.asterisk}> *</Text>
+                <Text style={styles.errorMessage}>
+                  Must select a preference
+                </Text>
+              </View>
+            ) : (
+              ''
+            )}
+          </View>
+          <View style={styles.pickerStyle}>
+            {Platform.OS == 'ios' && (
+              <View
+                style={[
+                  styles.pickerBackground,
+                  theme === 'dark' ? { backgroundColor: '#2d2d30' } : null,
+                ]}
+              />
+            )}
+            <RNPickerSelect
+              selectedValue={transactionPreference}
+              onValueChange={(itemValue, itemIndex) => {
+                setTransactionPreference(itemValue);
+                setIsTransactionPreferenceInvalid(false);
+              }}
+              items={[
+                { label: 'Pickup', value: 'Pickup' },
+                { label: 'Meetup', value: 'Meetup' },
+                { label: 'Delivery', value: 'Delivery' },
+                { label: 'No Preference', value: 'No Preference' },
+              ]}
+              style={{
+                inputIOS: {
+                  color: theme === 'dark' ? Colors.white : Colors.black,
+                  left: 5,
+                },
+                inputAndroid: {
+                  color: theme === 'dark' ? Colors.white : Colors.black,
+                  left: 5,
+                },
+              }}
+            />
+          </View>
+
+          {/* ITEM CONDITON */}
+          <View style={styles.rowContainer}>
+            <Text style={{ ...styles.label, marginTop: 10, marginBottom: 0 }}>
+              Condition
+            </Text>
+            {isConditionInvalid ? (
+              <View style={styles.rowContainer}>
+                <Text style={styles.asterisk}> *</Text>
+                <Text style={styles.errorMessage}>Must select a condition</Text>
+              </View>
+            ) : (
+              ''
+            )}
+          </View>
+          <View style={{ ...styles.pickerStyle }}>
+            {Platform.OS == 'ios' && (
+              <View
+                style={[
+                  styles.pickerBackground,
+                  theme === 'dark' ? { backgroundColor: '#2d2d30' } : null,
+                ]}
+              />
+            )}
+            <RNPickerSelect
+              selectedValue={condition}
+              onValueChange={(itemValue, itemIndex) => {
+                setCondition(itemValue);
+                setIsConditionInvalid(false);
+              }}
+              items={[
+                { label: 'Excellent', value: 'Excellent' },
+                { label: 'Good', value: 'Good' },
+                { label: 'Fair', value: 'Fair' },
+                { label: 'Poor', value: 'Poor' },
+                { label: 'For Parts', value: 'For Parts' },
+              ]}
+              style={{
+                inputIOS: {
+                  color: theme === 'dark' ? Colors.white : Colors.black,
+                  left: 5,
+                },
+                inputAndroid: {
+                  color: theme === 'dark' ? Colors.white : Colors.black,
+                  left: 5,
+                },
+              }}
+            />
+          </View>
+
+          <TouchableOpacity onPress={showModal} style={styles.button}>
+            <Text style={styles.buttonText}>Select Images</Text>
+          </TouchableOpacity>
+          <View
+            style={[
+              styles.imageField,
+              isImageInvalid
+                ? theme === 'dark'
+                  ? { borderColor: Colors.BB_violet, borderWidth: 1 }
+                  : { borderColor: Colors.BB_red, borderWidth: 1 }
+                : null,
+              theme === 'dark' ? { backgroundColor: '#2d2d30' } : null,
+            ]}
+          >
+            <View style={styles.innerField}>
+              <DraggableGrid
+                numColumns={3}
+                renderItem={(item, index) => render_item(item, index)}
+                data={data}
+                onDragRelease={handleDragRelease}
+                onDragStart={handleDragStart}
+              />
+            </View>
+          </View>
+          <ScrollView
+            style={[
+              styles.tagField,
+              isTagInvalid
+                ? theme === 'dark'
+                  ? { borderColor: Colors.BB_violet, borderWidth: 1 }
+                  : { borderColor: Colors.BB_red, borderWidth: 1 }
+                : null,
+              theme === 'dark' ? { backgroundColor: '#2d2d30' } : null,
+            ]}
+          >
+            <View>
+              {rowsOfTags.map((row, rowIndex) => (
+                <View key={rowIndex} style={styles.tagRowContainer}>
+                  {row.map((tag, tagIndex) => (
+                    <TouchableOpacity
+                      key={tagIndex}
+                      style={styles.tagContainer}
+                      onPress={() => {
+                        handleTagPress(tagIndex + rowIndex * 3);
+                        if (selectedTags.length > 0) {
+                          setIsTagInvalid(false);
+                        }
+                      }}
+                    >
+                      <View
+                        style={[
+                          styles.tagSelected,
+                          theme === 'dark'
+                            ? { backgroundColor: Colors.BB_violet }
+                            : null,
+                          { opacity: tag.selected ? 1 : 0.3 },
+                        ]}
+                      />
+                      <View
+                        style={[
+                          styles.rhombus,
+                          theme === 'dark'
+                            ? { backgroundColor: Colors.white }
+                            : null,
+                          { opacity: tag.selected ? 0.15 : 0 },
+                        ]}
+                      />
+                      <Text style={styles.tagText}>{tag.name}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              ))}
+            </View>
+          </ScrollView>
+
+          <TouchableOpacity onPress={handleCreateListing}>
+            <View style={[styles.createButton, (top = 30), (bottom = 0)]}>
+              <Text style={styles.buttonText}>Create Listing</Text>
+            </View>
+          </TouchableOpacity>
+
+          <Text style={styles.spacer} />
+        </ScrollView>
+
+        {showCurrencyOptions && (
+                <Modal visible={showCurrencyOptions} animationType="slide">
+                  <View style={styles.modalHeader} />
+                  <ScrollView style={styles.currencyScrollView}>
+                    <View style={styles.modalContent}>
+                      <View style={styles.currencyOptionsContainer}>
+                        {renderCurrencyOptions()}
+                      </View>
+                    </View>
+                  </ScrollView>
+                  <View style={styles.modalFooter} />
+                  <TouchableOpacity
+                    onPress={() => setShowCurrencyOptions(false)}
+                    style={styles.closeButtonContainer}
+                  >
+                    <View style={styles.closeButton}>
+                      <Text style={styles.closeButtonText}>Close</Text>
+                    </View>
+                  </TouchableOpacity>
+                </Modal>
+              )}
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={selectImageModalVisible}
+          onRequestClose={() => {
+            hideModal();
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <TouchableOpacity
+                style={styles.imagePickerButton}
+                onPress={handleCameraPick}
+              >
+                <Text style={styles.imagePickerButtonText}>Camera</Text>
+                <MaterialIcons
+                  name="camera-alt"
+                  size={24}
+                  color={theme === 'dark' ? Colors.BB_violet : Colors.black}
+                  style={{ top: 10, left: '90%' }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.imagePickerButton}
+                onPress={handleLibraryPick}
+              >
+                <Text style={styles.imagePickerButtonText}>Photo Library</Text>
+                <MaterialIcons
+                  name="photo-library"
+                  size={24}
+                  color={theme === 'dark' ? Colors.BB_violet : Colors.black}
+                  style={{ top: 10, left: '50%' }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.imagePickerButton}
+                onPress={() => hideModal()}
+              >
+                <Text style={styles.imagePickerButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
-    );
-  }
-}
+
+      {isMinorLoading && <MinorLoadingView styles={styles} />}
+      {isLoading && <LoadingView styles={styles} />}
+    </View>
+  );
+});
 
 export default CreateListing;
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    width: '100%',
-    marginTop: 0,
-    backgroundColor: Colors.BB_bone,
-  },
-  scrollfield: {
-    top: 0.08 * screenHeight,
-    height: 'auto',
-    backgroundColor: Colors.BB_bone,
-  },
-  buttonText2: {
-    marginTop: 10,
-    color: Colors.black,
-    fontSize: 22,
-    alignSelf: 'center',
-    fontWeight: 'bold',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.white,
-  },
-  minorLoadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-  },
-  imageField: {
-    alignSelf: 'center',
-    width: '95%',
-    height: 0.95 * screenWidth,
-    backgroundColor: Colors.white,
-    borderRadius: 20,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'gray',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.9,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  deleteButton: {
-    position: 'absolute',
-    alignContent: 'center',
-    justifyContent: 'center',
-    width: 20,
-    height: 20,
-    top: 2,
-    right: 2,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-    borderRadius: 12,
-    zIndex: 2,
-    textAlign: 'center',
-  },
-  deleteButtonText: {
-    color: 'red',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    alignSelf: 'center',
-  },
-  ///////////////
-  tagField: {
-    alignSelf: 'center',
-    width: '95%',
-    height: 0.4 * screenHeight,
-    backgroundColor: Colors.white,
-    borderRadius: 20,
-    top: 30,
-    marginBottom: 50,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  tagRowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 10,
-    marginTop: 10,
-  },
-  tagContainer: {
-    marginLeft: 10,
-    marginRight: 10,
-    borderRadius: 20,
-    alignContent: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-    height: 0.075 * screenHeight,
-    width: 0.3 * screenWidth,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'gray',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.9,
-        shadowRadius: 2,
-      },
-    }),
-  },
-  tagText: {
-    color: Colors.white,
-    fontSize: 18,
-    alignSelf: 'center',
-    fontWeight: 'bold',
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  rhombus: {
-    alignSelf: 'center',
-    position: 'absolute',
-    width: 0.055 * screenHeight,
-    aspectRatio: 1,
-    backgroundColor: Colors.BB_darkPink,
-    opacity: 0.15,
-    transform: [{ rotate: '45deg' }],
-  },
-  tagSelected: {
-    alignSelf: 'center',
-    backgroundColor: Colors.BB_darkRedPurple,
-    borderRadius: 20,
-    height: '100%',
-    width: '100%',
-    position: 'absolute',
-  },
-  ///////////////////////////
-  innerField: {
-    margin: 10,
-    marginTop: 20,
-    width: '95%',
-    height: '95%',
-  },
-  itemContainer: {
-    width: '33%',
-    height: '33%',
-    alignContent: 'center',
-    justifyContent: 'center',
-  },
-  item: {
-    marginTop: 10,
-    width: 0.25 * screenWidth,
-    height: 0.25 * screenWidth,
-    borderRadius: 8,
-    borderColor: Colors.BB_darkRedPurple,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'gray',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.9,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-    backgroundColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 8,
-  },
-  container: {
-    flex: 1,
-    paddingTop: 50, //top of page
-    padding: 30, //all around
-    backgroundColor: '#D6447F',
-  },
-  createButton: {
-    marginTop: 20,
-    alignSelf: 'center',
-    width: screenWidth * 0.4,
-    backgroundColor: Colors.BB_darkRedPurple,
-    padding: 5,
-    borderRadius: 10,
-    fontWeight: 'bold',
-    height: 36,
-    width: 150,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'gray',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.9,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-
-  label: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: 'black',
-    marginTop: 20,
-    left: 0.05 * screenWidth,
-  },
-  asterisk: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'red',
-    left: 0.05 * screenWidth,
-  },
-  errorMessage: {
-    fontSize: 12,
-    color: 'red',
-    marginLeft: 10,
-    top: 0.008 * screenHeight,
-    left: 0.05 * screenWidth,
-  },
-
-  input: {
-    height: 40,
-    borderColor: Colors.BB_black,
-    borderRadius: 10,
-    backgroundColor: 'white',
-    opacity: 0.9,
-    //marginBottom: 10,
-    width: '90%',
-    left: '5%',
-    ...Platform.select({
-      ios: {
-        shadowColor: 'gray',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.9,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-    textAlign: 'center',
-    color: 'black',
-  },
-  multilineInput: {
-    height: 120,
-  },
-  pickerStyle: {
-    //bottomMargin: 10,
-    width: '90%',
-    left: 0.05 * screenWidth,
-    color: Colors.white,
-    justifyContent: 'center',
-    borderRadius: 10,
-    ...Platform.select({
-      ios: {
-        height: 40,
-        marginTop: 10,
-        marginBottom: 10,
-        padding: 10,
-      },
-    }),
-    android: {
-      elevation: 10,
-    },
-  },
-  pickerBackground: {
-    position: 'absolute',
-    width: 0.9 * screenWidth,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: Colors.white,
-    shadowColor: 'gray',
-    shadowOffset: { width: 1, height: 1 },
-    shadowOpacity: 0.9,
-    shadowRadius: 2,
-  },
-  button: {
-    width: 150,
-    height: 36,
-    backgroundColor: Colors.BB_darkRedPurple,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 30,
-    alignSelf: 'center',
-    borderRadius: 10,
-    marginTop: 20,
-    borderColor: Colors.black,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'gray',
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 0.9,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  buttonText: {
-    fontSize: 18,
-    color: 'white',
-    alignSelf: 'center',
-  },
-
-  rowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  characterCounter: {
-    fontSize: 12,
-    color: 'black',
-    position: 'absolute',
-    right: 0.05 * screenWidth,
-  },
-  loading: {
-    height: screenHeight,
-    width: screenWidth,
-    position: 'absolute',
-    backgroundColor: 'rgba(0,0,0,0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1,
-  },
-  spacer: {
-    height: 0.15 * screenHeight,
-  },
-  currencyButtonContainer: {
-    alignItems: 'center',
-    zIndex: 2,
-    //marginTop: 20,
-  },
-  currencyButton: {
-    width: 100,
-    height: 40,
-    backgroundColor: Colors.BB_darkRedPurple,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    borderColor: 'black',
-    //marginTop: -29.5
-  },
-  currencyButtonText: {
-    fontSize: 18,
-    color: 'white',
-    alignSelf: 'center',
-  },
-  modalContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.BB_bone,
-  },
-  currencyOption: {
-    fontSize: 24,
-    color: 'black',
-    marginVertical: 10,
-  },
-  closeButtonContainer: {
-    top: 0.8 * screenHeight,
-    backgroundColor: Colors.BB_bone,
-    alignSelf: 'center',
-    zIndex: 2,
-    marginTop: 20,
-    borderRadius: 10,
-    width: '25%',
-    height: '20%',
-  },
-  closeButton: {
-    position: 'absolute',
-    fontSize: 24,
-    color: 'black',
-    borderRadius: 10,
-    textAlign: 'center',
-    alignSelf: 'center',
-  },
-  currencyScrollView: {
-    position: 'absolute',
-    backgroundColor: Colors.BB_bone,
-    width: '100%',
-    height: '100%',
-    top: 0.1 * screenHeight,
-  },
-  //Image Select Modal
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 5,
-      },
-    }),
-  },
-  imagePickerButton: {
-    flexDirection: 'row',
-    width: 200,
-    height: 50,
-    marginBottom: 10,
-    backgroundColor: Colors.BB_bone,
-    borderRadius: 10,
-    borderColor: Colors.black,
-    alignContent: 'center',
-    justifyContent: 'center',
-    textAlign: 'center',
-  },
-  imagePickerButtonText: {
-    fontSize: 18,
-    color: 'black',
-    alignSelf: 'center',
-  },
-});

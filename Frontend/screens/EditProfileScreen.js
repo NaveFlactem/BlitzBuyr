@@ -14,19 +14,21 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import React, { memo, useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
+  Alert,
   Image,
-  Platform,
   SafeAreaView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
+  Platform,
 } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
+import BouncePulse from '../components/visuals/BouncePulse';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
 import Colors from '../constants/Colors';
-import { screenWidth } from '../constants/ScreenDimensions.js';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
+import { getThemedStyles } from '../constants/Styles';
 import { handleDeleteAccount, saveProfileInfo } from '../network/Service.js';
 import {
   clearStoredCredentials,
@@ -34,7 +36,6 @@ import {
   getStoredUsername,
   setStoredCredentials,
 } from './auth/Authenticate.js';
-
 /**
  *
  * @function
@@ -55,6 +56,39 @@ const EditProfileScreen = ({ navigation, route }) => {
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const [selectedProfilePicture, setSelectedProfilePicture] = useState('');
   const [selectedCoverPicture, setSelectedCoverPicture] = useState('');
+  const [selectProfileImageModalVisible, setSelectProfileImageModalVisible] =
+    useState(false);
+  const [selectCoverImageModalVisible, setSelectCoverImageModalVisible] =
+    useState(false);
+  const { theme } = useThemeContext();
+  const styles = getThemedStyles(useThemeContext().theme).EditProfileScreen;
+
+  /**
+   * @function
+   * @showModalProfile - shows the modal for selecting a profile picture
+   * @setSelectProfileImageModalVisible - sets the modal for selecting a profile picture to visible
+   */
+  const showModalProfile = () => {
+    setSelectProfileImageModalVisible(true);
+  };
+  /**
+   * @function
+   * @showModalCover - shows the modal for selecting a cover picture
+   * @setSelectCoverImageModalVisible - sets the modal for selecting a cover picture to visible
+   */
+  const showModalCover = () => {
+    setSelectCoverImageModalVisible(true);
+  };
+  /**
+   * @function
+   * @hideModal - hides the modal for selecting a picture
+   * @setSelectProfileImageModalVisible - sets the modal for selecting a profile picture to invisible
+   * @setSelectCoverImageModalVisible - sets the modal for selecting a cover picture to invisible
+   */
+  const hideModal = () => {
+    setSelectProfileImageModalVisible(false);
+    setSelectCoverImageModalVisible(false);
+  };
 
   /**
    *
@@ -96,6 +130,51 @@ const EditProfileScreen = ({ navigation, route }) => {
   }, [profileName, selectedProfilePicture, selectedCoverPicture, password]);
 
   /**
+   * @function
+   * @handleCameraPick - allows the user to take photos with their camera
+   * @returns Returns the photos that the user took
+   * @description - allows the user to take photos with their camera
+   */
+  const handleCameraPick = async () => {
+    const result = await ImagePicker.launchCameraAsync();
+
+    if (!result.canceled) {
+      if (selectProfileImageModalVisible) {
+        handleProfileImageSelection(result.assets);
+      } else if (selectCoverImageModalVisible) {
+        handleCoverImageSelection(result.assets);
+      }
+    }
+
+    hideModal();
+  };
+
+  /**
+   * @function
+   * @handleLibraryPick - allows the user to select images from their library
+   * @returns Returns the images that the user selected
+   * @description - allows the user to select images from their library
+   */
+  const handleLibraryPick = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      aspect: [4, 4],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets) {
+      if (selectProfileImageModalVisible) {
+        handleProfileImageSelection(result.assets);
+      } else if (selectCoverImageModalVisible) {
+        handleCoverImageSelection(result.assets);
+      }
+    }
+
+    hideModal();
+  };
+
+  /**
    *
    * @function
    * @name handleProfileImageSelection
@@ -106,33 +185,20 @@ const EditProfileScreen = ({ navigation, route }) => {
    * @throws {Error} Throws an error if there's an issue during image processing.
    */
   //Functions for touchable opacity prompts for changing profile/cover photo
-  const handleProfileImageSelection = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 1,
-    });
+  const handleProfileImageSelection = async (images) => {
+    try {
+      const img = images[0]; // Assuming the first image is the one you want
+      const manipulateResult = await ImageManipulator.manipulateAsync(
+        img.uri,
+        [],
+        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+      );
 
-    if (!result.canceled) {
-      try {
-        const manipulateResult = await ImageManipulator.manipulateAsync(
-          result.assets[0].uri,
-          [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
-        );
-        let localUri = manipulateResult.uri;
-        let filename = localUri.split('/').pop();
-
-        result = localUri;
-      } catch (error) {
-        console.error('Image processing error:', error);
-        return null;
-      }
-      setSelectedProfilePicture(result);
-      console.log(`Profile picture ${result} selected.`);
-    } else {
-      console.log('Profile Picture change function was canceled.');
+      setSelectedProfilePicture(manipulateResult.uri);
+      console.log(`Profile picture ${manipulateResult.uri} selected.`);
+    } catch (error) {
+      console.error('Image processing error:', error);
+      return null;
     }
   };
 
@@ -147,33 +213,20 @@ const EditProfileScreen = ({ navigation, route }) => {
    * @throws {Error} Throws an error if there's an issue during image processing.
    */
 
-  const handleCoverImageSelection = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 4],
-      quality: 1,
-    });
+  const handleCoverImageSelection = async (images) => {
+    try {
+      const img = images[0]; // Assuming the first image is the one you want
+      const manipulateResult = await ImageManipulator.manipulateAsync(
+        img.uri,
+        [],
+        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+      );
 
-    if (!result.canceled) {
-      try {
-        const manipulateResult = await ImageManipulator.manipulateAsync(
-          result.assets[0].uri,
-          [],
-          { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
-        );
-        let localUri = manipulateResult.uri;
-        let filename = localUri.split('/').pop();
-
-        result = localUri;
-      } catch (error) {
-        console.error('Image processing error:', error);
-        return null;
-      }
-      setSelectedCoverPicture(result);
-      console.log(`Cover picture ${result} selected.`);
-    } else {
-      console.log('Cover Picture change function was canceled.');
+      setSelectedCoverPicture(manipulateResult.uri);
+      console.log(`Cover picture ${manipulateResult.uri} selected.`);
+    } catch (error) {
+      console.error('Image processing error:', error);
+      return null;
     }
   };
 
@@ -189,10 +242,31 @@ const EditProfileScreen = ({ navigation, route }) => {
    * @throws {Error} Throws an error if there's an issue during the editing process.
    */
   const saveChanges = async () => {
+    const emailPattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+
+    if (profileName === '' || email === '') {
+      Alert.alert('Invalid Input', 'Please fill out all fields.');
+      return;
+    }
+
+    if (!emailPattern.test(email)) {
+      Alert.alert('Invalid Email', 'Please enter a valid email address.');
+      return;
+    }
+
+    if (profileName.length > 20) {
+      Alert.alert('Invalid Input', 'Name must be less than 20 characters.');
+      return;
+    }
+
+    if (profileName.length < 4) {
+      Alert.alert('Invalid Input', 'Name must be at least 4 characters.');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('username', getStoredUsername());
     formData.append('profileName', profileName);
-    formData.append('password', password);
     formData.append('email', email);
 
     if (selectedCoverPicture != route.params.coverPicture) {
@@ -203,7 +277,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       });
     }
 
-    if (selectedProfilePicture != route.params.ProfilePicture) {
+    if (selectedProfilePicture != route.params.profilePicture) {
       formData.append('profilePicture', {
         uri: selectedProfilePicture,
         name: 'profilePicture.jpg',
@@ -271,302 +345,186 @@ const EditProfileScreen = ({ navigation, route }) => {
   if (loading) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color="blue" />
-        <Text>Loading...</Text>
+        <BouncePulse />
       </View>
     );
   }
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: 'white',
-        paddingHorizontal: 22,
-      }}
-    >
-      {/* Edit Profile and Go Back Arrow Column */}
-      <View
-        style={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginBottom: 25,
-          flexDirection: 'row',
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => {
-            setLoading(true);
-            navigation.navigate('BottomNavOverlay');
-          }}
-          style={styles.circleContainer}
-        >
-          <View style={styles.circle}>
-            <MaterialCommunityIcons name="arrow-left" size={30} color="black" />
-          </View>
-        </TouchableOpacity>
-
-        <Text
-          style={{
-            position: 'absolute',
-            color: Colors.BB_darkRedPurple,
-            fontSize: 22.5,
-            fontWeight: 'bold',
-            top: 20,
-          }}
-        >
-          Edit Profile
-        </Text>
-      </View>
-
-      <ScrollView style={{ marginTop: 25 }}>
-        {/* Edit Cover Photo */}
-        <View style={{ marginTop: 25, width: '100%', position: 'relative' }}>
-          <TouchableOpacity onPress={handleCoverImageSelection}>
-            <Image
-              source={{
-                uri: selectedCoverPicture,
-              }}
-              resizeMode="cover"
-              style={{
-                width: '100%',
-                height: 180,
-                borderWidth: 1,
-                borderColor: Colors.BB_darkRedPurple,
-              }}
-            />
-            <View
-              style={{
-                position: 'absolute',
-                bottom: 10,
-                right: 10,
-                zIndex: 9999,
+    <SafeAreaView style={styles.safeareaview}>
+        {/* Top Bar */}
+        <View style={styles.topBar}>
+          <View style={styles.topBarContainer}>
+            <TouchableOpacity
+              onPress={() => {
+                setLoading(true);
+                navigation.navigate('BottomNavOverlay');
               }}
             >
-              <Feather name="edit" size={24} color="black" />
-            </View>
-          </TouchableOpacity>
-
-          {/* Edit Profile Picture */}
-          <View
-            style={{
-              position: 'absolute',
-              top: 90,
-              left: screenWidth / 4,
-            }}
-          >
-            <TouchableOpacity onPress={handleProfileImageSelection}>
-              <Image
-                source={{ uri: selectedProfilePicture }}
-                resizeMode="contain"
-                style={{
-                  height: 145,
-                  width: 145,
-                  borderRadius: 85,
-                  borderWidth: 2,
-                  borderColor: Colors.BB_darkRedPurple,
-                }}
-              />
-
-              <View
-                style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  right: 12,
-                  zIndex: 9999,
-                }}
-              >
-                <MaterialIcons
-                  name="photo-camera"
+              <View style={styles.iconContainer}>
+                <MaterialCommunityIcons
+                  name="arrow-left"
                   size={30}
-                  color={Colors.black}
+                  color={Colors.BB_bone}
+                  style={{ top: Platform.OS === 'ios' ? 0.035 * screenHeight : 0.045 * screenHeight }}
                 />
               </View>
             </TouchableOpacity>
-          </View>
-        </View>
-        <View
-          style={{
-            flexDirection: 'column',
-            marginBottom: 6,
-            marginTop: 60,
-          }}
-        >
-          {/* Username */}
-          <Text
-            style={{
-              color: Colors.BB_darkRedPurple,
-              fontWeight: 'bold',
-              fontSize: 16,
-              paddingBottom: 10,
-            }}
-          >
-            Username
-          </Text>
-          <View
-            style={{
-              height: 44,
-              width: '100%',
-              borderColor: Colors.BB_darkRedPurple,
-              borderWidth: 1,
-              borderRadius: 6,
-              justifyContent: 'center',
-              paddingLeft: 8,
-            }}
-          >
-            <TextInput
-              value={profileName}
-              onChangeText={(value) => setProfileName(value)}
-              editable={true}
-            />
-          </View>
-
-          {/* Email */}
-          <Text
-            style={{
-              color: Colors.BB_darkRedPurple,
-              fontWeight: 'bold',
-              fontSize: 16,
-              paddingBottom: 10,
-              paddingTop: 10,
-            }}
-          >
-            Email
-          </Text>
-          <View
-            style={{
-              height: 44,
-              width: '100%',
-              borderColor: Colors.BB_darkRedPurple,
-              borderWidth: 1,
-              borderRadius: 6,
-              justifyContent: 'center',
-              paddingLeft: 8,
-            }}
-          >
-            <TextInput
-              value={email}
-              onChangeText={(value) => setEmail(value)}
-              editable={true}
-            />
-          </View>
-
-          {/* Password */}
-
-          <Text
-            style={{
-              color: Colors.BB_darkRedPurple,
-              fontWeight: 'bold',
-              fontSize: 16,
-              paddingBottom: 10,
-              paddingTop: 10,
-            }}
-          >
-            Password
-          </Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              height: 44,
-              width: '100%',
-              borderColor: Colors.BB_darkRedPurple,
-              borderWidth: 1,
-              borderRadius: 6,
-              justifyContent: 'center',
-              paddingLeft: 8,
-            }}
-          >
-            <TextInput
-              value={password}
-              onChangeText={(value) => setPassword(value)}
-              editable={true}
-              secureTextEntry={isPasswordHidden}
-              style={{ flex: 9 }}
-            />
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                paddingVertical: 10,
-                paddingHorizontal: 10,
-              }}
-              onPress={togglePasswordVisibility}
-            >
-              <MaterialIcons
-                name="visibility"
-                size={20}
-                color={Colors.BB_darkRedPurple}
-              />
-            </TouchableOpacity>
-          </View>
-
-          {/* SAVE CHANGES + DELETE ACCOUNT */}
-          <View
-            style={{
-              top: 10,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginHorizontal: 15,
-              flexDirection: 'row',
-            }}
-          >
-            {/* SAVE CHANGES BUTTON */}
-            <View style={{ flex: 1 }}>
-              <TouchableOpacity
-                onPress={saveChanges}
-                style={{
-                  width: 130,
-                  height: 50,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: Colors.BB_darkRedPurple,
-                  borderRadius: 10,
-                  borderWidth: 2,
-                  borderColor: Colors.black,
-                  marginVertical: 20,
-                }}
-              >
-                <Text
-                  style={{
-                    fontStyle: 'normal',
-                    color: Colors.white,
-                    fontWeight: '500',
-                    fontSize: 15,
-                  }}
-                >
-                  Save Changes
-                </Text>
-              </TouchableOpacity>
-            </View>
-            {/* DELETE ACCOUNT BUTTON */}
             <View
               style={{
-                flex: 1,
+                paddingLeft: 15,
+                alignContent: 'center',
+                alignSelf: 'center',
               }}
             >
-              <TouchableOpacity
-                onPress={() => setConfirmationModalVisible(true)}
+              <Text style={styles.headerText}>Edit Profile</Text>
+            </View>
+          </View>
+        </View>
+      {/* Edit Profile and Go Back Arrow Column */}
+      <ScrollView
+        contentContainerStyle={styles.scrollViewContent}
+        style={{
+          backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
+        }}
+      >
+
+        {/* CONTENT */}
+        {/* Edit Cover Photo */}
+        <View style={{ paddingHorizontal: 20, paddingTop: 25 }}>
+          <View style={{ marginTopwidth: '100%', position: 'relative' }}>
+            <TouchableOpacity onPress={showModalCover}>
+              <Image
+                source={{
+                  uri: selectedCoverPicture,
+                }}
+                resizeMode="cover"
                 style={{
-                  width: 130,
-                  height: 50,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: Colors.BB_darkRedPurple,
-                  borderRadius: 10,
-                  borderWidth: 2,
-                  borderColor: Colors.black,
-                  marginVertical: 20,
+                  width: '100%',
+                  height: 180,
+                  borderWidth: 1,
+                  borderColor:
+                    theme === 'dark'
+                      ? Colors.BB_violet
+                      : Colors.BB_darkRedPurple,
+                }}
+              />
+              <View
+                style={{
+                  position: 'absolute',
+                  bottom: 10,
+                  right: 10,
+                  zIndex: 9999,
                 }}
               >
-                <Text
+                <Feather name="edit" size={24} color="black" />
+              </View>
+            </TouchableOpacity>
+
+            {/* Edit Profile Picture */}
+            <View
+              style={{
+                position: 'absolute',
+                top: 90,
+                left: screenWidth / 4,
+              }}
+            >
+              <TouchableOpacity onPress={showModalProfile}>
+                <Image
+                  source={{ uri: selectedProfilePicture }}
+                  resizeMode="cover"
                   style={{
-                    fontStyle: 'normal',
-                    color: Colors.white,
-                    fontWeight: '500',
-                    fontSize: 15,
+                    height: 145,
+                    width: 145,
+                    borderRadius: 85,
+                    borderWidth: 2,
+                    borderColor:
+                      theme === 'dark'
+                        ? Colors.BB_violet
+                        : Colors.BB_darkRedPurple,
+                  }}
+                />
+
+                <View
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 12,
+                    zIndex: 9999,
                   }}
                 >
-                  Delete Account
-                </Text>
+                  <MaterialIcons
+                    name="photo-camera"
+                    size={30}
+                    color={theme === 'dark' ? Colors.BB_violet : Colors.black}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View
+            style={{
+              flexDirection: 'column',
+              marginTop: 60,
+              paddingVertical: 15,
+            }}
+          >
+            {/* Username */}
+            <View style={styles.itemContainer}>
+              <Text style={styles.itemTitle}>Username</Text>
+              <View style={styles.itemTextField}>
+                <TextInput
+                  value={profileName}
+                  onChangeText={(value) => setProfileName(value)}
+                  editable={true}
+                  style={
+                    theme === 'dark'
+                      ? { color: Colors.BB_bone }
+                      : { color: Colors.black }
+                  }
+                />
+              </View>
+            </View>
+
+            {/* Email */}
+            <View style={styles.itemContainer}>
+              <Text style={styles.itemTitle}>Email</Text>
+              <View style={styles.itemTextField}>
+                <TextInput
+                  value={email}
+                  onChangeText={(value) => setEmail(value)}
+                  editable={true}
+                  style={
+                    theme === 'dark'
+                      ? { color: Colors.BB_bone }
+                      : { color: Colors.black }
+                  }
+                />
+              </View>
+            </View>
+            <View style={{ paddingVertical: 15 }}>
+              <View style={styles.thinHorizontalBar}></View>
+            </View>
+            {/* SAVE CHANGES + DELETE ACCOUNT */}
+            <View
+              style={{
+                marginTop: 5,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
+              }}
+            >
+              <View style={styles.button}>
+                <TouchableOpacity onPress={saveChanges}>
+                  <Text style={styles.buttonText}> Save Changes </Text>
+                </TouchableOpacity>
+              </View>
+              {/* DELETE ACCOUNT BUTTON */}
+              <TouchableOpacity
+                onPress={() => setConfirmationModalVisible(true)}
+                style={styles.button}
+              >
+                <Text style={styles.buttonText}>Delete Account</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -605,77 +563,52 @@ const EditProfileScreen = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
       </Modal>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={selectCoverImageModalVisible || selectProfileImageModalVisible}
+        onRequestClose={() => {
+          hideModal();
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TouchableOpacity
+              style={styles.imagePickerButton}
+              onPress={handleCameraPick}
+            >
+              <Text style={styles.imagePickerButtonText}>Camera</Text>
+              <MaterialIcons
+                name="camera-alt"
+                size={24}
+                color={theme === 'dark' ? Colors.BB_violet : Colors.black}
+                style={{ top: 10, left: '90%' }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.imagePickerButton}
+              onPress={handleLibraryPick}
+            >
+              <Text style={styles.imagePickerButtonText}>Photo Library</Text>
+              <MaterialIcons
+                name="photo-library"
+                size={24}
+                color={theme === 'dark' ? Colors.BB_violet : Colors.black}
+                style={{ top: 10, left: '50%' }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.imagePickerButton}
+              onPress={() => hideModal()}
+            >
+              <Text style={styles.imagePickerButtonText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  modalHeader: {
-    fontSize: 30,
-    textAlign: 'center',
-    marginVertical: 5,
-    color: Colors.BB_darkRedPurple,
-  },
-  modalContainer: {
-    backgroundColor: Colors.BB_bone,
-    padding: 20,
-    borderRadius: 10,
-    borderColor: Colors.BB_darkRedPurple,
-    borderWidth: 3,
-  },
-  modalTitle: {
-    fontSize: 12,
-    marginBottom: 10,
-    color: Colors.BB_darkRedPurple,
-    textAlign: 'center',
-  },
-  input: {
-    height: 44,
-    width: '100%',
-    borderColor: Colors.BB_darkRedPurple,
-    borderWidth: 1,
-    borderRadius: 6,
-    justifyContent: 'center',
-    paddingLeft: 8,
-    marginBottom: 10,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 15,
-  },
-  confirmButton: {
-    backgroundColor: Colors.BB_red,
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
-  },
-  cancelButton: {
-    padding: 10,
-  },
-  confirmButtonText: {
-    color: Colors.white,
-    textAlign: 'center',
-  },
-  cancelButtonText: {
-    color: Colors.BB_darkRedPurple,
-    textAlign: 'center',
-  },
-  circleContainer: {
-    position: 'absolute',
-    top: 15,
-    left: Platform.OS == 'ios' ? 15 : 0,
-  },
-  circle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: 'black',
-  },
-});
 
 export default memo(EditProfileScreen);

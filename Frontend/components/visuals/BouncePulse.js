@@ -10,8 +10,11 @@ import Animated, {
 } from 'react-native-reanimated';
 import Colors from '../../constants/Colors';
 import { screenHeight } from '../../constants/ScreenDimensions.js';
+import { useThemeContext } from './ThemeProvider';
+import { getThemedStyles } from '../../constants/Styles';
 
 const BouncePulse = memo((props) => {
+  const styles = getThemedStyles(useThemeContext().theme).BouncePulse;
   const translateY1 = useSharedValue(0);
   const translateY2 = useSharedValue(0);
   const translateY3 = useSharedValue(0);
@@ -53,44 +56,11 @@ const BouncePulse = memo((props) => {
 
   return (
     <View style={[styles.container, { opacity: props.opacity }]}>
-      <Animated.View style={[styles.dot, animatedStyle1]} />
-      <Animated.View style={[styles.dot, animatedStyle2]} />
-      <Animated.View style={[styles.dot, animatedStyle3]} />
+      <Animated.View style={[styles.dot, animatedStyle1, {top: props.dotTop, bottom: props.dotBottom, left: props.dotLeft, right: props.dotRight}]} />
+      <Animated.View style={[styles.dot, animatedStyle2, {top: props.dotTop, bottom: props.dotBottom, left: props.dotLeft, right: props.dotRight}]} />
+      <Animated.View style={[styles.dot, animatedStyle3, {top: props.dotTop, bottom: props.dotBottom, left: props.dotLeft, right: props.dotRight}]} />
     </View>
   );
-});
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'center',
-    justifyContent: 'center',
-    height: 0.1 * screenHeight,
-  },
-  dot: {
-    top: 0.08 * screenHeight,
-    backgroundColor: Colors.BB_darkRedPurple,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    marginHorizontal: 4,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.BB_darkRedPurple,
-        shadowOffset: {
-          width: 0,
-          height: 3,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 5,
-      },
-    }),
-  },
 });
 
 export default BouncePulse;

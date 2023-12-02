@@ -19,7 +19,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import FlipCard from 'react-native-flip-card';
+import FlipCard from './CustomFlipCard.js';
 import { PinchGestureHandler, ScrollView } from 'react-native-gesture-handler';
 import Carousel from 'react-native-reanimated-carousel';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -30,9 +30,21 @@ import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import { handleDeleteListing, handleLike } from '../network/Service.js';
 import { getStoredUsername } from '../screens/auth/Authenticate.js';
 import { parallaxLayout } from './parallax.ts';
+import { useThemeContext } from './visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
+import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 const default_blurhash = 'LEHLk~WB2yk8pyo0adR*.7kCMdnj';
 
+/**
+ * @param {number} lat1
+ * @param {number} lon1
+ * @param {number} lat2
+ * @param {number} lon2
+ * @function getDistance
+ * @description Calculates the distance between two coordinates
+ * @returns {number} distance
+ */
 function getDistance(lat1, lon1, lat2, lon2) {
   function toRadians(degrees) {
     return degrees * (Math.PI / 180);
@@ -57,66 +69,90 @@ function getDistance(lat1, lon1, lat2, lon2) {
   return Math.floor(distanceMiles);
 }
 
-const LikeButton = memo(({ isLiked, onLikePress }) => {
+/**
+ * @param {boolean} isLiked
+ * @param {function} onLikePress
+ * @param {object} styles
+ * @function LikeButton
+ * @description Button to like a listing
+ * @returns {object} TouchableOpacity and MaterialCommunityIcon wrapped in React.Fragment
+ */
+const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
+  const { theme } = useThemeContext();
   return (
     <React.Fragment>
       <TouchableOpacity onPress={onLikePress} style={styles.likeButton}>
         <MaterialCommunityIcons
           name="heart"
           size={50}
-          color={isLiked ? 'red' : 'black'}
+          color={
+            isLiked
+              ? theme === 'dark'
+                ? Colors.BB_violet
+                : Colors.red
+              : Colors.black
+          }
         />
       </TouchableOpacity>
     </React.Fragment>
   );
 });
 
-const DeleteButton = ({ onDeletePress }) => {
+/**
+ * 
+ * @param {function} onDeletePress
+ * @param {object} styles
+ * @function DeleteButton
+ * @description Button to delete a listing 
+ * @returns {object} TouchableOpacity and MaterialCommunityIcon
+ */
+const DeleteButton = ({ onDeletePress, styles }) => {
   return (
     <TouchableOpacity style={styles.deleteButton} onPress={onDeletePress}>
-      <MaterialCommunityIcons name="trash-can-outline" size={30} color="red" />
+      <MaterialCommunityIcons name="trash-can-outline" size={40} color="red" />
     </TouchableOpacity>
   );
 };
 
+/**
+ * @param {number} price
+ * @function calculateFontSize
+ * @description Calculates the font size for the price based on the number of digits in the price
+ * @returns {number} fontSize
+ */
 const calculateFontSize = (price) => {
   if (price === undefined || price === null) {
     return 16; // Default font size if price is not provided
   }
-
   const numberOfDigits = price.toString().length;
-  if (price == 0) {
-    return 24;
-  }
 
-  if (numberOfDigits <= 4) {
-    return 20;
-  } else if (numberOfDigits <= 6) {
-    return 18;
-  } else if (numberOfDigits <= 8) {
-    return 16;
-  } else if (numberOfDigits <= 10) {
-    return 14;
-  } else {
-    return 12;
-  }
+  return Math.max(20 - (numberOfDigits - 4) * 2, 4);
 };
 
+/**
+ * 
+ * @param {string} city
+ * @function calculateFontSizeLocation
+ * @description Calculates the font size for the city name based on the length of the city name 
+ * @returns {number} fontSize
+ */
 const calculateFontSizeLocation = (city) => {
   if (city === undefined || city === null) {
     return 16; // Default font size if price is not provided
   }
+  const numberOfCharacters = city.length;
 
-  if (city.length <= 10) {
-    return 14;
-  } else if (city.length <= 15) {
-    return 12;
-  } else {
-    return 10;
-  }
+  return Math.max(20 - (numberOfCharacters - 2), 10);
 };
 
-const TimeBox = memo(({ timeSince }) => {
+/**
+ * @param {number} timeSince
+ * @param {object} styles
+ * @function TimeBox
+ * @description Displays the time since the listing was posted
+ * @returns {object} View and Text wrapped in React.Fragment
+ */
+const TimeBox = memo(({ timeSince, styles }) => {
   return (
     <React.Fragment>
       <View style={styles.timeSinceContainer}>
@@ -124,26 +160,37 @@ const TimeBox = memo(({ timeSince }) => {
           {timeSince < 30
             ? 'Just now'
             : timeSince < 60
-            ? `${timeSince} seconds ago`
-            : timeSince < 120
-            ? `1 minute ago`
-            : timeSince < 3600
-            ? `${Math.floor(timeSince / 60)} minutes ago`
-            : timeSince < 7200
-            ? `1 hour ago`
-            : timeSince < 86400
-            ? `${Math.floor(timeSince / 3600)} hours ago`
-            : timeSince < 172800
-            ? `1 day ago`
-            : `${Math.floor(timeSince / 86400)} days ago`}
+              ? `${timeSince} seconds ago`
+              : timeSince < 120
+                ? `1 minute ago`
+                : timeSince < 3600
+                  ? `${Math.floor(timeSince / 60)} minutes ago`
+                  : timeSince < 7200
+                    ? `1 hour ago`
+                    : timeSince < 86400
+                      ? `${Math.floor(timeSince / 3600)} hours ago`
+                      : timeSince < 172800
+                        ? `1 day ago`
+                        : `${Math.floor(timeSince / 86400)} days ago`}
         </Text>
       </View>
     </React.Fragment>
   );
 });
 
+/**
+ * @param {object} children
+ * @param {string} currencySymbol
+ * @param {number} price
+ * @param {number} timeSince
+ * @param {object} cardStyle
+ * @param {object} styles
+ * @function CardOverlay
+ * @description Displays the price, time since, and children (image) of the listing
+ * @returns {object} View and Image wrapped in React.Fragment
+ */
 const CardOverlay = memo(
-  ({ children, currencySymbol, price, timeSince, cardStyle }) => {
+  ({ children, currencySymbol, price, timeSince, cardStyle, styles }) => {
     return (
       <View style={styles.card}>
         <View style={cardStyle}>
@@ -163,13 +210,23 @@ const CardOverlay = memo(
             </Text>
           </View>
           {children}
-          <TimeBox timeSince={timeSince} />
+          <TimeBox timeSince={timeSince} styles={styles} />
         </View>
       </View>
     );
   },
 );
 
+/**
+ * @param {object} source
+ * @param {string} blurhash
+ * @param {object} style
+ * @param {string} contentFit
+ * @param {number} transition
+ * @function MemoizedImage
+ * @description Displays the image of the listing
+ * @returns {object} Image
+ */
 const MemoizedImage = memo(
   ({ source, blurhash, style, contentFit, transition }) => {
     //console.log(`${serverIp}/img/${source.uri}`);
@@ -186,10 +243,23 @@ const MemoizedImage = memo(
   },
 );
 
+/**
+ * @param {object} source
+ * @param {string} currencySymbol
+ * @param {number} price
+ * @param {number} timeSince
+ * @param {boolean} isLiked
+ * @param {function} onLikePress
+ * @param {function} onDeletePress
+ * @param {boolean} deleteVisible
+ * @param {object} styles
+ * @function CustomItem
+ * @description Displays the image of the listing with the ability to zoom in and out and delete the listing if the user is the owner and the listing is being viewed from the profile screen
+ * @returns {object} View and Image wrapped in React.Fragment
+ */
 const CustomItem = memo(
   ({
     source,
-    scale,
     currencySymbol,
     price,
     timeSince,
@@ -197,22 +267,129 @@ const CustomItem = memo(
     onLikePress,
     onDeletePress,
     deleteVisible,
+    styles,
   }) => {
-    const onZoomEvent = useCallback(
-      AnimatedRN.event([{ nativeEvent: { scale: scale } }], {
-        useNativeDriver: true,
-      }),
-      [],
-    );
+    /**
+     * @var {object} focalX
+     * @description The x coordinate of the focal point of the pinch gesture
+     */
+    const focalX = useSharedValue(0);
+    /**
+     * @var {object} focalY
+     * @description The y coordinate of the focal point of the pinch gesture
+     * @default 0 
+      */
+    const focalY = useSharedValue(0);
+    /**
+     * @var {object} xCurrent
+     * @description The current x coordinate of the image
+     * @default 0
+     */
+    const xCurrent = useSharedValue(0);
+    /**
+     * @var {object} yCurrent
+     * @description The current y coordinate of the image
+     * @default 0
+     */
+    const yCurrent = useSharedValue(0);
+    /**
+     * @var {object} xPrevious
+     * @description The previous x coordinate of the image
+     * @default 0
+     */
+    const xPrevious = useSharedValue(0);
+    /**
+     * @var {object} yPrevious
+     * @description The previous y coordinate of the image
+     * @default 0
+     */
+    const yPrevious = useSharedValue(0);
+    /**
+     * @var {object} scaleCurrent
+     * @description The current scale of the image
+     * @default 1
+     */
+    const scaleCurrent = useSharedValue(1);
+    /**
+     * @var {object} scalePrevious
+     * @description The previous scale of the image
+     * @default 1
+     */
+    const scalePrevious = useSharedValue(1);
 
-    const onZoomStateChange = (event) => {
-      if (event.nativeEvent.oldState === 4) {
-        AnimatedRN.spring(scale, {
-          toValue: 1,
-          useNativeDriver: true,
-        }).start();
-      }
-    };
+
+    /**
+     * @function pinchHandler
+     * @description Handles the pinch gesture on the image
+     * @returns {void} if the image is at the original size
+     */
+    const pinchHandler = useAnimatedGestureHandler({
+        /**
+         * 
+         * @param {object} event
+         * @description Sets the focal point of the pinch gesture to the center of the image if the pinch gesture is started with two fingers
+         */
+        onStart: (event) => {
+            if (event.numberOfPointers == 2) {
+                focalX.value = event.focalX;
+                focalY.value = event.focalY;
+            }
+        },
+        /**
+         * @param {object} event
+         * @description Sets the current scale of the image to the previous scale of the image if the pinch gesture is ended with two fingers
+         * @returns {void} if the image is at the original size
+         */
+        onActive: (event) => {
+            if (scaleCurrent.value * event.scale < 1) {
+                return;
+            }
+
+            if (event.numberOfPointers == 2) {
+                if (event.oldState === 2) {
+                    focalX.value = event.focalX;
+                    focalY.value = event.focalY;
+                }
+                scaleCurrent.value = event.scale;
+
+                xCurrent.value = (1 - scaleCurrent.value) * (focalX.value - 400 / 2);
+                yCurrent.value = (1 - scaleCurrent.value) * (focalY.value - 700 / 2);
+            }
+        },
+        /**
+         * @description Resets the image to its original size and position if the pinch gesture is ended with two fingers
+         */
+        onEnd: () => {
+          scalePrevious.value = withTiming(1); // Reset previous scale to original
+          scaleCurrent.value = withTiming(1);  // Reset current scale to original
+      
+          // Reset previous translations to original
+          xPrevious.value = withTiming(0);
+          yPrevious.value = withTiming(0);
+      
+          // The current translations should also be reset to 0
+          xCurrent.value = withTiming(0);
+          yCurrent.value = withTiming(0);
+        },
+    });
+
+    /**
+     * @var {object} animatedStyle
+     * @description The style of the image
+     * @returns {object} transform
+     */
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            transform: [
+                { translateX: xCurrent.value },
+                { translateY: yCurrent.value },
+                { scale: scaleCurrent.value },
+                { translateX: xPrevious.value },
+                { translateY: yPrevious.value },
+                { scale: scalePrevious.value },
+            ],
+        };
+    });
 
     /*FRONT CARD*/
     return (
@@ -221,13 +398,12 @@ const CustomItem = memo(
         currencySymbol={currencySymbol}
         timeSince={timeSince}
         cardStyle={styles.cardBackground}
+        styles={styles}
       >
-        <View>
           <PinchGestureHandler
-            onGestureEvent={onZoomEvent}
-            onHandlerStateChange={onZoomStateChange}
+            onGestureEvent={pinchHandler}
           >
-            <AnimatedRN.View style={[{ transform: [{ scale: scale }] }]}>
+            <Animated.View style={[styles.image, animatedStyle]}>
               <MemoizedImage
                 source={`${serverIp}/img/${source.uri}`}
                 blurhash={source.blurhash}
@@ -235,16 +411,32 @@ const CustomItem = memo(
                 contentFit="contain"
                 transition={0}
               />
-            </AnimatedRN.View>
+            </Animated.View>
           </PinchGestureHandler>
-        </View>
-        <LikeButton isLiked={isLiked} onLikePress={onLikePress} />
-        {deleteVisible && <DeleteButton onDeletePress={onDeletePress} />}
+        <LikeButton
+          isLiked={isLiked}
+          onLikePress={onLikePress}
+          styles={styles}
+        />
+        {deleteVisible && (
+          <DeleteButton onDeletePress={onDeletePress} styles={styles} />
+        )}
       </CardOverlay>
     );
   },
 );
 
+/**
+ * @param {object} item
+ * @param {string} origin
+ * @param {function} removeListing
+ * @param {object} userLocation
+ * @param {function} handleInnerScolling
+ * @param {function} handleInnerScollingEnd
+ * @function Listing
+ * @description Displays the listing
+ * @returns {object} SafeAreaView and FlipCard wrapped in React.Fragment
+ */
 const Listing = ({
   item,
   origin,
@@ -253,6 +445,8 @@ const Listing = ({
   handleInnerScolling,
   handleInnerScollingEnd,
 }) => {
+  const { theme } = useThemeContext();
+  const styles = getThemedStyles(useThemeContext().theme).Listing;
   const prevItemRef = useRef();
   useEffect(() => {
     if (prevItemRef.current === item) {
@@ -314,6 +508,7 @@ const Listing = ({
         flipVertical={false}
         flip={false}
         clickable={true}
+        doubleTap={handleLikePress}
       >
         {/*FACE SIDE*/}
         <View style={styles.card}>
@@ -339,7 +534,6 @@ const Listing = ({
             renderItem={({ item }) => (
               <CustomItem
                 source={item}
-                scale={new AnimatedRN.Value(1)}
                 price={price}
                 currencySymbol={currencySymbol}
                 timeSince={timeSince}
@@ -348,11 +542,12 @@ const Listing = ({
                 onDeletePress={() => toggleDeleteModal()}
                 deleteVisible={deleteVisible}
                 origin={origin}
+                styles={styles}
               />
             )}
             customAnimation={parallaxLayout(
               {
-                size: PAGE_WIDTH,
+                size: screenWidth / 2,
                 vertical: false,
               },
               {
@@ -370,6 +565,7 @@ const Listing = ({
           currencySymbol={currencySymbol}
           timeSince={timeSince}
           cardStyle={styles.cardBackground2}
+          styles={styles}
         >
           <Text style={styles.title}>{item.Title}</Text>
           <View style={styles.sellerInfoBox}>
@@ -386,7 +582,7 @@ const Listing = ({
               <Entypo
                 name="location-pin"
                 size={40}
-                color="white"
+                color={theme === 'dark' ? Colors.BB_violet : Colors.BB_bone}
                 style={styles.locationPin}
               />
               <Text
@@ -438,7 +634,7 @@ const Listing = ({
               <Entypo
                 name="star"
                 size={34}
-                color="gold"
+                color={theme === 'dark' ? Colors.BB_violet : 'gold'}
                 style={styles.ratingStar}
               />
 
@@ -545,7 +741,8 @@ const Listing = ({
 
           <LikeButton
             isLiked={isLiked}
-            onLikePress={() => handleLikePress(item.ListingId)}
+            onLikePress={handleLikePress}
+            styles={styles}
           />
         </CardOverlay>
       </FlipCard>
@@ -593,287 +790,3 @@ const Listing = ({
 };
 
 export default memo(Listing);
-
-const PAGE_WIDTH = screenWidth / 2;
-//////////////////////////////////////////////////////////////////////////////////////
-const styles = StyleSheet.create({
-  card: {
-    height: screenHeight,
-    width: screenWidth,
-    alignItems: 'center',
-  },
-  cardBackground: {
-    position: 'absolute',
-    width: 0.9 * screenWidth,
-    height: 0.79 * screenHeight,
-    backgroundColor: Colors.BB_darkRedPurple,
-    borderRadius: 20,
-    borderWidth: 0.005 * screenHeight,
-    justifyContent: 'center',
-    overflow: 'hidden',
-    borderColor: Colors.BB_darkerRedPurple,
-    bottom: Platform.OS == 'ios' ? '28%' : '23%',
-  },
-  cardBackground2: {
-    position: 'absolute',
-    width: 0.9 * screenWidth,
-    height: 0.8 * screenHeight,
-    backgroundColor: Colors.BB_darkRedPurple,
-    borderRadius: 20,
-    borderWidth: 0.01 * screenHeight,
-    justifyContent: 'center',
-    overflow: 'hidden',
-    borderColor: Colors.BB_darkerRedPurple,
-    bottom: Platform.OS == 'ios' ? '15.5%' : '10%',
-  },
-  priceContainer: {
-    position: 'absolute',
-    zIndex: 5,
-    width: '60%',
-    height: 0,
-    bottom: 0,
-    left: -70,
-    borderBottomWidth: 50,
-    borderBottomColor: Colors.BB_darkerRedPurple,
-    borderLeftWidth: 50,
-    borderLeftColor: 'transparent',
-    borderRightWidth: 50,
-    borderRightColor: 'transparent',
-    borderStyle: 'solid',
-    alignSelf: 'center',
-  },
-  image: {
-    height: '100%',
-    width: '100%',
-  },
-  title: {
-    alignSelf: 'center',
-    position: 'absolute',
-    top: '5.5%',
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 0.02 * screenHeight,
-  },
-  sellerInfoBox: {
-    position: 'absolute',
-    alignSelf: 'center',
-    flexDirection: 'row',
-    top: '11%',
-    width: '90%',
-    height: '20%',
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    marginBottom: 0.1 * screenHeight,
-  },
-  sellerPic: {
-    alignSelf: 'center',
-    height: '80%',
-    bottom: -10,
-    aspectRatio: 1,
-    borderRadius: 20,
-  },
-  sellerName: {
-    alignSelf: 'center',
-    alignContent: 'center',
-    textAlign: 'center',
-    width: '300%',
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: 'white',
-    bottom: 5,
-  },
-  locationPin: {
-    position: 'absolute',
-    alignSelf: 'center',
-    width: '40%',
-    height: '60%',
-    borderRadius: 20,
-  },
-  city: {
-    alignSelf: 'center',
-    fontSize: 14,
-    color: 'white',
-    fontWeight: 'bold',
-    position: 'absolute',
-    top: '50%',
-  },
-  distance: {
-    alignSelf: 'center',
-    fontSize: 12,
-    color: 'white',
-    position: 'absolute',
-    top: '62%',
-  },
-  ratingStar: {
-    alignSelf: 'center',
-    position: 'absolute',
-    width: '30%',
-    height: '60%',
-    borderRadius: 20,
-  },
-  rating: {
-    alignSelf: 'center',
-    fontSize: 14,
-    color: 'white',
-    fontWeight: 'bold',
-    position: 'absolute',
-    top: '50%',
-  },
-  price: {
-    fontSize: (0.9 * screenWidth) / 3 / 5,
-    position: 'absolute',
-    color: 'white',
-    fontWeight: 'bold',
-    zIndex: 10,
-    left: '20%',
-    top: 0.01 * screenHeight,
-  },
-  lowerRow: {
-    position: 'absolute',
-    alignSelf: 'center',
-    flexDirection: 'row',
-    width: '90%',
-    height: '20%',
-    top: '31.5%',
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-  },
-  conditionText: {
-    top: '35%',
-    fontSize: 14,
-    color: 'white',
-    alignSelf: 'center',
-    textAlign: 'center',
-    width: '70%',
-  },
-  transactionText: {
-    top: '20%',
-    fontSize: 12,
-    color: 'white',
-    alignSelf: 'center',
-    textAlign: 'center',
-    width: '100%',
-  },
-  tagColumn: {
-    position: 'absolute',
-    alignSelf: 'center',
-    flexDirection: 'column',
-    bottom: '0%',
-    width: '100%',
-    height: '70%',
-  },
-  tagText: {
-    fontSize: 12,
-    color: 'white',
-    alignSelf: 'center',
-    textAlign: 'center',
-    width: '100%',
-    marginBottom: '2%',
-  },
-  descriptionContainer: {
-    position: 'absolute',
-    alignSelf: 'center',
-    height: '40%',
-    width: '90%',
-    bottom: '8%',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    padding: 5,
-    borderRadius: 20,
-  },
-  description: {
-    fontSize: 16,
-    color: 'white',
-  },
-  likeButton: {
-    position: 'absolute',
-    height: 0.15 * screenWidth,
-    width: 0.15 * screenWidth,
-    bottom: '1%',
-    right: '2%',
-    zIndex: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.BB_darkRedPurple,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOpacity: 0.5,
-        shadowRadius: 10,
-        shadowOffset: { height: 4, width: 0 },
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-    borderRadius: 80,
-  },
-  deleteButton: {
-    position: 'absolute',
-    height: 0.15 * screenWidth,
-    width: 0.15 * screenWidth,
-    bottom: '82%',
-    right: '-5%',
-    zIndex: 1,
-  },
-  modalContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    borderColor: 'black',
-    borderWidth: 2,
-    alignSelf: 'center',
-    marginTop: '80%',
-  },
-  modalText: {
-    fontSize: 18,
-    marginBottom: 15,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 15,
-  },
-  confirmButton: {
-    flex: 1,
-    backgroundColor: 'red',
-    padding: 10,
-    borderRadius: 5,
-  },
-  cancelButton: {
-    flex: 1,
-    backgroundColor: 'gray',
-    padding: 10,
-    borderRadius: 5,
-    marginLeft: 5,
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-  },
-  timeSinceContainer: {
-    alignContent: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    borderRadius: 20,
-    position: 'absolute',
-    right: '1%',
-    top: '0.5%',
-    height: '5%',
-    width: 'auto',
-  },
-  timeSinceText: {
-    fontSize: 12,
-    color: 'white',
-    fontWeight: 'bold',
-    marginRight: '2%',
-    marginLeft: '2%',
-  },
-  backgroundImage: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    opacity: 0.1,
-  },
-});

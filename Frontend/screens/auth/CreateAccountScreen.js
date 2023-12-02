@@ -14,7 +14,8 @@ import {
   View,
 } from 'react-native';
 import { serverIp } from '../../config.js';
-import Colors from '../../constants/Colors.js';
+import { useThemeContext } from '../../components/visuals/ThemeProvider.js';
+import { getThemedStyles } from '../../constants/Styles.js';
 
 /**
  * Component for creating a new account.
@@ -36,6 +37,7 @@ const CreateAccountScreen = ({ navigation }) => {
   const hasUppercase = useRef(false);
   const hasNumber = useRef(false);
   const hasSpecialCharacter = useRef(false);
+  const styles = getThemedStyles(useThemeContext().theme).CreateAccountScreen;
 
   /**
    * Handles the creation of a new account.
@@ -48,7 +50,7 @@ const CreateAccountScreen = ({ navigation }) => {
     if (password !== confirmPassword) {
       Alert.alert(
         'Password Mismatch',
-        'Password and Confirm Password do not match.'
+        'Password and Confirm Password do not match.',
       );
       return;
     }
@@ -88,7 +90,7 @@ const CreateAccountScreen = ({ navigation }) => {
     if (isValidPassword.current === false) {
       Alert.alert(
         'Invalid Input',
-        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
       );
       return;
     }
@@ -251,106 +253,5 @@ const CreateAccountScreen = ({ navigation }) => {
     </View>
   );
 };
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: Colors.BB_darkRedPurple,
-    alignItems: 'center',
-    padding: 16,
-  },
-  loginContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.BB_pink,
-    width: windowWidth * 0.8,
-    height: 'auto',
-    padding: 20,
-    borderRadius: 10,
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 1,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  createAccountTextContainer: {
-    width: windowWidth * 0.4,
-    backgroundColor: Colors.BB_rangeYellow,
-    padding: 5,
-    borderColor: Colors.black,
-    borderRadius: 10,
-    fontWeight: 'bold',
-    ...Platform.select({
-      ios: {
-        shadowColor: Colors.black,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 1,
-        shadowRadius: 2,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
-  },
-  createAccountText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-  },
-  loginTextContainer: {
-    marginTop: 10,
-    padding: 5,
-    borderColor: Colors.black,
-    borderRadius: 10,
-    color: 'black',
-    fontWeight: 'bold',
-  },
-  loginText: {
-    fontSize: 10,
-    color: 'white',
-  },
-  input: {
-    width: windowWidth * 0.75,
-    height: windowHeight * 0.03,
-    borderColor: 'gray',
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    borderRadius: 7,
-    backgroundColor: 'white',
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-  },
-  passwordRequirements: {
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    width: windowWidth * 0.4,
-    height: 'auto',
-    marginBottom: 15,
-  },
-  passwordRequirement: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    fontSize: 12,
-    color: 'white',
-  },
-});
 
 export default CreateAccountScreen;
