@@ -1,3 +1,9 @@
+/**
+ * @namespace Listing
+ * 
+ */
+
+
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, {
@@ -19,7 +25,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import FlipCard from 'react-native-flip-card';
+import FlipCard from './CustomFlipCard.js';
 import { PinchGestureHandler, ScrollView } from 'react-native-gesture-handler';
 import Carousel from 'react-native-reanimated-carousel';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -32,9 +38,26 @@ import { getStoredUsername } from '../screens/auth/Authenticate.js';
 import { parallaxLayout } from './parallax.ts';
 import { useThemeContext } from './visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
+import Animated, {
+  useAnimatedGestureHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import { calculateFontSize, calculateFontSizeLocation, calculateTransactionFontSize } from './CalculateFontSize.js';
 
 const default_blurhash = 'LEHLk~WB2yk8pyo0adR*.7kCMdnj';
 
+/**
+ * @param {number} lat1
+ * @param {number} lon1
+ * @param {number} lat2
+ * @param {number} lon2
+ * @function getDistance
+ * @description Calculates the distance between two coordinates
+ * @returns {number} distance
+ * @memberof Listing
+ */
 function getDistance(lat1, lon1, lat2, lon2) {
   function toRadians(degrees) {
     return degrees * (Math.PI / 180);
@@ -59,6 +82,15 @@ function getDistance(lat1, lon1, lat2, lon2) {
   return Math.floor(distanceMiles);
 }
 
+/**
+ * @param {boolean} isLiked
+ * @param {function} onLikePress
+ * @param {object} styles
+ * @function LikeButton
+ * @description Button to like a listing
+ * @returns {object} TouchableOpacity and MaterialCommunityIcon wrapped in React.Fragment
+ * @memberof Listing
+ */
 const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
   const { theme } = useThemeContext();
   return (
@@ -80,51 +112,32 @@ const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
   );
 });
 
+/**
+ *
+ * @param {function} onDeletePress
+ * @param {object} styles
+ * @function DeleteButton
+ * @description Button to delete a listing
+ * @returns {object} TouchableOpacity and MaterialCommunityIcon
+ * @memberof Listing
+ */
 const DeleteButton = ({ onDeletePress, styles }) => {
   return (
     <TouchableOpacity style={styles.deleteButton} onPress={onDeletePress}>
-      <MaterialCommunityIcons name="trash-can-outline" size={30} color="red" />
+      <MaterialCommunityIcons name="trash-can-outline" size={40} color="red" />
     </TouchableOpacity>
   );
 };
 
-const calculateFontSize = (price) => {
-  if (price === undefined || price === null) {
-    return 16; // Default font size if price is not provided
-  }
 
-  const numberOfDigits = price.toString().length;
-  if (price == 0) {
-    return 24;
-  }
-
-  if (numberOfDigits <= 4) {
-    return 20;
-  } else if (numberOfDigits <= 6) {
-    return 18;
-  } else if (numberOfDigits <= 8) {
-    return 16;
-  } else if (numberOfDigits <= 10) {
-    return 14;
-  } else {
-    return 12;
-  }
-};
-
-const calculateFontSizeLocation = (city) => {
-  if (city === undefined || city === null) {
-    return 16; // Default font size if price is not provided
-  }
-
-  if (city.length <= 10) {
-    return 14;
-  } else if (city.length <= 15) {
-    return 12;
-  } else {
-    return 10;
-  }
-};
-
+/**
+ * @param {number} timeSince
+ * @param {object} styles
+ * @function TimeBox
+ * @description Displays the time since the listing was posted
+ * @returns {object} View and Text wrapped in React.Fragment
+ * @memberof Listing
+ */
 const TimeBox = memo(({ timeSince, styles }) => {
   return (
     <React.Fragment>
@@ -133,24 +146,36 @@ const TimeBox = memo(({ timeSince, styles }) => {
           {timeSince < 30
             ? 'Just now'
             : timeSince < 60
-              ? `${timeSince} seconds ago`
-              : timeSince < 120
-                ? `1 minute ago`
-                : timeSince < 3600
-                  ? `${Math.floor(timeSince / 60)} minutes ago`
-                  : timeSince < 7200
-                    ? `1 hour ago`
-                    : timeSince < 86400
-                      ? `${Math.floor(timeSince / 3600)} hours ago`
-                      : timeSince < 172800
-                        ? `1 day ago`
-                        : `${Math.floor(timeSince / 86400)} days ago`}
+            ? `${timeSince} seconds ago`
+            : timeSince < 120
+            ? `1 minute ago`
+            : timeSince < 3600
+            ? `${Math.floor(timeSince / 60)} minutes ago`
+            : timeSince < 7200
+            ? `1 hour ago`
+            : timeSince < 86400
+            ? `${Math.floor(timeSince / 3600)} hours ago`
+            : timeSince < 172800
+            ? `1 day ago`
+            : `${Math.floor(timeSince / 86400)} days ago`}
         </Text>
       </View>
     </React.Fragment>
   );
 });
 
+/**
+ * @param {object} children
+ * @param {string} currencySymbol
+ * @param {number} price
+ * @param {number} timeSince
+ * @param {object} cardStyle
+ * @param {object} styles
+ * @function CardOverlay
+ * @description Displays the price, time since, and children (image) of the listing
+ * @returns {object} View and Image wrapped in React.Fragment
+ * @memberof Listing
+ */
 const CardOverlay = memo(
   ({ children, currencySymbol, price, timeSince, cardStyle, styles }) => {
     return (
@@ -176,9 +201,20 @@ const CardOverlay = memo(
         </View>
       </View>
     );
-  },
+  }
 );
 
+/**
+ * @param {object} source
+ * @param {string} blurhash
+ * @param {object} style
+ * @param {string} contentFit
+ * @param {number} transition
+ * @function MemoizedImage
+ * @description Displays the image of the listing
+ * @returns {object} Image
+ * @memberof Listing
+ */
 const MemoizedImage = memo(
   ({ source, blurhash, style, contentFit, transition }) => {
     //console.log(`${serverIp}/img/${source.uri}`);
@@ -192,13 +228,27 @@ const MemoizedImage = memo(
         cachePolicy="memory-disk"
       />
     );
-  },
+  }
 );
 
+/**
+ * @param {object} source
+ * @param {string} currencySymbol
+ * @param {number} price
+ * @param {number} timeSince
+ * @param {boolean} isLiked
+ * @param {function} onLikePress
+ * @param {function} onDeletePress
+ * @param {boolean} deleteVisible
+ * @param {object} styles
+ * @function CustomItem
+ * @description Displays the image of the listing with the ability to zoom in and out and delete the listing if the user is the owner and the listing is being viewed from the profile screen
+ * @returns {object} View and Image wrapped in React.Fragment
+ * @memberof Listing
+ */
 const CustomItem = memo(
   ({
     source,
-    scale,
     currencySymbol,
     price,
     timeSince,
@@ -208,21 +258,139 @@ const CustomItem = memo(
     deleteVisible,
     styles,
   }) => {
-    const onZoomEvent = useCallback(
-      AnimatedRN.event([{ nativeEvent: { scale: scale } }], {
-        useNativeDriver: true,
-      }),
-      [],
-    );
+    /**
+     * @var {object} focalX
+     * @description The x coordinate of the focal point of the pinch gesture
+     * @memberof Listing
+     */
+    const focalX = useSharedValue(0);
+    /**
+     * @var {object} focalY
+     * @description The y coordinate of the focal point of the pinch gesture
+     * @default 0
+     * @memberof Listing
+     */
+    const focalY = useSharedValue(0);
+    /**
+     * @var {object} xCurrent
+     * @description The current x coordinate of the image
+     * @default 0
+     * @memberof Listing
+     */
+    const xCurrent = useSharedValue(0);
+    /**
+     * @var {object} yCurrent
+     * @description The current y coordinate of the image
+     * @default 0
+     * @memberof Listing
+     */
+    const yCurrent = useSharedValue(0);
+    /**
+     * @var {object} xPrevious
+     * @description The previous x coordinate of the image
+     * @default 0
+     * @memberof Listing
+     */
+    const xPrevious = useSharedValue(0);
+    /**
+     * @var {object} yPrevious
+     * @description The previous y coordinate of the image
+     * @default 0
+     * @memberof Listing
+     */
+    const yPrevious = useSharedValue(0);
+    /**
+     * @var {object} scaleCurrent
+     * @description The current scale of the image
+     * @default 1
+     * @memberof Listing
+     */
+    const scaleCurrent = useSharedValue(1);
+    /**
+     * @var {object} scalePrevious
+     * @description The previous scale of the image
+     * @default 1
+     * @memberof Listing
+     */
+    const scalePrevious = useSharedValue(1);
 
-    const onZoomStateChange = (event) => {
-      if (event.nativeEvent.oldState === 4) {
-        AnimatedRN.spring(scale, {
-          toValue: 1,
-          useNativeDriver: true,
-        }).start();
-      }
-    };
+    /**
+     * @function pinchHandler
+     * @description Handles the pinch gesture on the image
+     * @returns {void} if the image is at the original size
+     * @memberof Listing
+     */
+    const pinchHandler = useAnimatedGestureHandler({
+      /**
+       *
+       * @param {object} event
+       * @description Sets the focal point of the pinch gesture to the center of the image if the pinch gesture is started with two fingers
+       * @memberof Listing
+       */
+      onStart: (event) => {
+        if (event.numberOfPointers == 2) {
+          focalX.value = event.focalX;
+          focalY.value = event.focalY;
+        }
+      },
+      /**
+       * @param {object} event
+       * @description Sets the current scale of the image to the previous scale of the image if the pinch gesture is ended with two fingers
+       * @returns {void} if the image is at the original size
+       * @memberof Listing
+       */
+      onActive: (event) => {
+        if (scaleCurrent.value * event.scale < 1) {
+          return;
+        }
+
+        if (event.numberOfPointers == 2) {
+          if (event.oldState === 2) {
+            focalX.value = event.focalX;
+            focalY.value = event.focalY;
+          }
+          scaleCurrent.value = event.scale;
+
+          xCurrent.value = (1 - scaleCurrent.value) * (focalX.value - 400 / 2);
+          yCurrent.value = (1 - scaleCurrent.value) * (focalY.value - 700 / 2);
+        }
+      },
+      /**
+       * @description Resets the image to its original size and position if the pinch gesture is ended with two fingers
+       * @memberof Listing
+       */
+      onEnd: () => {
+        scalePrevious.value = withTiming(1); // Reset previous scale to original
+        scaleCurrent.value = withTiming(1); // Reset current scale to original
+
+        // Reset previous translations to original
+        xPrevious.value = withTiming(0);
+        yPrevious.value = withTiming(0);
+
+        // The current translations should also be reset to 0
+        xCurrent.value = withTiming(0);
+        yCurrent.value = withTiming(0);
+      },
+    });
+
+    /**
+     * @var {object} animatedStyle
+     * @description The style of the image
+     * @returns {object} transform
+     * @memberof Listing
+     */
+    const animatedStyle = useAnimatedStyle(() => {
+      return {
+        transform: [
+          { translateX: xCurrent.value },
+          { translateY: yCurrent.value },
+          { scale: scaleCurrent.value },
+          { translateX: xPrevious.value },
+          { translateY: yPrevious.value },
+          { scale: scalePrevious.value },
+        ],
+      };
+    });
 
     /*FRONT CARD*/
     return (
@@ -233,22 +401,17 @@ const CustomItem = memo(
         cardStyle={styles.cardBackground}
         styles={styles}
       >
-        <View>
-          <PinchGestureHandler
-            onGestureEvent={onZoomEvent}
-            onHandlerStateChange={onZoomStateChange}
-          >
-            <AnimatedRN.View style={[{ transform: [{ scale: scale }] }]}>
-              <MemoizedImage
-                source={`${serverIp}/img/${source.uri}`}
-                blurhash={source.blurhash}
-                style={styles.image}
-                contentFit="contain"
-                transition={0}
-              />
-            </AnimatedRN.View>
-          </PinchGestureHandler>
-        </View>
+        <PinchGestureHandler onGestureEvent={pinchHandler}>
+          <Animated.View style={[styles.image, animatedStyle]}>
+            <MemoizedImage
+              source={`${serverIp}/img/${source.uri}`}
+              blurhash={source.blurhash}
+              style={styles.image}
+              contentFit="contain"
+              transition={0}
+            />
+          </Animated.View>
+        </PinchGestureHandler>
         <LikeButton
           isLiked={isLiked}
           onLikePress={onLikePress}
@@ -259,9 +422,21 @@ const CustomItem = memo(
         )}
       </CardOverlay>
     );
-  },
+  }
 );
 
+/**
+ * @param {object} item
+ * @param {string} origin
+ * @param {function} removeListing
+ * @param {object} userLocation
+ * @param {function} handleInnerScolling
+ * @param {function} handleInnerScollingEnd
+ * @function Listing
+ * @description Displays the listing
+ * @returns {object} SafeAreaView and FlipCard wrapped in React.Fragment
+ * @memberof Listing
+ */
 const Listing = ({
   item,
   origin,
@@ -293,7 +468,7 @@ const Listing = ({
       item.Latitude,
       item.Longitude,
       userLocation.latitude,
-      userLocation.longitude,
+      userLocation.longitude
     );
   }, [
     item.Latitude,
@@ -304,7 +479,7 @@ const Listing = ({
 
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
-    origin == 'profile' && item.Username == getStoredUsername(),
+    origin == 'profile' && item.Username == getStoredUsername()
   );
 
   const toggleDeleteModal = useCallback(() => {
@@ -333,6 +508,7 @@ const Listing = ({
         flipVertical={false}
         flip={false}
         clickable={true}
+        doubleTap={handleLikePress}
       >
         {/*FACE SIDE*/}
         <View style={styles.card}>
@@ -358,7 +534,6 @@ const Listing = ({
             renderItem={({ item }) => (
               <CustomItem
                 source={item}
-                scale={new AnimatedRN.Value(1)}
                 price={price}
                 currencySymbol={currencySymbol}
                 timeSince={timeSince}
@@ -372,14 +547,14 @@ const Listing = ({
             )}
             customAnimation={parallaxLayout(
               {
-                size: PAGE_WIDTH,
+                size: screenWidth / 2,
                 vertical: false,
               },
               {
                 parallaxScrollingScale: 1,
                 parallaxAdjacentItemScale: 0.5,
                 parallaxScrollingOffset: 10,
-              },
+              }
             )}
           />
         </View>
@@ -515,7 +690,15 @@ const Listing = ({
               >
                 Transaction Preference:
               </Text>
-              <Text style={{ ...styles.conditionText, top: '30%' }}>
+              <Text
+                style={{
+                  ...styles.conditionText,
+                  top: '30%',
+                  fontSize: calculateTransactionFontSize(
+                    item.TransactionPreference
+                  ),
+                }}
+              >
                 {item.TransactionPreference}
               </Text>
             </View>
@@ -615,5 +798,3 @@ const Listing = ({
 };
 
 export default memo(Listing);
-
-const PAGE_WIDTH = screenWidth / 2;

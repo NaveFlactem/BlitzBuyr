@@ -1,3 +1,12 @@
+
+
+/**
+ * @namespace Icons
+ * @memberof Visuals
+ * @description - file serves as a utility for handling various icon sets using React Native Vector Icons.  BlitzBuyr used many icons from Matierial Communitiy Icons in particular
+ */
+
+
 import React from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';

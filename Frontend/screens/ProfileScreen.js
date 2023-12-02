@@ -39,6 +39,13 @@ import {
   getStoredUsername,
 } from './auth/Authenticate.js';
 
+/**
+ * @namespace ProfileScreen
+ * @memberof Screens
+ *
+ *
+ */
+
 const ListingsRoute = ({ onPressListing, data, text, styles }) => (
   <View style={{ flex: 1 }}>
     {data.length > 0 ? (
@@ -481,7 +488,6 @@ function ProfileScreen({ navigation, route }) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <BouncePulse />
-        <Text>Loading...</Text>
       </View>
     );
   }
@@ -510,26 +516,6 @@ function ProfileScreen({ navigation, route }) {
             position: 'absolute',
           }}
         />
-        {/* Back button */}
-        {!selfProfile && (
-          <TouchableOpacity
-            onPress={() => {
-              setLoading(true);
-              navigation.navigate('BottomNavOverlay');
-            }}
-            style={styles.circleContainer}
-          >
-            <View style={styles.circle}>
-              <MaterialCommunityIcons
-                name="arrow-left"
-                size={30}
-                color={
-                  theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet
-                }
-              />
-            </View>
-          </TouchableOpacity>
-        )}
       </View>
 
       {/* //Profile Picture */}
@@ -748,6 +734,27 @@ function ProfileScreen({ navigation, route }) {
         )}
       </View>
 
+      {/* Back button */}
+      {!selfProfile && (
+        <TouchableOpacity
+          onPress={() => {
+            setLoading(true);
+            navigation.navigate('BottomNavOverlay');
+          }}
+          style={styles.circleContainer}
+        >
+          <View style={styles.circle}>
+            <MaterialCommunityIcons
+              name="arrow-left"
+              size={30}
+              color={
+                theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet
+              }
+            />
+          </View>
+        </TouchableOpacity>
+      )}
+
       <View
         style={{
           flex: 1,
@@ -795,6 +802,34 @@ function ProfileScreen({ navigation, route }) {
           renderTabBar={renderTabBar}
         />
       </View>
+
+      {/* Settings */}
+      {selfProfile && (
+        <TouchableOpacity
+          onPress={() => {
+            setLoading(true);
+            navigation.navigate('SettingsScreen', {
+              prevContactInfo: contactInfo,
+              profileName: profileName,
+            });
+          }}
+          style={{
+            position: 'absolute',
+            top: Platform.OS == 'ios' ? 55 : 40,
+            right: Platform.OS == 'ios' ? 10 : 15,
+          }}
+        >
+          <View style={styles.circle}>
+            <MaterialIcons
+              name="settings"
+              size={30}
+              color={
+                theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet
+              }
+            />
+          </View>
+        </TouchableOpacity>
+      )}
 
       {/* Overlay for displaying selected listing */}
       {selectedListing && (
@@ -844,42 +879,23 @@ function ProfileScreen({ navigation, route }) {
           </View>
           <TouchableOpacity
             onPress={() => setSelectedListing(null)}
-            style={{ ...styles.button, bottom: '8%' }}
+            style={{
+              ...styles.button,
+              top: selfProfile
+                ? Platform.OS === 'ios'
+                  ? -0.035 * screenHeight
+                  : -0.05 * screenHeight
+                : Platform.OS === 'ios'
+                  ? -0.1 * screenHeight
+                  : -0.12 * screenHeight,
+            }}
           >
             <Text style={styles.buttonText}>Close</Text>
           </TouchableOpacity>
         </View>
       )}
-
-      {/* Settings */}
-      {selfProfile && (
-        <TouchableOpacity
-          onPress={() => {
-            setLoading(true);
-            navigation.navigate('SettingsScreen', {
-              prevContactInfo: contactInfo,
-              profileName: profileName,
-            });
-          }}
-          style={{
-            position: 'absolute',
-            top: Platform.OS == 'ios' ? 55 : 15,
-            right: Platform.OS == 'ios' ? 10 : 15,
-          }}
-        >
-          <View style={styles.circle}>
-            <MaterialIcons
-              name="settings"
-              size={30}
-              color={
-                theme === 'light' ? Colors.BB_darkRedPurple : Colors.BB_violet
-              }
-            />
-          </View>
-        </TouchableOpacity>
-      )}
     </SafeAreaView>
   );
 }
 
-export default ProfileScreen;
+export default memo(ProfileScreen);

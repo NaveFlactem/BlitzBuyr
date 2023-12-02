@@ -19,7 +19,7 @@ import Colors from '../constants/Colors';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import { useThemeContext } from './visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
-import { currencies } from '../constants/ListingData';
+import { calculateTagTextFontSize } from './CalculateFontSize';
 
 /**
  * @component
@@ -218,15 +218,6 @@ const TagDrawer = memo(
       setSelectedCurrency(newSelectedCurrency);
     };
 
-    /**
-     * Clears the selected state for tags, conditions, transactions, and currency data.
-     *
-     * @function
-     * @name clearSelections
-     * @memberof Components
-     * @description Resets the selected state to false for all tags, conditions, transactions, and currency data.
-     * @returns {void}
-     */
     clearSelections = () => {
       setTagsData(tagsData.map((tag) => ({ ...tag, selected: false })));
       setConditionsData(
@@ -427,7 +418,9 @@ const TagDrawer = memo(
                         { opacity: transaction.selected ? 0.15 : 0 },
                       ]}
                     />
-                    <Text style={styles.tagText}>{transaction.name}</Text>
+                    <Text style={[styles.tagText, { fontSize: calculateTagTextFontSize(transaction.name, 16) }]}>
+                    {transaction.name}
+                    </Text>
                   </TouchableOpacity>
                 ))}
                 <View style={styles.seperationContainer}>

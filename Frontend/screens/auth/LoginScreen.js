@@ -18,6 +18,7 @@ import Colors from '../../constants/Colors';
 import { setStoredCredentials } from './Authenticate.js';
 import { useThemeContext } from '../../components/visuals/ThemeProvider.js';
 import { getThemedStyles } from '../../constants/Styles.js';
+import * as SecureStore from 'expo-secure-store';
 
 /**
  * LoginScreen component.
@@ -61,7 +62,12 @@ const LoginScreen = ({ navigation }) => {
       await setStoredCredentials(username, password);
       clearFields();
       navigation.navigate('BottomNavOverlay');
-      checkListingExpiration();
+      const settingsStatus = await SecureStore.getItemAsync(
+        'accountActivityStatus',
+      );
+      if (settingsStatus === 'true') {
+        checkListingExpiration();
+      }
     } else {
       Alert.alert(responseData.error);
     }

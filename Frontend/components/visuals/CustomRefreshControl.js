@@ -1,3 +1,15 @@
+/**
+ * @namespace CustomRefreshControl
+ * @memberof Visuals
+ * @description A custom refresh control component that utilizes BouncePulse animation.
+ * @param {object} props - Component properties.
+ * @param {boolean} props.refreshing - Boolean indicating whether the refresh is active.
+ * @param {Animated.SharedValue<number>} props.scrollY - Animated value representing scroll position.
+ * @returns {JSX.Element} React component for the CustomRefreshControl.
+ */
+
+
+
 import { memo } from 'react';
 import { StyleSheet } from 'react-native';
 import Animated, {
@@ -9,34 +21,26 @@ import BouncePulse from './BouncePulse';
 import { useThemeContext } from './ThemeProvider';
 import { getThemedStyles } from '../../constants/Styles';
 
-export const CustomRefreshControl = memo(
-  ({ refreshing, scrollY, swiperRef }) => {
-    const styles = getThemedStyles(
-      useThemeContext().theme,
-    ).CustomRefreshControl;
-    const bouncePulseStyle = useAnimatedStyle(() => {
-      let newYPosition = -100; // Initial off-screen position
-      let newOpacity = 1;
+export const CustomRefreshControl = memo(({ refreshing, scrollY }) => {
+  const styles = getThemedStyles(useThemeContext().theme).CustomRefreshControl;
+  const bouncePulseStyle = useAnimatedStyle(() => {
+    let newOpacity = 1;
 
-      if (refreshing) {
-        newYPosition = withTiming(0, { duration: 500 });
-      } else {
-        // Normalize and adjust opacity based on scrollY
-        const normalizedScrollY = Math.abs(scrollY.value); // Convert to positive value
-        newOpacity = Math.min(normalizedScrollY / 100, 1); // Adjust 100 to control fade speed
-        newYPosition = -100 - scrollY.value;
-      }
+    // Normalize and adjust opacity based on scrollY
+    if (refreshing) {
+      opacity = 1;
+    } else {
+      const normalizedScrollY = Math.abs(scrollY.value); // Convert to positive value
+      newOpacity = Math.min(normalizedScrollY / 100, 1); // Adjust 100 to control fade speed
+    }
+    return {
+      opacity: newOpacity,
+    };
+  });
 
-      return {
-        transform: [{ translateY: newYPosition }],
-        opacity: newOpacity,
-      };
-    });
-
-    return (
-      <Animated.View style={[styles.bouncePulseContainer, bouncePulseStyle]}>
-        <BouncePulse />
-      </Animated.View>
-    );
-  },
-);
+  return (
+    <Animated.View style={[styles.bouncePulseContainer, bouncePulseStyle]}>
+      <BouncePulse />
+    </Animated.View>
+  );
+});

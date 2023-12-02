@@ -12,6 +12,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Platform,
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
@@ -19,6 +20,7 @@ import { saveContactInfo } from '../network/Service';
 import { getStoredUsername } from './auth/Authenticate';
 import { useThemeContext } from '../components/visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
+import { screenHeight } from '../constants/ScreenDimensions';
 
 /**
  * Represents a screen for editing contact information.
@@ -54,50 +56,38 @@ const EditContactInfo = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.safeareaview}>
+      {/* TOP BAR */}
+      <View style={styles.topBar}>
+        <View style={styles.topBarContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              setLoading(true);
+              navigation.navigate('BottomNavOverlay');
+            }}
+          >
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons
+                name="arrow-left"
+                size={30}
+                color={Colors.BB_bone}
+                style={{
+                  top:
+                    Platform.OS === 'ios'
+                      ? 0.035 * screenHeight
+                      : 0.055 * screenHeight,
+                }}
+              />
+            </View>
+          </TouchableOpacity>
+          <Text style={styles.headerText}>Contact Info</Text>
+        </View>
+      </View>
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
         style={{
           backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
         }}
-        stickyHeaderIndices={[0]}
       >
-        {/* TOP BAR */}
-        <View style={styles.topBar}>
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-            <TouchableOpacity
-              onPress={() => {
-                setLoading(true);
-                navigation.navigate('SettingsScreen');
-              }}
-            >
-              <View style={styles.iconContainer}>
-                <MaterialCommunityIcons
-                  name="arrow-left"
-                  size={30}
-                  color={Colors.BB_bone}
-                />
-              </View>
-            </TouchableOpacity>
-            <Text style={styles.headerText}>Contact Info</Text>
-            <TouchableOpacity
-              onPress={() => {
-                setLoading(true);
-                try {
-                  saveContactInfo(contactInfo);
-
-                  navigation.setOptions({
-                    params: { profileName: getStoredUsername() },
-                  });
-                  navigation.navigate('SettingsScreen');
-                } catch (error) {
-                  alert(error);
-                }
-                navigation.navigate('BottomNavOverlay');
-              }}
-            ></TouchableOpacity>
-          </View>
-        </View>
-
         {/* CONTENT */}
         <View style={styles.container}>
           {Object.keys(contactInfo).map((key) => (

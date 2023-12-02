@@ -1,4 +1,11 @@
-import React, { useState, memo } from 'react';
+/**
+ * @namespace SettingsScreen
+ * @memberof Screens
+ *
+ *
+ */
+
+import React, { useState, memo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -6,36 +13,42 @@ import {
   SafeAreaView,
   ScrollView,
   Switch,
+  Platform,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import { getThemedStyles } from '../constants/Styles.js';
 import { useThemeContext } from '../components/visuals/ThemeProvider.js';
+import * as SecureStore from 'expo-secure-store';
+import { screenHeight } from '../constants/ScreenDimensions';
 
 const SettingsScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
   const { theme } = useThemeContext();
   const { toggleTheme } = useThemeContext();
-
   const styles = getThemedStyles(useThemeContext().theme).SettingsScreen;
   const [contactInfo] = useState(route.params?.prevContactInfo);
   const [profileName] = useState(route.params?.profileName);
+  const [accountActivityChecked, setAccountActivityChecked] = useState(false);
+
+  const params = {
+    'Contact Info': {
+      prevContactInfo: contactInfo,
+    },
+    'Change Password': { profileName: profileName },
+  };
+
+  const [switchItemsState, setSwitchItemsState] = useState({
+    'Dark Mode': theme === 'light' ? false : true,
+    'Account Activity': false,
+  });
 
   const titles = {
     'Account Settings': ['Change Password', 'Contact Info'],
-    // Notifications: ['Account Activity', 'Notification Preferences'],
     Notifications: ['Account Activity'],
     General: ['Dark Mode'],
     More: ['About Us'],
-  };
-
-  const toggleNotifications = () => {
-    console.log('notification toggle');
-  };
-
-  const toggleLocation = () => {
-    console.log('location toggle');
   };
 
   const toggleDarkMode = async () => {
@@ -50,60 +63,99 @@ const SettingsScreen = ({ navigation, route }) => {
     }
   };
 
+  const toggleNotifications = async () => {
+    const accountActivityStatus = !switchItemsState['Account Activity'];
+
+    try {
+      if (!accountActivityStatus) {
+        setAccountActivityChecked(false);
+        await SecureStore.setItemAsync('accountActivityStatus', 'false');
+        setSwitchItemsState((prevState) => ({
+          ...prevState,
+          'Account Activity': false,
+        }));
+      } else {
+        setAccountActivityChecked(true);
+        await SecureStore.setItemAsync('accountActivityStatus', 'true');
+        setSwitchItemsState((prevState) => ({
+          ...prevState,
+          'Account Activity': true,
+        }));
+      }
+    } catch (error) {
+      console.error('Error setting secure store:', error);
+    }
+  };
+
   const toggleParams = {
     'Dark Mode': toggleDarkMode,
-    Location: toggleLocation,
     'Account Activity': toggleNotifications,
   };
 
-  const params = {
-    'Contact Info': {
-      prevContactInfo: contactInfo,
-    },
-    'Change Password': { profileName: profileName },
-  };
+  useEffect(() => {
+    const loadAccountActivityStatus = async () => {
+      try {
+        const storedStatus = await SecureStore.getItemAsync(
+          'accountActivityStatus',
+        );
+        const parsedStatus =
+          storedStatus !== null ? storedStatus === 'true' : false;
+        setSwitchItemsState((prevState) => ({
+          ...prevState,
+          'Account Activity': parsedStatus,
+        }));
+      } catch (error) {
+        console.error('Error loading account activity status:', error);
+      }
+    };
 
-  const [switchItemsState, setSwitchItemsState] = useState({
-    'Dark Mode': theme === 'light' ? false : true,
-    'Account Activity': false,
-    Location: false,
-  });
+    loadAccountActivityStatus();
+  }, []);
 
   return (
     <SafeAreaView style={styles.safeareaview}>
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        stickyHeaderIndices={[0]}
-      >
-        {/* Top Bar */}
-        <View style={styles.topBar}>
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-            <TouchableOpacity
-              onPress={() => {
-                setLoading(true);
-                navigation.navigate('BottomNavOverlay');
-              }}
-            >
-              <View style={styles.iconContainer}>
-                <MaterialCommunityIcons
-                  name="arrow-left"
-                  size={30}
-                  color={Colors.BB_bone}
-                />
-              </View>
-            </TouchableOpacity>
-            <View
-              style={{
-                paddingLeft: 10,
-                alignContent: 'center',
-                alignSelf: 'center',
-              }}
-            >
-              <Text style={styles.headerText}>Settings</Text>
+      {/* Top Bar */}
+      <View style={styles.topBar}>
+        <View style={styles.topBarContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              setLoading(true);
+              navigation.navigate('BottomNavOverlay');
+            }}
+          >
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons
+                name="arrow-left"
+                size={30}
+                color={Colors.BB_bone}
+                style={{
+                  top:
+                    Platform.OS === 'ios'
+                      ? 0.035 * screenHeight
+                      : 0.055 * screenHeight,
+                }}
+              />
             </View>
+          </TouchableOpacity>
+          <View
+            style={{
+              paddingLeft: 10,
+              alignContent: 'center',
+              alignSelf: 'center',
+            }}
+          >
+            <Text style={styles.headerText}>Settings</Text>
           </View>
         </View>
-
+      </View>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        Account
+        Activity
+        style={{
+          backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
+        }}
+      >
         {/* CONTENT */}
         <View style={styles.container}>
           <View style={styles.settingsContent}>
@@ -122,8 +174,10 @@ const SettingsScreen = ({ navigation, route }) => {
                         style={styles.settingsItems}
                         onPress={() => {
                           setLoading(true);
-                          console.log(`${item.replace(' ', '')}Screen`);
-                          console.log(params[item]);
+                          console.log(
+                            `navigating to => ${item.replace(' ', '')}Screen`,
+                          );
+                          console.log(`with parameters => ${params[item]}`);
                           navigation.navigate(
                             `${item.replace(' ', '')}Screen`,
                             params[item],

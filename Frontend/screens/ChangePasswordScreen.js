@@ -12,6 +12,8 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Platform,
+  Alert,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
@@ -23,6 +25,7 @@ import {
 } from './auth/Authenticate.js';
 import { useThemeContext } from '../components/visuals/ThemeProvider.js';
 import { saveProfileInfo } from '../network/Service.js';
+import { screenHeight } from '../constants/ScreenDimensions';
 
 const ChangePassword = ({ navigation, route }) => {
   const [password, setPassword] = useState('');
@@ -66,9 +69,20 @@ const ChangePassword = ({ navigation, route }) => {
   };
 
   const saveChanges = async () => {
+    if (password === '' || confirmPassword === '') {
+      Alert.alert('Invalid Input', 'Please fill out all fields.');
+      return;
+    }
     if (password !== confirmPassword) {
       // Add visual prompt later
-      console.error('Password and Confirm Password do not match');
+      Alert.alert(
+        'Password Mismatch',
+        'Password and Confirm Password do not match.',
+      );
+      return;
+    }
+    if (password.length < 8 || confirmPassword.length < 8) {
+      Alert.alert('Invalid Input', 'Password must be at least 8 characters.');
       return;
     }
     try {
@@ -85,38 +99,46 @@ const ChangePassword = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.safeareaview}>
-      <ScrollView
-        contentContainerStyle={styles.scrollViewContent}
-        stickyHeaderIndices={[0]}
-      >
-        {/* Top Bar */}
-        <View style={styles.topBar}>
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
-            <TouchableOpacity
-              onPress={() => {
-                setLoading(true);
-                navigation.navigate('SettingsScreen');
-              }}
-            >
-              <View style={styles.iconContainer}>
-                <MaterialCommunityIcons
-                  name="arrow-left"
-                  size={30}
-                  color={Colors.BB_bone}
-                />
-              </View>
-            </TouchableOpacity>
-            <View
-              style={{
-                paddingLeft: 10,
-                alignContent: 'center',
-                alignSelf: 'center',
-              }}
-            >
-              <Text style={styles.headerText}>Reset Password</Text>
+      {/* Top Bar */}
+      <View style={styles.topBar}>
+        <View style={styles.topBarContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              setLoading(true);
+              navigation.navigate('BottomNavOverlay');
+            }}
+          >
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons
+                name="arrow-left"
+                size={30}
+                color={Colors.BB_bone}
+                style={{
+                  top:
+                    Platform.OS === 'ios'
+                      ? 0.035 * screenHeight
+                      : 0.055 * screenHeight,
+                }}
+              />
             </View>
+          </TouchableOpacity>
+          <View
+            style={{
+              paddingLeft: 10,
+              alignContent: 'center',
+              alignSelf: 'center',
+            }}
+          >
+            <Text style={styles.headerText}>Reset Password</Text>
           </View>
         </View>
+      </View>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        style={{
+          backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
+        }}
+      >
         {/* CONTENT */}
         <View
           style={styles.container}
@@ -126,6 +148,7 @@ const ChangePassword = ({ navigation, route }) => {
             <Text
               style={{
                 color: theme === 'dark' ? Colors.BB_bone : Colors.black,
+                marginTop: 10,
               }}
             >
               At least 9 characters with uppercase and lowercase letters.
