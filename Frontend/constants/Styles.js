@@ -1894,8 +1894,8 @@ export const getThemedStyles = (theme) => {
       },
       modalContent: {
         flex: 1,
-        top: 0.03 * screenHeight,
         alignItems: 'center',
+        marginTop: 0.05 * screenHeight,
         width: '40%',
         height: 'auto',
         alignSelf: 'center',
@@ -1960,7 +1960,7 @@ export const getThemedStyles = (theme) => {
         backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
         width: '100%',
         height: '100%',
-        top: 0.1 * screenHeight,
+        top: Platform.OS === 'ios' ? 0.1 * screenHeight : 0,
       },
       modalFooter: {
         position: 'absolute',

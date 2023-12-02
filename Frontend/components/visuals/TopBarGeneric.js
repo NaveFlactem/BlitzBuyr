@@ -6,13 +6,13 @@ import { screenWidth, screenHeight } from '../../constants/ScreenDimensions.js';
 import { useThemeContext } from './ThemeProvider';
 import { getThemedStyles } from '../../constants/Styles';
 
-const TopBar = memo(function TopBar() {
+const TopBar = memo(({imageVisible}) => {
   const { theme } = useThemeContext();
   const styles = getThemedStyles(useThemeContext().theme).TopBarGeneric;
   return (
     <View style={styles.topBar}>
       <Image
-        style={styles.logo}
+        style={[styles.logo, {opacity: imageVisible ? 1 : 0}]}
         source={ theme === 'dark' ? require('../../assets/blitzbuyr_name_logo_darkmode.png') : require('../../assets/blitzbuyr_name_logo.png')}
       />
     </View>

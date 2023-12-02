@@ -566,7 +566,13 @@ const CreateListing = memo(({ navigation, route }) => {
   const rowsOfTags = groupTagsIntoRows(tagsData, 3);
   return (
     <View style={styles.wrapper}>
-      <TopBar />
+      {
+        Platform.OS === 'android' ? (
+          <TopBar imageVisible={!showCurrencyOptions} />
+        ) : (
+          <TopBar imageVisible={true} />
+        ) 
+      }
 
       <View style={styles.scrollfield}>
         <ScrollView scrollEnabled={isScrollEnabled}>
@@ -701,27 +707,7 @@ const CreateListing = memo(({ navigation, route }) => {
                   </Text>
                 </View>
               </TouchableOpacity>
-              {showCurrencyOptions && (
-                <Modal visible={showCurrencyOptions} animationType="slide">
-                  <View style={styles.modalHeader} />
-                  <ScrollView style={styles.currencyScrollView}>
-                    <View style={styles.modalContent}>
-                      <View style={styles.currencyOptionsContainer}>
-                        {renderCurrencyOptions()}
-                      </View>
-                    </View>
-                  </ScrollView>
-                  <View style={styles.modalFooter} />
-                  <TouchableOpacity
-                    onPress={() => setShowCurrencyOptions(false)}
-                    style={styles.closeButtonContainer}
-                  >
-                    <View style={styles.closeButton}>
-                      <Text style={styles.closeButtonText}>Close</Text>
-                    </View>
-                  </TouchableOpacity>
-                </Modal>
-              )}
+              
             </View>
             <TextInput
               ref={priceInput}
@@ -932,6 +918,28 @@ const CreateListing = memo(({ navigation, route }) => {
 
           <Text style={styles.spacer} />
         </ScrollView>
+
+        {showCurrencyOptions && (
+                <Modal visible={showCurrencyOptions} animationType="slide">
+                  <View style={styles.modalHeader} />
+                  <ScrollView style={styles.currencyScrollView}>
+                    <View style={styles.modalContent}>
+                      <View style={styles.currencyOptionsContainer}>
+                        {renderCurrencyOptions()}
+                      </View>
+                    </View>
+                  </ScrollView>
+                  <View style={styles.modalFooter} />
+                  <TouchableOpacity
+                    onPress={() => setShowCurrencyOptions(false)}
+                    style={styles.closeButtonContainer}
+                  >
+                    <View style={styles.closeButton}>
+                      <Text style={styles.closeButtonText}>Close</Text>
+                    </View>
+                  </TouchableOpacity>
+                </Modal>
+              )}
 
         <Modal
           animationType="slide"
