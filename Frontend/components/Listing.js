@@ -19,7 +19,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import FlipCard from 'react-native-flip-card';
+import FlipCard from './CustomFlipCard.js';
 import { PinchGestureHandler, ScrollView } from 'react-native-gesture-handler';
 import Carousel from 'react-native-reanimated-carousel';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -508,6 +508,7 @@ const Listing = ({
         flipVertical={false}
         flip={false}
         clickable={true}
+        doubleTap={handleLikePress}
       >
         {/*FACE SIDE*/}
         <View style={styles.card}>
