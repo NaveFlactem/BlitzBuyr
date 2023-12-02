@@ -32,9 +32,19 @@ import { getStoredUsername } from '../screens/auth/Authenticate.js';
 import { parallaxLayout } from './parallax.ts';
 import { useThemeContext } from './visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
+import Animated, { useAnimatedGestureHandler, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 const default_blurhash = 'LEHLk~WB2yk8pyo0adR*.7kCMdnj';
 
+/**
+ * @param {number} lat1
+ * @param {number} lon1
+ * @param {number} lat2
+ * @param {number} lon2
+ * @function getDistance
+ * @description Calculates the distance between two coordinates
+ * @returns {number} distance
+ */
 function getDistance(lat1, lon1, lat2, lon2) {
   function toRadians(degrees) {
     return degrees * (Math.PI / 180);
@@ -59,6 +69,14 @@ function getDistance(lat1, lon1, lat2, lon2) {
   return Math.floor(distanceMiles);
 }
 
+/**
+ * @param {boolean} isLiked
+ * @param {function} onLikePress
+ * @param {object} styles
+ * @function LikeButton
+ * @description Button to like a listing
+ * @returns {object} TouchableOpacity and MaterialCommunityIcon wrapped in React.Fragment
+ */
 const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
   const { theme } = useThemeContext();
   return (
@@ -80,6 +98,14 @@ const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
   );
 });
 
+/**
+ * 
+ * @param {function} onDeletePress
+ * @param {object} styles
+ * @function DeleteButton
+ * @description Button to delete a listing 
+ * @returns {object} TouchableOpacity and MaterialCommunityIcon
+ */
 const DeleteButton = ({ onDeletePress, styles }) => {
   return (
     <TouchableOpacity style={styles.deleteButton} onPress={onDeletePress}>
@@ -88,43 +114,44 @@ const DeleteButton = ({ onDeletePress, styles }) => {
   );
 };
 
+/**
+ * @param {number} price
+ * @function calculateFontSize
+ * @description Calculates the font size for the price based on the number of digits in the price
+ * @returns {number} fontSize
+ */
 const calculateFontSize = (price) => {
   if (price === undefined || price === null) {
     return 16; // Default font size if price is not provided
   }
-
   const numberOfDigits = price.toString().length;
-  if (price == 0) {
-    return 24;
-  }
 
-  if (numberOfDigits <= 4) {
-    return 20;
-  } else if (numberOfDigits <= 6) {
-    return 18;
-  } else if (numberOfDigits <= 8) {
-    return 16;
-  } else if (numberOfDigits <= 10) {
-    return 14;
-  } else {
-    return 12;
-  }
+  return Math.max(20 - (numberOfDigits - 4) * 2, 4);
 };
 
+/**
+ * 
+ * @param {string} city
+ * @function calculateFontSizeLocation
+ * @description Calculates the font size for the city name based on the length of the city name 
+ * @returns {number} fontSize
+ */
 const calculateFontSizeLocation = (city) => {
   if (city === undefined || city === null) {
     return 16; // Default font size if price is not provided
   }
+  const numberOfCharacters = city.length;
 
-  if (city.length <= 10) {
-    return 14;
-  } else if (city.length <= 15) {
-    return 12;
-  } else {
-    return 10;
-  }
+  return Math.max(20 - (numberOfCharacters - 2), 10);
 };
 
+/**
+ * @param {number} timeSince
+ * @param {object} styles
+ * @function TimeBox
+ * @description Displays the time since the listing was posted
+ * @returns {object} View and Text wrapped in React.Fragment
+ */
 const TimeBox = memo(({ timeSince, styles }) => {
   return (
     <React.Fragment>
@@ -151,6 +178,17 @@ const TimeBox = memo(({ timeSince, styles }) => {
   );
 });
 
+/**
+ * @param {object} children
+ * @param {string} currencySymbol
+ * @param {number} price
+ * @param {number} timeSince
+ * @param {object} cardStyle
+ * @param {object} styles
+ * @function CardOverlay
+ * @description Displays the price, time since, and children (image) of the listing
+ * @returns {object} View and Image wrapped in React.Fragment
+ */
 const CardOverlay = memo(
   ({ children, currencySymbol, price, timeSince, cardStyle, styles }) => {
     return (
@@ -179,6 +217,16 @@ const CardOverlay = memo(
   },
 );
 
+/**
+ * @param {object} source
+ * @param {string} blurhash
+ * @param {object} style
+ * @param {string} contentFit
+ * @param {number} transition
+ * @function MemoizedImage
+ * @description Displays the image of the listing
+ * @returns {object} Image
+ */
 const MemoizedImage = memo(
   ({ source, blurhash, style, contentFit, transition }) => {
     //console.log(`${serverIp}/img/${source.uri}`);
@@ -195,10 +243,24 @@ const MemoizedImage = memo(
   },
 );
 
+/**
+ * @param {object} source
+ * @param {object} scale
+ * @param {string} currencySymbol
+ * @param {number} price
+ * @param {number} timeSince
+ * @param {boolean} isLiked
+ * @param {function} onLikePress
+ * @param {function} onDeletePress
+ * @param {boolean} deleteVisible
+ * @param {object} styles
+ * @function CustomItem
+ * @description Displays the image of the listing with the ability to zoom in and out
+ * @returns {object} View and Image wrapped in React.Fragment
+ */
 const CustomItem = memo(
   ({
     source,
-    scale,
     currencySymbol,
     price,
     timeSince,
@@ -208,21 +270,65 @@ const CustomItem = memo(
     deleteVisible,
     styles,
   }) => {
-    const onZoomEvent = useCallback(
-      AnimatedRN.event([{ nativeEvent: { scale: scale } }], {
-        useNativeDriver: true,
-      }),
-      [],
-    );
+    const focalX = useSharedValue(0);
+    const focalY = useSharedValue(0);
+    const xCurrent = useSharedValue(0);
+    const yCurrent = useSharedValue(0);
+    const xPrevious = useSharedValue(0);
+    const yPrevious = useSharedValue(0);
+    const scaleCurrent = useSharedValue(1);
+    const scalePrevious = useSharedValue(1);
 
-    const onZoomStateChange = (event) => {
-      if (event.nativeEvent.oldState === 4) {
-        AnimatedRN.spring(scale, {
-          toValue: 1,
-          useNativeDriver: true,
-        }).start();
-      }
-    };
+    const pinchHandler = useAnimatedGestureHandler({
+        onStart: (event) => {
+            if (event.numberOfPointers == 2) {
+                focalX.value = event.focalX;
+                focalY.value = event.focalY;
+            }
+        },
+        onActive: (event) => {
+            //prevent zooming out greater than 1
+            if (scaleCurrent.value * event.scale < 1) {
+                return;
+            }
+
+            if (event.numberOfPointers == 2) {
+                if (event.oldState === 2) {
+                    focalX.value = event.focalX;
+                    focalY.value = event.focalY;
+                }
+                scaleCurrent.value = event.scale;
+
+                xCurrent.value = (1 - scaleCurrent.value) * (focalX.value - 500 / 2);
+                yCurrent.value = (1 - scaleCurrent.value) * (focalY.value - 500 / 2);
+            }
+        },
+        onEnd: () => {
+          scalePrevious.value = withTiming(1); // Reset previous scale to original
+          scaleCurrent.value = withTiming(1);  // Reset current scale to original
+      
+          // Reset previous translations to original
+          xPrevious.value = withTiming(0);
+          yPrevious.value = withTiming(0);
+      
+          // The current translations should also be reset to 0
+          xCurrent.value = withTiming(0);
+          yCurrent.value = withTiming(0);
+        },
+    });
+
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            transform: [
+                { translateX: xCurrent.value },
+                { translateY: yCurrent.value },
+                { scale: scaleCurrent.value },
+                { translateX: xPrevious.value },
+                { translateY: yPrevious.value },
+                { scale: scalePrevious.value },
+            ],
+        };
+    });
 
     /*FRONT CARD*/
     return (
@@ -233,12 +339,10 @@ const CustomItem = memo(
         cardStyle={styles.cardBackground}
         styles={styles}
       >
-        <View>
           <PinchGestureHandler
-            onGestureEvent={onZoomEvent}
-            onHandlerStateChange={onZoomStateChange}
+            onGestureEvent={pinchHandler}
           >
-            <AnimatedRN.View style={[{ transform: [{ scale: scale }] }]}>
+            <Animated.View style={[styles.image, animatedStyle]}>
               <MemoizedImage
                 source={`${serverIp}/img/${source.uri}`}
                 blurhash={source.blurhash}
@@ -246,9 +350,8 @@ const CustomItem = memo(
                 contentFit="contain"
                 transition={0}
               />
-            </AnimatedRN.View>
+            </Animated.View>
           </PinchGestureHandler>
-        </View>
         <LikeButton
           isLiked={isLiked}
           onLikePress={onLikePress}
@@ -262,6 +365,17 @@ const CustomItem = memo(
   },
 );
 
+/**
+ * @param {object} item
+ * @param {string} origin
+ * @param {function} removeListing
+ * @param {object} userLocation
+ * @param {function} handleInnerScolling
+ * @param {function} handleInnerScollingEnd
+ * @function Listing
+ * @description Displays the listing
+ * @returns {object} SafeAreaView and FlipCard wrapped in React.Fragment
+ */
 const Listing = ({
   item,
   origin,
@@ -358,7 +472,6 @@ const Listing = ({
             renderItem={({ item }) => (
               <CustomItem
                 source={item}
-                scale={new AnimatedRN.Value(1)}
                 price={price}
                 currencySymbol={currencySymbol}
                 timeSince={timeSince}
@@ -372,7 +485,7 @@ const Listing = ({
             )}
             customAnimation={parallaxLayout(
               {
-                size: PAGE_WIDTH,
+                size: screenWidth / 2,
                 vertical: false,
               },
               {
@@ -615,5 +728,3 @@ const Listing = ({
 };
 
 export default memo(Listing);
-
-const PAGE_WIDTH = screenWidth / 2;
