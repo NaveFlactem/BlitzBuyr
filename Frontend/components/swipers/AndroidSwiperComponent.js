@@ -10,7 +10,7 @@
 /**
  * @namespace AndroidSwiperComponent
  * @description - This component is designed to create a swiper/slider functionality for displaying listings in a Android mobile application.
- * @memberof Swpiers
+ * @memberof Swipers
  * 
  */
 
