@@ -1,3 +1,23 @@
+/**
+ * @namespace Visuals
+ * 
+ */
+
+/**
+ * @namespace BouncePulse
+ * @memberof Visuals
+ * @description A component that creates a bouncing pulse effect with animated dots.
+ * @param {object} props - Component properties.
+ * @param {number} props.opacity - Opacity of the pulse effect.
+ * @param {number} props.dotTop - Top position of the animated dot.
+ * @param {number} props.dotBottom - Bottom position of the animated dot.
+ * @param {number} props.dotLeft - Left position of the animated dot.
+ * @param {number} props.dotRight - Right position of the animated dot.
+ * @returns {JSX.Element} React component for the BouncePulse effect.
+ */
+ 
+
+
 import React, { memo, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, {
