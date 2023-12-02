@@ -1,3 +1,15 @@
+/**
+ * @namespace CustomRefreshControl
+ * @memberof Visuals
+ * @description A custom refresh control component that utilizes BouncePulse animation.
+ * @param {object} props - Component properties.
+ * @param {boolean} props.refreshing - Boolean indicating whether the refresh is active.
+ * @param {Animated.SharedValue<number>} props.scrollY - Animated value representing scroll position.
+ * @returns {JSX.Element} React component for the CustomRefreshControl.
+ */
+
+
+
 import { memo } from 'react';
 import { StyleSheet } from 'react-native';
 import Animated, {
