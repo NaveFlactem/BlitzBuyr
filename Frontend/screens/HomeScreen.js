@@ -30,6 +30,7 @@ import { getLocationWithRetry } from '../constants/Utilities';
 import * as Settings from '../hooks/UserSettings.js';
 import { fetchListings } from '../network/Service';
 import Colors from '../constants/Colors';
+import { FlatList } from 'react-native-gesture-handler';
 /**
  * @namespace HomeScreen
  * @memberof Screens
@@ -47,6 +48,29 @@ import Colors from '../constants/Colors';
  * @description Renders the home screen displaying listings and various filters. Manages state for refreshing listings, network connectivity, loading state, user location, tag options, condition options, transaction options, selected tags, conditions, and transactions. Uses ref for swiper navigation and shared values for animation. Handles drawer visibility, distance settings, and location slider visibility.
  */
 const HomeScreen = ({ route }) => {
+  /**
+   * @constant {boolean} refreshing - State variable to indicate whether the listings are being refreshed.
+   * @constant {Array} listings - State variable to store the listings data.
+   * @constant {React.RefObject<FlatList>} swiperRef - Reference to the swiper FlatList component inside IOSSwiperComponent and AndroidSwiperComponent.
+   * @constant {boolean} networkConnected - State variable to indicate whether the device is connected to the network.
+   * @constant {boolean} isLoading - State variable to indicate whether the listings are being loaded.
+   * @constant {object} userLocation - State variable to store the user's location.
+   * @constant {Array} tagsData - State variable to store the tag options imported from ListingData.js (tagsData is a copy of tagOptions).
+   * @constant {Array} conditions - State variable to store the condition options imported from ListingData.js (conditions is a copy of conditionOptions).
+   * @constant {Array} transactions - State variable to store the transaction options imported from ListingData.js (transactions is a copy of transactionOptions).
+   * @constant {Array} currencyData - State variable to store the currency options imported from ListingData.js (currencyData is a copy of currencies).
+   * @constant {Array} selectedTags - State variable to store the selected tags.
+   * @constant {Array} selectedConditions - State variable to store the selected conditions.
+   * @constant {Array} selectedTransactions - State variable to store the selected transactions.
+   * @constant {string} selectedCurrency - State variable to store the selected currency.
+   * @constant {Animated.SharedValue} translateX - Shared value to store the horizontal translation of the tag drawer.
+   * @constant {boolean} isDrawerOpen - State variable to indicate whether the tag drawer is open.
+   * @constant {number} distance - State variable to store the distance setting.
+   * @constant {boolean} isLocationSliderVisible - State variable to indicate whether the location slider is visible.
+   * @constant {Animated.SharedValue} locationSliderHeight - Shared value to store the vertical translation of the location slider.
+   * @constant {string} theme - State variable to store the current theme ('light' or 'dark')
+   * @constant {object} styles - Style object containing default styles and styles for dark mode.
+   */
   const [refreshing, setRefreshing] = useState(false);
   const [listings, setListings] = useState([]);
   const swiperRef = useRef(null);
@@ -123,7 +147,7 @@ const HomeScreen = ({ route }) => {
    * @function
    * @name handleInnerScrolling
    * @memberof HomeScreen
-   * @param {React.RefObject<ScrollView>} swiperRef - Reference to the swiper ScrollView component.
+   * @param {React.RefObject<FlatList>} swiperRef - Reference to the swiper FlatList component inside IOSSwiperComponent and AndroidSwiperComponent.
    * @returns {void}
    * @description Disables scrolling on the swiper component by setting its native property 'scrollEnabled' to 'false'.
    */
@@ -135,7 +159,7 @@ const HomeScreen = ({ route }) => {
    * @function
    * @name handleInnerScrollingEnd
    * @memberof HomeScreen
-   * @param {React.RefObject<ScrollView>} swiperRef - Reference to the swiper ScrollView component.
+   * @param {React.RefObject<FlatListw>} swiperRef - Reference to the swiper FlatList component inside IOSSwiperComponent and AndroidSwiperComponent.
    * @returns {void}
    * @description Enables scrolling on the swiper component by setting its native property 'scrollEnabled' to 'true'.
    */

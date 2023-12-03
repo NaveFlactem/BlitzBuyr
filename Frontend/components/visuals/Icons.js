@@ -36,6 +36,17 @@ export const Icons = {
   EvilIcons,
 };
 
+/**
+ * 
+ * @function Icon 
+ * @param {string} type - the icon set to use
+ * @param {string} name - the name of the icon
+ * @param {string} color - the color of the icon
+ * @param {number} size - the size of the icon
+ * @param {object} style - the style of the icon
+ * @returns {JSX.Element} - Icon component
+ * @example Icon({type: 'MaterialCommunityIcons', name: 'home', color: 'black', size: 24, style: {}})
+ */
 const Icon = ({ type, name, color, size = 24, style }) => {
   const fontSize = 24;
   const Tag = type;

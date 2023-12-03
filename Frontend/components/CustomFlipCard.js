@@ -19,7 +19,7 @@ import { ViewPropTypes } from 'deprecated-react-native-prop-types';
  * @extends React.Component
  * @example  <FlipCard> <Component1 /> <Component2 /> </FlipCard>
  * @prop {bool} flip - Set to true to flip the card and see the back view, false to see the front view.
- * @prop {number} friction - Value used to determine the speed at which the card flips. Defaults to 6.
+ * @prop {number} friction - Value used to determine the speed at which the card flips with higher vlaues corresponding to slower flipping. Defaults to 6.
  * @prop {number} perspective - Determines the distance of the card from the rest of the scene, in pixels. Defaults to 1000.
  * @prop {bool} flipHorizontal - Set to true to flip the card horizontally (with a default value of false to flip it vertically).
  * @prop {bool} flipVertical - Set to true to flip the card vertically (with a default value of true to flip it vertically).
@@ -32,10 +32,27 @@ import { ViewPropTypes } from 'deprecated-react-native-prop-types';
  * @prop {bool} useNativeDriver - Set to true to use native animations. Defaults to true.
  */
 export default class FlipCard extends Component {
+  /**
+   * @member {object} propTypes
+   * @description defines style propTypes
+   */
   static propTypes = {
     style: ViewPropTypes.style,
   };
 
+  /**
+   * @constructor constructor
+   * @param {object} props
+   * @description constructor method for FlipCard
+   * @constant {bool} isFlipped - boolean to determine if the card is flipped or not
+   * @constant {bool} isFlipping - boolean to determine if the card is flipping or not
+   * @constant {object} rotate - Animated.Value to determine the rotation of the card
+   * @constant {bool} measured - boolean to determine if the card is measured or not
+   * @constant {number} height - height of the card
+   * @constant {number} width - width of the card
+   * @constant {object} face - object containing the width and height of the front face of the card
+   * @constant {object} back - object containing the width and height of the back face of the card 
+   */
   constructor(props) {
     super(props);
 
@@ -49,28 +66,52 @@ export default class FlipCard extends Component {
       isFlipped: isFlipped,
       isFlipping: false,
       rotate: new Animated.Value(Number(props.flip)),
-      mesured: false, // the flag to check whether it is measured or not.
+      measured: false, // the flag to check whether it is measured or not.
       height: 0,
       width: 0,
       face: { width: 0, height: 0 },
       back: { width: 0, height: 0 },
     };
   }
+
+  /**
+   * @static getDerivedStateFromProps
+   * @param {object} nextProps 
+   * @param {state} prevState 
+   * @returns {object} - returns the state object with the updated flip value if the flip value has changed from the previous props value otherwise returns null
+   */
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState.isFlipped !== nextProps.flip) {
       return { flip: nextProps.flip };
     } else return null;
   }
+  
+  /**
+   * @function componentDidUpdate
+   * @param {object} prevProps
+   * @description componentDidUpdate method for FlipCard component that checks if the flip prop has changed and calls the _toggleCard method
+   */
   componentDidUpdate(prevProps) {
     if (prevProps.flip !== this.props.flip) {
       this._toggleCard();
     }
   }
+
+  /**
+   * @function _toggleCard
+   * @description method that sets the state of isFlipping to true and calls the _animation method
+   */
   _toggleCard() {
     this.setState({ isFlipping: true });
     this.props.onFlipStart(this.state.isFlipped);
     this._animation(!this.state.isFlipped);
   }
+
+  /**
+   * @function _animation
+   * @param {bool} isFlipped
+   * @description method that sets the state of isFlipped to the opposite of the isFlipped parameter and calls the Animated.spring method to animate the card flip
+   */
   _animation(isFlipped) {
     if (!this.timer) {
       this.timer = setTimeout(() => {
@@ -88,6 +129,11 @@ export default class FlipCard extends Component {
     });
   }
 
+  /**
+   * @function componentDidMount
+   * @constant {number} measureOtherSideTimeout - timeout to call the measureOtherSide method after 32 milliseconds
+   * @description method that sets a timeout to call the measureOtherSide method after 32 milliseconds
+   */
   componentDidMount() {
     if (this.props.alignHeight || this.props.alignWidth) {
       // need to check the other side width or height or both
@@ -98,18 +144,39 @@ export default class FlipCard extends Component {
     }
   }
 
+  /**
+   * @function componentWillUnmount
+   * @description method that clears the measureOtherSideTimeout and tapTimeout timeouts
+   * @constant {number} measureOtherSideTimeout - timeout to call the measureOtherSide method after 32 milliseconds
+   * @constant {number} tapTimeout - timeout to call the handleTap method after 220 milliseconds
+   */
   componentWillUnmount() {
     clearTimeout(this.measureOtherSideTimeout);
     clearTimeout(this.tapTimeout);
   }
 
+  /** 
+  * @function measureOtherSide
+  * @description method that sets the state of isFlipped to the opposite of the isFlipped parameter and calls the Animated.spring method to animate the card flip
+  * @constant {bool} isFlipped - boolean to determine if the card is flipped or not
+  * @constant {bool} measured - boolean to determine if the card is measured or not 
+  */
   measureOtherSide() {
     this.setState({
       isFlipped: !this.state.isFlipped,
-      mesured: true,
+      measured: true,
     });
   }
 
+  /**
+   * @function handleTap
+   * @description method that handles the tap event and calls the _toggleCard method if the tap is a single tap or the doubleTap method if the tap is a double tap
+   * @constant {number} now - current time in milliseconds
+   * @constant {number} DOUBLE_PRESS_DELAY - constant value of 220 milliseconds
+   * @constant {number} lastTap - time in milliseconds of the last tap
+   * @constant {number} tapTimeout - timeout to call the handleTap method after 220 milliseconds
+   * @constant {number} lastTap - time in milliseconds of the last tap
+   */
   handleTap = () => {
     const now = Date.now();
     const DOUBLE_PRESS_DELAY = 220;
@@ -173,7 +240,7 @@ export default class FlipCard extends Component {
               height: height,
             });
             this.setState({ back: _update });
-            if (this.state.mesured) {
+            if (this.state.measured) {
               if (this.props.alignHeight) {
                 this.setState({
                   height: Math.max(
@@ -207,7 +274,7 @@ export default class FlipCard extends Component {
               height: height,
             });
             this.setState({ face: _update });
-            if (this.state.mesured) {
+            if (this.state.measured) {
               if (this.props.alignHeight) {
                 this.setState({
                   height: Math.max(
@@ -229,19 +296,13 @@ export default class FlipCard extends Component {
       );
     }
 
-    // FIX: ScrollView inside Flip Card not scrollable
-    // TODO: Replace below fix with by using "disabled" function (RN 0.21 exclusive)
-    // REF: https://github.com/facebook/react-native/pull/5931
-    //      https://github.com/facebook/react-native/issues/2103
     if (this.props.clickable) {
       let opacity = 0;
       if (
         ((this.props.alignHeight || this.props.alignWidth) &&
-          this.state.mesured) ||
+          this.state.measured) ||
         !(this.props.alignHeight || this.props.alignWidth)
       ) {
-        // if you set alignXXX property, we show this side after mesured
-        // Otherwise, it's showed immediately
         opacity = 1;
       }
       return (
@@ -278,6 +339,12 @@ export default class FlipCard extends Component {
     }
   }
 }
+
+/**
+ * FlipCard.propTypes
+ * @type {object}
+ * @description defines prop types for FlipCard
+ */
 FlipCard.propTypes = {
   flip: PropTypes.bool,
   friction: PropTypes.number,
@@ -306,6 +373,11 @@ FlipCard.propTypes = {
   },
 };
 
+/**
+ * FlipCard.defaultProps
+ * @type {object}
+ * @description defines default prop values for FlipCard
+ */
 FlipCard.defaultProps = {
   flip: false,
   friction: 6,
@@ -321,6 +393,12 @@ FlipCard.defaultProps = {
   useNativeDriver: true,
 };
 
+/**
+ * @class Face
+ * @description Component that represents the front face of the card.
+ * @extends React.Component
+ * @example <Face> <Component1 /> </Face>
+ */
 export class Face extends Component {
   render() {
     return (
@@ -334,10 +412,21 @@ export class Face extends Component {
   }
 }
 
+/**
+ * Face.propTypes
+ * @type {object}
+ * @description defines prop types for Face
+ */
 Face.propTypes = {
   children(props, propName, componentName) {},
 };
 
+/**
+ * @class Back
+ * @description Component that represents the back face of the card.
+ * @extends React.Component
+ * @example <Back> <Component2 /> </Back>
+ */
 export class Back extends Component {
   render() {
     var transform = [];
@@ -365,12 +454,25 @@ export class Back extends Component {
   }
 }
 
+/**
+ * Back.defaultProps
+ * @type {object}
+ * @description defines default prop values for Back
+ * @prop {bool} flipHorizontal - Set to true to flip the card horizontally (with a default value of false to flip it vertically).
+ * @prop {bool} flipVertical - Set to true to flip the card vertically (with a default value of true to flip it vertically).
+ * @prop {number} perspective - Determines the distance of the card from the rest of the scene, in pixels. Defaults to 1000.
+ */
 Back.defaultProps = {
   flipHorizontal: false,
   flipVertical: true,
   perspective: 1000,
 };
 
+/**
+ * Back.propTypes
+ * @type {object}
+ * @description defines prop types for Back
+ */
 Back.propTypes = {
   flipHorizontal: PropTypes.bool,
   flipVertical: PropTypes.bool,

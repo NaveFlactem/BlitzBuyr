@@ -94,8 +94,8 @@ const CreateListing = memo(({ navigation, route }) => {
    * @constant {string} selectedCurrency - currency that the user selected
    * @constant {string} selectedCurrencySymbol - currency symbol that the user selected
    * @constant {boolean} showCurrencyOptions - boolean that checks if the currency options are visible
-   * @constant {Array} tagsData - array of the tags data imported from ListingData.js and 
-   * @constant {Array} currencyOptions - array of the currency options imported from ListingData.js
+   * @constant {Array} tagsData - array of the tags data imported from ListingData.js (tagsData is a copy of tagOptions)
+   * @constant {Array} currencyOptions - array of the currency options imported from ListingData.js (currencyOptions is a copy of currencies)
    * @constant {boolean} selectImageModalVisible - boolean that checks if the select image modal is visible
    * @constant {string} theme - string that has the value of the current theme (light/dark)
    * @constant {Object} styles - object that holds the styles for the create listing screen
