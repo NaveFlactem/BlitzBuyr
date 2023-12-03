@@ -38,14 +38,25 @@ import { getStoredUsername } from './auth/Authenticate.js';
 import { useThemeContext } from '../components/visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
 
+/**
+ * @constant {string} blurhash - blurhash for the loading image in draggable grid
+ */
 const blurhash = 'L5H2EC=PM+yV0g-mq.wG9c010J}I';
 
+/**
+ * @function
+ * @description - renders the loading animation for the create listing screen on full screen refresh after the user creates a listing
+ */
 const LoadingView = memo(({ styles }) => (
   <View style={styles.loading}>
     <BouncePulse />
   </View>
 ));
 
+/**
+ * @function
+ * @description - renders the loading animation for the create listing screen on minor refreshes, for example when the user selects an image
+ */
 const MinorLoadingView = memo(({ styles }) => (
   <View style={styles.minorLoadingContainer}>
     <BouncePulse />
@@ -54,14 +65,41 @@ const MinorLoadingView = memo(({ styles }) => (
 
 /**
  * @function
- * @CreateListing - creates a listing
- * @param {*} props
- * @description - creates a listing
- * @returns Returns a CreateListing screen
+ * @CreateListing
+ * @memberof CreateListing
+ * @param {Object} navigation - The object used to navigate between screens.
+ * @param {Object} route - Information about the current route.
+ * @description - This is the screen where the user can create a listing.
+ * @returns {JSX.Element} - CreateListing screen components
  */
 const CreateListing = memo(({ navigation, route }) => {
-  const { theme } = useThemeContext();
-  const styles = getThemedStyles(theme).CreateListing;
+  /**
+   * @constant {string} title - title of the listing
+   * @constant {string} description - description of the listing
+   * @constant {string} price - price of the listing
+   * @constant {string} condition - condition of the listing
+   * @constant {string} transactionPreference - transaction preference of the listing
+   * @constant {Array} data - array of the images that the user selected
+   * @constant {Array} selectedTags - array of the tags that the user selected
+   * @constant {boolean} isScrollEnabled - boolean that checks if scrolling is enabled
+   * @constant {boolean} isTitleInvalid - boolean that checks if the title is invalid
+   * @constant {boolean} isDescriptionInvalid - boolean that checks if the description is invalid
+   * @constant {boolean} isPriceInvalid - boolean that checks if the price is invalid
+   * @constant {boolean} isConditionInvalid - boolean that checks if the condition is invalid
+   * @constant {boolean} isTransactionPreferenceInvalid - boolean that checks if the transaction preference is invalid
+   * @constant {boolean} isImageInvalid - boolean that checks if the image is invalid
+   * @constant {boolean} isTagInvalid - boolean that checks if the tag is invalid
+   * @constant {boolean} isMinorLoading - boolean that checks if the minor loading animation is active
+   * @constant {boolean} isLoading - boolean that checks if the loading animation is active
+   * @constant {string} selectedCurrency - currency that the user selected
+   * @constant {string} selectedCurrencySymbol - currency symbol that the user selected
+   * @constant {boolean} showCurrencyOptions - boolean that checks if the currency options are visible
+   * @constant {Array} tagsData - array of the tags data imported from ListingData.js and 
+   * @constant {Array} currencyOptions - array of the currency options imported from ListingData.js
+   * @constant {boolean} selectImageModalVisible - boolean that checks if the select image modal is visible
+   * @constant {string} theme - string that has the value of the current theme (light/dark)
+   * @constant {Object} styles - object that holds the styles for the create listing screen
+   */
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -75,7 +113,7 @@ const CreateListing = memo(({ navigation, route }) => {
   const [isPriceInvalid, setIsPriceInvalid] = useState(false);
   const [isConditionInvalid, setIsConditionInvalid] = useState(false);
   const [isTransactionPreferenceInvalid, setIsTransactionPreferenceInvalid] =
-    useState(false);
+  useState(false);
   const [isImageInvalid, setIsImageInvalid] = useState(false);
   const [isTagInvalid, setIsTagInvalid] = useState(false);
   const [isMinorLoading, setIsMinorLoading] = useState(false);
@@ -86,6 +124,8 @@ const CreateListing = memo(({ navigation, route }) => {
   const [tagsData, setTagsData] = useState([...tagOptions]);
   const [currencyOptions, setCurrencyOptions] = useState([...currencies]);
   const [selectImageModalVisible, setSelectImageModalVisible] = useState(false);
+  const { theme } = useThemeContext();
+  const styles = getThemedStyles(theme).CreateListing;
 
   const titleInput = useRef(null);
   const descriptionInput = useRef(null);
@@ -121,6 +161,14 @@ const CreateListing = memo(({ navigation, route }) => {
   /**
    * @function
    * @checkValidListing - checks if the listing is valid
+   * @description - checks if the listing is valid and returns a code based on the validity of the listing,
+   * @setIsPriceInvalid - sets the state of isPriceInvalid to true if the price is invalid which would be if the price is not a number, if the price is less than 0, or if the price is too large, if the price is empty, or if the price does not match the regex. Then make return code -1
+   * @setIsTitleInvalid - sets the state of isTitleInvalid to true if the title is invalid which would be if the title is empty or if the title is too long (over 25 characters). Then make return code -1
+   * @setIsDescriptionInvalid - sets the state of isDescriptionInvalid to true if the description is invalid which would be if the description is empty or if the description is too long (over 500 characters). Then make return code -1
+   * @setIsConditionInvalid - sets the state of isConditionInvalid to true if the condition is invalid which would be if the condition is not one of the options. Then make return code -1
+   * @setIsTransactionPreferenceInvalid - sets the state of isTransactionPreferenceInvalid to true if the transaction preference is invalid which would be if the transaction preference is not one of the options. Then make return code -1
+   * @setIsImageInvalid - sets the state of isImageInvalid to true if the image is invalid which would be if the image is empty or if the image is too large. Then make return code -1
+   * @setIsTagInvalid - sets the state of isTagInvalid to true if the tag is invalid which would be if the tag is empty. Then make return code -1
    * @returns Returns 0 if the listing is valid, -1 if the listing is invalid and 1 if no images are selected and 2 if too many images are selected and 3 if no tags are selected
    * @memberof CreateListing
    */
@@ -171,7 +219,17 @@ const CreateListing = memo(({ navigation, route }) => {
   /**
    * @function
    * @handleCreateListing - sends user inputted data to server and checks if it ran smoothly
+   * @setIsLoading - sets the state of isLoading to true
+   * @checkValidListing - checks if the listing is valid
+   * @var {number} returnCode - variable that holds the return code from checkValidListing
    * @param {Object} formData - object that is sent to the server with user inputted values
+   * @param {Object} image - object that holds the image that the user selected
+   * @var {Object} location - object that holds the location of the user
+   * @var {number} latitude - variable that holds the latitude of the user
+   * @var {number} longitude - variable that holds the longitude of the user
+   * @var {string} locationString - variable that holds the location of the user in string format
+   * @var {Object} response - object that holds the response from the server
+   * @var {Object} responseData - object that holds the response data from the server
    * @memberof CreateListing
    */
   const handleCreateListing = async () => {
@@ -243,6 +301,7 @@ const CreateListing = memo(({ navigation, route }) => {
   /**
    * @function
    * @useEffect - asks for permission to access camera roll when the screen is loaded
+   * @memberof CreateListing
    */
   useEffect(() => {
     getPermissionAsync();
@@ -277,6 +336,7 @@ const CreateListing = memo(({ navigation, route }) => {
    */
   const showModal = () => setSelectImageModalVisible(true);
   const hideModal = () => setSelectImageModalVisible(false);
+  
   /**
    * @function
    * @handleCameraPick - allows the user to take photos with their camera
@@ -318,9 +378,9 @@ const CreateListing = memo(({ navigation, route }) => {
   /**
    * @function
    * @processImage - processes the image that the user selected
-   * @param {*} image
+   * @param {Object} image - object that holds the image that the user selected
    * @returns Returns the image that the user selected
-   * @description - processes the image that the user selected
+   * @description - processes the image that the user selected in the case that the user only selects one image
    * @memberof CreateListing
    */
   const processImage = async (image) => {
@@ -333,8 +393,8 @@ const CreateListing = memo(({ navigation, route }) => {
 
   /**
    * @function
-   * @processSelectedImages - processes the images that the user selected
-   * @param {*} assets
+   * @processSelectedImages - processes the images that the user selected in the case that the user selects multiple images
+   * @param {Array} assets - array that holds the images that the user selected
    * @memberof CreateListing
    */
   const processSelectedImages = async (assets) => {
@@ -351,7 +411,7 @@ const CreateListing = memo(({ navigation, route }) => {
   /**
    * @function
    * @manipulateImage - compresses the image that the user selected
-   * @param {*} uri
+   * @param {string} uri - uri of the image that the user selected
    * @returns - an object with the name, key, and image file
    * @memberof CreateListing
    */
