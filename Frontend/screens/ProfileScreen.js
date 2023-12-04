@@ -46,6 +46,18 @@ import {
  *
  */
 
+
+/**
+ * @function ListingsRoute
+ * @memberof Screens.ProfileScreen
+ * @param {Object} props - React props object
+ * @param {Function} props.onPressListing - Function to call when a listing is pressed
+ * @param {Array} props.data - Array of listings to display
+ * @param {String} props.text - Text to display if there are no listings
+ * @param {Object} props.styles - Styles object
+ * @description A component that displays listings in a grid
+ * @returns {JSX.Element} 
+ */
 const ListingsRoute = ({ onPressListing, data, text, styles }) => (
   <View style={{ flex: 1 }}>
     {data.length > 0 ? (
@@ -79,6 +91,13 @@ const ListingsRoute = ({ onPressListing, data, text, styles }) => (
   </View>
 );
 
+/**
+ * @function handleContactClick
+ * @memberof Screens.ProfileScreen
+ * @param {String} key - The key representing the type of contact information to update.
+ * @param {String} data - The new value to be set for the specified contact information.
+ * @returns {void}
+ */
 const handleContactClick = async (key, data) => {
   switch (key) {
     case 'email':
@@ -137,6 +156,15 @@ const handleContactClick = async (key, data) => {
   }
 };
 
+/**
+ * @function ContactInfoRoute
+ * @memberof Screens.ProfileScreen
+ * @param {Object} props - React props object
+ * @param {Boolean} props.selfProfile - Whether or not the profile being viewed is the user's own profile
+ * @param {Object} props.contactInfo - Object containing the contact information to be displayed
+ * @param {Function} props.setContactInfo - Function to set the contact information
+ * @returns {JSX.Element}
+ */
 const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
   const theme = useThemeContext().theme;
   const styles = getThemedStyles(theme).ProfileScreen;
@@ -256,6 +284,15 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
   );
 };
 
+/**
+ * @function ProfileScreen
+ * @memberof Screens.ProfileScreen
+ * @param {Object} props - React props object
+ * @param {Object} props.navigation - Stack navigation object
+ * @param {Object} props.route - React route object
+ * @description A component that displays a user's profile
+ * @returns {JSX.Element}
+ */
 function ProfileScreen({ navigation, route }) {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);

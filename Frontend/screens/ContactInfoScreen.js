@@ -1,32 +1,31 @@
 /**
  * @namespace EditContactInfo
  * @description - EditContactInfo is a screen that allows users to edit their own contact information and decide what should be visable
+ * @memberof Screens
  *
  */
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import {
+  Platform,
   SafeAreaView,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  Platform,
 } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
 import Colors from '../constants/Colors';
+import { screenHeight } from '../constants/ScreenDimensions';
+import { getThemedStyles } from '../constants/Styles';
 import { saveContactInfo } from '../network/Service';
 import { getStoredUsername } from './auth/Authenticate';
-import { useThemeContext } from '../components/visuals/ThemeProvider';
-import { getThemedStyles } from '../constants/Styles';
-import { screenHeight } from '../constants/ScreenDimensions';
 
 /**
  * Represents a screen for editing contact information.
- * @function
- * @name EditContactInfo
- * @memberof EditContactInfo
+ * @function EditContactInfo
+ * @memberof Screens.EditContactInfo
  * @param {Object} navigation - The object used to navigate between screens.
  * @param {Object} route - Information about the current route
  * @returns {JSX.Element} A screen for editing a users contact information.
@@ -109,6 +108,7 @@ const EditContactInfo = ({ navigation, route }) => {
                   </Text>
                 </View>
                 <TextInput
+                  testID={key}
                   style={styles.data}
                   value={contactInfo[key].data}
                   onChangeText={(value) => handleInputChange(key, value)}

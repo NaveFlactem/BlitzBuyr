@@ -1,3 +1,7 @@
+/**
+ * @namespace Styles
+ */
+
 import { Platform, StyleSheet } from 'react-native';
 import Colors, { CustomDarkTheme, CustomLightTheme } from './Colors.js';
 import { screenHeight, screenWidth } from './ScreenDimensions.js';
@@ -779,6 +783,7 @@ export const getThemedStyles = (theme) => {
       },
       retryButton: {
         marginTop: 20,
+        alignSelf: 'center',
         justifyContent: 'center',
         backgroundColor: themeColors.BB_darkRedPurple,
         padding: 10,

@@ -1,5 +1,12 @@
 /**
+ * @namespace Auth
+ * @memberof Screens
+ */
+
+/**
  * @namespace Authenticate
+ * @memberof Auth
+ * @memberof Screens.Auth
  * @description Headless authentication screen which uses the device cache to automatically login into BlitzBuyer
  */
 import { Asset } from 'expo-asset';
@@ -40,7 +47,7 @@ let storedPassword;
  * @function
  * @name getStoredUsername
  * @returns {string} The stored username.
- * @memberof Authenticate
+ * @memberof Screens.Auth.Authenticate
  */
 const getStoredUsername = () => storedUsername;
 
@@ -49,7 +56,7 @@ const getStoredUsername = () => storedUsername;
  * @function
  * @name getStoredPassword
  * @returns {string} The stored password.
- * @memberof Authenticate
+ * @memberof Screens.Auth.Authenticate
  */
 const getStoredPassword = () => storedPassword;
 
@@ -60,7 +67,7 @@ const getStoredPassword = () => storedPassword;
  * @param {string} username - The username to be stored.
  * @param {string} password - The password to be stored.
  * @returns {Promise<void>}
- * @memberof Authenticate
+ * @memberof Screens.Auth.Authenticate
  */
 const setStoredCredentials = async (username, password) => {
   storedUsername = username;
@@ -74,7 +81,7 @@ const setStoredCredentials = async (username, password) => {
  * @function
  * @name clearStoredCredentials
  * @returns {Promise<void>}
- * @memberof Authenticate
+ * @memberof Screens.Auth.Authenticate
  */
 const clearStoredCredentials = async () => {
   try {
@@ -93,7 +100,7 @@ const clearStoredCredentials = async () => {
  * @param {Object} props - React component props.
  * @param {Object} props.navigation - Navigation object for navigating between screens.
  * @returns {JSX.Element} The authentication screen component.
- * @memberof Authenticate
+ * @memberof Screens.Auth.Authenticate
  */
 const AuthenticateScreen = ({ navigation }) => {
   useEffect(() => {
@@ -114,7 +121,7 @@ const AuthenticateScreen = ({ navigation }) => {
      * @function
      * @name loadSettings
      * @returns {Promise<void>}
-     * @memberof Authenticate
+     * @memberof AuthenticateScreen
      */
     const loadSettings = async () => {
       const settings = await Settings.getUserSettings();
@@ -126,7 +133,7 @@ const AuthenticateScreen = ({ navigation }) => {
      * @function
      * @name checkStoredCredentials
      * @returns {Promise<void>}
-     * @memberof Authenticate
+     * @memberof AuthenticateScreen
      */
     const checkStoredCredentials = async () => {
       storedUsername = await SecureStore.getItemAsync('username');

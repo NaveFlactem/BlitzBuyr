@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import LocationSlider from '../components/LocationSlider';
 import NoListings from '../components/NoListings';
@@ -18,6 +19,7 @@ import TopBar from '../components/TopBarHome.js';
 import BouncePulse from '../components/visuals/BouncePulse.js';
 import { CustomRefreshControl } from '../components/visuals/CustomRefreshControl';
 import { useThemeContext } from '../components/visuals/ThemeProvider';
+import Colors from '../constants/Colors';
 import {
   conditionOptions,
   currencies,
@@ -29,8 +31,6 @@ import { getThemedStyles } from '../constants/Styles';
 import { getLocationWithRetry } from '../constants/Utilities';
 import * as Settings from '../hooks/UserSettings.js';
 import { fetchListings } from '../network/Service';
-import Colors from '../constants/Colors';
-import { FlatList } from 'react-native-gesture-handler';
 /**
  * @namespace HomeScreen
  * @memberof Screens
@@ -40,9 +40,8 @@ import { FlatList } from 'react-native-gesture-handler';
 
 /**
  * Home screen component displaying listings and filters.
- * @component
- * @name HomeScreen
- * @memberof HomeScreen
+ * @function HomeScreen
+ * @memberof Screens.HomeScreen
  * @param {object} route - Information about the current route.
  * @returns {JSX.Element} Home screen UI with listings and filters.
  * @description Renders the home screen displaying listings and various filters. Manages state for refreshing listings, network connectivity, loading state, user location, tag options, condition options, transaction options, selected tags, conditions, and transactions. Uses ref for swiper navigation and shared values for animation. Handles drawer visibility, distance settings, and location slider visibility.
@@ -129,7 +128,7 @@ const HomeScreen = ({ route }) => {
   const handleLocationPress = () => {
     console.log(
       'Location pressed, toggling slider visibility...',
-      isLocationSliderVisible,
+      isLocationSliderVisible
     );
     if (isLocationSliderVisible) {
       locationSliderHeight.value = withTiming(-100, { duration: 100 }); // Hide slider
@@ -255,7 +254,7 @@ const HomeScreen = ({ route }) => {
         selectedCurrency,
         setListings,
         setIsLoading,
-        setRefreshing,
+        setRefreshing
       );
     } catch (error) {
       console.error(error);
@@ -351,7 +350,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId),
+                    prevListings.filter((item) => item.ListingId !== listingId)
                   );
                 }}
                 onScroll={onScroll}
@@ -383,7 +382,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId),
+                    prevListings.filter((item) => item.ListingId !== listingId)
                   );
                 }}
                 onScroll={onScroll}

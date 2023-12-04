@@ -4,7 +4,22 @@ import * as Permissions from 'expo-permissions';
 import * as SecureStore from 'expo-secure-store';
 import { serverIp } from '../config.js';
 
-//Still needs to be connected with backend
+/**
+ * @namespace Notifications
+ * @memberof Components
+ * @description - Notifications is a component that schedules notifications for the user
+ */
+
+
+
+/**
+ * @function
+ * @name scheduleNotification
+ * @memberof Components.Notifications
+ * @param {number} newListings - The number of new listings since the user's last login.
+ * @returns {void}
+ * @description - Schedules a notification for the user if they have not already been notified. 
+ */
 export async function scheduleNotification(newListings) {
   await Permissions.askAsync(Permissions.NOTIFICATIONS);
 
@@ -60,7 +75,14 @@ export async function scheduleNotification(newListings) {
   }
 }
 
-//Still needs to be connected with backend
+/**
+ * @function
+ * @name likedNotification
+ * @memberof Components.Notifications
+ * @param {number} likedListings - The number of listings that have been liked in the past 24 hours.
+ * @returns {void}
+ * @description - Schedules a notification for the user if they have not already been notified. 
+ */
 export async function likedNotification(likedListings) {
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -91,6 +113,13 @@ export async function likedNotification(likedListings) {
   await Notifications.scheduleNotificationAsync(schedulingOptions);
 }
 
+/**
+ * @function
+ * @name checkListingExpiration
+ * @memberof Components.Notifications
+ * @returns {void}
+ * @description - Checks if a listing is about to expire and sends a notification to the user if it is.
+ */
 export const checkListingExpiration = async () => {
   await Permissions.askAsync(Permissions.NOTIFICATIONS);
   //FIXME: this needs to be worked on

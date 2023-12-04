@@ -23,6 +23,13 @@ import { useThemeContext } from '../components/visuals/ThemeProvider.js';
 import * as SecureStore from 'expo-secure-store';
 import { screenHeight } from '../constants/ScreenDimensions';
 
+/**
+ * @function SettingsScreen
+ * @memberof Screens.SettingsScreen
+ * @param {Object} navigation - Stack navigation object.
+ * @param {Object} route - Information about the current route.
+ * @returns {JSX.Element}
+ */
 const SettingsScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
   const { theme } = useThemeContext();

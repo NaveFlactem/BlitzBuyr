@@ -1,7 +1,10 @@
 /**
+ * @namespace Screens
+ */
+
+/**
  * @namespace AboutUs
- * @description - AboutUs is a screen
- *
+ * @memberof Screens
  */
 import React, { useState } from 'react';
 import {
@@ -19,6 +22,13 @@ import { useThemeContext } from '../components/visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
 import { screenHeight } from '../constants/ScreenDimensions';
 
+/**
+ * @function AboutUsScreen
+ * @memberof Screens.AboutUs
+ * @param {Object} props - React component props
+ * @param {Object} props.navigation - Stack navigation object
+ * @returns {JSX.Element} - React component
+ */
 const AboutUsScreen = ({ navigation }) => {
   const styles = getThemedStyles(useThemeContext().theme).AboutUs;
   const [loading, setLoading] = useState(false);

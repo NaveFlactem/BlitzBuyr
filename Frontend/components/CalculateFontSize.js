@@ -1,7 +1,13 @@
 /**
- * @param {number} price
+ * @namespace CalculateFontSize
+ * @memberof Components
+ */
+
+/**
  * @function calculateFontSize
+ * @memberof Components.CalculateFontSize
  * @description Calculates the font size for the price based on the number of digits in the price
+ * @param {number} price
  * @returns {number} fontSize
  */
 export const calculateFontSize = (price) => {
@@ -15,9 +21,10 @@ export const calculateFontSize = (price) => {
 
 /**
  *
- * @param {string} city
  * @function calculateFontSizeLocation
+ * @memberof Components.CalculateFontSize
  * @description Calculates the font size for the city name based on the length of the city name
+ * @param {string} city
  * @returns {number} fontSize
  */
 export const calculateFontSizeLocation = (city) => {
@@ -31,8 +38,9 @@ export const calculateFontSizeLocation = (city) => {
 
 /**
  * @function calculateTransactionFontSize
- * @param {string} transaction
+ * @memberof Components.CalculateFontSize
  * @description Calculates the font size for the transaction preference based on the length of the transaction preference
+ * @param {string} transaction
  * @returns {number} fontSize
  */
 export const calculateTransactionFontSize = (transaction) => {
@@ -46,9 +54,10 @@ export const calculateTransactionFontSize = (transaction) => {
 
 /**
  * @function calculateTagTextFontSize
+ * @memberof Components.CalculateFontSize
+ * @description Calculates the font size for the tag based on the length of the tag name and the default font size provided as a parameter
  * @param {string} tag
  * @param {number} defaultFontSize
- * @description Calculates the font size for the tag based on the length of the tag name and the default font size provided as a parameter
 * @returns {number} fontSize
  */
 export const calculateTagTextFontSize = (tag, defaultFontSize) => {
