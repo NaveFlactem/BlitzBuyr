@@ -42,10 +42,6 @@ describe('EditContactInfo', () => {
   });
 
   it('updates contact info on phone input change', async () => {
-    const setContactInfo = jest.fn();
-    const useState = [useState, setContactInfo];
-    jest.spyOn(React, 'useState').mockImplementation(useState);
-
     const { getByTestId } = render(
       <EditContactInfo navigation={navigation} route={route} />
     );
@@ -58,5 +54,45 @@ describe('EditContactInfo', () => {
 
     // Assert that the phone number has been updated
     expect(getByTestId('phone').props.value).toBe('1234567890');
+  });
+
+  it('updates contact info on email input change', async () => {
+    const { getByTestId } = render(
+      <EditContactInfo navigation={navigation} route={route} />
+    );
+
+    fireEvent.changeText(getByTestId('email'), 'newemail@example.com');
+
+    await waitFor(() => {});
+
+    expect(getByTestId('email').props.value).toBe('newemail@example.com');
+  });
+
+  it('applies changes when the Apply Changes button is clicked', async () => {
+    const { getByText, getByTestId } = render(
+      <EditContactInfo navigation={navigation} route={route} />
+    );
+
+    fireEvent.changeText(getByTestId('phone'), '1234567890');
+
+    fireEvent.press(getByText('Apply Changes'));
+
+    await waitFor(() => {});
+
+    expect(saveContactInfo).toHaveBeenCalledWith({
+      phone: { data: '1234567890', icon: 'phone' },
+    });
+    expect(getStoredUsername).toHaveBeenCalled();
+    expect(navigation.navigate).toHaveBeenCalledWith('SettingsScreen');
+  });
+
+  it('navigates to BottomNavOverlay when back/cancel button is clicked', () => {
+    const { getByTestId } = render(
+      <EditContactInfo navigation={navigation} route={route} />
+    );
+
+    fireEvent.press(getByTestId('back-button'));
+
+    expect(navigation.navigate).toHaveBeenCalledWith('BottomNavOverlay');
   });
 });

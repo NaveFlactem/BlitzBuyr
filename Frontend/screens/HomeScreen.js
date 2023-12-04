@@ -33,7 +33,6 @@ import * as Settings from '../hooks/UserSettings.js';
 import { fetchListings } from '../network/Service';
 /**
  * @namespace HomeScreen
- * @memberof Screens
  * @description - HomeScreen is the home screen of the application
  *
  */
@@ -41,7 +40,8 @@ import { fetchListings } from '../network/Service';
 /**
  * Home screen component displaying listings and filters.
  * @function HomeScreen
- * @memberof Screens.HomeScreen
+ * @memberof components
+ * @inner
  * @param {object} route - Information about the current route.
  * @returns {JSX.Element} Home screen UI with listings and filters.
  * @description Renders the home screen displaying listings and various filters. Manages state for refreshing listings, network connectivity, loading state, user location, tag options, condition options, transaction options, selected tags, conditions, and transactions. Uses ref for swiper navigation and shared values for animation. Handles drawer visibility, distance settings, and location slider visibility.
@@ -97,6 +97,7 @@ const HomeScreen = ({ route }) => {
    * @function
    * @name toggleTagDrawer
    * @memberof HomeScreen
+   * @inner
    * @returns {void}
    * @description Controls the visibility of the tag drawer by toggling its state between open and closed. If the drawer is currently open, it animates its closure by sliding it to the left. If closed, it animates its opening by sliding it to the right.
    */
