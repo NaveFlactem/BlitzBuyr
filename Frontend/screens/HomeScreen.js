@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import LocationSlider from '../components/LocationSlider';
-import NoListings from '../components/noListings';
-import NoWifi from '../components/noWifi';
+import NoListings from '../components/NoListings';
+import NoWifi from '../components/NoWifi';
 import AndroidSwiperComponent from '../components/swipers/AndroidSwiperComponent.js';
 import IOSSwiperComponent from '../components/swipers/IOSSwiperComponent.js';
 import TagDrawer, { SwipeArea } from '../components/TagDrawer.js';
