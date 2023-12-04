@@ -103,7 +103,7 @@ describe('RatingScreen', () => {
     const selectedRatingText = getByTestId('selected-rating').props.children;
     const selectedRating = parseFloat(selectedRatingText);
 
-    expect(selectedRating).toBe(1.5); 
+    expect(selectedRating).toBe(1.5); //2-0.5
   });
 
 });

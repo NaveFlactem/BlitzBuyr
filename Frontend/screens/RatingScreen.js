@@ -106,7 +106,7 @@ const RatingScreen = ({ navigation, route }) => {
           key={i}
           style={[styles.starButton, i < 5 && styles.starMargin]}
           onPress={() => handleRating(i)}
-          testID={`rating-button-${i}`} // Adding testID prop to TouchableOpacity for test identification
+          testID={`rating-button-${i}`} // Adding testID prop to TouchableOpacity for testing
         >
           {i <= selectedRating ? (
             <MaterialCommunityIcons
