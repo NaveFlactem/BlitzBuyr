@@ -1,4 +1,9 @@
 /**
+ * @namespace CalculateFontSize
+ * 
+ */
+
+/**
  * @param {number} price
  * @function calculateFontSize
  * @description Calculates the font size for the price based on the number of digits in the price

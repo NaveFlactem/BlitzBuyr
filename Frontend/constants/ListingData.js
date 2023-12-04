@@ -1,3 +1,7 @@
+/**
+ * @namespace ListingData
+ */
+
 export const tagOptions = [
   { name: 'Furniture', selected: false },
   { name: 'Electronics', selected: false },

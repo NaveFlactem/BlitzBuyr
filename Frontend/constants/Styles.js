@@ -1,3 +1,7 @@
+/**
+ * @namespace Styles
+ */
+
 import { Platform, StyleSheet } from 'react-native';
 import Colors, { CustomDarkTheme, CustomLightTheme } from './Colors.js';
 import { screenHeight, screenWidth } from './ScreenDimensions.js';

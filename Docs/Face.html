@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Backend/server.js - Documentation</title>
+    <title>Face - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -37,91 +37,239 @@
 
 <div id="main">
     
-    <h1 class="page-title">Backend/server.js</h1>
+    <h1 class="page-title">Face</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>﻿/**
- * Express application for serving static files and handling API requests.
- * @module Server
- */
+        <h2>
+        
+            Face
+        
+        </h2>
+        
+    
+</header>
 
-// Required modules
-const express = require('express');
-var favicon = require('serve-favicon');
-const app = express();
-const path = require('path');
-var bodyParser = require('body-parser');
-//const compressionMiddleware = require('./imageCompression');
+<article>
+    
+        <div class="container-overview">
+        
+            
 
-// Static pages
-app.use('/docs', express.static(path.join(__dirname, '../Docs')));
-app.use(
-  '/img',
-  express.static(path.join(__dirname, './img'), {
-    enableBrotli: true, // Enable Brotli compression
-  }),
-);
+    
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-/**
- * Middleware for logging request information.
- *
- * @function
- * @name requestLogger
- *
- * @param {Object} req - Express.js request object.
- * @param {Object} res - Express.js response object.
- * @param {Function} next - Callback function to invoke the next middleware.
- */
-app.use(function (req, res, next) {
-  console.log(`Received request:
-    IP: ${req.ip}
-    Endpoint: ${req.url}
-    Method: ${req.method}
-    Query Parameters: ${JSON.stringify(req.query)}
-    Request Body: ${JSON.stringify(req.body)}`);
-  next();
-});
+    <h4 class="name" id="Face"><span class="type-signature"></span>new Face<span class="signature">()</span><span class="type-signature"></span></h4>
 
-// Server routes and settings
-app
-  .use('/api', require('./listing').router)
-  .use('/api', require('./account').router)
-  .use('/api', require('./profile'))
-  .use(favicon(path.join(__dirname, '../favicon.ico')));
+    
 
-/**
- * GET request endpoint at the root which will redirect to the docs homepage.
- *
- * @function
- * @name getRoot
- *
- * @param {Object} req - Express.js request object.
- * @param {Object} res - Express.js response object.
- */
-app.get('/', function (req, res) {
-  // Redirect to the docs homepage
-  res.redirect('docs/index.html');
-});
 
-// Start the Express server
-const server = app.listen(80, () => {
-  const host = server.address().address;
-  const port = server.address().port;
 
-  console.log('Server listening at http://%s:%s', host, port);
-});
-</code></pre>
-        </article>
-    </section>
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Component that represents the front face of the card.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_components_CustomFlipCard.js.html">Frontend/components/CustomFlipCard.js</a>, <a href="Frontend_components_CustomFlipCard.js.html#line401">line 401</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-examples">Example</h5>
+    
+    <pre class="prettyprint"><code>&lt;Face> &lt;Component1 /> &lt;/Face></code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        </div>
+    
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li>React.Component</li>
+    </ul>
+
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id=".propTypes"><span class="type-signature type-signature-static">(static) </span>propTypes<span class="type-signature"> :object</span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>defines prop types for Face</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Frontend_components_CustomFlipCard.js.html">Frontend/components/CustomFlipCard.js</a>, <a href="Frontend_components_CustomFlipCard.js.html#line425">line 425</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>defines prop types for Face</p>
+</div>
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">object</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
