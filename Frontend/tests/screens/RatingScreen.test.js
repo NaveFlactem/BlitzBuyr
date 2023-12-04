@@ -106,4 +106,26 @@ describe('RatingScreen', () => {
     expect(selectedRating).toBe(1.5); //2-0.5
   });
 
+  test('handleRating works even if many different numbers are pressed.', () => {
+    const { getByTestId } = render(
+      <RatingScreen navigation={navigation} route={route} />
+    );
+    const ratingButton = getByTestId('rating-button-3'); 
+    const ratingButton2 = getByTestId('rating-button-2');
+    const ratingButton3 = getByTestId('rating-button-1');
+    const ratingButton4 = getByTestId('rating-button-4');
+
+    fireEvent.press(ratingButton2);
+    fireEvent.press(ratingButton);
+    fireEvent.press(ratingButton3);
+    fireEvent.press(ratingButton4);
+    fireEvent.press(ratingButton2);
+    fireEvent.press(ratingButton2);
+
+    const selectedRatingText = getByTestId('selected-rating').props.children;
+    const selectedRating = parseFloat(selectedRatingText);
+
+    expect(selectedRating).toBe(1.5); //2-0.5
+  });
+
 });
