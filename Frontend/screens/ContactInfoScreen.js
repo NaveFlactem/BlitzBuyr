@@ -59,6 +59,7 @@ const EditContactInfo = ({ navigation, route }) => {
       <View style={styles.topBar}>
         <View style={styles.topBarContainer}>
           <TouchableOpacity
+            testID={'back-button'}
             onPress={() => {
               setLoading(true);
               navigation.navigate('BottomNavOverlay');

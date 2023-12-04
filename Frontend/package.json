@@ -9,7 +9,7 @@
     "web": "expo start --web",
     "eas-build": "node --max_old_space_size=4096 ./node_modules/expo-cli/bin/expo.js build:android -t app-bundle",
     "format": "npx prettier --write .",
-    "test": "jest"
+    "test": "jest --coverage --watchAll=false --coverageDirectory=../Docs/tests/_test_report_/"
   },
   "dependencies": {
     "@babel/core": "^7.23.2",
