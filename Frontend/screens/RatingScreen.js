@@ -106,6 +106,7 @@ const RatingScreen = ({ navigation, route }) => {
           key={i}
           style={[styles.starButton, i < 5 && styles.starMargin]}
           onPress={() => handleRating(i)}
+          testID={`rating-button-${i}`} // Adding testID prop to TouchableOpacity for testing
         >
           {i <= selectedRating ? (
             <MaterialCommunityIcons
@@ -150,7 +151,8 @@ const RatingScreen = ({ navigation, route }) => {
           source={{ uri: route.params.profileInfo.profilePicture }}
           style={styles.profilePic}
         />
-        <View style={styles.ratingContainer}>{renderStars()}</View>
+        <View style={styles.ratingContainer}>{renderStars()}
+        <Text testID="selected-rating">{selectedRating}</Text></View>
         <TouchableOpacity onPress={handleSubmitRating}>
           <View style={styles.submitButton}>
             <Text style={styles.submitText}>Submit Rating</Text>
