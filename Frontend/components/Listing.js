@@ -1,6 +1,10 @@
 /**
+ * @namespace Components
+ */
+
+/**
  * @namespace Listing
- * 
+ * @memberof Components
  */
 
 
@@ -46,6 +50,10 @@ import Animated, {
 } from 'react-native-reanimated';
 import { calculateFontSize, calculateFontSizeLocation, calculateTransactionFontSize } from './CalculateFontSize.js';
 
+/**
+ * @constant default_blurhash
+ * @description The blurhash to use if the listing does not have a blurhash
+ */
 const default_blurhash = 'LEHLk~WB2yk8pyo0adR*.7kCMdnj';
 
 /**
@@ -56,7 +64,7 @@ const default_blurhash = 'LEHLk~WB2yk8pyo0adR*.7kCMdnj';
  * @function getDistance
  * @description Calculates the distance between two coordinates
  * @returns {number} distance
- * @memberof Listing
+ * @memberof Components.Listing
  */
 function getDistance(lat1, lon1, lat2, lon2) {
   function toRadians(degrees) {
@@ -89,7 +97,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
  * @function LikeButton
  * @description Button to like a listing
  * @returns {object} TouchableOpacity and MaterialCommunityIcon wrapped in React.Fragment
- * @memberof Listing
+ * @memberof Components.Listing
  */
 const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
   const { theme } = useThemeContext();
@@ -119,7 +127,7 @@ const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
  * @function DeleteButton
  * @description Button to delete a listing
  * @returns {object} TouchableOpacity and MaterialCommunityIcon
- * @memberof Listing
+ * @memberof Components.Listing
  */
 const DeleteButton = ({ onDeletePress, styles }) => {
   return (
@@ -135,7 +143,7 @@ const DeleteButton = ({ onDeletePress, styles }) => {
  * @function TimeBox
  * @description Displays the time since the listing was posted
  * @returns {object} View and Text wrapped in React.Fragment
- * @memberof Listing
+ * @memberof Components.Listing
  */
 const TimeBox = memo(({ timeSince, styles }) => {
   return (
@@ -173,7 +181,7 @@ const TimeBox = memo(({ timeSince, styles }) => {
  * @function CardOverlay
  * @description Displays the price, time since, and children (image) of the listing
  * @returns {object} View and Image wrapped in React.Fragment
- * @memberof Listing
+ * @memberof Components.Listing
  */
 const CardOverlay = memo(
   ({ children, currencySymbol, price, timeSince, cardStyle, styles }) => {
@@ -212,7 +220,7 @@ const CardOverlay = memo(
  * @function MemoizedImage
  * @description Displays the image of the listing
  * @returns {object} Image
- * @memberof Listing
+ * @memberof Components.Listing
  */
 const MemoizedImage = memo(
   ({ source, blurhash, style, contentFit, transition }) => {
@@ -243,7 +251,7 @@ const MemoizedImage = memo(
  * @function CustomItem
  * @description Displays the image of the listing with the ability to zoom in and out and delete the listing if the user is the owner and the listing is being viewed from the profile screen
  * @returns {object} View and Image wrapped in React.Fragment
- * @memberof Listing
+ * @memberof Components.Listing
  */
 const CustomItem = memo(
   ({
@@ -434,7 +442,7 @@ const CustomItem = memo(
  * @function Listing
  * @description Displays the listing
  * @returns {object} SafeAreaView and FlipCard wrapped in React.Fragment
- * @memberof Listing
+ * @memberof Components.Listing
  */
 const Listing = ({
   item,

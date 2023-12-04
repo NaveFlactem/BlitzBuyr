@@ -1,5 +1,6 @@
 /**
  * @namespace CreateAccount
+ * @memberof Screens.Auth
  */
 import { Entypo, MaterialIcons } from '@expo/vector-icons';
 import React, { useRef, useState } from 'react';
@@ -24,7 +25,7 @@ import { getThemedStyles } from '../../constants/Styles.js';
  * @param {Object} props - React component props.
  * @param {Object} props.navigation - Navigation object for navigating between screens.
  * @returns {JSX.Element} The create account screen component.
- * @memberof CreateAccount
+ * @memberof Screens.Auth.CreateAccount
  */
 const CreateAccountScreen = ({ navigation }) => {
   const [name, setName] = useState('');
@@ -44,7 +45,7 @@ const CreateAccountScreen = ({ navigation }) => {
    * @function
    * @name handleCreateAccount
    * @returns {Promise<void>}
-   * @memberof CreateAccount
+   * @memberof CreateAccountScreen
    */
   const handleCreateAccount = async () => {
     if (password !== confirmPassword) {
@@ -126,7 +127,7 @@ const CreateAccountScreen = ({ navigation }) => {
    * @name handlePasswordChange
    * @param {string} text - The input text.
    * @returns {void}
-   * @memberof CreateAccount
+   * @memberof CreateAccountScreen
    */
   const handlePasswordChange = (text) => {
     setPassword(text);

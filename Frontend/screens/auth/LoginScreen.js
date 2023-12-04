@@ -1,5 +1,6 @@
 /**
  * @namespace Login
+ * @memberof Screens.Auth
  */
 import React, { useState } from 'react';
 import {
@@ -22,8 +23,9 @@ import * as SecureStore from 'expo-secure-store';
 
 /**
  * LoginScreen component.
- * @memberof Login
+ * @function LoginScreen
  * @param {object} navigation - React Navigation object.
+ * @memberof Screens.Auth.Login
  */
 const LoginScreen = ({ navigation }) => {
   const styles = getThemedStyles(useThemeContext().theme).LoginScreen;

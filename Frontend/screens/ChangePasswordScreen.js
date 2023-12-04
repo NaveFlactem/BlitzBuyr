@@ -1,7 +1,6 @@
 /**
- * @namespace ChangePassword
- * @description - ChangePassword is a screen that allows users to change the password used to access their account.
- *
+ * @namespace ChangePasswordScreen
+ * @memberof Screens
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState, useEffect } from 'react';
@@ -27,6 +26,14 @@ import { useThemeContext } from '../components/visuals/ThemeProvider.js';
 import { saveProfileInfo } from '../network/Service.js';
 import { screenHeight } from '../constants/ScreenDimensions';
 
+/**
+ * @function ChangePassword
+ * @memberof Screens.ChangePasswordScreen
+ * @param {Object} navigation - Stack navigation object.
+ * @param {Object} route - Information about the current route.
+ * @description A screen that allows users to change their password.
+ * @returns {JSX.Element}
+ */
 const ChangePassword = ({ navigation, route }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

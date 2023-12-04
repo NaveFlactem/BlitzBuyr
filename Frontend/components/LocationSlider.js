@@ -1,3 +1,8 @@
+/**
+ * @namespace LocationSlider
+ * @memberof Components
+ * @description - LocationSlider is a component that allows the user to change the distance of the listings they see
+ */
 import React, { memo, useEffect, useState } from 'react';
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import Animated, {
@@ -13,11 +18,26 @@ import { screenHeight, screenWidth } from '../constants/ScreenDimensions';
 import * as Settings from '../hooks/UserSettings.js';
 import { useThemeContext } from './visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
+/**
+ * @constant Slider - import the slider component from the appropriate library depending on the platform the app is running on. IOS uses the @react-native-community/slider library, while Android uses the react-native-slider library.
+ */
 const Slider =
   Platform.OS == 'ios'
     ? require('@react-native-community/slider').default
     : require('react-native-slider').default;
 
+/**
+ * Represents a memoized LocationSlider component.
+ * @function
+ * @name LocationSlider
+ * @memberof Components.LocationSlider
+ * @param {Object} props - Component props
+ * @param {Function} props.setDistance - Function to set the distance state
+ * @param {boolean} props.isLocationSliderVisible - Boolean representing whether the location slider is visible
+ * @param {Function} props.setIsLocationSliderVisible - Function to set the location slider visibility state
+ * @param {Object} props.locationSliderHeight - Object representing the location slider height
+ * @returns {JSX.Element} Memoized LocationSlider component
+ */
 const LocationSlider = memo(
   ({
     setDistance,

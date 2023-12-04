@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import LocationSlider from '../components/LocationSlider';
-import NoListings from '../components/noListings';
-import NoWifi from '../components/noWifi';
+import NoListings from '../components/NoListings';
+import NoWifi from '../components/NoWifi';
 import AndroidSwiperComponent from '../components/swipers/AndroidSwiperComponent.js';
 import IOSSwiperComponent from '../components/swipers/IOSSwiperComponent.js';
 import TagDrawer, { SwipeArea } from '../components/TagDrawer.js';
@@ -40,9 +40,8 @@ import { FlatList } from 'react-native-gesture-handler';
 
 /**
  * Home screen component displaying listings and filters.
- * @component
- * @name HomeScreen
- * @memberof HomeScreen
+ * @function HomeScreen
+ * @memberof Screens.HomeScreen
  * @param {object} route - Information about the current route.
  * @returns {JSX.Element} Home screen UI with listings and filters.
  * @description Renders the home screen displaying listings and various filters. Manages state for refreshing listings, network connectivity, loading state, user location, tag options, condition options, transaction options, selected tags, conditions, and transactions. Uses ref for swiper navigation and shared values for animation. Handles drawer visibility, distance settings, and location slider visibility.

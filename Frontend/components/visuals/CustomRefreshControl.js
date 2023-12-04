@@ -1,12 +1,9 @@
 /**
  * @namespace CustomRefreshControl
  * @memberof Visuals
- * @description A custom refresh control component that utilizes BouncePulse animation.
- * @param {object} props - Component properties.
- * @param {boolean} props.refreshing - Boolean indicating whether the refresh is active.
- * @param {Animated.SharedValue<number>} props.scrollY - Animated value representing scroll position.
- * @returns {JSX.Element} React component for the CustomRefreshControl.
+ * @memberof Components.Visuals
  */
+
 
 
 
@@ -21,6 +18,16 @@ import BouncePulse from './BouncePulse';
 import { useThemeContext } from './ThemeProvider';
 import { getThemedStyles } from '../../constants/Styles';
 
+/**
+ * @function CustomRefreshControl
+ * @memberof Visuals.CustomRefreshControl
+ * @memberof Components.Visuals.CustomRefreshControl
+ * @description A custom refresh control component that utilizes BouncePulse animation. 
+ * @param {object} props - Component properties.
+ * @param {boolean} props.refreshing - Boolean indicating whether the refresh is active.
+ * @param {Animated.SharedValue<number>} props.scrollY - Animated value representing scroll position.
+ * @returns {JSX.Element} React component for the CustomRefreshControl.
+ */
 export const CustomRefreshControl = memo(({ refreshing, scrollY }) => {
   const styles = getThemedStyles(useThemeContext().theme).CustomRefreshControl;
   const bouncePulseStyle = useAnimatedStyle(() => {

@@ -1,6 +1,4 @@
-/**
- * @namepace Screens
- */
+
 
 /**
  * @namespace CreateListing
@@ -40,12 +38,16 @@ import { getThemedStyles } from '../constants/Styles';
 
 /**
  * @constant {string} blurhash - blurhash for the loading image in draggable grid
+ * @memberof Screens.CreateListing
  */
 const blurhash = 'L5H2EC=PM+yV0g-mq.wG9c010J}I';
 
 /**
  * @function
  * @description - renders the loading animation for the create listing screen on full screen refresh after the user creates a listing
+ * @param {Object} styles - object that holds the styles for the create listing screen
+ * @returns {JSX.Element} - Loading animation
+ * @memberof Screens.CreateListing
  */
 const LoadingView = memo(({ styles }) => (
   <View style={styles.loading}>
@@ -56,6 +58,9 @@ const LoadingView = memo(({ styles }) => (
 /**
  * @function
  * @description - renders the loading animation for the create listing screen on minor refreshes, for example when the user selects an image
+ * @param {Object} styles - object that holds the styles for the create listing screen
+ * @returns {JSX.Element} - Loading animation
+ * @memberof Screens.CreateListing
  */
 const MinorLoadingView = memo(({ styles }) => (
   <View style={styles.minorLoadingContainer}>
@@ -64,9 +69,8 @@ const MinorLoadingView = memo(({ styles }) => (
 ));
 
 /**
- * @function
- * @CreateListing
- * @memberof CreateListing
+ * @function CreateListing
+ * @memberof Screens.CreateListing
  * @param {Object} navigation - The object used to navigate between screens.
  * @param {Object} route - Information about the current route.
  * @description - This is the screen where the user can create a listing.
