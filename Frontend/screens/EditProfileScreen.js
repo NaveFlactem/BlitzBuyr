@@ -16,11 +16,11 @@ import React, { memo, useEffect, useState } from 'react';
 import {
   Alert,
   Image,
+  Platform,
   SafeAreaView,
   Text,
   TouchableOpacity,
   View,
-  Platform,
 } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
@@ -190,7 +190,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       const manipulateResult = await ImageManipulator.manipulateAsync(
         img.uri,
         [],
-        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
+        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
       );
 
       setSelectedProfilePicture(manipulateResult.uri);
@@ -218,7 +218,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       const manipulateResult = await ImageManipulator.manipulateAsync(
         img.uri,
         [],
-        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
+        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
       );
 
       setSelectedCoverPicture(manipulateResult.uri);
@@ -300,7 +300,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       navigation.goBack();
     } catch (error) {
       console.error(error);
-      alert(error);
+      Alert.alert(error);
     }
   };
 
@@ -326,7 +326,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       setConfirmationModalVisible(false);
     } catch (error) {
       console.error(error);
-      alert(error);
+      Alert.alert(error);
     }
   };
 

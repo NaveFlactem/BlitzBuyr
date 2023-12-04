@@ -1,22 +1,17 @@
-
-
 /**
  * @namespace CreateListing
  * @memberof Screens
  */
-import { serverIp } from '../config';
 import * as FileSystem from 'expo-file-system';
 import { Image } from 'expo-image';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
-import React, { useState, useEffect, useRef, memo } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Modal,
   Platform,
-  SafeAreaView,
   ScrollView,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -26,15 +21,14 @@ import DraggableGrid from 'react-native-draggable-grid';
 import RNPickerSelect from 'react-native-picker-select';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import BouncePulse from '../components/visuals/BouncePulse.js';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
 import TopBar from '../components/visuals/TopBarGeneric.js';
+import { serverIp } from '../config';
 import Colors from '../constants/Colors';
 import { currencies, tagOptions } from '../constants/ListingData.js';
-import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
-import { getLocationWithRetry } from '../constants/Utilities';
-import { handleListingCreation } from '../network/Service.js';
-import { getStoredUsername } from './auth/Authenticate.js';
-import { useThemeContext } from '../components/visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
+import { getLocationWithRetry } from '../constants/Utilities';
+import { getStoredUsername } from './auth/Authenticate.js';
 
 /**
  * @constant {string} blurhash - blurhash for the loading image in draggable grid
@@ -117,7 +111,7 @@ const CreateListing = memo(({ navigation, route }) => {
   const [isPriceInvalid, setIsPriceInvalid] = useState(false);
   const [isConditionInvalid, setIsConditionInvalid] = useState(false);
   const [isTransactionPreferenceInvalid, setIsTransactionPreferenceInvalid] =
-  useState(false);
+    useState(false);
   const [isImageInvalid, setIsImageInvalid] = useState(false);
   const [isTagInvalid, setIsTagInvalid] = useState(false);
   const [isMinorLoading, setIsMinorLoading] = useState(false);
@@ -182,15 +176,15 @@ const CreateListing = memo(({ navigation, route }) => {
     setIsPriceInvalid(!regex.test(price) && price.length !== 0);
     setIsTitleInvalid(title.length === 0 || title.length > 25);
     setIsDescriptionInvalid(
-      description.length === 0 || description.length > 500,
+      description.length === 0 || description.length > 500
     );
     setIsConditionInvalid(
-      !['Excellent', 'Good', 'Fair', 'Poor', 'For Parts'].includes(condition),
+      !['Excellent', 'Good', 'Fair', 'Poor', 'For Parts'].includes(condition)
     );
     setIsTransactionPreferenceInvalid(
       !['Pickup', 'Meetup', 'Delivery', 'No Preference'].includes(
-        transactionPreference,
-      ),
+        transactionPreference
+      )
     );
     setIsImageInvalid(data.length === 0 || data.length > 9);
     setIsTagInvalid(selectedTags.length === 0);
@@ -296,7 +290,7 @@ const CreateListing = memo(({ navigation, route }) => {
       }
     } catch (error) {
       console.error(error);
-      alert(error);
+      Alert.alert(error);
     } finally {
       setIsLoading(false);
     }
@@ -340,7 +334,7 @@ const CreateListing = memo(({ navigation, route }) => {
    */
   const showModal = () => setSelectImageModalVisible(true);
   const hideModal = () => setSelectImageModalVisible(false);
-  
+
   /**
    * @function
    * @handleCameraPick - allows the user to take photos with their camera
@@ -404,7 +398,7 @@ const CreateListing = memo(({ navigation, route }) => {
   const processSelectedImages = async (assets) => {
     // Process multiple images
     const processedImages = await Promise.all(
-      assets.map(async (asset) => manipulateImage(asset.uri)),
+      assets.map(async (asset) => manipulateImage(asset.uri))
     );
     setData((currentData) => [
       ...currentData,
@@ -427,7 +421,7 @@ const CreateListing = memo(({ navigation, route }) => {
         format: ImageManipulator.SaveFormat.JPEG,
       });
       const compressedSize = await FileSystem.getInfoAsync(
-        manipulateResult.uri,
+        manipulateResult.uri
       );
       const savedData = originalSize.size - compressedSize.size;
 
@@ -438,7 +432,7 @@ const CreateListing = memo(({ navigation, route }) => {
         `compressed to :`,
         (compressedSize.size / (1024 * 1024)).toFixed(2),
         'MB',
-        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`,
+        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`
       );
 
       setIsImageInvalid(false);
@@ -579,7 +573,7 @@ const CreateListing = memo(({ navigation, route }) => {
     let newSelectedTags;
     if (isAlreadySelected) {
       newSelectedTags = selectedTags.filter(
-        (tagName) => tagName !== pressedTagName,
+        (tagName) => tagName !== pressedTagName
       );
     } else {
       newSelectedTags = [...selectedTags, pressedTagName];
@@ -647,8 +641,8 @@ const CreateListing = memo(({ navigation, route }) => {
                     {title == ''
                       ? 'Title is required'
                       : title.length > 25
-                        ? 'Title too long'
-                        : 'Must enter a valid title'}
+                      ? 'Title too long'
+                      : 'Must enter a valid title'}
                   </Text>
                 </View>
               ) : (
@@ -689,8 +683,8 @@ const CreateListing = memo(({ navigation, route }) => {
                     {description.length > 500
                       ? 'Description too long'
                       : description.length === 0
-                        ? 'Description is required'
-                        : 'Must enter a valid description'}
+                      ? 'Description is required'
+                      : 'Must enter a valid description'}
                   </Text>
                 </View>
               )}
@@ -735,12 +729,12 @@ const CreateListing = memo(({ navigation, route }) => {
                   {price == ''
                     ? 'Price is required'
                     : /^(\d{0,6}(\.\d{2})?)$/.test(price)
-                      ? 'Must enter a valid price'
-                      : price < 0
-                        ? 'Invalid price'
-                        : price.length >= 7
-                          ? 'Price too large'
-                          : 'Must enter a valid price'}
+                    ? 'Must enter a valid price'
+                    : price < 0
+                    ? 'Invalid price'
+                    : price.length >= 7
+                    ? 'Price too large'
+                    : 'Must enter a valid price'}
                 </Text>
               </View>
             ) : (

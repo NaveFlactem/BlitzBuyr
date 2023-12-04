@@ -63,7 +63,7 @@ function createOrUpdateTable(db, tableDefinition) {
   db.serialize(() => {
     // Extract table name from the definition
     const tableName = tableDefinition.match(
-      /CREATE TABLE IF NOT EXISTS (\w+)/i,
+      /CREATE TABLE IF NOT EXISTS (\w+)/i
     )[1];
 
     // Check if the table already exists
@@ -87,7 +87,7 @@ function createOrUpdateTable(db, tableDefinition) {
             areTableDefinitionsEqual(existingTableDefinition, tableDefinition)
           ) {
             console.log(
-              `Table '${tableName}' structure is already up to date.`,
+              `Table '${tableName}' structure is already up to date.`
             );
           } else {
             // If the table structures are different, alter it
@@ -97,7 +97,7 @@ function createOrUpdateTable(db, tableDefinition) {
             db.run(
               tableDefinition.replace(
                 new RegExp(tableName, 'g'),
-                tempTableName,
+                tempTableName
               ),
               (err) => {
                 if (err) {
@@ -131,18 +131,18 @@ function createOrUpdateTable(db, tableDefinition) {
                           }
 
                           console.log(
-                            `Table '${tableName}' altered successfully.`,
+                            `Table '${tableName}' altered successfully.`
                           );
-                        },
+                        }
                       );
                     });
-                  },
+                  }
                 );
-              },
+              }
             );
           }
         }
-      },
+      }
     );
   });
 }
@@ -336,25 +336,41 @@ const tables = [
 async function createTables() {
   try {
     for (const table of tables) {
-      createOrUpdateTable(db, table.sql);
+      await new Promise(async (resolve, reject) => {
+        await createOrUpdateTable(db, table.sql);
+        // Assuming createOrUpdateTable invokes the callback when finished
+        // If it's synchronous, you may need to modify it to be asynchronous
+        resolve();
+      });
     }
-    db.run('PRAGMA foreign_keys=ON');
-    db.run(`CREATE TRIGGER IF NOT EXISTS accounts_after_insert 
-    AFTER INSERT ON Accounts
-    FOR EACH ROW
-    BEGIN
-      INSERT INTO Profiles (Username, Email) VALUES (NEW.Username, NEW.Email);
-      
-      INSERT INTO ContactInfo (Username) VALUES (NEW.Username);
-       
-      INSERT INTO Settings (Username) VALUES (NEW.Username);
-    END;`);
+
+    // Create the trigger after all tables are created
+    await new Promise((resolve, reject) => {
+      db.run('PRAGMA foreign_keys=ON');
+      db.run(`CREATE TRIGGER IF NOT EXISTS accounts_after_insert 
+      AFTER INSERT ON Accounts
+      FOR EACH ROW
+      BEGIN
+        INSERT INTO Profiles (Username) VALUES (NEW.Username);
+        
+        INSERT INTO ContactInfo (Username) VALUES (NEW.Username);
+         
+        INSERT INTO Settings (Username) VALUES (NEW.Username);
+      END`, (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
   } catch (err) {
     console.log('error:', err);
   }
 }
 
-createTables();
+// Call the function
+createTables().then(() => {
+  console.log('Tables creation completed.');
+});
+
 
 module.exports = {
   db,

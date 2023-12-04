@@ -5,7 +5,7 @@ import {
   RefreshControl,
   SafeAreaView,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
@@ -24,7 +24,7 @@ import {
   conditionOptions,
   currencies,
   tagOptions,
-  transactionOptions,
+  transactionOptions
 } from '../constants/ListingData.js';
 import { screenWidth } from '../constants/ScreenDimensions.js';
 import { getThemedStyles } from '../constants/Styles';
@@ -259,7 +259,7 @@ const HomeScreen = ({ route }) => {
       );
     } catch (error) {
       console.error(error);
-      alert(error);
+      Alert.alert(error);
     }
   }, [userLocation, distance, selectedTags, selectedConditions]);
 

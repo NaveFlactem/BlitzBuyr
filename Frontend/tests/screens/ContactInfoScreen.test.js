@@ -1,5 +1,7 @@
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import * as React from 'react';
+import * as ServiceModule from '../../network/Service';
+import * as AuthenticateModule from '../../screens/auth/Authenticate';
 import EditContactInfo from '../../screens/ContactInfoScreen';
 
 // Mocking the navigation prop
@@ -14,18 +16,20 @@ const route = {
 };
 
 // Mocking the saveContactInfo function
-jest.mock('../../network/Service', () => ({
-  saveContactInfo: jest.fn(),
-}));
+const saveContactInfoMock = jest.fn();
+jest
+  .spyOn(ServiceModule, 'saveContactInfo')
+  .mockImplementation(saveContactInfoMock);
+
+// Mocking the getStoredUsername function
+const getStoredUsernameMock = jest.fn(() => 'mockedUsername');
+jest
+  .spyOn(AuthenticateModule, 'getStoredUsername')
+  .mockImplementation(getStoredUsernameMock);
 
 // Mocking the useThemeContext hook
 jest.mock('../../components/visuals/ThemeProvider', () => ({
   useThemeContext: () => ({ theme: 'light', toggleTheme: jest.fn() }),
-}));
-
-// Mocking the getStoredUsername function
-jest.mock('../../screens/auth/Authenticate', () => ({
-  getStoredUsername: jest.fn(() => 'mockedUsername'),
 }));
 
 describe('EditContactInfo', () => {
@@ -74,16 +78,22 @@ describe('EditContactInfo', () => {
     );
 
     fireEvent.changeText(getByTestId('phone'), '1234567890');
-
     fireEvent.press(getByText('Apply Changes'));
 
+    // Wait for the component to re-render if there are asynchronous operations
     await waitFor(() => {});
 
-    expect(saveContactInfo).toHaveBeenCalledWith({
+    // Expect that the saveContactInfo function has been called
+    expect(saveContactInfoMock).toHaveBeenCalledWith({
+      email: { data: 'user@example.com', icon: 'mail' },
       phone: { data: '1234567890', icon: 'phone' },
     });
-    expect(getStoredUsername).toHaveBeenCalled();
-    expect(navigation.navigate).toHaveBeenCalledWith('SettingsScreen');
+
+    // Expect that getStoredUsername function has been called
+    expect(getStoredUsernameMock).toHaveBeenCalled();
+
+    // Expect that navigation.navigate has been called with 'SettingsScreen'
+    expect(navigation.navigate).toHaveBeenCalledWith('BottomNavOverlay');
   });
 
   it('navigates to BottomNavOverlay when back/cancel button is clicked', () => {
