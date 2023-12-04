@@ -4,24 +4,23 @@
  * @memberof Screens
  *
  */
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import {
+  Platform,
   SafeAreaView,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  Platform,
 } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
 import Colors from '../constants/Colors';
+import { screenHeight } from '../constants/ScreenDimensions';
+import { getThemedStyles } from '../constants/Styles';
 import { saveContactInfo } from '../network/Service';
 import { getStoredUsername } from './auth/Authenticate';
-import { useThemeContext } from '../components/visuals/ThemeProvider';
-import { getThemedStyles } from '../constants/Styles';
-import { screenHeight } from '../constants/ScreenDimensions';
 
 /**
  * Represents a screen for editing contact information.
@@ -109,6 +108,7 @@ const EditContactInfo = ({ navigation, route }) => {
                   </Text>
                 </View>
                 <TextInput
+                  testID={key}
                   style={styles.data}
                   value={contactInfo[key].data}
                   onChangeText={(value) => handleInputChange(key, value)}
