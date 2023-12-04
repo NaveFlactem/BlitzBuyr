@@ -7,7 +7,6 @@
  * @memberof Components
  */
 
-
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, {
@@ -19,36 +18,38 @@ import React, {
   useState,
 } from 'react';
 import {
-  Animated as AnimatedRN,
+  Alert,
   Modal,
-  Platform,
   Pressable,
   SafeAreaView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import FlipCard from './CustomFlipCard.js';
 import { PinchGestureHandler, ScrollView } from 'react-native-gesture-handler';
-import Carousel from 'react-native-reanimated-carousel';
-import Entypo from 'react-native-vector-icons/Entypo';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { serverIp } from '../config.js';
-import Colors from '../constants/Colors.js';
-import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
-import { handleDeleteListing, handleLike } from '../network/Service.js';
-import { getStoredUsername } from '../screens/auth/Authenticate.js';
-import { parallaxLayout } from './parallax.ts';
-import { useThemeContext } from './visuals/ThemeProvider';
-import { getThemedStyles } from '../constants/Styles';
 import Animated, {
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { calculateFontSize, calculateFontSizeLocation, calculateTransactionFontSize } from './CalculateFontSize.js';
+import Carousel from 'react-native-reanimated-carousel';
+import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { serverIp } from '../config.js';
+import Colors from '../constants/Colors.js';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
+import { getThemedStyles } from '../constants/Styles';
+import { handleDeleteListing, handleLike } from '../network/Service.js';
+import { getStoredUsername } from '../screens/auth/Authenticate.js';
+import {
+  calculateFontSize,
+  calculateFontSizeLocation,
+  calculateTransactionFontSize,
+} from './CalculateFontSize.js';
+import FlipCard from './CustomFlipCard.js';
+import { parallaxLayout } from './parallax.ts';
+import { useThemeContext } from './visuals/ThemeProvider';
 
 /**
  * @constant default_blurhash
@@ -502,7 +503,7 @@ const Listing = ({
       setIsLiked(!isLiked);
     } catch (error) {
       console.error(error);
-      alert(error);
+      Alert.alert(error);
     }
   }, [isLiked]);
 
@@ -783,7 +784,7 @@ const Listing = ({
                   alert('Listing deleted successfully.');
                 } catch (error) {
                   console.error(error);
-                  alert(error);
+                  Alert.alert(error);
                 } finally {
                   toggleDeleteModal(); // Close the modal
                 }

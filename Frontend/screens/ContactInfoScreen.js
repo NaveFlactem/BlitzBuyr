@@ -7,6 +7,7 @@
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import {
+  Alert,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -134,7 +135,7 @@ const EditContactInfo = ({ navigation, route }) => {
                 });
                 navigation.navigate('SettingsScreen');
               } catch (error) {
-                alert(error);
+                Alert.alert(error);
               }
               navigation.navigate('BottomNavOverlay');
             }}
