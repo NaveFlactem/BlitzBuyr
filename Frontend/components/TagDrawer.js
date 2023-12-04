@@ -23,7 +23,7 @@ import { calculateTagTextFontSize } from './CalculateFontSize';
 
 /**
  * @component
- * @name TagDrawer
+ * @namespace TagDrawer
  * @memberof Components
  * @param {Object} props
  * @param {Array} tagsData
@@ -82,7 +82,7 @@ const TagDrawer = memo(
      *
      * @function
      * @name handleTagPress
-     * @memberof Components
+     * @memberof TagDrawer
      * @param {number} index - The index of the tag being pressed.
      * @description Toggles the selection state of a tag and manages selected tags for home screen layout.
      * @returns {void}
@@ -119,7 +119,7 @@ const TagDrawer = memo(
      *
      * @function
      * @name handleConditionPress
-     * @memberof Components
+     * @memberof TagDrawer
      * @param {number} index - The index of the condition being pressed.
      * @description Toggles the selection state of a condition and manages selected conditions.
      * @returns {void}
@@ -156,7 +156,7 @@ const TagDrawer = memo(
      *
      * @function
      * @name handleTransactionPress
-     * @memberof Components
+     * @memberof TagDrawer
      * @param {number} index - The index of the transaction being pressed.
      * @description Toggles the selection state of a transaction and manages selected transactions.
      * @returns {void}
@@ -197,7 +197,7 @@ const TagDrawer = memo(
      *
      * @function
      * @name handleCurrencyPress
-     * @memberof Components
+     * @memberof TagDrawer
      * @param {number} index - The index of the currency being pressed.
      * @description Toggles the selection state of a currency and updates the selected currency.
      * @returns {void}
@@ -241,7 +241,7 @@ const TagDrawer = memo(
      * Configuration object for handling animated gesture events.
      *
      * @constant {Object}
-     * @memberof Components
+     * @memberof TagDrawer
      * @name onGestureEvent
      * @description Manages gesture events such as start, active, and end for animations.
      */

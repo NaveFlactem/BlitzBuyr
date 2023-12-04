@@ -1,6 +1,6 @@
 /**
  * @namespace CustomFlipCard
- * 
+ * @memberof Components
  */
 
 'use strict';
@@ -21,6 +21,7 @@ import { ViewPropTypes } from 'deprecated-react-native-prop-types';
 /**
  * @class FlipCard
  * @description Component that flips between a front and a back view using a perspective effect.
+ * @memberof Components.CustomFlipCard
  * @extends React.Component
  * @example  <FlipCard> <Component1 /> <Component2 /> </FlipCard>
  * @prop {bool} flip - Set to true to flip the card and see the back view, false to see the front view.
@@ -38,7 +39,9 @@ import { ViewPropTypes } from 'deprecated-react-native-prop-types';
  */
 export default class FlipCard extends Component {
   /**
-   * @member {object} propTypes
+   * @static propTypes
+   * @memberof Components.CustomFlipCard.FlipCard
+   * @name propTypes
    * @description defines style propTypes
    */
   static propTypes = {
@@ -47,16 +50,10 @@ export default class FlipCard extends Component {
 
   /**
    * @constructor constructor
-   * @param {object} props
+   * @name constructor
+   * @function constructor
    * @description constructor method for FlipCard
-   * @constant {bool} isFlipped - boolean to determine if the card is flipped or not
-   * @constant {bool} isFlipping - boolean to determine if the card is flipping or not
-   * @constant {object} rotate - Animated.Value to determine the rotation of the card
-   * @constant {bool} measured - boolean to determine if the card is measured or not
-   * @constant {number} height - height of the card
-   * @constant {number} width - width of the card
-   * @constant {object} face - object containing the width and height of the front face of the card
-   * @constant {object} back - object containing the width and height of the back face of the card 
+   * @memberof Components.CustomFlipCard.FlipCard
    */
   constructor(props) {
     super(props);
@@ -80,6 +77,7 @@ export default class FlipCard extends Component {
   }
 
   /**
+   * @memberof Components.CustomFlipCard.FlipCard
    * @static getDerivedStateFromProps
    * @param {object} nextProps 
    * @param {state} prevState 
@@ -93,6 +91,7 @@ export default class FlipCard extends Component {
   
   /**
    * @function componentDidUpdate
+   * @memberof Components.CustomFlipCard.FlipCard
    * @param {object} prevProps
    * @description componentDidUpdate method for FlipCard component that checks if the flip prop has changed and calls the _toggleCard method
    */
@@ -104,7 +103,9 @@ export default class FlipCard extends Component {
 
   /**
    * @function _toggleCard
+   * @memberof Components.CustomFlipCard.FlipCard
    * @description method that sets the state of isFlipping to true and calls the _animation method
+   * @memberof FlipCard
    */
   _toggleCard() {
     this.setState({ isFlipping: true });
@@ -114,6 +115,7 @@ export default class FlipCard extends Component {
 
   /**
    * @function _animation
+  * @memberof Components.CustomFlipCard.FlipCard
    * @param {bool} isFlipped
    * @description method that sets the state of isFlipped to the opposite of the isFlipped parameter and calls the Animated.spring method to animate the card flip
    */
@@ -136,6 +138,7 @@ export default class FlipCard extends Component {
 
   /**
    * @function componentDidMount
+      * @memberof Components.CustomFlipCard.FlipCard
    * @constant {number} measureOtherSideTimeout - timeout to call the measureOtherSide method after 32 milliseconds
    * @description method that sets a timeout to call the measureOtherSide method after 32 milliseconds
    */
@@ -151,6 +154,7 @@ export default class FlipCard extends Component {
 
   /**
    * @function componentWillUnmount
+      * @memberof Components.CustomFlipCard.FlipCard
    * @description method that clears the measureOtherSideTimeout and tapTimeout timeouts
    * @constant {number} measureOtherSideTimeout - timeout to call the measureOtherSide method after 32 milliseconds
    * @constant {number} tapTimeout - timeout to call the handleTap method after 220 milliseconds
@@ -162,6 +166,7 @@ export default class FlipCard extends Component {
 
   /** 
   * @function measureOtherSide
+      * @memberof Components.CustomFlipCard.FlipCard
   * @description method that sets the state of isFlipped to the opposite of the isFlipped parameter and calls the Animated.spring method to animate the card flip
   * @constant {bool} isFlipped - boolean to determine if the card is flipped or not
   * @constant {bool} measured - boolean to determine if the card is measured or not 
@@ -175,6 +180,7 @@ export default class FlipCard extends Component {
 
   /**
    * @function handleTap
+      * @memberof Components.CustomFlipCard.FlipCard
    * @description method that handles the tap event and calls the _toggleCard method if the tap is a single tap or the doubleTap method if the tap is a double tap
    * @constant {number} now - current time in milliseconds
    * @constant {number} DOUBLE_PRESS_DELAY - constant value of 220 milliseconds
@@ -346,7 +352,8 @@ export default class FlipCard extends Component {
 }
 
 /**
- * FlipCard.propTypes
+ * @name propTypes
+      * @memberof Components.CustomFlipCard.FlipCard
  * @type {object}
  * @description defines prop types for FlipCard
  */
@@ -379,8 +386,20 @@ FlipCard.propTypes = {
 };
 
 /**
- * FlipCard.defaultProps
+      * @memberof Components.CustomFlipCard.FlipCard
  * @type {object}
+ * @prop {bool} flip - Set to true to flip the card and see the back view, false to see the front view.
+ * @prop {number} friction - Value used to determine the speed at which the card flips with higher vlaues corresponding to slower flipping. Defaults to 6.
+ * @prop {number} perspective - Determines the distance of the card from the rest of the scene, in pixels. Defaults to 1000.
+ * @prop {bool} flipHorizontal - Set to true to flip the card horizontally (with a default value of false to flip it vertically).
+ * @prop {bool} flipVertical - Set to true to flip the card vertically (with a default value of true to flip it vertically).
+ * @prop {bool} clickable - Set to false to disable the card flip on tap. Defaults to true.
+ * @prop {func} doubleTap - Function to be called when the card is double tapped.
+ * @prop {func} onFlipEnd - Function to be called when the card has flipped.
+ * @prop {func} onFlipStart - Function to be called when the card is flipped.
+ * @prop {bool} alignHeight - Set to true to adjust the card height to the biggest component height.
+ * @prop {bool} alignWidth - Set to true to adjust the card width to the biggest component width.
+ * @prop {bool} useNativeDriver - Set to true to use native animations. Defaults to true.
  * @description defines default prop values for FlipCard
  */
 FlipCard.defaultProps = {
@@ -400,6 +419,7 @@ FlipCard.defaultProps = {
 
 /**
  * @class Face
+ * @memberof Components.CustomFlipCard
  * @description Component that represents the front face of the card.
  * @extends React.Component
  * @example <Face> <Component1 /> </Face>
@@ -418,7 +438,7 @@ export class Face extends Component {
 }
 
 /**
- * Face.propTypes
+ * @memberof  Components.CustomFlipCard.Face
  * @type {object}
  * @description defines prop types for Face
  */
@@ -428,6 +448,7 @@ Face.propTypes = {
 
 /**
  * @class Back
+ * @memberof Components.CustomFlipCard
  * @description Component that represents the back face of the card.
  * @extends React.Component
  * @example <Back> <Component2 /> </Back>
@@ -460,9 +481,9 @@ export class Back extends Component {
 }
 
 /**
- * Back.defaultProps
- * @type {object}
+ * @memberof  Components.CustomFlipCard.Back
  * @description defines default prop values for Back
+ * @type {object}
  * @prop {bool} flipHorizontal - Set to true to flip the card horizontally (with a default value of false to flip it vertically).
  * @prop {bool} flipVertical - Set to true to flip the card vertically (with a default value of true to flip it vertically).
  * @prop {number} perspective - Determines the distance of the card from the rest of the scene, in pixels. Defaults to 1000.
@@ -474,8 +495,11 @@ Back.defaultProps = {
 };
 
 /**
- * Back.propTypes
+ * @memberof  Components.CustomFlipCard.Back
  * @type {object}
+ * @prop {bool} flipHorizontal - Set to true to flip the card horizontally (with a default value of false to flip it vertically).
+ * @prop {bool} flipVertical - Set to true to flip the card vertically (with a default value of true to flip it vertically).
+ * @prop {number} perspective - Determines the distance of the card from the rest of the scene, in pixels. Defaults to 1000.
  * @description defines prop types for Back
  */
 Back.propTypes = {

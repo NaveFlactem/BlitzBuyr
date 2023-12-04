@@ -1,8 +1,4 @@
-/**
- * @namespace Components
- * @description - Components is a folder where we have different features
- *
- */
+
 
 import React, { memo } from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
@@ -13,9 +9,13 @@ import { getThemedStyles } from '../constants/Styles';
 
 /**
  *
- * @function
- * @name NoWifi
+ * @namespace NoWifi
  * @memberof Components
+ */
+
+/**
+ * @function NoWifi
+ * @memberof Components.NoWifi
  * @param {Object} onRetry - The object that signifies if the app is reloading
  * @description - Shows the user that they have no wifi
  * @returns {JSX.Element} A logo that signifies no wifi.

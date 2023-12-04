@@ -16,7 +16,7 @@ import Colors from '../constants/Colors.js';
 /**
  * @function
  * @name RatingScreen
- * @memberof Rating
+ * @memberof Screens.RatingScreen
  * @param {Object} navigation - The navigation object used to navigate between screens.
  * @param {Object} route - Information about the current route.
  * @returns {void}

@@ -783,6 +783,7 @@ export const getThemedStyles = (theme) => {
       },
       retryButton: {
         marginTop: 20,
+        alignSelf: 'center',
         justifyContent: 'center',
         backgroundColor: themeColors.BB_darkRedPurple,
         padding: 10,

@@ -38,9 +38,8 @@ import {
 } from './auth/Authenticate.js';
 /**
  *
- * @function
- * @name EditProfileScreen
- * @memberof EditProfile
+ * @function EditProfileScreen
+ * @memberof Screens.EditProfileScreen
  * @param {Object} navigation - The object used to navigate between screens.
  * @param {Object} route - Information about the current route.
  * @description - Represents a screen for editing user profile information.

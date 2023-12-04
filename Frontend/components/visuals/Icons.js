@@ -3,6 +3,7 @@
 /**
  * @namespace Icons
  * @memberof Visuals
+ * @memberof Components.Visuals
  * @description - file serves as a utility for handling various icon sets using React Native Vector Icons.  BlitzBuyr used many icons from Matierial Communitiy Icons in particular
  */
 
@@ -39,6 +40,8 @@ export const Icons = {
 /**
  * 
  * @function Icon 
+ * @memberof Visuals.Icons
+ * @memberof Components.Visuals.Icons
  * @param {string} type - the icon set to use
  * @param {string} name - the name of the icon
  * @param {string} color - the color of the icon

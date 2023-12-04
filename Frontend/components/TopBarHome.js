@@ -1,3 +1,9 @@
+/**
+ * @namespace TopBarHome
+ * @memberof Components
+ * @description - TopBarHome is a component that displays the top bar on the home screen
+ */
+
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { memo } from 'react';
 import {
@@ -14,9 +20,8 @@ import { getThemedStyles } from '../constants/Styles';
 /**
  * Represents a memoized TopBar component for the home screen.
  *
- * @function
- * @name TopBar
- * @memberof Components
+ * @function TopBar
+ * @memberof Components.TopBarHome
  * @param {Object} props - Component props
  * @param {Function} props.handleMenuPress - Function handling the menu press event
  * @param {Function} props.handleLocationPress - Function handling the location press event

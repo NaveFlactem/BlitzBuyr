@@ -1,6 +1,7 @@
 /**
  * @namespace EditContactInfo
  * @description - EditContactInfo is a screen that allows users to edit their own contact information and decide what should be visable
+ * @memberof Screens
  *
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -24,9 +25,8 @@ import { screenHeight } from '../constants/ScreenDimensions';
 
 /**
  * Represents a screen for editing contact information.
- * @function
- * @name EditContactInfo
- * @memberof EditContactInfo
+ * @function EditContactInfo
+ * @memberof Screens.EditContactInfo
  * @param {Object} navigation - The object used to navigate between screens.
  * @param {Object} route - Information about the current route
  * @returns {JSX.Element} A screen for editing a users contact information.

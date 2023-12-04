@@ -1,6 +1,10 @@
 /**
+ * @namespace Components
+ */
+
+/**
  * @namespace Listing
- * 
+ * @memberof Components
  */
 
 
@@ -46,6 +50,10 @@ import Animated, {
 } from 'react-native-reanimated';
 import { calculateFontSize, calculateFontSizeLocation, calculateTransactionFontSize } from './CalculateFontSize.js';
 
+/**
+ * @constant default_blurhash
+ * @description The blurhash to use if the listing does not have a blurhash
+ */
 const default_blurhash = 'LEHLk~WB2yk8pyo0adR*.7kCMdnj';
 
 /**
