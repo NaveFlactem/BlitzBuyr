@@ -26,7 +26,7 @@ const AboutUsScreen = ({ navigation }) => {
 
   const teamMembers = [
     { name: 'Lukas Dopcke', role: 'Developer' },
-    { name: 'Shreyaz Vittal', role: 'Developer' },
+    { name: 'Shreyas Vittal', role: 'Developer' },
     { name: 'Evan Metcalf', role: 'Product Owner' },
     { name: 'Thomas Pollicino', role: 'Developer' },
     { name: 'Alfonso Del Rosario', role: 'Developer' },
@@ -76,25 +76,32 @@ const AboutUsScreen = ({ navigation }) => {
       >
         <View style={styles.container}>
           <Text style={styles.header}>
-            Welcome to BBCers: BlitzBuyrCoders Marketplace
+            Welcome to BlitzBuyr
           </Text>
 
           <Text style={styles.sectionHeader}>About Us</Text>
           <Text style={styles.paragraph}>
-            BBCers, short for BlitzBuyrCoders, is not just a marketplace; it's a
+            BlitzBuyrDevs is not just a developement team; it's a
             dynamic community driven by a passion for fast-paced transactions
             and cutting-edge development. We've crafted an open marketplace that
             caters to users seeking swift and efficient buying and selling
-            experiences.
+            experiences while mantaining a safe and consistent marketplace.  
           </Text>
 
           <Text style={styles.sectionHeader}>Meet the Team</Text>
           <Text style={styles.paragraph}>
             We are a group of dedicated undergraduate students from the
             University of California, Santa Cruz (UCSC), united by our love for
-            coding and innovation. Our diverse team brings a range of skills and
-            perspectives to the table, ensuring a well-rounded approach to the
-            development of BBCers.
+            coding and innovation. This project was completed through our course,
+            Intro to Software Engineering.  BlitzBuyr was produced using Scrum and
+            Agile programming practices with a focus in making the expierence as 
+            realistic to a developement team in the industry.  Each member got expierence
+            practicing as the Scrum Master while keeping an updated Scrum Board and 
+            burnout chart. The team went through many new expierences in the developement
+            of this app such as React Native, testing using Expo Go, documentation through
+            JSDocs, and a live server to store the data of the application. Our diverse 
+            team brought a range of skills and perspectives to the table, ensuring a 
+            well-rounded approach to the development of BlitzBuyr. 
           </Text>
 
           <View style={styles.teamList}>
@@ -107,7 +114,7 @@ const AboutUsScreen = ({ navigation }) => {
 
           <Text style={styles.sectionHeader}>Our Mission</Text>
           <Text style={styles.paragraph}>
-            At BBCers, we're on a mission to redefine the online marketplace
+            At BlitzBuyrDevs, we're on a mission to redefine the online marketplace
             experience. We understand the importance of speed and efficiency,
             and we're committed to providing a platform that meets the demands
             of users who thrive in a fast-paced environment.
@@ -116,7 +123,7 @@ const AboutUsScreen = ({ navigation }) => {
           <Text style={styles.paragraph}>
             Join us on this exciting journey as we revolutionize online
             transactions and empower users with a marketplace designed for
-            speed, simplicity, and satisfaction.
+            speed, simplicity, and satisfaction. 
           </Text>
         </View>
       </ScrollView>
