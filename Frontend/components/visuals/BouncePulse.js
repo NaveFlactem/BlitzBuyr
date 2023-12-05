@@ -108,7 +108,7 @@ const BouncePulse = memo((props) => {
   });
 
   return (
-    <View style={[styles.container, { opacity: props.opacity }]}>
+    <View style={[styles.container, { opacity: props.opacity, top: props.top, bottom: props.bottom, left: props.left, right: props.right }]}>
       <Animated.View
         style={[
           styles.dot,

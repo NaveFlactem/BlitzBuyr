@@ -6,7 +6,7 @@
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { Button, Image, Text, TouchableOpacity, View } from 'react-native'; // Import the Button component
+import { Alert, Button, Image, Text, TouchableOpacity, View } from 'react-native'; // Import the Button component
 import { useThemeContext } from '../components/visuals/ThemeProvider.js';
 import { serverIp } from '../config.js';
 import { getThemedStyles } from '../constants/Styles.js';
@@ -60,6 +60,12 @@ const RatingScreen = ({ navigation, route }) => {
    */
 
   const handleSubmitRating = () => {
+    if (selectedRating < 1 || selectedRating > 5) {
+      // show some indicator that the rating was unsuccessful
+      Alert.alert('Please select a rating between 1 and 5 stars');
+      return;
+    }
+
     const ratingPayload = {
       username: getStoredUsername(),
       userRated: route.params.username,
@@ -152,7 +158,7 @@ const RatingScreen = ({ navigation, route }) => {
           style={styles.profilePic}
         />
         <View style={styles.ratingContainer}>{renderStars()}
-        <Text testID="selected-rating">{selectedRating}</Text></View>
+        </View>
         <TouchableOpacity onPress={handleSubmitRating}>
           <View style={styles.submitButton}>
             <Text style={styles.submitText}>Submit Rating</Text>

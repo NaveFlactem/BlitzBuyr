@@ -29,6 +29,7 @@ import { currencies, tagOptions } from '../constants/ListingData.js';
 import { getThemedStyles } from '../constants/Styles';
 import { getLocationWithRetry } from '../constants/Utilities';
 import { getStoredUsername } from './auth/Authenticate.js';
+import { screenWidth, screenHeight } from '../constants/ScreenDimensions.js';
 
 /**
  * @constant {string} blurhash - blurhash for the loading image in draggable grid
@@ -58,7 +59,7 @@ const LoadingView = memo(({ styles }) => (
  */
 const MinorLoadingView = memo(({ styles }) => (
   <View style={styles.minorLoadingContainer}>
-    <BouncePulse />
+    <BouncePulse bottom={0.6 * screenHeight} />
   </View>
 ));
 
@@ -122,13 +123,18 @@ const CreateListing = memo(({ navigation, route }) => {
   const [tagsData, setTagsData] = useState([...tagOptions]);
   const [currencyOptions, setCurrencyOptions] = useState([...currencies]);
   const [selectImageModalVisible, setSelectImageModalVisible] = useState(false);
+  const [isCurrencyInvalid, setIsCurrencyInvalid] = useState(false);
+  const [pickerKeyTP, setpickerKeyTP] = useState(0);
+  const [pickerKeyC, setpickerKeyC] = useState(0);
   const { theme } = useThemeContext();
   const styles = getThemedStyles(theme).CreateListing;
-
+  
   const titleInput = useRef(null);
   const descriptionInput = useRef(null);
   const priceInput = useRef(null);
-
+  const conditionInput = useRef(null);
+  const transactionPreferenceInput = useRef(null);
+  
   /**
    * @function
    * @destructor - resets state variables
@@ -138,10 +144,14 @@ const CreateListing = memo(({ navigation, route }) => {
     setTitle('');
     setDescription('');
     setPrice('');
-    setCondition('');
-    setTransactionPreference('');
+    setCondition('Select an option...');
+    setTransactionPreference('Select an option...');
+    setpickerKeyTP(prevKey => prevKey + 1); // Increment key to force re-render of Transaction Preference Picker
+    setpickerKeyC(prevKey => prevKey + 1); // Increment key to force re-render of Condition Picker
     setData([]);
     setSelectedTags([]);
+    setTagsData(tagsData.map((tag) => ({ ...tag, selected: false })));
+    //unselect tags
     setSelectedCurrency('USD');
     setSelectedCurrencySymbol('$');
     setIsScrollEnabled(true);
@@ -152,8 +162,8 @@ const CreateListing = memo(({ navigation, route }) => {
     setIsTransactionPreferenceInvalid(false);
     setIsImageInvalid(false);
     setIsTagInvalid(false);
-    setIsMinorLoading(false);
-    setIsLoading(false);
+    setIsCurrencyInvalid(false);
+    
   };
 
   /**
@@ -173,7 +183,7 @@ const CreateListing = memo(({ navigation, route }) => {
   const checkValidListing = async () => {
     const regex = /^(\d{0,6}(\.\d{2})?)$/;
 
-    setIsPriceInvalid(!regex.test(price) && price.length !== 0);
+    setIsPriceInvalid(price === '' || !regex.test(price) || price < 0);
     setIsTitleInvalid(title.length === 0 || title.length > 25);
     setIsDescriptionInvalid(
       description.length === 0 || description.length > 500
@@ -188,6 +198,7 @@ const CreateListing = memo(({ navigation, route }) => {
     );
     setIsImageInvalid(data.length === 0 || data.length > 9);
     setIsTagInvalid(selectedTags.length === 0);
+    setIsCurrencyInvalid(selectedCurrency === '');
 
     if (
       Object.values({
@@ -198,6 +209,7 @@ const CreateListing = memo(({ navigation, route }) => {
         isTransactionPreferenceInvalid,
         isImageInvalid,
         isTagInvalid,
+        isCurrencyInvalid,
       }).includes(true)
     ) {
       return -1; // Invalid form
@@ -334,20 +346,22 @@ const CreateListing = memo(({ navigation, route }) => {
    */
   const showModal = () => setSelectImageModalVisible(true);
   const hideModal = () => setSelectImageModalVisible(false);
-
+  
   /**
    * @function
    * @handleCameraPick - allows the user to take photos with their camera
    * @returns Returns the photos that the user took
    * @description - allows the user to take photos with their camera
-   */
-  const handleCameraPick = async () => {
-    const result = await ImagePicker.launchCameraAsync();
-
-    if (!result.canceled) {
-      processImage(result); // Process the first (and only) image
+  */
+ const handleCameraPick = async () => {
+  setIsMinorLoading(true);
+   const result = await ImagePicker.launchCameraAsync();
+   
+   if (!result.canceled) {
+     processImage(result); // Process the first (and only) image
     }
 
+    setIsMinorLoading(false);
     hideModal();
   };
 
@@ -358,6 +372,7 @@ const CreateListing = memo(({ navigation, route }) => {
    * @description - allows the user to select images from their library
    */
   const handleLibraryPick = async () => {
+    setIsMinorLoading(true);
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
@@ -370,6 +385,7 @@ const CreateListing = memo(({ navigation, route }) => {
       processSelectedImages(result.assets);
     }
 
+    setIsMinorLoading(false);
     hideModal();
   };
 
@@ -816,21 +832,29 @@ const CreateListing = memo(({ navigation, route }) => {
               />
             )}
             <RNPickerSelect
+            key={pickerKeyTP}
+              ref={transactionPreferenceInput}
               selectedValue={transactionPreference}
               onValueChange={(itemValue, itemIndex) => {
                 setTransactionPreference(itemValue);
                 setIsTransactionPreferenceInvalid(false);
               }}
               items={[
+                { label: 'Select an option...', value: 'Select an option...' },
                 { label: 'Pickup', value: 'Pickup' },
                 { label: 'Meetup', value: 'Meetup' },
                 { label: 'Delivery', value: 'Delivery' },
                 { label: 'No Preference', value: 'No Preference' },
               ]}
+              placeholder={{}} // Empty placeholder item
               style={{
                 inputIOS: {
                   color: theme === 'dark' ? Colors.white : Colors.black,
                   left: 5,
+                  width: screenWidth * 0.9,
+                  height: 40,
+                  borderRadius: 5,
+
                 },
                 inputAndroid: {
                   color: theme === 'dark' ? Colors.white : Colors.black,
@@ -864,18 +888,22 @@ const CreateListing = memo(({ navigation, route }) => {
               />
             )}
             <RNPickerSelect
+            key={pickerKeyC}
+              ref={conditionInput}
               selectedValue={condition}
               onValueChange={(itemValue, itemIndex) => {
                 setCondition(itemValue);
                 setIsConditionInvalid(false);
               }}
               items={[
+                { label: 'Select an option...', value: 'Select an option...'},
                 { label: 'Excellent', value: 'Excellent' },
                 { label: 'Good', value: 'Good' },
                 { label: 'Fair', value: 'Fair' },
                 { label: 'Poor', value: 'Poor' },
                 { label: 'For Parts', value: 'For Parts' },
               ]}
+              placeholder={{}} // Empty placeholder item
               style={{
                 inputIOS: {
                   color: theme === 'dark' ? Colors.white : Colors.black,
