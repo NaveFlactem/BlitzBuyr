@@ -1580,7 +1580,9 @@ export const getThemedStyles = (theme) => {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'transparent',
+        backgroundColor: 'rgba(0,0,0,0.8)',
+        height: screenHeight,
+        width: screenWidth,
       },
       imageField: {
         alignSelf: 'center',

@@ -23,7 +23,7 @@ import { getThemedStyles } from '../constants/Styles';
 import { screenHeight } from '../constants/ScreenDimensions';
 
 /**
- * @function AboutUsScreen
+ * @function AboutUsScreen 
  * @memberof Screens.AboutUs
  * @param {Object} props - React component props
  * @param {Object} props.navigation - Stack navigation object
