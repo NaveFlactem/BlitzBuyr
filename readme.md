@@ -1,113 +1,92 @@
-# BlitzBuyr Documentation
+![BlitzBuyr Logo](https://i.imgur.com/EHeXa9f.png)
 
-Welcome to the official documentation for BlitzBuyr (BBC - BlitzBuyr Coders). This document provides an overview of the project's structure, key components, and how to use them effectively.
+## Introduction
 
-<!-- 
+BlitzBuyr is a mobile app designed to revolutionize the online shopping experience by offering users a personalized and interactive platform. With BlitzBuyr, users can discover unique products, compare prices, and connect with a community of like-minded shoppers, creating a vibrant space for individuality and engagement. BlitzBuyr is driven by the need for a more interactive and personalized online shopping experience, aligning with the preferences of users who value short-term, engaging interactions on popular social media platforms. By addressing this gap, we aim to redefine the online marketplace landscape and provide a unique space that highlights the individuality of each product. Beyond this, we aim to create a thriving community where users can connect, share experiences, and build relationships around their shared interests and purchases.
+
 ## Table of Contents
 
-- [Backend](#backend)
-  - [Server](#server)
-  - [Account Management](#account-management)
-  - [Listing Management](#listing-management)
-- [Frontend](#frontend)
-  - [CreateAccountScreen](#createaccountscreen)
-  - [Login Screen](#login-screen)
-  - [HomeScreen](#homescreen)
-  - [ProfileScreen](#profilescreen) -->
+- [Installation](#installation)
+- [Contributing](#contributing)
+- [Guides](#guides)
+  - [Generating/Updating Docs](#generatingupdating-docs)
+  - [Unit Testing](#unit-testing)
+- [Deliverables](#deliverables)
+- [Team](#team)
+- [Conclusion](#conclusion)
 
-## Backend
+## Installation
 
-The backend of BlitzBuyr is built using Node.js and Express, with SQLite3 as the database. It serves as the core of the application, handling API requests and managing user accounts and listings.
+### Requirements:
 
-### Server
+- [Node.js](https://nodejs.org/en/download)
+- [Expo Go app](https://expo.dev/client)
 
-The server handles routing and middleware, providing the foundation for API endpoints. Key components include:
+### Steps:
 
-- Conglomerating the different routes into express.
-- Request logging middleware.
-- Static routes for our JSDoc documentation.
-- Starting the Express server.
+1. Clone the git repository to your local machine.
+2. Install the required dependencies by navigating to the project root folder and running the following command:
+   `npm install`
+   Note: If you are on a Mac/Linux system, you may need to use `sudo` before the command.
+3. Switch to the backend server's folder from the root server by running the following command:
+   `cd ./Backend`
+4. Install the backend server's dependencies and start the server by running the following commands:
+   `npm install`
+   `node server.js`
+5. Open a new terminal at the project root folder and navigate to the React Native app folder by running the following command:
+   `cd ./Frontend`
+6. Start the React Native app by running the following command:
+   `npm start`
+7. On your Expo Go app on your phone, scan the QR code displayed in the terminal to open the app.
+8. Use the app as intended.
 
-[View `server.js` source code](server.js.html)
+## Contributing
 
-### Account Management
+If you want to contribute to the project, follow these steps:
 
-BlitzBuyr's account management system allows users to register, login, and authenticate their accounts. Key components include:
+1. Make a fork of the repository for your feature or changes.
+2. Create a new branch for your changes.
+3. Make the necessary changes and commit them to your branch.
+4. Push your branch to your forked repository.
+5. Submit a pull request to the main branch of the original repository.
 
-- GET request endpoint for retrieving a list of accounts.
-- POST request endpoint for user registration. Requires username, password and email. Returns success/failure message.
-- POST request endpoint for user login and authentication. Requires username and password. Returns success/failure message and authentication token on success.
+## Guides
 
-[View `account.js` source code](account.js.html)
+### Generating/Updating Docs
 
-### Listing Management
+To generate or update the documentation, follow these steps:
 
-Listings are a fundamental part of BlitzBuyr, and the backend provides endpoints for listing creation and retrieval. Key components include:
+1. Make sure you have `jsdoc` installed globally by running the following command:
+   `npm install -g jsdoc`
+2. Fully delete the `Docs` folder in the project. This is to generate a fresh documentation folder.
+3. At the base project folder (blitzbuyr), run the following command:
+   `jsdoc -c jsdoc.json`
+   This will generate the documentation based on the JSDoc comments in the code.
 
-- POST request endpoint for creating a new listing. Requires listing details and returns the created listing ID.
-- GET request endpoint for retrieving a list of all listings. Returns a list of all listings.
+To check the generated documentation, simply type `localhost` in your browser, which will take you to the documentation landing page.
 
-[View `listing.js` source code](listing.js.html)
+Feel free check the [JSDoc main page](https://jsdoc.app) for more reference and guides on how to use JSDoc.
 
-## Frontend
+### Unit Testing
 
-The frontend of BlitzBuyr is built using React Native and provides a user-friendly interface for interacting with the application. It includes various screens for creating accounts, logging in, browsing listings, and managing user profiles.
+Unit testing is done with Mocha and Chai for the backend, and Jest for the frontend. Check their respective test folders in the Backend and Frontend directories. Refer to [Frontend Unit Tests](https://github.com/NaveFlactem/BlitzBuyr/tree/Testing-Branch/Frontend/tests) and [Backend Unit Tests](https://github.com/NaveFlactem/BlitzBuyr/tree/Testing-Branch/Backend/test) for reference on the existing tests and how to write additional tests.
 
-### CreateAccountScreen
+## Deliverables
 
-The Create Account screen allows users to create a new account, providing essential account information such as username, password, email, etc.
+- [Presentation PowerPoint](https://docs.google.com/presentation/d/1Sqmb-mlpkXzaFk18pKedMxlt58aA9RclxXbM5NzQPVo/edit#slide=id.p)
+- [Scrum Documents Folder](https://drive.google.com/drive/u/0/folders/1uojHzauiQEiMA0Tz0TicCllIFZs5BGL-)
+- [Test Plan and Report Document](https://docs.google.com/document/d/1421OKnpSpiZaO3-3GJeWJ5KHAnAvv0nNFfs30BBLBzc/edit#heading=h.2yy5cnnmsswp)
+- [Release Summary Document](https://docs.google.com/document/d/1WjgArigd5WFmqFfMzPfhd7Xs9remaX6HwLvQZ41PWoU/edit#heading=h.1tzgsuwnhc5v)
+- [Known Issues and Bugs](https://docs.google.com/document/d/1WjgArigd5WFmqFfMzPfhd7Xs9remaX6HwLvQZ41PWoU/edit#heading=h.6e8vzf4atd4x)
+- [Design Documents](TBD)
 
-[View `CreateAccountScreen.js` source code](CreateAccountScreen.js.html)
+## Team
 
-### Login Screen
+BlitzBuyrDevs (BBD)
 
-The Login screen enables users to log into their accounts, requiring username and password authentication. On successful login, proceeds to HomeScreen.
-
-[View `LoginScreen.js` source code](LoginScreen.js.html)
-
-### HomeScreen
-
-The Home screen is the primary user interface for browsing listings, interacting with listings, and discovering new items for sale. Requires authentication to access.
-
-[View `HomeScreen.js` source code](HomeScreen.js.html)
-
-### ProfileScreen
-
-The Profile screen allows users to manage their profiles, view their listings, and interact with other users. Requires authentication to access own profile.
-
-Each of these screens plays a vital role in delivering a seamless user experience within the BlitzBuyr application.
-
-[View `ProfileScreen.js` source code](ProfileScreen.js.html)
-
-### CreateListing
-
-The Create Listing Screen allows users to create and upolad a listing.  The user inputs a title,
-descriptions, price, currency type, transaction preference, condition, and tags.  Then the user is able
-to upload images of the item they are trying to sell.
-
-[View `CreateListing.js` source code](CreateListing.js.html)
-
-### RatingScreen
-
-The Rating Screen allows users to rate another users out of 5.  The user selects a star rating to give
-to another profile that they compelted a transaction through.  
-
-[View `RatingScreen.js` source code](RatingScreen.js.html)
-
-### SettingsScreen
-
-The Settings Screen allows users to change their password, input contact info, toggle notifications,
-toggle dark mode and read our about us section.
-
-[View `SettingsScreen.js` source code](SettingsScreen.js.html)
-
-### EditProfileScreen
-
-The Edit Profile Screen allows users to edit their username, email, profile photo and banner photo. It
-also allows users to delete their account.  
-
-[View `EditProfileScreen.js` source code](EditProfileScreen.js.html)
+- Product Owner: [Evan Metcalf](https://github.com/NaveFlactem)
+- Developers: [Lukas Teixeira Döpcke](https://github.com/Iuke121), [Alfonso Del Rosario](https://github.com/addelros), [Thomas Pollicino](https://github.com/ThomasPollicino), [Shreyas Vittal](https://github.com/svittalucsc)
 
 ## Conclusion
 
-This documentation serves as a reference for developers working on the BlitzBuyr project, as well as any interested in our workflow or codebase, outlining the structure and key components of both the backend and frontend.
+If you have any new or undocumented issues or bugs, submit them in [Issues](https://github.com/NaveFlactem/BlitzBuyr/issues)!
