@@ -70,5 +70,3 @@ const server = app.listen(80, () => {
 
   console.log('Server listening at http://%s:%s', host, port);
 });
-
-module.exports = server;

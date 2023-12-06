@@ -1,17 +1,22 @@
+
+
 /**
  * @namespace CreateListing
  * @memberof Screens
  */
+import { serverIp } from '../config';
 import * as FileSystem from 'expo-file-system';
 import { Image } from 'expo-image';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect, useRef, memo } from 'react';
 import {
   Alert,
   Modal,
   Platform,
+  SafeAreaView,
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -21,15 +26,15 @@ import DraggableGrid from 'react-native-draggable-grid';
 import RNPickerSelect from 'react-native-picker-select';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import BouncePulse from '../components/visuals/BouncePulse.js';
-import { useThemeContext } from '../components/visuals/ThemeProvider';
 import TopBar from '../components/visuals/TopBarGeneric.js';
-import { serverIp } from '../config';
 import Colors from '../constants/Colors';
 import { currencies, tagOptions } from '../constants/ListingData.js';
-import { getThemedStyles } from '../constants/Styles';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
 import { getLocationWithRetry } from '../constants/Utilities';
+import { handleListingCreation } from '../network/Service.js';
 import { getStoredUsername } from './auth/Authenticate.js';
-import { screenWidth, screenHeight } from '../constants/ScreenDimensions.js';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
 
 /**
  * @constant {string} blurhash - blurhash for the loading image in draggable grid
@@ -59,7 +64,7 @@ const LoadingView = memo(({ styles }) => (
  */
 const MinorLoadingView = memo(({ styles }) => (
   <View style={styles.minorLoadingContainer}>
-    <BouncePulse bottom={0.6 * screenHeight} />
+    <BouncePulse />
   </View>
 ));
 
@@ -85,7 +90,7 @@ const CreateListing = memo(({ navigation, route }) => {
   const [isPriceInvalid, setIsPriceInvalid] = useState(false);
   const [isConditionInvalid, setIsConditionInvalid] = useState(false);
   const [isTransactionPreferenceInvalid, setIsTransactionPreferenceInvalid] =
-    useState(false);
+  useState(false);
   const [isImageInvalid, setIsImageInvalid] = useState(false);
   const [isTagInvalid, setIsTagInvalid] = useState(false);
   const [isMinorLoading, setIsMinorLoading] = useState(false);
@@ -96,9 +101,6 @@ const CreateListing = memo(({ navigation, route }) => {
   const [tagsData, setTagsData] = useState([...tagOptions]);
   const [currencyOptions, setCurrencyOptions] = useState([...currencies]);
   const [selectImageModalVisible, setSelectImageModalVisible] = useState(false);
-  const [isCurrencyInvalid, setIsCurrencyInvalid] = useState(false);
-  const [pickerKeyTP, setpickerKeyTP] = useState(0);
-  const [pickerKeyC, setpickerKeyC] = useState(0);
   const { theme } = useThemeContext();
   const styles = getThemedStyles(theme).CreateListing;
 
@@ -123,8 +125,6 @@ const CreateListing = memo(({ navigation, route }) => {
     setpickerKeyC((prevKey) => prevKey + 1); // Increment key to force re-render of Condition Picker
     setData([]);
     setSelectedTags([]);
-    setTagsData(tagsData.map((tag) => ({ ...tag, selected: false })));
-    //unselect tags
     setSelectedCurrency('USD');
     setSelectedCurrencySymbol('$');
     setIsScrollEnabled(true);
@@ -148,7 +148,7 @@ const CreateListing = memo(({ navigation, route }) => {
   const checkValidListing = async () => {
     const regex = /^(\d{0,6}(\.\d{2})?)$/;
 
-    setIsPriceInvalid(price === '' || !regex.test(price) || price < 0);
+    setIsPriceInvalid(!regex.test(price) && price.length !== 0);
     setIsTitleInvalid(title.length === 0 || title.length > 25);
     setIsDescriptionInvalid(
       description.length === 0 || description.length > 500,
@@ -163,7 +163,6 @@ const CreateListing = memo(({ navigation, route }) => {
     );
     setIsImageInvalid(data.length === 0 || data.length > 9);
     setIsTagInvalid(selectedTags.length === 0);
-    setIsCurrencyInvalid(selectedCurrency === '');
 
     if (
       Object.values({
@@ -174,7 +173,6 @@ const CreateListing = memo(({ navigation, route }) => {
         isTransactionPreferenceInvalid,
         isImageInvalid,
         isTagInvalid,
-        isCurrencyInvalid,
       }).includes(true)
     ) {
       return -1; // Invalid form
@@ -257,7 +255,7 @@ const CreateListing = memo(({ navigation, route }) => {
       }
     } catch (error) {
       console.error(error);
-      Alert.alert(error);
+      alert(error);
     } finally {
       setIsLoading(false);
     }
@@ -320,7 +318,6 @@ const CreateListing = memo(({ navigation, route }) => {
       processImage(result); // Process the first (and only) image
     }
 
-    setIsMinorLoading(false);
     hideModal();
   };
 
@@ -332,7 +329,6 @@ const CreateListing = memo(({ navigation, route }) => {
    * @memberof Screens.CreateListing
    */
   const handleLibraryPick = async () => {
-    setIsMinorLoading(true);
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
@@ -345,7 +341,6 @@ const CreateListing = memo(({ navigation, route }) => {
       processSelectedImages(result.assets);
     }
 
-    setIsMinorLoading(false);
     hideModal();
   };
 
@@ -793,13 +788,11 @@ const CreateListing = memo(({ navigation, route }) => {
                 setIsTransactionPreferenceInvalid(false);
               }}
               items={[
-                { label: 'Select an option...', value: 'Select an option...' },
                 { label: 'Pickup', value: 'Pickup' },
                 { label: 'Meetup', value: 'Meetup' },
                 { label: 'Delivery', value: 'Delivery' },
                 { label: 'No Preference', value: 'No Preference' },
               ]}
-              placeholder={{}} // Empty placeholder item
               style={{
                 inputIOS: {
                   color: theme === 'dark' ? Colors.white : Colors.black,
@@ -855,7 +848,6 @@ const CreateListing = memo(({ navigation, route }) => {
                 { label: 'Poor', value: 'Poor' },
                 { label: 'For Parts', value: 'For Parts' },
               ]}
-              placeholder={{}} // Empty placeholder item
               style={{
                 inputIOS: {
                   color: theme === 'dark' ? Colors.white : Colors.black,

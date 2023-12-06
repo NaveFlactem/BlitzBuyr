@@ -2,28 +2,29 @@
  * @namespace ChangePasswordScreen
  * @memberof Screens
  */
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import { useIsFocused } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useState, useEffect } from 'react';
 import {
-  Alert,
-  Platform,
   SafeAreaView,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
+  Platform,
+  Alert,
 } from 'react-native';
-import { useThemeContext } from '../components/visuals/ThemeProvider.js';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
 import Colors from '../constants/Colors';
-import { screenHeight } from '../constants/ScreenDimensions';
 import { getThemedStyles } from '../constants/Styles.js';
-import { saveProfileInfo } from '../network/Service.js';
 import {
   getStoredPassword,
   setStoredCredentials,
 } from './auth/Authenticate.js';
+import { useThemeContext } from '../components/visuals/ThemeProvider.js';
+import { saveProfileInfo } from '../network/Service.js';
+import { screenHeight } from '../constants/ScreenDimensions';
 
 /**
  * @function ChangePassword
@@ -120,7 +121,7 @@ const ChangePassword = ({ navigation, route }) => {
       navigation.navigate('SettingsScreen');
     } catch (error) {
       console.error(error);
-      Alert.alert(error);
+      alert(error);
     }
   };
 

@@ -2,8 +2,6 @@
   "dependencies": {
     "blurhash": "^2.0.5",
     "body-parser": "^1.20.2",
-    "chai": "^4.3.10",
-    "chai-http": "^4.4.0",
     "express": "^4.18.2",
     "express-jsdoc-swagger": "^1.8.0",
     "express-static-gzip": "^2.1.7",
@@ -11,7 +9,6 @@
     "imagemin": "^8.0.1",
     "imagemin-mozjpeg": "^10.0.0",
     "imagemin-pngquant": "^9.0.2",
-    "mocha": "^10.2.0",
     "multer": "^1.4.5-lts.1",
     "pg": "^8.11.3",
     "serve-favicon": "^2.5.0",

@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 import LocationSlider from '../components/LocationSlider';
 import NoListings from '../components/NoListings';
@@ -19,7 +18,6 @@ import TopBar from '../components/TopBarHome.js';
 import BouncePulse from '../components/visuals/BouncePulse.js';
 import { CustomRefreshControl } from '../components/visuals/CustomRefreshControl';
 import { useThemeContext } from '../components/visuals/ThemeProvider';
-import Colors from '../constants/Colors';
 import {
   conditionOptions,
   currencies,
@@ -31,6 +29,8 @@ import { getThemedStyles } from '../constants/Styles';
 import { getLocationWithRetry } from '../constants/Utilities';
 import * as Settings from '../hooks/UserSettings.js';
 import { fetchListings } from '../network/Service';
+import Colors from '../constants/Colors';
+import { FlatList } from 'react-native-gesture-handler';
 /**
  * @namespace HomeScreen
  * @memberof Screens
@@ -74,7 +74,6 @@ const HomeScreen = ({ route }) => {
    * @function
    * @name toggleTagDrawer
    * @memberof Screens.HomeScreen
-   * @inner
    * @returns {void}
    * @description Controls the visibility of the tag drawer by toggling its state between open and closed. If the drawer is currently open, it animates its closure by sliding it to the left. If closed, it animates its opening by sliding it to the right.
    */
@@ -237,7 +236,7 @@ const HomeScreen = ({ route }) => {
       );
     } catch (error) {
       console.error(error);
-      Alert.alert(error);
+      alert(error);
     }
   }, [userLocation, distance, selectedTags, selectedConditions]);
 

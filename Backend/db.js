@@ -336,43 +336,25 @@ const tables = [
 async function createTables() {
   try {
     for (const table of tables) {
-      await new Promise(async (resolve, reject) => {
-        await createOrUpdateTable(db, table.sql);
-        // Assuming createOrUpdateTable invokes the callback when finished
-        // If it's synchronous, you may need to modify it to be asynchronous
-        resolve();
-      });
+      createOrUpdateTable(db, table.sql);
     }
-
-    // Create the trigger after all tables are created
-    await new Promise((resolve, reject) => {
-      db.run('PRAGMA foreign_keys=ON');
-      db.run(
-        `CREATE TRIGGER IF NOT EXISTS accounts_after_insert 
-      AFTER INSERT ON Accounts
-      FOR EACH ROW
-      BEGIN
-        INSERT INTO Profiles (Username) VALUES (NEW.Username);
-        
-        INSERT INTO ContactInfo (Username) VALUES (NEW.Username);
-         
-        INSERT INTO Settings (Username) VALUES (NEW.Username);
-      END`,
-        (err) => {
-          if (err) reject(err);
-          else resolve();
-        },
-      );
-    });
+    db.run('PRAGMA foreign_keys=ON');
+    db.run(`CREATE TRIGGER IF NOT EXISTS accounts_after_insert 
+    AFTER INSERT ON Accounts
+    FOR EACH ROW
+    BEGIN
+      INSERT INTO Profiles (Username, Email) VALUES (NEW.Username, NEW.Email);
+      
+      INSERT INTO ContactInfo (Username) VALUES (NEW.Username);
+       
+      INSERT INTO Settings (Username) VALUES (NEW.Username);
+    END;`);
   } catch (err) {
     console.log('error:', err);
   }
 }
 
-// Call the function
-createTables().then(() => {
-  console.log('Tables creation completed.');
-});
+createTables();
 
 module.exports = {
   db,

@@ -63,12 +63,6 @@ const RatingScreen = ({ navigation, route }) => {
    *              Logs errors if there's an issue while submitting the rating.
    */
   const handleSubmitRating = () => {
-    if (selectedRating < 1 || selectedRating > 5) {
-      // show some indicator that the rating was unsuccessful
-      Alert.alert('Please select a rating between 1 and 5 stars');
-      return;
-    }
-
     const ratingPayload = {
       username: getStoredUsername(),
       userRated: route.params.username,
@@ -115,7 +109,6 @@ const RatingScreen = ({ navigation, route }) => {
           key={i}
           style={[styles.starButton, i < 5 && styles.starMargin]}
           onPress={() => handleRating(i)}
-          testID={`rating-button-${i}`} // Adding testID prop to TouchableOpacity for testing
         >
           {i <= selectedRating ? (
             <MaterialCommunityIcons

@@ -7,6 +7,7 @@
  * @memberof Components
  */
 
+
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, {
@@ -18,38 +19,36 @@ import React, {
   useState,
 } from 'react';
 import {
-  Alert,
+  Animated as AnimatedRN,
   Modal,
+  Platform,
   Pressable,
   SafeAreaView,
+  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import FlipCard from './CustomFlipCard.js';
 import { PinchGestureHandler, ScrollView } from 'react-native-gesture-handler';
-import Animated, {
-  useAnimatedGestureHandler,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { serverIp } from '../config.js';
 import Colors from '../constants/Colors.js';
 import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
-import { getThemedStyles } from '../constants/Styles';
 import { handleDeleteListing, handleLike } from '../network/Service.js';
 import { getStoredUsername } from '../screens/auth/Authenticate.js';
-import {
-  calculateFontSize,
-  calculateFontSizeLocation,
-  calculateTransactionFontSize,
-} from './CalculateFontSize.js';
-import FlipCard from './CustomFlipCard.js';
 import { parallaxLayout } from './parallax.ts';
 import { useThemeContext } from './visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
+import Animated, {
+  useAnimatedGestureHandler,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import { calculateFontSize, calculateFontSizeLocation, calculateTransactionFontSize } from './CalculateFontSize.js';
 
 /**
  * @constant default_blurhash
@@ -99,7 +98,7 @@ function getDistance(lat1, lon1, lat2, lon2) {
  * @function LikeButton
  * @description Button to like a listing
  * @returns {object} TouchableOpacity and MaterialCommunityIcon wrapped in React.Fragment
- * @memberof Components.Listing
+ * @memberof Listing
  */
 const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
   const { theme } = useThemeContext();
@@ -129,7 +128,7 @@ const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
  * @function DeleteButton
  * @description Button to delete a listing
  * @returns {object} TouchableOpacity and MaterialCommunityIcon
- * @memberof Components.Listing
+ * @memberof Listing
  */
 const DeleteButton = ({ onDeletePress, styles }) => {
   return (
@@ -145,7 +144,7 @@ const DeleteButton = ({ onDeletePress, styles }) => {
  * @function TimeBox
  * @description Displays the time since the listing was posted
  * @returns {object} View and Text wrapped in React.Fragment
- * @memberof Components.Listing
+ * @memberof Listing
  */
 const TimeBox = memo(({ timeSince, styles }) => {
   return (
@@ -183,7 +182,7 @@ const TimeBox = memo(({ timeSince, styles }) => {
  * @function CardOverlay
  * @description Displays the price, time since, and children (image) of the listing
  * @returns {object} View and Image wrapped in React.Fragment
- * @memberof Components.Listing
+ * @memberof Listing
  */
 const CardOverlay = memo(
   ({ children, currencySymbol, price, timeSince, cardStyle, styles }) => {
@@ -222,7 +221,7 @@ const CardOverlay = memo(
  * @function MemoizedImage
  * @description Displays the image of the listing
  * @returns {object} Image
- * @memberof Components.Listing
+ * @memberof Listing
  */
 const MemoizedImage = memo(
   ({ source, blurhash, style, contentFit, transition }) => {
@@ -253,7 +252,7 @@ const MemoizedImage = memo(
  * @function CustomItem
  * @description Displays the image of the listing with the ability to zoom in and out and delete the listing if the user is the owner and the listing is being viewed from the profile screen
  * @returns {object} View and Image wrapped in React.Fragment
- * @memberof Components.Listing
+ * @memberof Listing
  */
 const CustomItem = memo(
   ({
@@ -444,7 +443,7 @@ const CustomItem = memo(
  * @function Listing
  * @description Displays the listing
  * @returns {object} SafeAreaView and FlipCard wrapped in React.Fragment
- * @memberof Components.Listing
+ * @memberof Listing
  */
 const Listing = ({
   item,
@@ -504,7 +503,7 @@ const Listing = ({
       setIsLiked(!isLiked);
     } catch (error) {
       console.error(error);
-      Alert.alert(error);
+      alert(error);
     }
   }, [isLiked]);
 
@@ -785,7 +784,7 @@ const Listing = ({
                   alert('Listing deleted successfully.');
                 } catch (error) {
                   console.error(error);
-                  Alert.alert(error);
+                  alert(error);
                 } finally {
                   toggleDeleteModal(); // Close the modal
                 }

@@ -16,11 +16,11 @@ import React, { memo, useEffect, useState } from 'react';
 import {
   Alert,
   Image,
-  Platform,
   SafeAreaView,
   Text,
   TouchableOpacity,
   View,
+  Platform,
 } from 'react-native';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
@@ -303,7 +303,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       navigation.goBack();
     } catch (error) {
       console.error(error);
-      Alert.alert(error);
+      alert(error);
     }
   };
 
@@ -329,7 +329,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       setConfirmationModalVisible(false);
     } catch (error) {
       console.error(error);
-      Alert.alert(error);
+      alert(error);
     }
   };
 

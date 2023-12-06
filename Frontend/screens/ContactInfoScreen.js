@@ -4,24 +4,24 @@
  * @memberof Screens
  *
  */
-import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import {
-  Alert,
-  Platform,
   SafeAreaView,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
+  Platform,
 } from 'react-native';
-import { useThemeContext } from '../components/visuals/ThemeProvider';
+import { AntDesign } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
-import { screenHeight } from '../constants/ScreenDimensions';
-import { getThemedStyles } from '../constants/Styles';
 import { saveContactInfo } from '../network/Service';
 import { getStoredUsername } from './auth/Authenticate';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
+import { getThemedStyles } from '../constants/Styles';
+import { screenHeight } from '../constants/ScreenDimensions';
 
 /**
  * Represents a screen for editing contact information.
@@ -60,7 +60,6 @@ const EditContactInfo = ({ navigation, route }) => {
       <View style={styles.topBar}>
         <View style={styles.topBarContainer}>
           <TouchableOpacity
-            testID={'back-button'}
             onPress={() => {
               setLoading(true);
               navigation.navigate('BottomNavOverlay');
@@ -110,7 +109,6 @@ const EditContactInfo = ({ navigation, route }) => {
                   </Text>
                 </View>
                 <TextInput
-                  testID={key}
                   style={styles.data}
                   value={contactInfo[key].data}
                   onChangeText={(value) => handleInputChange(key, value)}
@@ -135,7 +133,7 @@ const EditContactInfo = ({ navigation, route }) => {
                 });
                 navigation.navigate('SettingsScreen');
               } catch (error) {
-                Alert.alert(error);
+                alert(error);
               }
               navigation.navigate('BottomNavOverlay');
             }}
