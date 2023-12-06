@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Frontend/components/NoWifi.js - Documentation</title>
+    <title>StackNavigator - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -1179,55 +1179,118 @@
     </nav>
 
     <div id="main">
-      <h1 class="page-title">Frontend/components/NoWifi.js</h1>
+      <h1 class="page-title">StackNavigator</h1>
 
       <section>
+        <header>
+          <h2>Namespace</h2>
+        </header>
+
         <article>
-          <pre
-            class="prettyprint source linenums"
-          ><code>import React, { memo } from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
-import Colors from '../constants/Colors';
-import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
-import { useThemeContext } from './visuals/ThemeProvider';
-import { getThemedStyles } from '../constants/Styles';
+          <div class="container-overview">
+            <h4 class="name" id="StackNavigator">StackNavigator</h4>
 
-/**
- *
- * @namespace NoWifi
- * @memberof Components
- */
+            <dl class="details">
+              <dt class="tag-source">Source:</dt>
+              <dd class="tag-source">
+                <ul class="dummy">
+                  <li>
+                    <a href="Frontend_nav_StackNavigator.js.html"
+                      >Frontend/nav/StackNavigator.js</a
+                    >,
+                    <a href="Frontend_nav_StackNavigator.js.html#line1"
+                      >line 1</a
+                    >
+                  </li>
+                </ul>
+              </dd>
+            </dl>
+          </div>
 
-/**
- * @function NoWifi
- * @memberof Components.NoWifi
- * @param {Function} onRetry - Function to retry the network connection by calling the parent component's refresh function
- * @description - Shows the user that they have no wifi
- * @returns {JSX.Element} A logo that signifies no wifi.
- */
-const NoWifi = memo(({ onRetry }) => {
-  const { theme } = useThemeContext();
-  const styles = getThemedStyles(useThemeContext().theme).NoWifi;
-  return (
-    &lt;View style={styles.noWifiContainer}>
-      &lt;Image
-        style={styles.noWifiImage}
-        source={
-          theme === 'dark'
-            ? require('../assets/no_wifi_icon_transparent_darkmode.png')
-            : require('../assets/no_wifi_icon_transparent.png')
-        }
-      />
-      &lt;Text style={styles.noWifiText}>No network connection available.&lt;/Text>
-      &lt;TouchableOpacity onPress={onRetry} style={styles.retryButton}>
-        &lt;Text style={styles.buttonText}>Retry&lt;/Text>
-      &lt;/TouchableOpacity>
-    &lt;/View>
-  );
-});
+          <h3 class="subsection-title">Members</h3>
 
-export default NoWifi;
-</code></pre>
+          <h4 class="name" id=".Stack">
+            <span class="type-signature type-signature-static, constant"
+              >(static, constant) </span
+            >Stack<span class="type-signature"></span>
+          </h4>
+
+          <dl class="details">
+            <dt class="tag-description">Description:</dt>
+            <dd class="tag-description">
+              <ul class="dummy">
+                <li>
+                  <ul>
+                    <li>used to create the stack.navigator for the app</li>
+                  </ul>
+                </li>
+              </ul>
+            </dd>
+
+            <dt class="tag-source">Source:</dt>
+            <dd class="tag-source">
+              <ul class="dummy">
+                <li>
+                  <a href="Frontend_nav_StackNavigator.js.html"
+                    >Frontend/nav/StackNavigator.js</a
+                  >,
+                  <a href="Frontend_nav_StackNavigator.js.html#line19"
+                    >line 19</a
+                  >
+                </li>
+              </ul>
+            </dd>
+          </dl>
+
+          <div class="description usertext">
+            <ul>
+              <li>used to create the stack.navigator for the app</li>
+            </ul>
+          </div>
+
+          <h3 class="subsection-title">Methods</h3>
+
+          <h4 class="name" id=".StackNavigator">
+            <span class="type-signature type-signature-static">(static) </span
+            >StackNavigator<span class="signature">()</span
+            ><span class="type-signature"> &rarr; {JSX.Element}</span>
+          </h4>
+
+          <dl class="details">
+            <dt class="tag-description">Description:</dt>
+            <dd class="tag-description">
+              <ul class="dummy">
+                <li>
+                  <ul>
+                    <li>Stack navigator for the app</li>
+                  </ul>
+                </li>
+              </ul>
+            </dd>
+
+            <dt class="tag-source">Source:</dt>
+            <dd class="tag-source">
+              <ul class="dummy">
+                <li>
+                  <a href="Frontend_nav_StackNavigator.js.html"
+                    >Frontend/nav/StackNavigator.js</a
+                  >,
+                  <a href="Frontend_nav_StackNavigator.js.html#line26"
+                    >line 26</a
+                  >
+                </li>
+              </ul>
+            </dd>
+          </dl>
+
+          <h5 class="h5-returns">Returns:</h5>
+
+          <dl class="param-type">
+            <dt>Type</dt>
+            <dd>
+              <span class="param-type">JSX.Element</span>
+            </dd>
+          </dl>
         </article>
       </section>
     </div>
@@ -1237,7 +1300,7 @@ export default NoWifi;
     <footer>
       Documentation generated by
       <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Tue Dec 05
-      2023 17:39:42 GMT-0800 (Pacific Standard Time) using the
+      2023 17:39:43 GMT-0800 (Pacific Standard Time) using the
       <a href="https://github.com/clenemt/docdash">docdash</a> theme.
     </footer>
 

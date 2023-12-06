@@ -10,7 +10,7 @@ import type { IComputedDirectionTypes } from 'react-native-reanimated-carousel';
  * @typedef {Object} TBaseConfig
  * @property {number} size - size of the carousel
  * @property {boolean} vertical - vertical carousel
- * @memberof Components.parallax  
+ * @memberof Components.parallax
  */
 interface TBaseConfig {
   size: number;

@@ -5,7 +5,7 @@ import {
   RefreshControl,
   SafeAreaView,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { useSharedValue, withTiming } from 'react-native-reanimated';
@@ -24,7 +24,7 @@ import {
   conditionOptions,
   currencies,
   tagOptions,
-  transactionOptions
+  transactionOptions,
 } from '../constants/ListingData.js';
 import { screenWidth } from '../constants/ScreenDimensions.js';
 import { getThemedStyles } from '../constants/Styles';
@@ -33,6 +33,7 @@ import * as Settings from '../hooks/UserSettings.js';
 import { fetchListings } from '../network/Service';
 /**
  * @namespace HomeScreen
+ * @memberof Screens
  * @description - HomeScreen is the home screen of the application
  *
  */
@@ -40,36 +41,12 @@ import { fetchListings } from '../network/Service';
 /**
  * Home screen component displaying listings and filters.
  * @function HomeScreen
- * @memberof components
- * @inner
+ * @memberof Screens.HomeScreen
  * @param {object} route - Information about the current route.
  * @returns {JSX.Element} Home screen UI with listings and filters.
  * @description Renders the home screen displaying listings and various filters. Manages state for refreshing listings, network connectivity, loading state, user location, tag options, condition options, transaction options, selected tags, conditions, and transactions. Uses ref for swiper navigation and shared values for animation. Handles drawer visibility, distance settings, and location slider visibility.
  */
 const HomeScreen = ({ route }) => {
-  /**
-   * @constant {boolean} refreshing - State variable to indicate whether the listings are being refreshed.
-   * @constant {Array} listings - State variable to store the listings data.
-   * @constant {React.RefObject<FlatList>} swiperRef - Reference to the swiper FlatList component inside IOSSwiperComponent and AndroidSwiperComponent.
-   * @constant {boolean} networkConnected - State variable to indicate whether the device is connected to the network.
-   * @constant {boolean} isLoading - State variable to indicate whether the listings are being loaded.
-   * @constant {object} userLocation - State variable to store the user's location.
-   * @constant {Array} tagsData - State variable to store the tag options imported from ListingData.js (tagsData is a copy of tagOptions).
-   * @constant {Array} conditions - State variable to store the condition options imported from ListingData.js (conditions is a copy of conditionOptions).
-   * @constant {Array} transactions - State variable to store the transaction options imported from ListingData.js (transactions is a copy of transactionOptions).
-   * @constant {Array} currencyData - State variable to store the currency options imported from ListingData.js (currencyData is a copy of currencies).
-   * @constant {Array} selectedTags - State variable to store the selected tags.
-   * @constant {Array} selectedConditions - State variable to store the selected conditions.
-   * @constant {Array} selectedTransactions - State variable to store the selected transactions.
-   * @constant {string} selectedCurrency - State variable to store the selected currency.
-   * @constant {Animated.SharedValue} translateX - Shared value to store the horizontal translation of the tag drawer.
-   * @constant {boolean} isDrawerOpen - State variable to indicate whether the tag drawer is open.
-   * @constant {number} distance - State variable to store the distance setting.
-   * @constant {boolean} isLocationSliderVisible - State variable to indicate whether the location slider is visible.
-   * @constant {Animated.SharedValue} locationSliderHeight - Shared value to store the vertical translation of the location slider.
-   * @constant {string} theme - State variable to store the current theme ('light' or 'dark')
-   * @constant {object} styles - Style object containing default styles and styles for dark mode.
-   */
   const [refreshing, setRefreshing] = useState(false);
   const [listings, setListings] = useState([]);
   const swiperRef = useRef(null);
@@ -96,7 +73,7 @@ const HomeScreen = ({ route }) => {
    *
    * @function
    * @name toggleTagDrawer
-   * @memberof HomeScreen
+   * @memberof Screens.HomeScreen
    * @inner
    * @returns {void}
    * @description Controls the visibility of the tag drawer by toggling its state between open and closed. If the drawer is currently open, it animates its closure by sliding it to the left. If closed, it animates its opening by sliding it to the right.
@@ -121,7 +98,7 @@ const HomeScreen = ({ route }) => {
    *
    * @function
    * @name handleLocationPress
-   * @memberof HomeScreen
+   * @memberof Screens.HomeScreen
    * @returns {void}
    * @description Controls the visibility of the location slider by toggling its state between visible and hidden. If the slider is currently visible, it initiates an animation to hide it and fetches listings. If hidden, it triggers an animation to display it.
    */
@@ -129,7 +106,7 @@ const HomeScreen = ({ route }) => {
   const handleLocationPress = () => {
     console.log(
       'Location pressed, toggling slider visibility...',
-      isLocationSliderVisible
+      isLocationSliderVisible,
     );
     if (isLocationSliderVisible) {
       locationSliderHeight.value = withTiming(-100, { duration: 100 }); // Hide slider
@@ -146,7 +123,7 @@ const HomeScreen = ({ route }) => {
    *
    * @function
    * @name handleInnerScrolling
-   * @memberof HomeScreen
+   * @memberof Screens.HomeScreen
    * @param {React.RefObject<FlatList>} swiperRef - Reference to the swiper FlatList component inside IOSSwiperComponent and AndroidSwiperComponent.
    * @returns {void}
    * @description Disables scrolling on the swiper component by setting its native property 'scrollEnabled' to 'false'.
@@ -158,7 +135,7 @@ const HomeScreen = ({ route }) => {
    *
    * @function
    * @name handleInnerScrollingEnd
-   * @memberof HomeScreen
+   * @memberof Screens.HomeScreen
    * @param {React.RefObject<FlatListw>} swiperRef - Reference to the swiper FlatList component inside IOSSwiperComponent and AndroidSwiperComponent.
    * @returns {void}
    * @description Enables scrolling on the swiper component by setting its native property 'scrollEnabled' to 'true'.
@@ -171,8 +148,9 @@ const HomeScreen = ({ route }) => {
    *
    * @function
    * @name getUserLocation
-   * @memberof HomeScreen
+   * @memberof Screens.HomeScreen
    * @returns {void}
+   * @async
    * @description Retrieves the user's location using `getLocationWithRetry` with retry mechanism. If successful, it extracts the latitude and longitude and sets the user's location in the component state. If an error occurs, it logs the error and requires appropriate error handling.
    * Error processing incomplete
    */
@@ -193,7 +171,7 @@ const HomeScreen = ({ route }) => {
    * Handles the retry action to fetch listings.
    * @function
    * @name retryButtonHandler
-   * @memberof HomeScreen
+   * @memberof Screens.HomeScreen
    * @returns {void}
    * @description Initiates the refreshing state, triggering a fetch of listings data when a retry action is performed. Used typically in response to a failed or interrupted data fetch operation to attempt fetching listings again.
    */
@@ -206,7 +184,7 @@ const HomeScreen = ({ route }) => {
    *
    * @function
    * @name onScroll
-   * @memberof HomeScreen
+   * @memberof Screens.HomeScreen
    * @param {Object} event - The scroll event object.
    * @returns {void}
    * @description Updates the shared value `scrollY` with the current vertical scroll position obtained.
@@ -220,7 +198,7 @@ const HomeScreen = ({ route }) => {
    *
    * @function
    * @name onRefresh
-   * @memberof HomeScreen
+   * @memberof Screens.HomeScreen
    * @returns {void}
    * @description Initiates the refresh action by setting the refreshing state, and if the user location is available, it triggers fetching listings. If the user location is not available, it attempts to retrieve the user's location before fetching listings.
    */
@@ -235,7 +213,7 @@ const HomeScreen = ({ route }) => {
    *
    * @function
    * @name fetchListingsAsync
-   * @memberof HomeScreen
+   * @memberof Screens.HomeScreen
    * @returns {Function} - Callback function
    * @description
    * Retrieves the listings asynchronously based on the state of the home screen
@@ -255,7 +233,7 @@ const HomeScreen = ({ route }) => {
         selectedCurrency,
         setListings,
         setIsLoading,
-        setRefreshing
+        setRefreshing,
       );
     } catch (error) {
       console.error(error);
@@ -264,6 +242,13 @@ const HomeScreen = ({ route }) => {
   }, [userLocation, distance, selectedTags, selectedConditions]);
 
   useEffect(() => {
+    /**
+     * @function unsubscribe
+     * @memberof Screens.HomeScreen
+     * @returns {void}
+     * @description Unsubscribes from the NetInfo event listener.
+     * @async
+     */
     const unsubscribe = NetInfo.addEventListener((state) => {
       setNetworkConnected(state.isConnected);
     });
@@ -274,6 +259,13 @@ const HomeScreen = ({ route }) => {
   }, []);
 
   useEffect(() => {
+    /**
+     * @function fetchDistance
+     * @memberof Screens.HomeScreen
+     * @returns {void}
+     * @description Fetches the distance from the user's location to the listings.
+     * @async
+     */
     const fetchDistance = async () => {
       const initialDistance = await Settings.getDistance();
       console.log('Initial distance:', initialDistance);
@@ -283,21 +275,30 @@ const HomeScreen = ({ route }) => {
     fetchDistance();
   }, []);
 
-  // This will run on mount
+  /**
+   * This will run when the component is mounted
+   */
   useEffect(() => {
     getUserLocation();
   }, []);
 
-  // this will run after you have location
+  /**
+   * This will run when the user location is updated
+   */
   useEffect(() => {
     if (userLocation) fetchListingsAsync();
   }, [userLocation]);
 
+  /**
+   * This will run when the drawer is closed by the user
+   */
   useEffect(() => {
     if (userLocation && !isDrawerOpen) fetchListingsAsync();
   }, [isDrawerOpen]);
 
-  // This will run with refresh = true
+  /**
+   * checks if the route.params.refresh is true and if it is, it will set the refreshing state to true and fetch the listings again
+   */
   useEffect(() => {
     if (route.params?.refresh) {
       setRefreshing(true);
@@ -351,7 +352,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId)
+                    prevListings.filter((item) => item.ListingId !== listingId),
                   );
                 }}
                 onScroll={onScroll}
@@ -383,7 +384,7 @@ const HomeScreen = ({ route }) => {
                 userLocation={userLocation}
                 removeListing={(listingId) => {
                   setListings((prevListings) =>
-                    prevListings.filter((item) => item.ListingId !== listingId)
+                    prevListings.filter((item) => item.ListingId !== listingId),
                   );
                 }}
                 onScroll={onScroll}

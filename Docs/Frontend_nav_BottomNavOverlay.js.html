@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Frontend/components/NoWifi.js - Documentation</title>
+    <title>Frontend/nav/BottomNavOverlay.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -1179,54 +1179,185 @@
     </nav>
 
     <div id="main">
-      <h1 class="page-title">Frontend/components/NoWifi.js</h1>
+      <h1 class="page-title">Frontend/nav/BottomNavOverlay.js</h1>
 
       <section>
         <article>
-          <pre
-            class="prettyprint source linenums"
-          ><code>import React, { memo } from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+          <pre class="prettyprint source linenums"><code>/**
+ * @namespace BottomNavOverlay
+ */
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import React, { memo, useEffect } from 'react';
+import {
+  Dimensions,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
+import Icon, { Icons } from '../components/visuals/Icons';
 import Colors from '../constants/Colors';
-import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
-import { useThemeContext } from './visuals/ThemeProvider';
+import { screenHeight } from '../constants/ScreenDimensions.js';
+import useBackButtonHandler from '../hooks/DisableBackButton';
+import CreateListing from '../screens/CreateListing';
+import HomeScreen from '../screens/HomeScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import { useThemeContext } from '../components/visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
 
 /**
- *
- * @namespace NoWifi
- * @memberof Components
+ * @constant TabArr - Array of objects representing the tabs in the bottom navigation bar
+ * @memberof BottomNavOverlay
  */
+const TabArr = [
+  {
+    route: 'Home',
+    label: 'Home',
+    type: Icons.Ionicons,
+    activeIcon: 'grid',
+    inActiveIcon: 'grid-outline',
+    component: HomeScreen,
+  },
+  {
+    route: 'CreateListing',
+    label: 'Create Listing',
+    type: Icons.MaterialCommunityIcons,
+    activeIcon: 'plus-box-multiple',
+    inActiveIcon: 'plus-box-multiple-outline',
+    component: CreateListing,
+  },
+  {
+    route: 'Account',
+    label: 'Account',
+    type: Icons.FontAwesome,
+    activeIcon: 'user-circle',
+    inActiveIcon: 'user-circle-o',
+    component: ProfileScreen,
+  },
+];
 
 /**
- * @function NoWifi
- * @memberof Components.NoWifi
- * @param {Function} onRetry - Function to retry the network connection by calling the parent component's refresh function
- * @description - Shows the user that they have no wifi
- * @returns {JSX.Element} A logo that signifies no wifi.
+ * @constant Tab - Bottom tab navigator
+ * @memberof BottomNavOverlay
  */
-const NoWifi = memo(({ onRetry }) => {
+const Tab = createBottomTabNavigator();
+
+/**
+ * @function TabButton
+ * @memberof BottomNavOverlay
+ * @param {Object} props - React props object
+ * @param {Object} props.item - Object representing the tab
+ * @param {Function} props.onPress - Function to handle the press event
+ * @param {Object} props.accessibilityState - Object representing the accessibility state
+ * @param {Object} props.styles - Object representing the styles for the tab button received from the parent component
+ * @description - TabButton is a memoized component that represents a single tab in the bottom navigation bar
+ * @returns {JSX.Element} TabButton component
+ */
+const TabButton = memo((props) => {
+  const { item, onPress, accessibilityState, styles } = props;
+  const focused = accessibilityState.selected;
   const { theme } = useThemeContext();
-  const styles = getThemedStyles(useThemeContext().theme).NoWifi;
+
+  // Local shared values for scale and rotate
+  const scale = useSharedValue(1);
+  const rotate = useSharedValue('0deg');
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }, { rotate: rotate.value }],
+    };
+  });
+
+  /**
+   * will run the animation when the icons are pressed on the bottom nav bar
+   */
+  useEffect(() => {
+    // Animations are triggered based on the focused state of this specific TabButton
+    scale.value = withSpring(focused ? 1.5 : 1);
+    rotate.value = withTiming(focused ? '360deg' : '0deg', { duration: 500 });
+  }, [focused]);
+
+  const onBackPress = () => {
+    return true;
+  };
+
+  useBackButtonHandler(onBackPress);
+
   return (
-    &lt;View style={styles.noWifiContainer}>
-      &lt;Image
-        style={styles.noWifiImage}
-        source={
-          theme === 'dark'
-            ? require('../assets/no_wifi_icon_transparent_darkmode.png')
-            : require('../assets/no_wifi_icon_transparent.png')
-        }
-      />
-      &lt;Text style={styles.noWifiText}>No network connection available.&lt;/Text>
-      &lt;TouchableOpacity onPress={onRetry} style={styles.retryButton}>
-        &lt;Text style={styles.buttonText}>Retry&lt;/Text>
-      &lt;/TouchableOpacity>
-    &lt;/View>
+    &lt;TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.7}
+      style={styles.tabButtonContainer}
+    >
+      &lt;Animated.View style={[styles.tabButton, animatedStyle]}>
+        &lt;Icon
+          type={item.type}
+          name={focused ? item.activeIcon : item.inActiveIcon}
+          color={
+            focused
+              ? theme === 'dark'
+                ? Colors.BB_violet
+                : Colors.BB_darkOrange
+              : Colors.BB_bone
+          }
+          size={20}
+        />
+      &lt;/Animated.View>
+
+      {theme === 'light' &amp;&amp; &lt;View style={styles.outerRhombus} />}
+      {theme === 'light' &amp;&amp; &lt;View style={styles.innerRhombus} />}
+    &lt;/TouchableOpacity>
   );
 });
 
-export default NoWifi;
+/**
+ * @function BottomNavOverlay
+ * @memberof BottomNavOverlay
+ * @description - BottomNavOverlay is a memoized component that represents the bottom navigation bar that overlays the main screen
+ * @returns {JSX.Element} BottomNavOverlay component
+ */
+function BottomNavOverlay() {
+  const styles = getThemedStyles(useThemeContext().theme).BottomNavOverlay;
+
+  return (
+    &lt;Tab.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: {
+          height: screenHeight * 0.08,
+          backgroundColor: Colors.BB_pink,
+          borderTopWidth: 0,
+          elevation: 0,
+        },
+      }}
+    >
+      {TabArr.map((item, index) => {
+        return (
+          &lt;Tab.Screen
+            key={index}
+            name={item.route}
+            component={item.component}
+            options={{
+              tabBarShowLabel: false,
+              tabBarButton: (props) => (
+                &lt;TabButton {...props} item={item} styles={styles} />
+              ),
+            }}
+          />
+        );
+      })}
+    &lt;/Tab.Navigator>
+  );
+}
+
+export default memo(BottomNavOverlay);
 </code></pre>
         </article>
       </section>

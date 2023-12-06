@@ -53,18 +53,19 @@ import { useThemeContext } from './visuals/ThemeProvider';
 
 /**
  * @constant default_blurhash
+ * @memberof Components.Listing
  * @description The blurhash to use if the listing does not have a blurhash
  */
 const default_blurhash = 'LEHLk~WB2yk8pyo0adR*.7kCMdnj';
 
 /**
- * @param {number} lat1
- * @param {number} lon1
- * @param {number} lat2
- * @param {number} lon2
+ * @param {number} lat1 - Latitude of the first coordinate
+ * @param {number} lon1 - Longitude of the first coordinate
+ * @param {number} lat2 - Latitude of the second coordinate
+ * @param {number} lon2 - Longitude of the second coordinate
  * @function getDistance
  * @description Calculates the distance between two coordinates
- * @returns {number} distance
+ * @returns {number} distance - Distance between the two coordinates in miles
  * @memberof Components.Listing
  */
 function getDistance(lat1, lon1, lat2, lon2) {
@@ -92,9 +93,9 @@ function getDistance(lat1, lon1, lat2, lon2) {
 }
 
 /**
- * @param {boolean} isLiked
- * @param {function} onLikePress
- * @param {object} styles
+ * @param {boolean} isLiked - Whether the listing is liked by the user
+ * @param {function} onLikePress - Function to call when the like button is pressed
+ * @param {object} styles - Stylesheet for the component called from the parent component
  * @function LikeButton
  * @description Button to like a listing
  * @returns {object} TouchableOpacity and MaterialCommunityIcon wrapped in React.Fragment
@@ -123,8 +124,8 @@ const LikeButton = memo(({ isLiked, onLikePress, styles }) => {
 
 /**
  *
- * @param {function} onDeletePress
- * @param {object} styles
+ * @param {function} onDeletePress - Function to call when the delete button is pressed
+ * @param {object} styles - Stylesheet for the component called from the parent component
  * @function DeleteButton
  * @description Button to delete a listing
  * @returns {object} TouchableOpacity and MaterialCommunityIcon
@@ -139,8 +140,8 @@ const DeleteButton = ({ onDeletePress, styles }) => {
 };
 
 /**
- * @param {number} timeSince
- * @param {object} styles
+ * @param {number} timeSince - Time since the listing was posted
+ * @param {object} styles - Stylesheet for the component called from the parent component
  * @function TimeBox
  * @description Displays the time since the listing was posted
  * @returns {object} View and Text wrapped in React.Fragment
@@ -154,18 +155,18 @@ const TimeBox = memo(({ timeSince, styles }) => {
           {timeSince < 30
             ? 'Just now'
             : timeSince < 60
-            ? `${timeSince} seconds ago`
-            : timeSince < 120
-            ? `1 minute ago`
-            : timeSince < 3600
-            ? `${Math.floor(timeSince / 60)} minutes ago`
-            : timeSince < 7200
-            ? `1 hour ago`
-            : timeSince < 86400
-            ? `${Math.floor(timeSince / 3600)} hours ago`
-            : timeSince < 172800
-            ? `1 day ago`
-            : `${Math.floor(timeSince / 86400)} days ago`}
+              ? `${timeSince} seconds ago`
+              : timeSince < 120
+                ? `1 minute ago`
+                : timeSince < 3600
+                  ? `${Math.floor(timeSince / 60)} minutes ago`
+                  : timeSince < 7200
+                    ? `1 hour ago`
+                    : timeSince < 86400
+                      ? `${Math.floor(timeSince / 3600)} hours ago`
+                      : timeSince < 172800
+                        ? `1 day ago`
+                        : `${Math.floor(timeSince / 86400)} days ago`}
         </Text>
       </View>
     </React.Fragment>
@@ -173,12 +174,12 @@ const TimeBox = memo(({ timeSince, styles }) => {
 });
 
 /**
- * @param {object} children
- * @param {string} currencySymbol
- * @param {number} price
- * @param {number} timeSince
- * @param {object} cardStyle
- * @param {object} styles
+ * @param {object} children - Children of the listing
+ * @param {string} currencySymbol - Currency symbol of the listing
+ * @param {number} price - Price of the listing
+ * @param {number} timeSince - Time since the listing was posted
+ * @param {object} cardStyle - Stylesheet for the card called from the parent component
+ * @param {object} styles - Stylesheet for the component called from the parent component
  * @function CardOverlay
  * @description Displays the price, time since, and children (image) of the listing
  * @returns {object} View and Image wrapped in React.Fragment
@@ -209,15 +210,15 @@ const CardOverlay = memo(
         </View>
       </View>
     );
-  }
+  },
 );
 
 /**
- * @param {object} source
- * @param {string} blurhash
- * @param {object} style
- * @param {string} contentFit
- * @param {number} transition
+ * @param {object} source - Source of the image
+ * @param {string} blurhash - Blurhash of the image
+ * @param {object} style - Stylesheet for the image called from the parent component
+ * @param {string} contentFit - How the image should fit in the container
+ * @param {number} transition - Transition of the image
  * @function MemoizedImage
  * @description Displays the image of the listing
  * @returns {object} Image
@@ -236,19 +237,19 @@ const MemoizedImage = memo(
         cachePolicy="memory-disk"
       />
     );
-  }
+  },
 );
 
 /**
- * @param {object} source
- * @param {string} currencySymbol
- * @param {number} price
- * @param {number} timeSince
- * @param {boolean} isLiked
- * @param {function} onLikePress
- * @param {function} onDeletePress
- * @param {boolean} deleteVisible
- * @param {object} styles
+ * @param {object} source - Source of the image
+ * @param {string} currencySymbol - Currency symbol of the listing
+ * @param {number} price - Price of the listing
+ * @param {number} timeSince - Time since the listing was posted
+ * @param {boolean} isLiked - Whether the listing is liked by the user
+ * @param {function} onLikePress - Function to call when the like button is pressed
+ * @param {function} onDeletePress - Function to call when the delete button is pressed which is only visible if the user is the owner of the listing and the listing is being viewed from the profile screen
+ * @param {boolean} deleteVisible - Whether the delete button is visible
+ * @param {object} styles - Stylesheet for the component called from the parent component
  * @function CustomItem
  * @description Displays the image of the listing with the ability to zoom in and out and delete the listing if the user is the owner and the listing is being viewed from the profile screen
  * @returns {object} View and Image wrapped in React.Fragment
@@ -430,16 +431,16 @@ const CustomItem = memo(
         )}
       </CardOverlay>
     );
-  }
+  },
 );
 
 /**
- * @param {object} item
- * @param {string} origin
- * @param {function} removeListing
- * @param {object} userLocation
- * @param {function} handleInnerScolling
- * @param {function} handleInnerScollingEnd
+ * @param {object} item - Listing object
+ * @param {string} origin - Origin of the listing
+ * @param {function} removeListing - Function to call when the listing is removed
+ * @param {object} userLocation - User's location
+ * @param {function} handleInnerScolling - Function to call when the inner scroll view is scrolled
+ * @param {function} handleInnerScollingEnd - Function to call when the inner scroll view is scrolled to the end
  * @function Listing
  * @description Displays the listing
  * @returns {object} SafeAreaView and FlipCard wrapped in React.Fragment
@@ -476,7 +477,7 @@ const Listing = ({
       item.Latitude,
       item.Longitude,
       userLocation.latitude,
-      userLocation.longitude
+      userLocation.longitude,
     );
   }, [
     item.Latitude,
@@ -487,7 +488,7 @@ const Listing = ({
 
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
-    origin == 'profile' && item.Username == getStoredUsername()
+    origin == 'profile' && item.Username == getStoredUsername(),
   );
 
   const toggleDeleteModal = useCallback(() => {
@@ -562,7 +563,7 @@ const Listing = ({
                 parallaxScrollingScale: 1,
                 parallaxAdjacentItemScale: 0.5,
                 parallaxScrollingOffset: 10,
-              }
+              },
             )}
           />
         </View>
@@ -703,7 +704,7 @@ const Listing = ({
                   ...styles.conditionText,
                   top: '30%',
                   fontSize: calculateTransactionFontSize(
-                    item.TransactionPreference
+                    item.TransactionPreference,
                   ),
                 }}
               >

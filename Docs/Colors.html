@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Frontend/components/NoWifi.js - Documentation</title>
+    <title>Colors - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -1179,55 +1179,196 @@
     </nav>
 
     <div id="main">
-      <h1 class="page-title">Frontend/components/NoWifi.js</h1>
+      <h1 class="page-title">Colors</h1>
 
       <section>
+        <header>
+          <h2>Namespace</h2>
+        </header>
+
         <article>
-          <pre
-            class="prettyprint source linenums"
-          ><code>import React, { memo } from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
-import Colors from '../constants/Colors';
-import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
-import { useThemeContext } from './visuals/ThemeProvider';
-import { getThemedStyles } from '../constants/Styles';
+          <div class="container-overview">
+            <h4 class="name" id="Colors">Colors</h4>
 
-/**
- *
- * @namespace NoWifi
- * @memberof Components
- */
+            <dl class="details">
+              <dt class="tag-description">Description:</dt>
+              <dd class="tag-description">
+                <ul class="dummy">
+                  <li>
+                    <ul>
+                      <li>
+                        Colors is a file that contains the colors used in the
+                        app
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </dd>
 
-/**
- * @function NoWifi
- * @memberof Components.NoWifi
- * @param {Function} onRetry - Function to retry the network connection by calling the parent component's refresh function
- * @description - Shows the user that they have no wifi
- * @returns {JSX.Element} A logo that signifies no wifi.
- */
-const NoWifi = memo(({ onRetry }) => {
-  const { theme } = useThemeContext();
-  const styles = getThemedStyles(useThemeContext().theme).NoWifi;
-  return (
-    &lt;View style={styles.noWifiContainer}>
-      &lt;Image
-        style={styles.noWifiImage}
-        source={
-          theme === 'dark'
-            ? require('../assets/no_wifi_icon_transparent_darkmode.png')
-            : require('../assets/no_wifi_icon_transparent.png')
-        }
-      />
-      &lt;Text style={styles.noWifiText}>No network connection available.&lt;/Text>
-      &lt;TouchableOpacity onPress={onRetry} style={styles.retryButton}>
-        &lt;Text style={styles.buttonText}>Retry&lt;/Text>
-      &lt;/TouchableOpacity>
-    &lt;/View>
-  );
-});
+              <dt class="tag-source">Source:</dt>
+              <dd class="tag-source">
+                <ul class="dummy">
+                  <li>
+                    <a href="Frontend_constants_Colors.js.html"
+                      >Frontend/constants/Colors.js</a
+                    >,
+                    <a href="Frontend_constants_Colors.js.html#line1">line 1</a>
+                  </li>
+                </ul>
+              </dd>
+            </dl>
+          </div>
 
-export default NoWifi;
-</code></pre>
+          <h3 class="subsection-title">Members</h3>
+
+          <h4 class="name" id=".Colors">
+            <span class="type-signature type-signature-static, constant"
+              >(static, constant) </span
+            >Colors<span class="type-signature"> :Object</span>
+          </h4>
+
+          <dl class="details">
+            <dt class="tag-description">Description:</dt>
+            <dd class="tag-description">
+              <ul class="dummy">
+                <li>
+                  <ul>
+                    <li>
+                      Object containing the colors used in the app for general
+                      use
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </dd>
+
+            <dt class="tag-source">Source:</dt>
+            <dd class="tag-source">
+              <ul class="dummy">
+                <li>
+                  <a href="Frontend_constants_Colors.js.html"
+                    >Frontend/constants/Colors.js</a
+                  >,
+                  <a href="Frontend_constants_Colors.js.html#line13">line 13</a>
+                </li>
+              </ul>
+            </dd>
+          </dl>
+
+          <div class="description usertext">
+            <ul>
+              <li>
+                Object containing the colors used in the app for general use
+              </li>
+            </ul>
+          </div>
+
+          <h5 class="h5-types">Type:</h5>
+          <ul>
+            <li>
+              <span class="param-type">Object</span>
+            </li>
+          </ul>
+
+          <h4 class="name" id=".CustomDarkTheme">
+            <span class="type-signature type-signature-static, constant"
+              >(static, constant) </span
+            >CustomDarkTheme<span class="type-signature"> :Object</span>
+          </h4>
+
+          <dl class="details">
+            <dt class="tag-description">Description:</dt>
+            <dd class="tag-description">
+              <ul class="dummy">
+                <li>
+                  <ul>
+                    <li>
+                      Object containing the colors used in the app for the dark
+                      theme
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </dd>
+
+            <dt class="tag-source">Source:</dt>
+            <dd class="tag-source">
+              <ul class="dummy">
+                <li>
+                  <a href="Frontend_constants_Colors.js.html"
+                    >Frontend/constants/Colors.js</a
+                  >,
+                  <a href="Frontend_constants_Colors.js.html#line102"
+                    >line 102</a
+                  >
+                </li>
+              </ul>
+            </dd>
+          </dl>
+
+          <div class="description usertext">
+            <ul>
+              <li>
+                Object containing the colors used in the app for the dark theme
+              </li>
+            </ul>
+          </div>
+
+          <h5 class="h5-types">Type:</h5>
+          <ul>
+            <li>
+              <span class="param-type">Object</span>
+            </li>
+          </ul>
+
+          <h4 class="name" id=".CustomLightTheme">
+            <span class="type-signature type-signature-static, constant"
+              >(static, constant) </span
+            >CustomLightTheme<span class="type-signature"> :Object</span>
+          </h4>
+
+          <dl class="details">
+            <dt class="tag-description">Description:</dt>
+            <dd class="tag-description">
+              <ul class="dummy">
+                <li>
+                  <ul>
+                    <li>
+                      Object containing the colors used in the app for the light
+                      theme
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </dd>
+
+            <dt class="tag-source">Source:</dt>
+            <dd class="tag-source">
+              <ul class="dummy">
+                <li>
+                  <a href="Frontend_constants_Colors.js.html"
+                    >Frontend/constants/Colors.js</a
+                  >,
+                  <a href="Frontend_constants_Colors.js.html#line55">line 55</a>
+                </li>
+              </ul>
+            </dd>
+          </dl>
+
+          <div class="description usertext">
+            <ul>
+              <li>
+                Object containing the colors used in the app for the light theme
+              </li>
+            </ul>
+          </div>
+
+          <h5 class="h5-types">Type:</h5>
+          <ul>
+            <li>
+              <span class="param-type">Object</span>
+            </li>
+          </ul>
         </article>
       </section>
     </div>

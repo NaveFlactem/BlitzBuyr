@@ -58,6 +58,13 @@ const SettingsScreen = ({ navigation, route }) => {
     More: ['About Us'],
   };
 
+  /**
+   * @function toggleDarkMode
+   * @memberof Screens.SettingsScreen
+   * @description Toggles the dark mode.
+   * @returns {void}
+   * @async
+   */
   const toggleDarkMode = async () => {
     try {
       await toggleTheme();
@@ -70,6 +77,13 @@ const SettingsScreen = ({ navigation, route }) => {
     }
   };
 
+  /**
+   * @function toggleNotifications
+   * @memberof Screens.SettingsScreen
+   * @description Toggles the notifications.
+   * @returns {void}
+   * @async
+   */
   const toggleNotifications = async () => {
     const accountActivityStatus = !switchItemsState['Account Activity'];
 
@@ -100,6 +114,13 @@ const SettingsScreen = ({ navigation, route }) => {
   };
 
   useEffect(() => {
+    /**
+     * @function loadAccountActivityStatus
+     * @memberof Screens.SettingsScreen
+     * @description Loads the account activity status.
+     * @returns {void}
+     * @async
+     */
     const loadAccountActivityStatus = async () => {
       try {
         const storedStatus = await SecureStore.getItemAsync(

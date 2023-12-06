@@ -7,8 +7,9 @@
  * @function calculateFontSize
  * @memberof Components.CalculateFontSize
  * @description Calculates the font size for the price based on the number of digits in the price
- * @param {number} price
+ * @param {number} price - Price of the item
  * @returns {number} fontSize
+ * @example style={{ fontSize: calculateFontSize(price) }}
  */
 export const calculateFontSize = (price) => {
   if (price === undefined || price === null) {
@@ -24,8 +25,9 @@ export const calculateFontSize = (price) => {
  * @function calculateFontSizeLocation
  * @memberof Components.CalculateFontSize
  * @description Calculates the font size for the city name based on the length of the city name
- * @param {string} city
+ * @param {string} city - City name
  * @returns {number} fontSize
+ * @example style={{ fontSize: calculateFontSizeLocation(city) }}
  */
 export const calculateFontSizeLocation = (city) => {
   if (city === undefined || city === null) {
@@ -40,8 +42,9 @@ export const calculateFontSizeLocation = (city) => {
  * @function calculateTransactionFontSize
  * @memberof Components.CalculateFontSize
  * @description Calculates the font size for the transaction preference based on the length of the transaction preference
- * @param {string} transaction
+ * @param {string} transaction - Transaction preference
  * @returns {number} fontSize
+ * @example style={{ fontSize: calculateTransactionFontSize(transaction) }}
  */
 export const calculateTransactionFontSize = (transaction) => {
   if (transaction === undefined || transaction === null) {
@@ -56,9 +59,10 @@ export const calculateTransactionFontSize = (transaction) => {
  * @function calculateTagTextFontSize
  * @memberof Components.CalculateFontSize
  * @description Calculates the font size for the tag based on the length of the tag name and the default font size provided as a parameter
- * @param {string} tag
- * @param {number} defaultFontSize
-* @returns {number} fontSize
+ * @param {string} tag - Tag name
+ * @param {number} defaultFontSize - Default font size if tag is not provided or if a different default font size is desired
+ * @returns {number} fontSize
+ * @example style={{ fontSize: calculateTagTextFontSize(tag, 16) }}
  */
 export const calculateTagTextFontSize = (tag, defaultFontSize) => {
   if (tag === undefined || tag === null) {

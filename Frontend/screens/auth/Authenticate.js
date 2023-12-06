@@ -20,6 +20,10 @@ import * as Settings from '../../hooks/UserSettings.js';
 import { useThemeContext } from '../../components/visuals/ThemeProvider.js';
 import { getThemedStyles } from '../../constants/Styles.js';
 
+/**
+ * @constant assetsToPreload - Array of assets to be preloaded at the start of booting the app to improve performance and user experience
+ * @memberof Screens.Auth.Authenticate
+ */
 const assetsToPreload = [
   require('../../assets/blitzbuyr_name_logo.png'),
   require('../../assets/blitzbuyr_name_logo_darkmode.png'),
@@ -81,6 +85,7 @@ const setStoredCredentials = async (username, password) => {
  * @function
  * @name clearStoredCredentials
  * @returns {Promise<void>}
+ * @async
  * @memberof Screens.Auth.Authenticate
  */
 const clearStoredCredentials = async () => {
@@ -97,14 +102,19 @@ const clearStoredCredentials = async () => {
  * Component for authentication screen.
  * @function
  * @name AuthenticateScreen
- * @param {Object} props - React component props.
- * @param {Object} props.navigation - Navigation object for navigating between screens.
+ * @param {Object} navigation - Navigation object for navigating between screens.
  * @returns {JSX.Element} The authentication screen component.
  * @memberof Screens.Auth.Authenticate
  */
 const AuthenticateScreen = ({ navigation }) => {
   useEffect(() => {
-    // Load and cache the assets when the component mounts
+    /**
+     * @function loadAssetsAsync
+     * @memberof Screens.Auth.Authenticate
+     * @returns {Promise<void>}
+     * @async
+     * @description Loads and caches the assets when the component mounts.
+     */
     async function loadAssetsAsync() {
       const assetPromises = assetsToPreload.map((asset) =>
         Asset.fromModule(asset).downloadAsync(),
@@ -121,7 +131,8 @@ const AuthenticateScreen = ({ navigation }) => {
      * @function
      * @name loadSettings
      * @returns {Promise<void>}
-     * @memberof AuthenticateScreen
+     * @async
+     * @memberof Screens.Auth.Authenticate
      */
     const loadSettings = async () => {
       const settings = await Settings.getUserSettings();
@@ -133,7 +144,8 @@ const AuthenticateScreen = ({ navigation }) => {
      * @function
      * @name checkStoredCredentials
      * @returns {Promise<void>}
-     * @memberof AuthenticateScreen
+     * @async
+     * @memberof Screens.Auth.Authenticate
      */
     const checkStoredCredentials = async () => {
       storedUsername = await SecureStore.getItemAsync('username');

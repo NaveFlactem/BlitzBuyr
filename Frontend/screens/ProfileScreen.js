@@ -46,17 +46,15 @@ import {
  *
  */
 
-
 /**
  * @function ListingsRoute
  * @memberof Screens.ProfileScreen
- * @param {Object} props - React props object
- * @param {Function} props.onPressListing - Function to call when a listing is pressed
- * @param {Array} props.data - Array of listings to display
- * @param {String} props.text - Text to display if there are no listings
- * @param {Object} props.styles - Styles object
+ * @param {Function} onPressListing - Function to call when a listing is pressed
+ * @param {Array} data - Array of listings to display
+ * @param {String} text - Text to display if there are no listings
+ * @param {Object} styles - Styles object
  * @description A component that displays listings in a grid
- * @returns {JSX.Element} 
+ * @returns {JSX.Element}
  */
 const ListingsRoute = ({ onPressListing, data, text, styles }) => (
   <View style={{ flex: 1 }}>
@@ -94,6 +92,7 @@ const ListingsRoute = ({ onPressListing, data, text, styles }) => (
 /**
  * @function handleContactClick
  * @memberof Screens.ProfileScreen
+ * @async
  * @param {String} key - The key representing the type of contact information to update.
  * @param {String} data - The new value to be set for the specified contact information.
  * @returns {void}
@@ -159,10 +158,9 @@ const handleContactClick = async (key, data) => {
 /**
  * @function ContactInfoRoute
  * @memberof Screens.ProfileScreen
- * @param {Object} props - React props object
- * @param {Boolean} props.selfProfile - Whether or not the profile being viewed is the user's own profile
- * @param {Object} props.contactInfo - Object containing the contact information to be displayed
- * @param {Function} props.setContactInfo - Function to set the contact information
+ * @param {Boolean} selfProfile - Whether or not the profile being viewed is the user's own profile
+ * @param {Object} contactInfo - Object containing the contact information to be displayed
+ * @param {Function} setContactInfo - Function to set the contact information
  * @returns {JSX.Element}
  */
 const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
@@ -176,6 +174,13 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
     displayValues = false;
 
   // hide settings
+  /**
+   * @function updateHidden
+   * @memberof Screens.ProfileScreen
+   * @async
+   * @param {String} key - The key representing the type of contact information to update.
+   * @returns {void}
+   */
   const updateHidden = useCallback(
     async (key) => {
       const newContactInfo = {
@@ -195,6 +200,13 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
     [contactInfo],
   );
 
+  /**
+   * @function formatPhoneNumber
+   * @memberof Screens.ProfileScreen
+   * @param {String} phoneNumberString - The phone number to format
+   * @returns {String} The formatted phone number
+   * @description Formats a phone number to be displayed in the format (xxx)-xxx-xxxx
+   */
   const formatPhoneNumber = (phoneNumberString) => {
     var cleaned = ('' + phoneNumberString).replace(/\D/g, '');
     var match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
@@ -287,9 +299,8 @@ const ContactInfoRoute = ({ selfProfile, contactInfo, setContactInfo }) => {
 /**
  * @function ProfileScreen
  * @memberof Screens.ProfileScreen
- * @param {Object} props - React props object
- * @param {Object} props.navigation - Stack navigation object
- * @param {Object} props.route - React route object
+ * @param {Object} navigation - Stack navigation object
+ * @param {Object} route - React route object
  * @description A component that displays a user's profile
  * @returns {JSX.Element}
  */
@@ -318,17 +329,25 @@ function ProfileScreen({ navigation, route }) {
     twitter: { data: 'Twitter', hidden: false, icon: 'twitter' },
   });
 
+  // Disable back button
   const onBackPress = () => {
     return true;
   };
-
   useBackButtonHandler(onBackPress);
 
+  // Handle listing press
   const onPressListing = (listingDetails) => {
     setSelectedListing(listingDetails);
   };
 
   useEffect(() => {
+    /**
+     * @function fetchUsername
+     * @memberof Screens.ProfileScreen
+     * @async
+     * @description Fetches the username of the profile to be displayed.
+     * @returns {void}
+     */
     const fetchUsername = async () => {
       const username = getStoredUsername();
       if (route.params?.username) {
@@ -366,7 +385,9 @@ function ProfileScreen({ navigation, route }) {
     }
   }, [isFocused]); // called when navigation is updated (clicking the page, or when username is changed)
 
-  // this is just to print out a profile's information for now
+  /**
+   * checks if the profile is the user's own profile and sets the routes accordingly
+   */
   useEffect(() => {
     if (userLocation && profileInfo) {
       setLoading(false);
@@ -386,6 +407,14 @@ function ProfileScreen({ navigation, route }) {
     }
   }, [profileInfo, userLocation]);
 
+  /**
+   * @function getProfileInfo
+   * @memberof Screens.ProfileScreen
+   * @async
+   * @param {String} username - The username of the profile to fetch
+   * @description Fetches the profile information for a given username.
+   * @returns {void}
+   */
   const getProfileInfo = async function (username) {
     console.log(`Fetching profile info for ${username}`);
     try {

@@ -12,6 +12,9 @@ import { BackHandler } from 'react-native';
  * @description Listens for hardware back button press events and invokes the provided handler function.
  */
 const useBackButtonHandler = (handler) => {
+  /**
+   * makes the back gesture not work on the app to prevent undesired user experience
+   */
   useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',

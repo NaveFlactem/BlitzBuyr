@@ -1,4 +1,3 @@
-
 /**
  * @namespace ThemeProvider
  * @memberof Visuals
@@ -18,14 +17,19 @@ export const useThemeContext = () => useContext(ThemeContext);
  * @name ThemeProvider
  * @memberof Visuals.ThemeProvider
  * @memberof Components.Visuals.ThemeProvider
- * @param {Object} props
- * @param {Object} props.children
+ * @param {Object} children - React component(s) that are wrapped by the ThemeProvider.
  * @returns {Object} ThemeContext.Provider
- * @description Provides the theme context to the application
+ * @description Provides the theme context to the application in the App.js file.
  */
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState('light'); // Default theme
 
+  /**
+   * @function useEffect
+   * @memberof Components.Visuals.ThemeProvider
+   * @description React hook that runs once when the component mounts that gets the current theme from the user settings.
+   * @returns {Promise} Promise that resolves when the theme is set.
+   */
   useEffect(() => {
     Settings.getColorMode().then((mode) => {
       console.log('mode: ' + mode);
@@ -33,6 +37,12 @@ export const ThemeProvider = ({ children }) => {
     });
   }, []);
 
+  /**
+   * @function toggleTheme
+   * @memberof Components.Visuals.ThemeProvider
+   * @description Function that toggles the theme between light and dark.
+   * @returns {Promise} Promise that resolves when the theme is set.
+   */
   const toggleTheme = () => {
     return new Promise((resolve) => {
       setTheme((prevTheme) => {

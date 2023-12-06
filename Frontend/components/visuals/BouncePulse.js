@@ -3,8 +3,6 @@
  * @memberof Components
  */
 
-
-
 import React, { memo, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, {
@@ -39,9 +37,13 @@ import { getThemedStyles } from '../../constants/Styles';
  * @param {number} props.dotBottom - Bottom position of the animated dot.
  * @param {number} props.dotLeft - Left position of the animated dot.
  * @param {number} props.dotRight - Right position of the animated dot.
+ * @param {number} props.top - Top position of the pulse effect container
+ * @param {number} props.bottom - Bottom position of the pulse effect container
+ * @param {number} props.left - Left position of the pulse effect container
+ * @param {number} props.right - Right position of the pulse effect container
  * @returns {JSX.Element} React component for the BouncePulse effect.
  */
- 
+
 const BouncePulse = memo((props) => {
   const styles = getThemedStyles(useThemeContext().theme).BouncePulse;
   const translateY1 = useSharedValue(0);
@@ -50,9 +52,9 @@ const BouncePulse = memo((props) => {
 
   /**
    * @function startAnimation
-   * @memberof Visuals.BouncePulse
-   * @param {Animated.SharedValue<number>} animatedValue
-   * @param {number} delay
+   * @memberof Components.Visuals.BouncePulse
+   * @param {Animated.SharedValue<number>} animatedValue - useSharedValue object to animate.
+   * @param {number} delay - Delay before animation starts.
    */
   const startAnimation = (animatedValue, delay) => {
     animatedValue.value = withRepeat(
@@ -73,7 +75,7 @@ const BouncePulse = memo((props) => {
 
   /**
    * @constant animatedStyle1
-   * @memberof Visuals.BouncePulse
+   * @memberof Components.Visuals.BouncePulse
    * @description - Animated style for the first dot.
    * @returns {object} - Animated style for the first dot.
    */
@@ -85,7 +87,7 @@ const BouncePulse = memo((props) => {
 
   /**
    * @constant animatedStyle2
-   * @memberof Visuals.BouncePulse
+   * @memberof Components.Visuals.BouncePulse
    * @description - Animated style for the second dot.
    * @returns {object} - Animated style for the second dot.
    */
@@ -97,7 +99,7 @@ const BouncePulse = memo((props) => {
 
   /**
    * @constant animatedStyle3
-   * @memberof Visuals.BouncePulse
+   * @memberof Components.Visuals.BouncePulse
    * @description - Animated style for the third dot.
    * @returns {object} - Animated style for the third dot.
    */
@@ -108,7 +110,18 @@ const BouncePulse = memo((props) => {
   });
 
   return (
-    <View style={[styles.container, { opacity: props.opacity, top: props.top, bottom: props.bottom, left: props.left, right: props.right }]}>
+    <View
+      style={[
+        styles.container,
+        {
+          opacity: props.opacity,
+          top: props.top,
+          bottom: props.bottom,
+          left: props.left,
+          right: props.right,
+        },
+      ]}
+    >
       <Animated.View
         style={[
           styles.dot,

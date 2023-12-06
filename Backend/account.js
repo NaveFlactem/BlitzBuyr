@@ -176,9 +176,7 @@ router.post('/register', (req, res) => {
   const { username, password, confirmPassword, email } = req.body;
 
   if (username.length == 0) {
-    return res
-      .status(400)
-      .json({ error: 'Username cannot be empty' });
+    return res.status(400).json({ error: 'Username cannot be empty' });
   }
 
   // Check if password and confirmPassword match

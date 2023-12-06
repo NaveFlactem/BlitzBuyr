@@ -1,3 +1,8 @@
+/**
+ * @namespace Colors
+ * @description - Colors is a file that contains the colors used in the app
+ */
+
 import {
   NavigationContainer,
   DefaultTheme,
@@ -5,6 +10,11 @@ import {
 } from '@react-navigation/native';
 import { Platform } from 'react-native';
 
+/**
+ * @constant {Object} Colors
+ * @memberof Colors
+ * @description - Object containing the colors used in the app for general use
+ */
 export default {
   primary: '#637aff',
   primaryDark: '#2759ff',
@@ -42,6 +52,11 @@ export default {
   BB_red: '#CC3514',
 };
 
+/**
+ * @constant {Object} CustomLightTheme
+ * @memberof Colors
+ * @description - Object containing the colors used in the app for the light theme
+ */
 export const CustomLightTheme = {
   ...DefaultTheme,
   colors: {
@@ -84,6 +99,11 @@ export const CustomLightTheme = {
   },
 };
 
+/**
+ * @constant {Object} CustomDarkTheme
+ * @memberof Colors
+ * @description - Object containing the colors used in the app for the dark theme
+ */
 export const CustomDarkTheme = {
   ...DarkTheme,
   colors: {

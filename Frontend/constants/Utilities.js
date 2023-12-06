@@ -1,5 +1,6 @@
 /**
  * @namespace Utilities
+ * @description - Utilities is a file that contains utility functions
  */
 import * as Location from 'expo-location';
 

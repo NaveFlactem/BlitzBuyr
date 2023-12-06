@@ -22,9 +22,8 @@ import { getThemedStyles } from '../constants/Styles';
  *
  * @function TopBar
  * @memberof Components.TopBarHome
- * @param {Object} props - Component props
- * @param {Function} props.handleMenuPress - Function handling the menu press event
- * @param {Function} props.handleLocationPress - Function handling the location press event
+ * @param {Function} handleMenuPress - Function handling the menu press event
+ * @param {Function} handleLocationPress - Function handling the location press event
  * @returns {JSX.Element} Memoized TopBar component for the home screen
  */
 const TopBar = memo(({ handleMenuPress, handleLocationPress }) => {

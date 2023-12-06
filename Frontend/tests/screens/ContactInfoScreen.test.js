@@ -35,7 +35,7 @@ jest.mock('../../components/visuals/ThemeProvider', () => ({
 describe('EditContactInfo', () => {
   it('renders correctly', () => {
     const { getByText, getByTestId } = render(
-      <EditContactInfo navigation={navigation} route={route} />
+      <EditContactInfo navigation={navigation} route={route} />,
     );
 
     // Ensure the header text is rendered
@@ -47,7 +47,7 @@ describe('EditContactInfo', () => {
 
   it('updates contact info on phone input change', async () => {
     const { getByTestId } = render(
-      <EditContactInfo navigation={navigation} route={route} />
+      <EditContactInfo navigation={navigation} route={route} />,
     );
 
     // Mocked input change
@@ -62,7 +62,7 @@ describe('EditContactInfo', () => {
 
   it('updates contact info on email input change', async () => {
     const { getByTestId } = render(
-      <EditContactInfo navigation={navigation} route={route} />
+      <EditContactInfo navigation={navigation} route={route} />,
     );
 
     fireEvent.changeText(getByTestId('email'), 'newemail@example.com');
@@ -74,7 +74,7 @@ describe('EditContactInfo', () => {
 
   it('applies changes when the Apply Changes button is clicked', async () => {
     const { getByText, getByTestId } = render(
-      <EditContactInfo navigation={navigation} route={route} />
+      <EditContactInfo navigation={navigation} route={route} />,
     );
 
     fireEvent.changeText(getByTestId('phone'), '1234567890');
@@ -98,7 +98,7 @@ describe('EditContactInfo', () => {
 
   it('navigates to BottomNavOverlay when back/cancel button is clicked', () => {
     const { getByTestId } = render(
-      <EditContactInfo navigation={navigation} route={route} />
+      <EditContactInfo navigation={navigation} route={route} />,
     );
 
     fireEvent.press(getByTestId('back-button'));

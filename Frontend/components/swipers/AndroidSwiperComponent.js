@@ -8,7 +8,7 @@
  * @description - This component is designed to create a swiper/slider functionality for displaying listings in a Android mobile application.
  * @memberof Swipers
  * @memberof Components.Swipers
- * 
+ *
  */
 
 import React, { memo } from 'react';

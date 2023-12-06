@@ -79,8 +79,9 @@ export default class FlipCard extends Component {
   /**
    * @memberof Components.CustomFlipCard.FlipCard
    * @static getDerivedStateFromProps
-   * @param {object} nextProps 
-   * @param {state} prevState 
+   * @param {object} nextProps - the next props object
+   * @param {state} prevState - the previous state object
+   * @description getDerivedStateFromProps method for FlipCard component that checks if the flip prop has changed and returns the state object with the updated flip value if the flip value has changed from the previous props value otherwise returns null
    * @returns {object} - returns the state object with the updated flip value if the flip value has changed from the previous props value otherwise returns null
    */
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -88,11 +89,11 @@ export default class FlipCard extends Component {
       return { flip: nextProps.flip };
     } else return null;
   }
-  
+
   /**
    * @function componentDidUpdate
    * @memberof Components.CustomFlipCard.FlipCard
-   * @param {object} prevProps
+   * @param {object} prevProps - the previous props object
    * @description componentDidUpdate method for FlipCard component that checks if the flip prop has changed and calls the _toggleCard method
    */
   componentDidUpdate(prevProps) {
@@ -115,8 +116,8 @@ export default class FlipCard extends Component {
 
   /**
    * @function _animation
-  * @memberof Components.CustomFlipCard.FlipCard
-   * @param {bool} isFlipped
+   * @memberof Components.CustomFlipCard.FlipCard
+   * @param {bool} isFlipped - boolean to determine if the card is flipped or not
    * @description method that sets the state of isFlipped to the opposite of the isFlipped parameter and calls the Animated.spring method to animate the card flip
    */
   _animation(isFlipped) {
@@ -138,7 +139,7 @@ export default class FlipCard extends Component {
 
   /**
    * @function componentDidMount
-      * @memberof Components.CustomFlipCard.FlipCard
+   * @memberof Components.CustomFlipCard.FlipCard
    * @constant {number} measureOtherSideTimeout - timeout to call the measureOtherSide method after 32 milliseconds
    * @description method that sets a timeout to call the measureOtherSide method after 32 milliseconds
    */
@@ -154,7 +155,7 @@ export default class FlipCard extends Component {
 
   /**
    * @function componentWillUnmount
-      * @memberof Components.CustomFlipCard.FlipCard
+   * @memberof Components.CustomFlipCard.FlipCard
    * @description method that clears the measureOtherSideTimeout and tapTimeout timeouts
    * @constant {number} measureOtherSideTimeout - timeout to call the measureOtherSide method after 32 milliseconds
    * @constant {number} tapTimeout - timeout to call the handleTap method after 220 milliseconds
@@ -164,13 +165,13 @@ export default class FlipCard extends Component {
     clearTimeout(this.tapTimeout);
   }
 
-  /** 
-  * @function measureOtherSide
-      * @memberof Components.CustomFlipCard.FlipCard
-  * @description method that sets the state of isFlipped to the opposite of the isFlipped parameter and calls the Animated.spring method to animate the card flip
-  * @constant {bool} isFlipped - boolean to determine if the card is flipped or not
-  * @constant {bool} measured - boolean to determine if the card is measured or not 
-  */
+  /**
+   * @function measureOtherSide
+   * @memberof Components.CustomFlipCard.FlipCard
+   * @description method that sets the state of isFlipped to the opposite of the isFlipped parameter and calls the Animated.spring method to animate the card flip
+   * @constant {bool} isFlipped - boolean to determine if the card is flipped or not
+   * @constant {bool} measured - boolean to determine if the card is measured or not
+   */
   measureOtherSide() {
     this.setState({
       isFlipped: !this.state.isFlipped,
@@ -180,7 +181,7 @@ export default class FlipCard extends Component {
 
   /**
    * @function handleTap
-      * @memberof Components.CustomFlipCard.FlipCard
+   * @memberof Components.CustomFlipCard.FlipCard
    * @description method that handles the tap event and calls the _toggleCard method if the tap is a single tap or the doubleTap method if the tap is a double tap
    * @constant {number} now - current time in milliseconds
    * @constant {number} DOUBLE_PRESS_DELAY - constant value of 220 milliseconds
@@ -353,7 +354,7 @@ export default class FlipCard extends Component {
 
 /**
  * @name propTypes
-      * @memberof Components.CustomFlipCard.FlipCard
+ * @memberof Components.CustomFlipCard.FlipCard
  * @type {object}
  * @description defines prop types for FlipCard
  */
@@ -386,7 +387,7 @@ FlipCard.propTypes = {
 };
 
 /**
-      * @memberof Components.CustomFlipCard.FlipCard
+ * @memberof Components.CustomFlipCard.FlipCard
  * @type {object}
  * @prop {bool} flip - Set to true to flip the card and see the back view, false to see the front view.
  * @prop {number} friction - Value used to determine the speed at which the card flips with higher vlaues corresponding to slower flipping. Defaults to 6.

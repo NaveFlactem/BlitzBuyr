@@ -1,5 +1,7 @@
+/**
+ * @namespace StackNavigator
+ */
 import { createStackNavigator } from '@react-navigation/stack';
-
 import Authenticate from '../screens/auth/Authenticate';
 import CreateAccountScreen from '../screens/auth/CreateAccountScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -14,8 +16,19 @@ import SettingsScreen from '../screens/SettingsScreen';
 import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 import AboutUsScreen from '../screens/AboutUsScreen';
 
+/**
+ * @constant Stack
+ * @memberof StackNavigator
+ * @description - used to create the stack.navigator for the app
+ */
 const Stack = createStackNavigator();
 
+/**
+ * @function StackNavigator
+ * @memberof StackNavigator
+ * @description - Stack navigator for the app
+ * @returns {JSX.Element}
+ */
 const StackNavigator = () => {
   return (
     <Stack.Navigator

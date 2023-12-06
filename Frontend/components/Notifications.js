@@ -10,15 +10,13 @@ import { serverIp } from '../config.js';
  * @description - Notifications is a component that schedules notifications for the user
  */
 
-
-
 /**
  * @function
  * @name scheduleNotification
  * @memberof Components.Notifications
  * @param {number} newListings - The number of new listings since the user's last login.
  * @returns {void}
- * @description - Schedules a notification for the user if they have not already been notified. 
+ * @description - Schedules a notification for the user if they have not already been notified.
  */
 export async function scheduleNotification(newListings) {
   await Permissions.askAsync(Permissions.NOTIFICATIONS);
@@ -81,7 +79,7 @@ export async function scheduleNotification(newListings) {
  * @memberof Components.Notifications
  * @param {number} likedListings - The number of listings that have been liked in the past 24 hours.
  * @returns {void}
- * @description - Schedules a notification for the user if they have not already been notified. 
+ * @description - Schedules a notification for the user if they have not already been notified.
  */
 export async function likedNotification(likedListings) {
   Notifications.setNotificationHandler({

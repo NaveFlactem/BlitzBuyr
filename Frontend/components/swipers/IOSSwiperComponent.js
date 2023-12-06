@@ -1,13 +1,10 @@
 /**
  * @namespace IOSSwiperComponent
- * @description - This component is designed to create a swiper/slider functionality for displaying listings in a IOS mobile application.  
+ * @description - This component is designed to create a swiper/slider functionality for displaying listings in a IOS mobile application.
  * @memberof Swipers
  * @memberof Components.Swipers
- * 
+ *
  */
-
-
-
 
 import React, { memo } from 'react';
 import Swiper from 'react-native-swiper';

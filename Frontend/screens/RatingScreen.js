@@ -6,7 +6,14 @@
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { Alert, Button, Image, Text, TouchableOpacity, View } from 'react-native'; // Import the Button component
+import {
+  Alert,
+  Button,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native'; // Import the Button component
 import { useThemeContext } from '../components/visuals/ThemeProvider.js';
 import { serverIp } from '../config.js';
 import { getThemedStyles } from '../constants/Styles.js';
@@ -21,9 +28,7 @@ import Colors from '../constants/Colors.js';
  * @param {Object} route - Information about the current route.
  * @returns {void}
  * @description - A screen that allows users to rate a listing.
- *
  */
-
 const RatingScreen = ({ navigation, route }) => {
   const { theme } = useThemeContext();
   const styles = getThemedStyles(useThemeContext().theme).RatingScreen;
@@ -32,14 +37,13 @@ const RatingScreen = ({ navigation, route }) => {
 
   /**
    * @function
-   * @memberof Rating
+   * @memberof Screens.RatingScreen
    * @param {number} value - The value containing the rating
    * @returns {void}
    * @description Handles the selection of a rating value.  Allows the rating to be deducted by half if selected again.
    *                - If the value matches the current selectedRating, decreases the selectedRating by 0.5 thus allowing for half ratings
    *                - If the value differs from the current selectedRating, sets the selectedRating to the provided value.
    */
-
   const handleRating = (value) => {
     if (selectedRating === value) {
       setSelectedRating(selectedRating - 0.5);
@@ -51,14 +55,13 @@ const RatingScreen = ({ navigation, route }) => {
   /**
    * @function
    * @name handleSubmitRating
-   * @memberof Rating
+   * @memberof Screens.RatingScreen
    * @returns {void}
    * @description Handles the submission of a rating to the backend API.
    *              Sends a POST request to the backend API
    *              Handles the response from the backend
    *              Logs errors if there's an issue while submitting the rating.
    */
-
   const handleSubmitRating = () => {
     if (selectedRating < 1 || selectedRating > 5) {
       // show some indicator that the rating was unsuccessful
@@ -96,7 +99,7 @@ const RatingScreen = ({ navigation, route }) => {
   /**
    * @function
    * @name renderStars
-   * @memberof Rating
+   * @memberof Screens.RatingScreen
    * @returns {Array<JSX.Element>} Returns an array of JSX elements representing star icons for rating.
    * @description Dynamically generates an array of star icons based on the selected rating.
    *              Uses TouchableOpacity components to allow the user to press their desirred rating.
@@ -157,8 +160,7 @@ const RatingScreen = ({ navigation, route }) => {
           source={{ uri: route.params.profileInfo.profilePicture }}
           style={styles.profilePic}
         />
-        <View style={styles.ratingContainer}>{renderStars()}
-        </View>
+        <View style={styles.ratingContainer}>{renderStars()}</View>
         <TouchableOpacity onPress={handleSubmitRating}>
           <View style={styles.submitButton}>
             <Text style={styles.submitText}>Submit Rating</Text>

@@ -1,5 +1,6 @@
 /**
  * @namespace Styles
+ * @description - Styles is a file that contains all the styles for the app
  */
 
 import { Platform, StyleSheet } from 'react-native';
@@ -10,6 +11,7 @@ import { screenHeight, screenWidth } from './ScreenDimensions.js';
  * @function getThemedStyles
  * @param {string} theme
  * @returns {Object} StyleSheet
+ * @memberof Styles
  * @description Returns the styles for the current theme (light or dark). Holds all predefined styles for the app.
  */
 export const getThemedStyles = (theme) => {

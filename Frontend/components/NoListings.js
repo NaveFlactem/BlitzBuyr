@@ -14,7 +14,7 @@ import { useThemeContext } from './visuals/ThemeProvider';
 /**
  * @function NoListings
  * @memberof Components.NoListings
- * @param {Function} onRetry - function to call when retry button is pressed
+ * @param {Function} onRetry - function to call when retry button is pressed to refresh the listings using the parent component's refresh function
  * @returns {JSX.Element}
  */
 const NoListings = memo(({ onRetry }) => {

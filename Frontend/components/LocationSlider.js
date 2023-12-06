@@ -20,6 +20,7 @@ import { useThemeContext } from './visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
 /**
  * @constant Slider - import the slider component from the appropriate library depending on the platform the app is running on. IOS uses the @react-native-community/slider library, while Android uses the react-native-slider library.
+ * @memberof Components.LocationSlider
  */
 const Slider =
   Platform.OS == 'ios'
@@ -31,11 +32,10 @@ const Slider =
  * @function
  * @name LocationSlider
  * @memberof Components.LocationSlider
- * @param {Object} props - Component props
- * @param {Function} props.setDistance - Function to set the distance state
- * @param {boolean} props.isLocationSliderVisible - Boolean representing whether the location slider is visible
- * @param {Function} props.setIsLocationSliderVisible - Function to set the location slider visibility state
- * @param {Object} props.locationSliderHeight - Object representing the location slider height
+ * @param {Function} setDistance - Function to set the distance state
+ * @param {boolean} isLocationSliderVisible - Boolean representing whether the location slider is visible
+ * @param {Function} setIsLocationSliderVisible - Function to set the location slider visibility state
+ * @param {Object} locationSliderHeight - Object representing the location slider height
  * @returns {JSX.Element} Memoized LocationSlider component
  */
 const LocationSlider = memo(
@@ -54,6 +54,11 @@ const LocationSlider = memo(
       };
     });
 
+    /**
+     * @constant onSwipeUpLocationSlider - Function to handle the swipe up gesture on the location slider
+     * @memberof Components.LocationSlider
+     * @descrciption - This function is called when the user swipes up on the location slider. It detects the swipe up gesture and moves the location slider up accordingly. If the user swipes up past the halfway point, the location slider is closed. Otherwise, the location slider is opened.
+     */
     const onSwipeUpLocationSlider = useAnimatedGestureHandler({
       onStart: (_, context) => {
         context.startY = locationSliderHeight.value;
@@ -76,6 +81,12 @@ const LocationSlider = memo(
 
     const [sliderValue, setSliderValue] = useState(30);
 
+    /**
+     * @function useEffect
+     * @memberof Components.LocationSlider
+     * @description - This function is called when the component is mounted. It fetches the user's initial distance setting and sets the slider value accordingly.
+     * @returns {void}
+     */
     useEffect(() => {
       const fetchDistance = async () => {
         const initialDistance = await Settings.getDistance();

@@ -41,7 +41,7 @@ const EditContactInfo = ({ navigation, route }) => {
    *
    * @function
    * @name handleInputChange
-   * @memberof EditContactInfo
+   * @memberof Screens.EditContactInfo
    * @param {string} key - The key representing the type of contact information to update.
    * @param {string} value - The new value to be set for the specified contact information.
    * @returns {void}

@@ -11,13 +11,18 @@ describe('API/Accounts', () => {
       chai
         .request(app)
         .post('/api/register')
-        .send({ username: '', password: 'password123A!', confirmPassword: 'password123A!', email: 'user@example.com' })
+        .send({
+          username: '',
+          password: 'password123A!',
+          confirmPassword: 'password123A!',
+          email: 'user@example.com',
+        })
         .end((err, res) => {
           res.should.have.status(400);
           res.body.should.have.property('error', 'Username cannot be empty');
           done();
         });
-    });    
+    });
     it('should return an error for mismatched password and confirmPassword', (done) => {
       chai
         .request(app)
@@ -32,7 +37,7 @@ describe('API/Accounts', () => {
           res.should.have.status(400);
           res.body.should.have.property(
             'error',
-            'Password and confirm password are not equal'
+            'Password and confirm password are not equal',
           );
           done();
         });
@@ -90,20 +95,23 @@ describe('API/Accounts', () => {
   });
   describe('authenticateUser', () => {
     it('should return true for a registered user with correct password', async () => {
-      const isAuthenticated = await authenticateUser('newuser', 'password123A!');
+      const isAuthenticated = await authenticateUser(
+        'newuser',
+        'password123A!',
+      );
       expect(isAuthenticated).to.be.true;
     });
     it('should return false for a non-registered user', async () => {
       const isAuthenticated = await authenticateUser(
         'nonexistentuser',
-        'password123'
+        'password123',
       );
       expect(isAuthenticated).to.be.false;
     });
     it('should return false for a registered user with incorrect password', async () => {
       const isAuthenticated = await authenticateUser(
         'newuser',
-        'wrongpassword'
+        'wrongpassword',
       );
       expect(isAuthenticated).to.be.false;
     });
@@ -154,7 +162,7 @@ describe('API/Accounts', () => {
           res.should.have.status(400);
           res.body.should.have.property(
             'error',
-            'Both username and password are required'
+            'Both username and password are required',
           );
           done();
         });

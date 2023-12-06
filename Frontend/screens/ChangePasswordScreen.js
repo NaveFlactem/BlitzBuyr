@@ -44,12 +44,20 @@ const ChangePassword = ({ navigation, route }) => {
   const { theme } = useThemeContext();
   const styles = getThemedStyles(useThemeContext().theme).ChangePasswordScreen;
 
+  /**
+   * @function togglePasswordVisibility
+   * @memberof Screens.ChangePasswordScreen
+   * @description Toggles the visibility of the password.
+   */
   const togglePasswordVisibility = () => {
     setIsPasswordHidden(!isPasswordHidden);
   };
   const toggleConfirmPasswordVisibility = () => {
     setIsConfirmPasswordHidden(!isConfirmPasswordHidden);
   };
+  /**
+   * calls getStoredPassword() and sets the password and confirmPassword to the stored password on mount.
+   */
   useEffect(() => {
     setPassword(getStoredPassword());
     setConfirmPassword(getStoredPassword());
@@ -57,6 +65,12 @@ const ChangePassword = ({ navigation, route }) => {
     console.log(profileName);
   }, [isFocused]);
 
+  /**
+   * @function changePassword
+   * @memberof Screens.ChangePasswordScreen
+   * @async
+   * @description Changes the password.
+   */
   const changePassword = async () => {
     const formData = new FormData();
     formData.append('username', profileName);
@@ -74,6 +88,13 @@ const ChangePassword = ({ navigation, route }) => {
     }
   };
 
+  /**
+   * @function saveChanges
+   * @memberof Screens.ChangePasswordScreen
+   * @async
+   * @description Saves the changes.
+   * @returns {void}
+   */
   const saveChanges = async () => {
     if (password === '' || confirmPassword === '') {
       Alert.alert('Invalid Input', 'Please fill out all fields.');
@@ -83,7 +104,7 @@ const ChangePassword = ({ navigation, route }) => {
       // Add visual prompt later
       Alert.alert(
         'Password Mismatch',
-        'Password and Confirm Password do not match.'
+        'Password and Confirm Password do not match.',
       );
       return;
     }

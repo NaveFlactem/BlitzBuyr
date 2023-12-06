@@ -1,3 +1,6 @@
+/**
+ * @namespace BottomNavOverlay
+ */
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { memo, useEffect } from 'react';
 import {
@@ -23,6 +26,10 @@ import ProfileScreen from '../screens/ProfileScreen';
 import { useThemeContext } from '../components/visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
 
+/**
+ * @constant TabArr - Array of objects representing the tabs in the bottom navigation bar
+ * @memberof BottomNavOverlay
+ */
 const TabArr = [
   {
     route: 'Home',
@@ -50,8 +57,23 @@ const TabArr = [
   },
 ];
 
+/**
+ * @constant Tab - Bottom tab navigator
+ * @memberof BottomNavOverlay
+ */
 const Tab = createBottomTabNavigator();
 
+/**
+ * @function TabButton
+ * @memberof BottomNavOverlay
+ * @param {Object} props - React props object
+ * @param {Object} props.item - Object representing the tab
+ * @param {Function} props.onPress - Function to handle the press event
+ * @param {Object} props.accessibilityState - Object representing the accessibility state
+ * @param {Object} props.styles - Object representing the styles for the tab button received from the parent component
+ * @description - TabButton is a memoized component that represents a single tab in the bottom navigation bar
+ * @returns {JSX.Element} TabButton component
+ */
 const TabButton = memo((props) => {
   const { item, onPress, accessibilityState, styles } = props;
   const focused = accessibilityState.selected;
@@ -67,6 +89,9 @@ const TabButton = memo((props) => {
     };
   });
 
+  /**
+   * will run the animation when the icons are pressed on the bottom nav bar
+   */
   useEffect(() => {
     // Animations are triggered based on the focused state of this specific TabButton
     scale.value = withSpring(focused ? 1.5 : 1);
@@ -106,6 +131,12 @@ const TabButton = memo((props) => {
   );
 });
 
+/**
+ * @function BottomNavOverlay
+ * @memberof BottomNavOverlay
+ * @description - BottomNavOverlay is a memoized component that represents the bottom navigation bar that overlays the main screen
+ * @returns {JSX.Element} BottomNavOverlay component
+ */
 function BottomNavOverlay() {
   const styles = getThemedStyles(useThemeContext().theme).BottomNavOverlay;
 

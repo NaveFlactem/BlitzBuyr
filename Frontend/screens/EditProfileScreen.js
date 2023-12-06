@@ -1,5 +1,5 @@
 /**
- * @namespace EditProfile
+ * @namespace EditProfileScreen
  * @memberof Screens
  * @description - EditProfileScreen is a screen that allows users to edit their own profile information
  *
@@ -63,26 +63,25 @@ const EditProfileScreen = ({ navigation, route }) => {
   const styles = getThemedStyles(useThemeContext().theme).EditProfileScreen;
 
   /**
-   * @function
-   * @showModalProfile - shows the modal for selecting a profile picture
-   * @setSelectProfileImageModalVisible - sets the modal for selecting a profile picture to visible
+   * @function showModalProfile
+   * @description - Shows the modal for selecting a profile picture
+   * @memberof Screens.EditProfileScreen
    */
   const showModalProfile = () => {
     setSelectProfileImageModalVisible(true);
   };
   /**
-   * @function
-   * @showModalCover - shows the modal for selecting a cover picture
-   * @setSelectCoverImageModalVisible - sets the modal for selecting a cover picture to visible
+   * @function showModalCover
+   * @description - Shows the modal for selecting a cover picture
+   * @memberof Screens.EditProfileScreen
    */
   const showModalCover = () => {
     setSelectCoverImageModalVisible(true);
   };
   /**
-   * @function
-   * @hideModal - hides the modal for selecting a picture
-   * @setSelectProfileImageModalVisible - sets the modal for selecting a profile picture to invisible
-   * @setSelectCoverImageModalVisible - sets the modal for selecting a cover picture to invisible
+   * @function hideModal
+   * @description - Hides the modal for selecting a profile or cover picture
+   * @memberof Screens.EditProfileScreen
    */
   const hideModal = () => {
     setSelectProfileImageModalVisible(false);
@@ -91,9 +90,8 @@ const EditProfileScreen = ({ navigation, route }) => {
 
   /**
    *
-   * @function
-   * @name togglePasswordVisibility
-   * @memberof EditProfile
+   * @function togglePasswordVisibility
+   * @memberof Screens.EditProfileScreen
    * @returns {void}
    * @description Toggles the visibility of the password input field by switching between hidden and visible states.
    */
@@ -101,6 +99,9 @@ const EditProfileScreen = ({ navigation, route }) => {
     setIsPasswordHidden(!isPasswordHidden);
   };
 
+  /**
+   * checks if the screen is focused and loads the profile data
+   */
   useEffect(() => {
     if (isFocused) {
       setLoading(true);
@@ -112,6 +113,9 @@ const EditProfileScreen = ({ navigation, route }) => {
     }
   }, [isFocused]);
 
+  /**
+   * checks if the profile data has been loaded and logs the profile data
+   */
   useEffect(() => {
     if (
       loading &&
@@ -129,10 +133,11 @@ const EditProfileScreen = ({ navigation, route }) => {
   }, [profileName, selectedProfilePicture, selectedCoverPicture, password]);
 
   /**
-   * @function
-   * @handleCameraPick - allows the user to take photos with their camera
+   * @function handleCameraPick
+   * @async
    * @returns Returns the photos that the user took
    * @description - allows the user to take photos with their camera
+   * @memberof Screens.EditProfileScreen
    */
   const handleCameraPick = async () => {
     const result = await ImagePicker.launchCameraAsync();
@@ -149,10 +154,11 @@ const EditProfileScreen = ({ navigation, route }) => {
   };
 
   /**
-   * @function
-   * @handleLibraryPick - allows the user to select images from their library
+   * @function handleLibraryPick
+   * @async
    * @returns Returns the images that the user selected
    * @description - allows the user to select images from their library
+   * @memberof Screens.EditProfileScreen
    */
   const handleLibraryPick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -175,9 +181,8 @@ const EditProfileScreen = ({ navigation, route }) => {
 
   /**
    *
-   * @function
-   * @name handleProfileImageSelection
-   * @memberof EditProfile
+   * @function handleProfileImageSelection
+   * @memberof Screens.EditProfileScreen
    * @async
    * @returns {void | null} Returns either void if the selection and processing were successful or null if there was an error during image processing.
    * @description Allows the user to select an image from the device's image library, manipulates the selected image to compress it, and sets it as the selected profile picture.
@@ -190,7 +195,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       const manipulateResult = await ImageManipulator.manipulateAsync(
         img.uri,
         [],
-        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
       );
 
       setSelectedProfilePicture(manipulateResult.uri);
@@ -203,9 +208,8 @@ const EditProfileScreen = ({ navigation, route }) => {
 
   /**
    *
-   * @function
-   * @name handleCoverImageSelection
-   * @memberof EditProfile
+   * @function handleCoverImageSelection
+   * @memberof Screens.EditProfileScreen
    * @async
    * @returns {void | null} Returns either void if the selection and processing were successful or null if there was an error during image processing.
    * @description Allows the user to select an image from the device's image library and sets it as the selected cover picture.
@@ -218,7 +222,7 @@ const EditProfileScreen = ({ navigation, route }) => {
       const manipulateResult = await ImageManipulator.manipulateAsync(
         img.uri,
         [],
-        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG }
+        { compress: 0.4, format: ImageManipulator.SaveFormat.JPEG },
       );
 
       setSelectedCoverPicture(manipulateResult.uri);
@@ -232,9 +236,8 @@ const EditProfileScreen = ({ navigation, route }) => {
   //Function for handling save changes press
   /**
    * Saves the edited profile information by sending it to the server.
-   * @function
-   * @name saveChanges
-   * @memberof EditProfile
+   * @function saveChanges
+   * @memberof Screens.EditProfileScreen
    * @async
    * @returns {void}
    * @description Prepares a FormData object with updated profile information, such as username, profile name, password, and images if they have been changed. Submits a POST request to the API to update the user's profile.  Updates local credentials, navigates back to the profile page, and logs the editing process.
@@ -311,10 +314,10 @@ const EditProfileScreen = ({ navigation, route }) => {
 
   /**
    *
-   * @function
-   * @name confirmDeletion
+   * @function confirmDeletion
    * @memberof EditProfile
    * @returns {void}
+   * @async
    * @description Initiates the deletion process for the user account by calling the 'deleteAccount' function with the username and password.
    */
   const confirmDeletion = async () => {
@@ -333,8 +336,7 @@ const EditProfileScreen = ({ navigation, route }) => {
   // #endregion
   /**
    *
-   * @function
-   * @name deleteAccount
+   * @function deleteAccount
    * @memberof EditProfile
    * @async
    * @returns {void}

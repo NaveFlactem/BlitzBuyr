@@ -29,28 +29,27 @@ import { calculateTagTextFontSize } from './CalculateFontSize';
 /**
  * @function TagDrawer
  * @memberof Components.TagDrawer
- * @param {Object} props
- * @param {Array} tagsData
- * @param {Array} conditions
- * @param {Array} transactions
- * @param {Array} currencyData
- * @param {Function} setTagsData
- * @param {Function} setConditionsData
- * @param {Function} setTransactionsData
- * @param {Function} setCurrencyData
- * @param {Array} selectedTags
- * @param {Array} selectedConditions
- * @param {Array} selectedTransactions
- * @param {String} selectedCurrency
- * @param {Function} setSelectedConditions
- * @param {Function} setSelectedTransactions
- * @param {Function} setSelectedTags
- * @param {Function} setSelectedCurrency
- * @param {Function} fetchListings
- * @param {Function} handleMenuPress
- * @param {Function} setIsDrawerOpen
- * @param {Boolean} isDrawerOpen
- * @param {Animated.SharedValue} translateX
+ * @param {Array} tagsData - Array of objects representing the tags
+ * @param {Array} conditions - Array of objects representing the conditions
+ * @param {Array} transactions - Array of objects representing the transactions
+ * @param {Array} currencyData - Array of objects representing the currencies
+ * @param {Function} setTagsData - Function to set the tagsData state
+ * @param {Function} setConditionsData - Function to set the conditionsData state
+ * @param {Function} setTransactionsData - Function to set the transactionsData state
+ * @param {Function} setCurrencyData - Function to set the currencyData state
+ * @param {Array} selectedTags - Array of strings representing the selected tags
+ * @param {Array} selectedConditions - Array of strings representing the selected conditions
+ * @param {Array} selectedTransactions - Array of strings representing the selected transactions
+ * @param {String} selectedCurrency - String representing the selected currency
+ * @param {Function} setSelectedConditions - Function to set the selectedConditions state
+ * @param {Function} setSelectedTransactions - Function to set the selectedTransactions state
+ * @param {Function} setSelectedTags - Function to set the selectedTags state
+ * @param {Function} setSelectedCurrency - Function to set the selectedCurrency state
+ * @param {Function} fetchListings - Function to fetch the listings
+ * @param {Function} handleMenuPress - Function to handle the press event for the menu button
+ * @param {Function} setIsDrawerOpen - Function to set the isDrawerOpen state
+ * @param {Boolean} isDrawerOpen - Boolean representing whether the drawer is open
+ * @param {Animated.SharedValue} translateX - Animated shared value representing the x translation
  * @returns {React.Component} <TagDrawer />
  * @description This component renders the tag drawer that appears when the user presses the menu button on the home screen or drags the screen to the right.
  */
@@ -86,7 +85,7 @@ const TagDrawer = memo(
      *
      * @function
      * @name handleTagPress
-     * @memberof TagDrawer
+     * @memberof Components.TagDrawer
      * @param {number} index - The index of the tag being pressed.
      * @description Toggles the selection state of a tag and manages selected tags for home screen layout.
      * @returns {void}
@@ -123,7 +122,7 @@ const TagDrawer = memo(
      *
      * @function
      * @name handleConditionPress
-     * @memberof TagDrawer
+     * @memberof Components.TagDrawer
      * @param {number} index - The index of the condition being pressed.
      * @description Toggles the selection state of a condition and manages selected conditions.
      * @returns {void}
@@ -160,7 +159,7 @@ const TagDrawer = memo(
      *
      * @function
      * @name handleTransactionPress
-     * @memberof TagDrawer
+     * @memberof Components.TagDrawer
      * @param {number} index - The index of the transaction being pressed.
      * @description Toggles the selection state of a transaction and manages selected transactions.
      * @returns {void}
@@ -201,7 +200,7 @@ const TagDrawer = memo(
      *
      * @function
      * @name handleCurrencyPress
-     * @memberof TagDrawer
+     * @memberof Components.TagDrawer
      * @param {number} index - The index of the currency being pressed.
      * @description Toggles the selection state of a currency and updates the selected currency.
      * @returns {void}
@@ -245,9 +244,9 @@ const TagDrawer = memo(
      * Configuration object for handling animated gesture events.
      *
      * @constant {Object}
-     * @memberof TagDrawer
+     * @memberof Components.TagDrawer
      * @name onGestureEvent
-     * @description Manages gesture events such as start, active, and end for animations.
+     * @description Manages gesture events such as start, active, and end for animations. This object is passed to the PanGestureHandler component. This object is used to animate the drawer when the user swipes left.
      */
     const onGestureEvent = useAnimatedGestureHandler({
       onStart: (_, context) => {
@@ -423,8 +422,18 @@ const TagDrawer = memo(
                         { opacity: transaction.selected ? 0.15 : 0 },
                       ]}
                     />
-                    <Text style={[styles.tagText, { fontSize: calculateTagTextFontSize(transaction.name, 16) }]}>
-                    {transaction.name}
+                    <Text
+                      style={[
+                        styles.tagText,
+                        {
+                          fontSize: calculateTagTextFontSize(
+                            transaction.name,
+                            16,
+                          ),
+                        },
+                      ]}
+                    >
+                      {transaction.name}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -492,6 +501,15 @@ const TagDrawer = memo(
   },
 );
 
+/**
+ * @function SwipeArea
+ * @memberof Components.TagDrawer
+ * @param {Animated.SharedValue} translateX - Animated shared value representing the x translation
+ * @param {Boolean} isDrawerOpen - Boolean representing whether the drawer is open
+ * @param {Function} setIsDrawerOpen - Function to set the isDrawerOpen state
+ * @returns {React.Component} <SwipeArea />
+ * @description This component renders the swipe area that the user interacts with to open the drawer.
+ */
 export const SwipeArea = memo(
   ({ translateX, isDrawerOpen, setIsDrawerOpen }) => {
     const styles = getThemedStyles(useThemeContext().theme).TagDrawer;

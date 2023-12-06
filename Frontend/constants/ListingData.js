@@ -1,5 +1,6 @@
 /**
  * @namespace ListingData
+ * @description - ListingData is a file that contains the data for the listing such as the tags, conditions, transactions preferences, and currencies
  */
 
 export const tagOptions = [

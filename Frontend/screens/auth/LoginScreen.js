@@ -26,6 +26,7 @@ import * as SecureStore from 'expo-secure-store';
  * @function LoginScreen
  * @param {object} navigation - React Navigation object.
  * @memberof Screens.Auth.Login
+ * @returns {JSX.Element} The LoginScreen component.
  */
 const LoginScreen = ({ navigation }) => {
   const styles = getThemedStyles(useThemeContext().theme).LoginScreen;
@@ -39,8 +40,11 @@ const LoginScreen = ({ navigation }) => {
   };
 
   /**
-   * Function to handle the login process.
-   * @memberof Login
+   * @function handleLogin
+   * @memberof Screens.Auth.Login
+   * @description Handles the login process.
+   * @returns {Promise<void>}
+   * @async
    */
   const handleLogin = async () => {
     // Handle manual login process when the "Login" button is pressed
@@ -77,7 +81,7 @@ const LoginScreen = ({ navigation }) => {
 
   /**
    * Function to navigate to the create account screen.
-   * @memberof Login
+   * @memberof Screens.Auth.Login
    */
   const handleCreateAccount = () => {
     navigation.navigate('CreateAccount');

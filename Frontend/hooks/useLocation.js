@@ -14,6 +14,7 @@ import { getLocationWithRetry } from '../constants/Utilities';
  * @memberof Hooks
  * @returns {Object | null} User location object containing latitude and longitude
  * @description Retrieves the user's location using the device's geolocation API.
+ * @async
  */
 const useLocation = () => {
   const [userLocation, setUserLocation] = useState(null);
@@ -29,6 +30,9 @@ const useLocation = () => {
     }
   };
 
+  /**
+   * get user location on mount
+   */
   useEffect(() => {
     getUserLocation();
   }, []);

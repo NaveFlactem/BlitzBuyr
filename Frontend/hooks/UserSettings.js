@@ -19,6 +19,7 @@ const defaultSettings = {
  * @function
  * @name setDefaultUserSettings
  * @memberof UserSettings
+ * @async
  * @returns {Promise<Object>} Default user settings
  */
 export const setDefaultUserSettings = async () => {
@@ -48,6 +49,7 @@ export const saveUserSettings = async (settings) => {
  * @function
  * @name getUserSettings
  * @memberof UserSettings
+ * @async
  * @returns {Promise<Object>} Retrieved user settings
  */
 export const getUserSettings = async () => {
@@ -63,6 +65,7 @@ export const getUserSettings = async () => {
 /**
  * Clear user settings.
  *
+ * @async
  * @function
  * @name clearUserSettings
  * @memberof UserSettings
@@ -94,6 +97,7 @@ export const updateDistance = async (userDistance) => {
  * @function
  * @name getDistance
  * @memberof UserSettings
+ * @async
  * @returns {Promise<number>} User's preferred distance
  */
 export const getDistance = async () => {
@@ -123,6 +127,7 @@ export const updateColorMode = async (colorMode) => {
  * @function
  * @name getColorMode
  * @memberof UserSettings
+ * @async
  * @returns {Promise<string>} User's preferred color mode
  */
 export const getColorMode = async () => {

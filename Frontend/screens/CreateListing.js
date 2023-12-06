@@ -72,33 +72,6 @@ const MinorLoadingView = memo(({ styles }) => (
  * @returns {JSX.Element} - CreateListing screen components
  */
 const CreateListing = memo(({ navigation, route }) => {
-  /**
-   * @constant {string} title - title of the listing
-   * @constant {string} description - description of the listing
-   * @constant {string} price - price of the listing
-   * @constant {string} condition - condition of the listing
-   * @constant {string} transactionPreference - transaction preference of the listing
-   * @constant {Array} data - array of the images that the user selected
-   * @constant {Array} selectedTags - array of the tags that the user selected
-   * @constant {boolean} isScrollEnabled - boolean that checks if scrolling is enabled
-   * @constant {boolean} isTitleInvalid - boolean that checks if the title is invalid
-   * @constant {boolean} isDescriptionInvalid - boolean that checks if the description is invalid
-   * @constant {boolean} isPriceInvalid - boolean that checks if the price is invalid
-   * @constant {boolean} isConditionInvalid - boolean that checks if the condition is invalid
-   * @constant {boolean} isTransactionPreferenceInvalid - boolean that checks if the transaction preference is invalid
-   * @constant {boolean} isImageInvalid - boolean that checks if the image is invalid
-   * @constant {boolean} isTagInvalid - boolean that checks if the tag is invalid
-   * @constant {boolean} isMinorLoading - boolean that checks if the minor loading animation is active
-   * @constant {boolean} isLoading - boolean that checks if the loading animation is active
-   * @constant {string} selectedCurrency - currency that the user selected
-   * @constant {string} selectedCurrencySymbol - currency symbol that the user selected
-   * @constant {boolean} showCurrencyOptions - boolean that checks if the currency options are visible
-   * @constant {Array} tagsData - array of the tags data imported from ListingData.js (tagsData is a copy of tagOptions)
-   * @constant {Array} currencyOptions - array of the currency options imported from ListingData.js (currencyOptions is a copy of currencies)
-   * @constant {boolean} selectImageModalVisible - boolean that checks if the select image modal is visible
-   * @constant {string} theme - string that has the value of the current theme (light/dark)
-   * @constant {Object} styles - object that holds the styles for the create listing screen
-   */
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -128,17 +101,17 @@ const CreateListing = memo(({ navigation, route }) => {
   const [pickerKeyC, setpickerKeyC] = useState(0);
   const { theme } = useThemeContext();
   const styles = getThemedStyles(theme).CreateListing;
-  
+
   const titleInput = useRef(null);
   const descriptionInput = useRef(null);
   const priceInput = useRef(null);
   const conditionInput = useRef(null);
   const transactionPreferenceInput = useRef(null);
-  
+
   /**
    * @function
-   * @destructor - resets state variables
-   * @memberof CreateListing
+   * @destructor - resets state variables to default values
+   * @memberof Screens.CreateListing
    */
   const destructor = () => {
     setTitle('');
@@ -146,8 +119,8 @@ const CreateListing = memo(({ navigation, route }) => {
     setPrice('');
     setCondition('Select an option...');
     setTransactionPreference('Select an option...');
-    setpickerKeyTP(prevKey => prevKey + 1); // Increment key to force re-render of Transaction Preference Picker
-    setpickerKeyC(prevKey => prevKey + 1); // Increment key to force re-render of Condition Picker
+    setpickerKeyTP((prevKey) => prevKey + 1); // Increment key to force re-render of Transaction Preference Picker
+    setpickerKeyC((prevKey) => prevKey + 1); // Increment key to force re-render of Condition Picker
     setData([]);
     setSelectedTags([]);
     setTagsData(tagsData.map((tag) => ({ ...tag, selected: false })));
@@ -163,22 +136,14 @@ const CreateListing = memo(({ navigation, route }) => {
     setIsImageInvalid(false);
     setIsTagInvalid(false);
     setIsCurrencyInvalid(false);
-    
   };
 
   /**
-   * @function
-   * @checkValidListing - checks if the listing is valid
+   * @function checkValidListing
    * @description - checks if the listing is valid and returns a code based on the validity of the listing,
-   * @setIsPriceInvalid - sets the state of isPriceInvalid to true if the price is invalid which would be if the price is not a number, if the price is less than 0, or if the price is too large, if the price is empty, or if the price does not match the regex. Then make return code -1
-   * @setIsTitleInvalid - sets the state of isTitleInvalid to true if the title is invalid which would be if the title is empty or if the title is too long (over 25 characters). Then make return code -1
-   * @setIsDescriptionInvalid - sets the state of isDescriptionInvalid to true if the description is invalid which would be if the description is empty or if the description is too long (over 500 characters). Then make return code -1
-   * @setIsConditionInvalid - sets the state of isConditionInvalid to true if the condition is invalid which would be if the condition is not one of the options. Then make return code -1
-   * @setIsTransactionPreferenceInvalid - sets the state of isTransactionPreferenceInvalid to true if the transaction preference is invalid which would be if the transaction preference is not one of the options. Then make return code -1
-   * @setIsImageInvalid - sets the state of isImageInvalid to true if the image is invalid which would be if the image is empty or if the image is too large. Then make return code -1
-   * @setIsTagInvalid - sets the state of isTagInvalid to true if the tag is invalid which would be if the tag is empty. Then make return code -1
+   * @async
    * @returns Returns 0 if the listing is valid, -1 if the listing is invalid and 1 if no images are selected and 2 if too many images are selected and 3 if no tags are selected
-   * @memberof CreateListing
+   * @memberof Screens.CreateListing
    */
   const checkValidListing = async () => {
     const regex = /^(\d{0,6}(\.\d{2})?)$/;
@@ -186,15 +151,15 @@ const CreateListing = memo(({ navigation, route }) => {
     setIsPriceInvalid(price === '' || !regex.test(price) || price < 0);
     setIsTitleInvalid(title.length === 0 || title.length > 25);
     setIsDescriptionInvalid(
-      description.length === 0 || description.length > 500
+      description.length === 0 || description.length > 500,
     );
     setIsConditionInvalid(
-      !['Excellent', 'Good', 'Fair', 'Poor', 'For Parts'].includes(condition)
+      !['Excellent', 'Good', 'Fair', 'Poor', 'For Parts'].includes(condition),
     );
     setIsTransactionPreferenceInvalid(
       !['Pickup', 'Meetup', 'Delivery', 'No Preference'].includes(
-        transactionPreference
-      )
+        transactionPreference,
+      ),
     );
     setIsImageInvalid(data.length === 0 || data.length > 9);
     setIsTagInvalid(selectedTags.length === 0);
@@ -227,20 +192,10 @@ const CreateListing = memo(({ navigation, route }) => {
   };
 
   /**
-   * @function
-   * @handleCreateListing - sends user inputted data to server and checks if it ran smoothly
-   * @setIsLoading - sets the state of isLoading to true
-   * @checkValidListing - checks if the listing is valid
-   * @var {number} returnCode - variable that holds the return code from checkValidListing
-   * @param {Object} formData - object that is sent to the server with user inputted values
-   * @param {Object} image - object that holds the image that the user selected
-   * @var {Object} location - object that holds the location of the user
-   * @var {number} latitude - variable that holds the latitude of the user
-   * @var {number} longitude - variable that holds the longitude of the user
-   * @var {string} locationString - variable that holds the location of the user in string format
-   * @var {Object} response - object that holds the response from the server
-   * @var {Object} responseData - object that holds the response data from the server
-   * @memberof CreateListing
+   * @function handleCreateListing
+   * @memberof Screens.CreateListing
+   * @async
+   * @description - sends user inputted data to server and checks if it ran smoothly
    */
   const handleCreateListing = async () => {
     setIsLoading(true);
@@ -309,18 +264,17 @@ const CreateListing = memo(({ navigation, route }) => {
   };
 
   /**
-   * @function
-   * @useEffect - asks for permission to access camera roll when the screen is loaded
-   * @memberof CreateListing
+   * calls the getPermissionAsync function when the component mounts
    */
   useEffect(() => {
     getPermissionAsync();
   }, []);
 
   /**
-   * @function
-   * @getPermissionAsync - asks for permission to access camera roll
-   * @memberof CreateListing
+   * @function getPermissionAsync
+   * @async
+   * @description asks for permission to access camera roll
+   * @memberof Screens.CreateListing
    */
   const getPermissionAsync = async () => {
     // Camera roll Permission
@@ -339,26 +293,31 @@ const CreateListing = memo(({ navigation, route }) => {
   };
 
   /**
-   * @function
-   * @showModal - shows the modal that contains camera/photo library options, changes the state of selectImageModalVisible to true
-   * @hideModal - hides the modal that contains camera/photo library options, changes the state of selectImageModalVisible to false
-   * @memberof CreateListing
+   * @function showModal
+   * @description shows the modal that contains camera/photo library options, changes the state of selectImageModalVisible to true
+   * @memberof Screens.CreateListing
    */
   const showModal = () => setSelectImageModalVisible(true);
-  const hideModal = () => setSelectImageModalVisible(false);
-  
   /**
-   * @function
-   * @handleCameraPick - allows the user to take photos with their camera
+   * @function hideModal
+   * @description hides the modal that contains camera/photo library options, changes the state of selectImageModalVisible to false
+   * @memberof Screens.CreateListing
+   */
+  const hideModal = () => setSelectImageModalVisible(false);
+
+  /**
+   * @function handleCameraPick
    * @returns Returns the photos that the user took
+   * @async
    * @description - allows the user to take photos with their camera
-  */
- const handleCameraPick = async () => {
-  setIsMinorLoading(true);
-   const result = await ImagePicker.launchCameraAsync();
-   
-   if (!result.canceled) {
-     processImage(result); // Process the first (and only) image
+   * @memberof Screens.CreateListing
+   */
+  const handleCameraPick = async () => {
+    setIsMinorLoading(true);
+    const result = await ImagePicker.launchCameraAsync();
+
+    if (!result.canceled) {
+      processImage(result); // Process the first (and only) image
     }
 
     setIsMinorLoading(false);
@@ -366,10 +325,11 @@ const CreateListing = memo(({ navigation, route }) => {
   };
 
   /**
-   * @function
-   * @handleLibraryPick - allows the user to select images from their library
+   * @function handleLibraryPicky
    * @returns Returns the images that the user selected
    * @description - allows the user to select images from their library
+   * @async
+   * @memberof Screens.CreateListing
    */
   const handleLibraryPick = async () => {
     setIsMinorLoading(true);
@@ -390,12 +350,11 @@ const CreateListing = memo(({ navigation, route }) => {
   };
 
   /**
-   * @function
-   * @processImage - processes the image that the user selected
+   * @function processImage
    * @param {Object} image - object that holds the image that the user selected
    * @returns Returns the image that the user selected
    * @description - processes the image that the user selected in the case that the user only selects one image
-   * @memberof CreateListing
+   * @memberof Screens.CreateListing
    */
   const processImage = async (image) => {
     // Process a single image
@@ -406,15 +365,15 @@ const CreateListing = memo(({ navigation, route }) => {
   };
 
   /**
-   * @function
-   * @processSelectedImages - processes the images that the user selected in the case that the user selects multiple images
+   * @function processSelectedImages
    * @param {Array} assets - array that holds the images that the user selected
-   * @memberof CreateListing
+   * @description processes the images that the user selected in the case that the user selects multiple images
+   * @memberof Screens.CreateListing
    */
   const processSelectedImages = async (assets) => {
     // Process multiple images
     const processedImages = await Promise.all(
-      assets.map(async (asset) => manipulateImage(asset.uri))
+      assets.map(async (asset) => manipulateImage(asset.uri)),
     );
     setData((currentData) => [
       ...currentData,
@@ -423,11 +382,11 @@ const CreateListing = memo(({ navigation, route }) => {
   };
 
   /**
-   * @function
-   * @manipulateImage - compresses the image that the user selected
+   * @function manipulateImage
    * @param {string} uri - uri of the image that the user selected
    * @returns - an object with the name, key, and image file
-   * @memberof CreateListing
+   * @memberof Screens.CreateListing
+   * @description - compresses the image that the user selected
    */
   const manipulateImage = async (uri) => {
     try {
@@ -437,7 +396,7 @@ const CreateListing = memo(({ navigation, route }) => {
         format: ImageManipulator.SaveFormat.JPEG,
       });
       const compressedSize = await FileSystem.getInfoAsync(
-        manipulateResult.uri
+        manipulateResult.uri,
       );
       const savedData = originalSize.size - compressedSize.size;
 
@@ -448,7 +407,7 @@ const CreateListing = memo(({ navigation, route }) => {
         `compressed to :`,
         (compressedSize.size / (1024 * 1024)).toFixed(2),
         'MB',
-        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`
+        `data saved: ${(savedData / (1024 * 1024)).toFixed(2)} MB`,
       );
 
       setIsImageInvalid(false);
@@ -464,11 +423,11 @@ const CreateListing = memo(({ navigation, route }) => {
   };
 
   /**
-   * @function
-   * @handleDeletePhoto - deletes photos that the user no longer wants to post
+   * @function handleDeletePhoto
    * @param {Number} index - index of the photo that the user wants to delete
    * @returns - prompts a box to confirm, then removes the photo
-   * @memberof CreateListing
+   * @description - deletes the photo that the user selected
+   * @memberof Screens.CreateListing
    */
   const handleDeletePhoto = (index) => {
     Alert.alert('Delete Photo', 'Are you sure you want to delete this photo?', [
@@ -486,11 +445,12 @@ const CreateListing = memo(({ navigation, route }) => {
   };
 
   /**
-   * @param {*} item - contains image information
-   * @param {*} index - index of the item in the list of images
+   * @function render_item
+   * @param {Object} item - object that holds the image that the user selected
+   * @param {number} index - index of the item in the list of images
    * @description - renders the images that the user selected
    * @returns Returns the images that the user selected
-   * @memberof CreateListing
+   * @memberof Screens.CreateListing
    */
   const render_item = (item, index) => {
     return (
@@ -518,35 +478,30 @@ const CreateListing = memo(({ navigation, route }) => {
   };
 
   /**
-   * @function
-   * @handleDragStart - disables scrolling when the user is dragging an image
-   * @description - basic handle function
-   * @memberof CreateListing
+   * @function handleDragStart
+   * @description - disables scrolling when the user is dragging an image in the draggable grid
+   * @memberof Screens.CreateListing
    */
   const handleDragStart = () => {
-    // When a drag starts, disable scrolling
     setIsScrollEnabled(false);
   };
 
   /**
-   * @function
-   * @handleDragRelease - enables scrolling when the user is done dragging an image
-   * @description - basic handle function
-   * @memberof CreateListing
+   * @function handleDragRelease
+   * @description - enables scrolling when the user releases an image in the draggable grid
+   * @memberof Screens.CreateListing
    */
   const handleDragRelease = (data) => {
-    // When the drag is released, enable scrolling
     setData(data);
     setIsScrollEnabled(true);
   };
 
   /**
-   * @function
-   * @handlePriceChange - handles changes when the user enters a price
+   * @function handlePriceChange
    * @param {string} text - text that hold the entered price
    * @description - handles when the user enters a price
    * @returns {void} This function doesn't return a value
-   * @memberof CreateListing
+   * @memberof Screens.CreateListing
    */
   const handlePriceChange = (text) => {
     const regex = /^(\d{0,6}(\.\d{2})?)$/;
@@ -561,8 +516,7 @@ const CreateListing = memo(({ navigation, route }) => {
   };
 
   /**
-   * @function
-   * @handleTagPress - handles when the user presses a tag
+   * @function handleTagPress
    * @param {Number} index - index of the tag that the user pressed
    * @param {String} pressedTagName - name of the tag that the user pressed
    * @param {Boolean} isAlreadySelected - boolean that checks if the tag is already selected
@@ -572,7 +526,7 @@ const CreateListing = memo(({ navigation, route }) => {
    * @param {Array} selectedTags - array of the selected tags
    * @description - handles when the user presses a tag
    * @returns Returns the tags that the user selected
-   * @memberof CreateListing
+   * @memberof Screens.CreateListing
    */
   const handleTagPress = (index) => {
     setIsTagInvalid(false);
@@ -589,7 +543,7 @@ const CreateListing = memo(({ navigation, route }) => {
     let newSelectedTags;
     if (isAlreadySelected) {
       newSelectedTags = selectedTags.filter(
-        (tagName) => tagName !== pressedTagName
+        (tagName) => tagName !== pressedTagName,
       );
     } else {
       newSelectedTags = [...selectedTags, pressedTagName];
@@ -600,13 +554,12 @@ const CreateListing = memo(({ navigation, route }) => {
   };
 
   /**
-   * @function
-   * @name groupTagsIntoRows
-   * @description - Groups the tags into rows
+   * @function groupTagsIntoRows
+   * @description - Groups the tags into rows for the tag field
    * @param {Array} tags - array of tags
-   * @param {number} itemsPerRow - # of items to display per row
+   * @param {number} itemsPerRow - of items to display per row
    * @returns {Array} - returns the array with tags grouped together
-   * @memberof CreateListing
+   * @memberof Screens.CreateListing
    */
   const groupTagsIntoRows = (tags, itemsPerRow) => {
     return tags.reduce((rows, tag, index) => {
@@ -657,8 +610,8 @@ const CreateListing = memo(({ navigation, route }) => {
                     {title == ''
                       ? 'Title is required'
                       : title.length > 25
-                      ? 'Title too long'
-                      : 'Must enter a valid title'}
+                        ? 'Title too long'
+                        : 'Must enter a valid title'}
                   </Text>
                 </View>
               ) : (
@@ -699,8 +652,8 @@ const CreateListing = memo(({ navigation, route }) => {
                     {description.length > 500
                       ? 'Description too long'
                       : description.length === 0
-                      ? 'Description is required'
-                      : 'Must enter a valid description'}
+                        ? 'Description is required'
+                        : 'Must enter a valid description'}
                   </Text>
                 </View>
               )}
@@ -745,12 +698,12 @@ const CreateListing = memo(({ navigation, route }) => {
                   {price == ''
                     ? 'Price is required'
                     : /^(\d{0,6}(\.\d{2})?)$/.test(price)
-                    ? 'Must enter a valid price'
-                    : price < 0
-                    ? 'Invalid price'
-                    : price.length >= 7
-                    ? 'Price too large'
-                    : 'Must enter a valid price'}
+                      ? 'Must enter a valid price'
+                      : price < 0
+                        ? 'Invalid price'
+                        : price.length >= 7
+                          ? 'Price too large'
+                          : 'Must enter a valid price'}
                 </Text>
               </View>
             ) : (
@@ -832,7 +785,7 @@ const CreateListing = memo(({ navigation, route }) => {
               />
             )}
             <RNPickerSelect
-            key={pickerKeyTP}
+              key={pickerKeyTP}
               ref={transactionPreferenceInput}
               selectedValue={transactionPreference}
               onValueChange={(itemValue, itemIndex) => {
@@ -854,7 +807,6 @@ const CreateListing = memo(({ navigation, route }) => {
                   width: screenWidth * 0.9,
                   height: 40,
                   borderRadius: 5,
-
                 },
                 inputAndroid: {
                   color: theme === 'dark' ? Colors.white : Colors.black,
@@ -888,7 +840,7 @@ const CreateListing = memo(({ navigation, route }) => {
               />
             )}
             <RNPickerSelect
-            key={pickerKeyC}
+              key={pickerKeyC}
               ref={conditionInput}
               selectedValue={condition}
               onValueChange={(itemValue, itemIndex) => {
@@ -896,7 +848,7 @@ const CreateListing = memo(({ navigation, route }) => {
                 setIsConditionInvalid(false);
               }}
               items={[
-                { label: 'Select an option...', value: 'Select an option...'},
+                { label: 'Select an option...', value: 'Select an option...' },
                 { label: 'Excellent', value: 'Excellent' },
                 { label: 'Good', value: 'Good' },
                 { label: 'Fair', value: 'Fair' },

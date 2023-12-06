@@ -22,8 +22,7 @@ import { getThemedStyles } from '../../constants/Styles.js';
  * Component for creating a new account.
  * @function
  * @name CreateAccountScreen
- * @param {Object} props - React component props.
- * @param {Object} props.navigation - Navigation object for navigating between screens.
+ * @param {Object} navigation - Navigation object for navigating between screens.
  * @returns {JSX.Element} The create account screen component.
  * @memberof Screens.Auth.CreateAccount
  */
@@ -41,11 +40,12 @@ const CreateAccountScreen = ({ navigation }) => {
   const styles = getThemedStyles(useThemeContext().theme).CreateAccountScreen;
 
   /**
-   * Handles the creation of a new account.
    * @function
    * @name handleCreateAccount
    * @returns {Promise<void>}
-   * @memberof CreateAccountScreen
+   * @memberof Screens.Auth.CreateAccount
+   * @async
+   * @description Handles the create account process.
    */
   const handleCreateAccount = async () => {
     if (password !== confirmPassword) {
@@ -122,12 +122,12 @@ const CreateAccountScreen = ({ navigation }) => {
   };
 
   /**
-   * Handles the change in the password input.
    * @function
    * @name handlePasswordChange
    * @param {string} text - The input text.
    * @returns {void}
-   * @memberof CreateAccountScreen
+   * @memberof Screens.Auth.CreateAccount
+   * @description Handles the password entry process in the text input field.
    */
   const handlePasswordChange = (text) => {
     setPassword(text);

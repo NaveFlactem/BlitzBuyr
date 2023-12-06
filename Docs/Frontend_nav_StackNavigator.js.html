@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Frontend/components/NoWifi.js - Documentation</title>
+    <title>Frontend/nav/StackNavigator.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -1179,54 +1179,93 @@
     </nav>
 
     <div id="main">
-      <h1 class="page-title">Frontend/components/NoWifi.js</h1>
+      <h1 class="page-title">Frontend/nav/StackNavigator.js</h1>
 
       <section>
         <article>
-          <pre
-            class="prettyprint source linenums"
-          ><code>import React, { memo } from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
-import Colors from '../constants/Colors';
-import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
-import { useThemeContext } from './visuals/ThemeProvider';
-import { getThemedStyles } from '../constants/Styles';
+          <pre class="prettyprint source linenums"><code>/**
+ * @namespace StackNavigator
+ */
+import { createStackNavigator } from '@react-navigation/stack';
+import Authenticate from '../screens/auth/Authenticate';
+import CreateAccountScreen from '../screens/auth/CreateAccountScreen';
+import LoginScreen from '../screens/auth/LoginScreen';
+import CreateListing from '../screens/CreateListing';
+import ContactInfoScreen from '../screens/ContactInfoScreen';
+import EditProfile from '../screens/EditProfileScreen';
+import HomeScreen from '../screens/HomeScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import RatingScreen from '../screens/RatingScreen';
+import BottomNavOverlay from './BottomNavOverlay';
+import SettingsScreen from '../screens/SettingsScreen';
+import ChangePasswordScreen from '../screens/ChangePasswordScreen';
+import AboutUsScreen from '../screens/AboutUsScreen';
 
 /**
- *
- * @namespace NoWifi
- * @memberof Components
+ * @constant Stack
+ * @memberof StackNavigator
+ * @description - used to create the stack.navigator for the app
  */
+const Stack = createStackNavigator();
 
 /**
- * @function NoWifi
- * @memberof Components.NoWifi
- * @param {Function} onRetry - Function to retry the network connection by calling the parent component's refresh function
- * @description - Shows the user that they have no wifi
- * @returns {JSX.Element} A logo that signifies no wifi.
+ * @function StackNavigator
+ * @memberof StackNavigator
+ * @description - Stack navigator for the app
+ * @returns {JSX.Element}
  */
-const NoWifi = memo(({ onRetry }) => {
-  const { theme } = useThemeContext();
-  const styles = getThemedStyles(useThemeContext().theme).NoWifi;
+const StackNavigator = () => {
   return (
-    &lt;View style={styles.noWifiContainer}>
-      &lt;Image
-        style={styles.noWifiImage}
-        source={
-          theme === 'dark'
-            ? require('../assets/no_wifi_icon_transparent_darkmode.png')
-            : require('../assets/no_wifi_icon_transparent.png')
-        }
+    &lt;Stack.Navigator
+      initialRouteName="Authenticate"
+      screenOptions={{ headerShown: false }}
+    >
+      &lt;Stack.Screen name="Authenticate" component={Authenticate} />
+      &lt;Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ gestureEnabled: false }}
       />
-      &lt;Text style={styles.noWifiText}>No network connection available.&lt;/Text>
-      &lt;TouchableOpacity onPress={onRetry} style={styles.retryButton}>
-        &lt;Text style={styles.buttonText}>Retry&lt;/Text>
-      &lt;/TouchableOpacity>
-    &lt;/View>
-  );
-});
+      &lt;Stack.Screen
+        name="CreateAccount"
+        component={CreateAccountScreen}
+        options={{ gestureEnabled: false }}
+      />
+      &lt;Stack.Screen
+        name="BottomNavOverlay"
+        component={BottomNavOverlay}
+        options={{ gestureEnabled: false }}
+      />
+      &lt;Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ gestureEnabled: false }}
+      />
+      &lt;Stack.Screen
+        name="CreateListing"
+        component={CreateListing}
+        options={{ gestureEnabled: false }}
+      />
+      &lt;Stack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ gestureEnabled: false }}
+      />
 
-export default NoWifi;
+      &lt;Stack.Screen name="EditProfile" component={EditProfile} />
+      &lt;Stack.Screen name="ContactInfoScreen" component={ContactInfoScreen} />
+      &lt;Stack.Screen name="RatingScreen" component={RatingScreen} />
+      &lt;Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+      &lt;Stack.Screen name="AboutUsScreen" component={AboutUsScreen} />
+      &lt;Stack.Screen
+        name="ChangePasswordScreen"
+        component={ChangePasswordScreen}
+      />
+    &lt;/Stack.Navigator>
+  );
+};
+
+export default StackNavigator;
 </code></pre>
         </article>
       </section>
