@@ -87,6 +87,13 @@ to upload images of the item they are trying to sell.
 
 [View `CreateListing.js` source code](CreateListing.js.html)
 
+### RatingScreen
+
+The Rating Screen allows users to rate another users out of 5.  The user selects a star rating to give
+to another profile that they compelted a transaction through.  
+
+[View `RatingScreen.js` source code](RatingScreen.js.html)
+
 ## Conclusion
 
 This documentation serves as a reference for developers working on the BlitzBuyr project, as well as any interested in our workflow or codebase, outlining the structure and key components of both the backend and frontend.
