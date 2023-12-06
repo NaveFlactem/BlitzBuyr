@@ -40,6 +40,8 @@ import { useThemeContext } from './ThemeProvider';
  * @param {number} props.bottom - Bottom position of the pulse effect container
  * @param {number} props.left - Left position of the pulse effect container
  * @param {number} props.right - Right position of the pulse effect container
+ * @param {number} props.color - Color of the pulse effect
+ * @param {number} props.size - Size of the dots in pixels
  * @returns {JSX.Element} React component for the BouncePulse effect.
  */
 
