@@ -159,7 +159,7 @@ const CreateListing = memo(({ navigation, route }) => {
       !['Excellent', 'Good', 'Fair', 'Poor', 'For Parts'].includes(condition),
     );
     setIsTransactionPreferenceInvalid(
-      !['Pickup', 'Meetup', 'Delivery', 'No Preference'].includes(
+      !['Pickup', 'Meetup', 'Delivery', 'Drop Off', 'No Preference'].includes(
         transactionPreference,
       ),
     );
@@ -815,6 +815,7 @@ const CreateListing = memo(({ navigation, route }) => {
                 { label: 'Pickup', value: 'Pickup' },
                 { label: 'Meetup', value: 'Meetup' },
                 { label: 'Delivery', value: 'Delivery' },
+                { label: 'Drop Off', value: 'Drop Off' },
                 { label: 'No Preference', value: 'No Preference' },
               ]}
               placeholder={{}}

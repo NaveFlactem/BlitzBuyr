@@ -310,7 +310,12 @@ const TagDrawer = memo(
         >
           <View style={styles.drawerContainer}>
             {isDrawerOpen && (
-              <TouchableOpacity onPress={handleMenuPress}>
+              <TouchableOpacity
+                onPress={() => {
+                  fetchListings();
+                  handleMenuPress();
+                }}
+              >
                 <View style={styles.outsideDrawer} />
               </TouchableOpacity>
             )}

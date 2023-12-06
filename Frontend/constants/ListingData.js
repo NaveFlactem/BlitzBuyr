@@ -27,6 +27,7 @@ export const transactionOptions = [
   { name: 'Pickup', selected: false },
   { name: 'Meetup', selected: false },
   { name: 'Delivery', selected: false },
+  { name: 'Drop Off', selected: false },
   { name: 'No Preference', selected: false },
 ];
 
