@@ -46,10 +46,11 @@ Here's a showcase some of the features and user interface of BlitzBuyr:
    `node server.js`
 5. Open a new terminal at the project root folder and navigate to the React Native app folder by running the following command:
    `cd ./Frontend`
-6. Start the React Native app by running the following command:
+6. Change the serverIp constant at [config.js](https://github.com/NaveFlactem/BlitzBuyr/blob/main/Frontend/config.js) to your own IPv4 address. Make sure to open port 80 to allow the connections used by the app.
+7. Start the React Native app by running the following command:
    `npm start`
-7. On your Expo Go app on your phone, scan the QR code displayed in the terminal to open the app.
-8. Use the app as intended.
+8. On your Expo Go app on your phone, scan the QR code displayed in the terminal to open the app.
+9. Use the app as intended.
 
 ## Contributing
 
@@ -89,7 +90,8 @@ Unit testing is done with Mocha and Chai for the backend, and Jest for the front
 - [Test Plan and Report Document](https://docs.google.com/document/d/1421OKnpSpiZaO3-3GJeWJ5KHAnAvv0nNFfs30BBLBzc/edit#heading=h.2yy5cnnmsswp)
 - [Release Summary Document](https://docs.google.com/document/d/1WjgArigd5WFmqFfMzPfhd7Xs9remaX6HwLvQZ41PWoU/edit#heading=h.1tzgsuwnhc5v)
 - [Known Issues and Bugs](https://docs.google.com/document/d/1WjgArigd5WFmqFfMzPfhd7Xs9remaX6HwLvQZ41PWoU/edit#heading=h.6e8vzf4atd4x)
-- [Design Documents](<https://www.figma.com/file/MwLj7dRBdARcD1attEeKtE/Diagramming-101-(Community)-(Copy)?type=whiteboard&node-id=0-1&t=in6RSGhQpJVO2J82-0>)
+- [Design Documents](https://www.figma.com/file/MwLj7dRBdARcD1attEeKtE/Diagramming-101-(Community)-(Copy)?type=whiteboard&node-id=0-1&t=in6RSGhQpJVO2J82-0)
+- [Documentation](http://blitzbuyr.lol/docs/index.html)
 
 ## Team
 
