@@ -2065,7 +2065,7 @@ export const getThemedStyles = (theme) => {
         fontSize: 30,
         textAlign: 'center',
         marginVertical: 5,
-        color: themeColors.BB_darkRedPurple,
+        color: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple,
       },
       modalContainer: {
         backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
@@ -2073,6 +2073,17 @@ export const getThemedStyles = (theme) => {
         borderRadius: 10,
         borderColor: themeColors.BB_darkRedPurple,
         borderWidth: 3,
+        ...Platform.select({
+          ios: {
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOpacity: 0.5,
+            shadowRadius: 10,
+            shadowOffset: { height: 4, width: 0 },
+          },
+          android: {
+            elevation: 5,
+          },
+        }),
       },
       modalTitle: {
         fontSize: 12,
@@ -2085,7 +2096,7 @@ export const getThemedStyles = (theme) => {
         height: 45,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: themeColors.BB_darkRedPurple,
+        backgroundColor: theme === 'dark' ? Colors.violet : Colors.BB_darkRedPurple,
         borderRadius: 10,
         marginHorizontal: 10,
         ...Platform.select({

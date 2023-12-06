@@ -315,12 +315,16 @@ const EditProfileScreen = ({ navigation, route }) => {
   /**
    *
    * @function confirmDeletion
-   * @memberof EditProfile
+   * @memberof Screens.EditProfileScreen
    * @returns {void}
    * @async
    * @description Initiates the deletion process for the user account by calling the 'deleteAccount' function with the username and password.
    */
   const confirmDeletion = async () => {
+    if( confirmUsername === '' || confirmPassword === '') {
+      alert('Please fill out all fields.');
+      return;
+    }
     try {
       await handleDeleteAccount(confirmUsername, confirmPassword);
       await clearStoredCredentials();
@@ -333,11 +337,9 @@ const EditProfileScreen = ({ navigation, route }) => {
     }
   };
 
-  // #endregion
   /**
-   *
    * @function deleteAccount
-   * @memberof EditProfile
+   * @memberof Screens.EditProfileScreen
    * @async
    * @returns {void}
    * @description Sends a DELETE request to the server to delete the user account using the username and password.
@@ -519,7 +521,7 @@ const EditProfileScreen = ({ navigation, route }) => {
                 flexDirection: 'row',
               }}
             >
-              <View style={styles.button}>
+              <View style={[styles.button, {backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple}]}>
                 <TouchableOpacity onPress={saveChanges}>
                   <Text style={styles.buttonText}> Save Changes </Text>
                 </TouchableOpacity>
@@ -527,7 +529,7 @@ const EditProfileScreen = ({ navigation, route }) => {
               {/* DELETE ACCOUNT BUTTON */}
               <TouchableOpacity
                 onPress={() => setConfirmationModalVisible(true)}
-                style={styles.button}
+              style={[styles.button, {backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple}]}
               >
                 <Text style={styles.buttonText}>Delete Account</Text>
               </TouchableOpacity>
@@ -539,31 +541,33 @@ const EditProfileScreen = ({ navigation, route }) => {
       <Modal isVisible={isConfirmationModalVisible}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalHeader}>Delete Account</Text>
-          <Text style={styles.modalTitle}>
+          <Text style={[styles.modalTitle, { color: theme === 'dark' ? Colors.BB_bone : Colors.black }]}>
             Deleting your account will also delete all your account data. Enter
             your information to confirm deletion of your account.
           </Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { color: theme === 'dark' ? Colors.BB_bone : Colors.black }]}
             placeholder="Username"
             value={confirmUsername}
             onChangeText={(text) => setConfirmUsername(text)}
+            placeholderTextColor={theme === 'dark' ? Colors.BB_bone : Colors.black}
           />
           <TextInput
-            style={styles.input}
+            style={[styles.input, { color: theme === 'dark' ? Colors.BB_bone : Colors.black }]}
             placeholder="Password"
             secureTextEntry
             value={confirmPassword}
             onChangeText={(text) => setConfirmPassword(text)}
+            placeholderTextColor={theme === 'dark' ? Colors.BB_bone : Colors.black}
           />
           <TouchableOpacity onPress={confirmDeletion}>
-            <View style={styles.confirmButton}>
+            <View style={[styles.confirmButton, {backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_red}]}>
               <Text style={styles.confirmButtonText}>Delete</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setConfirmationModalVisible(false)}>
             <View style={styles.cancelButton}>
-              <Text style={styles.cancelButtonText}>Cancel</Text>
+              <Text style={[styles.cancelButtonText, { color: theme === 'dark' ? Colors.BB_bone : Colors.black }]}> Cancel </Text>
             </View>
           </TouchableOpacity>
         </View>
