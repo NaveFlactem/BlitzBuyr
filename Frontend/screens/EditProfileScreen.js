@@ -321,7 +321,7 @@ const EditProfileScreen = ({ navigation, route }) => {
    * @description Initiates the deletion process for the user account by calling the 'deleteAccount' function with the username and password.
    */
   const confirmDeletion = async () => {
-    if( confirmUsername === '' || confirmPassword === '') {
+    if (confirmUsername === '' || confirmPassword === '') {
       alert('Please fill out all fields.');
       return;
     }
@@ -521,7 +521,17 @@ const EditProfileScreen = ({ navigation, route }) => {
                 flexDirection: 'row',
               }}
             >
-              <View style={[styles.button, {backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple}]}>
+              <View
+                style={[
+                  styles.button,
+                  {
+                    backgroundColor:
+                      theme === 'dark'
+                        ? Colors.BB_violet
+                        : Colors.BB_darkRedPurple,
+                  },
+                ]}
+              >
                 <TouchableOpacity onPress={saveChanges}>
                   <Text style={styles.buttonText}> Save Changes </Text>
                 </TouchableOpacity>
@@ -529,7 +539,15 @@ const EditProfileScreen = ({ navigation, route }) => {
               {/* DELETE ACCOUNT BUTTON */}
               <TouchableOpacity
                 onPress={() => setConfirmationModalVisible(true)}
-              style={[styles.button, {backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple}]}
+                style={[
+                  styles.button,
+                  {
+                    backgroundColor:
+                      theme === 'dark'
+                        ? Colors.BB_violet
+                        : Colors.BB_darkRedPurple,
+                  },
+                ]}
               >
                 <Text style={styles.buttonText}>Delete Account</Text>
               </TouchableOpacity>
@@ -541,33 +559,64 @@ const EditProfileScreen = ({ navigation, route }) => {
       <Modal isVisible={isConfirmationModalVisible}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalHeader}>Delete Account</Text>
-          <Text style={[styles.modalTitle, { color: theme === 'dark' ? Colors.BB_bone : Colors.black }]}>
+          <Text
+            style={[
+              styles.modalTitle,
+              { color: theme === 'dark' ? Colors.BB_bone : Colors.black },
+            ]}
+          >
             Deleting your account will also delete all your account data. Enter
             your information to confirm deletion of your account.
           </Text>
           <TextInput
-            style={[styles.input, { color: theme === 'dark' ? Colors.BB_bone : Colors.black }]}
+            style={[
+              styles.input,
+              { color: theme === 'dark' ? Colors.BB_bone : Colors.black },
+            ]}
             placeholder="Username"
             value={confirmUsername}
             onChangeText={(text) => setConfirmUsername(text)}
-            placeholderTextColor={theme === 'dark' ? Colors.BB_bone : Colors.black}
+            placeholderTextColor={
+              theme === 'dark' ? Colors.BB_bone : Colors.black
+            }
           />
           <TextInput
-            style={[styles.input, { color: theme === 'dark' ? Colors.BB_bone : Colors.black }]}
+            style={[
+              styles.input,
+              { color: theme === 'dark' ? Colors.BB_bone : Colors.black },
+            ]}
             placeholder="Password"
             secureTextEntry
             value={confirmPassword}
             onChangeText={(text) => setConfirmPassword(text)}
-            placeholderTextColor={theme === 'dark' ? Colors.BB_bone : Colors.black}
+            placeholderTextColor={
+              theme === 'dark' ? Colors.BB_bone : Colors.black
+            }
           />
           <TouchableOpacity onPress={confirmDeletion}>
-            <View style={[styles.confirmButton, {backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_red}]}>
+            <View
+              style={[
+                styles.confirmButton,
+                {
+                  backgroundColor:
+                    theme === 'dark' ? Colors.BB_violet : Colors.BB_red,
+                },
+              ]}
+            >
               <Text style={styles.confirmButtonText}>Delete</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setConfirmationModalVisible(false)}>
             <View style={styles.cancelButton}>
-              <Text style={[styles.cancelButtonText, { color: theme === 'dark' ? Colors.BB_bone : Colors.black }]}> Cancel </Text>
+              <Text
+                style={[
+                  styles.cancelButtonText,
+                  { color: theme === 'dark' ? Colors.BB_bone : Colors.black },
+                ]}
+              >
+                {' '}
+                Cancel{' '}
+              </Text>
             </View>
           </TouchableOpacity>
         </View>

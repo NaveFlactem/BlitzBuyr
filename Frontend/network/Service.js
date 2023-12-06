@@ -26,6 +26,7 @@ import {
  * @param {object} route - Navigation route object.
  * @returns {Promise<void>}
  * @description Fetches listings from the server, updates the listings state, and handles errors.
+ * @async
  * @memberof Networking
  */
 const fetchListings = async (
@@ -106,6 +107,7 @@ const fetchListings = async (
  * @returns {Promise<void>}
  * @description Updates contact information on the backend, handles success and errors.
  * @memberof Networking
+ * @async
  */
 const saveContactInfo = async (contactInfo) => {
   try {
@@ -174,6 +176,7 @@ const handleDeleteListing = async (listingId) => {
  * @returns {Promise<void>}
  * @description Updates the like status of a listing on the backend, handling success and errors.
  * @memberof Networking
+ * @async
  */
 const handleLike = async (listingId, isLiked) => {
   const username = getStoredUsername();
@@ -210,6 +213,7 @@ const handleLike = async (listingId, isLiked) => {
  * @returns {Promise<void>}
  * @description Creates a new listing on the backend, handling success and errors.
  * @memberof Networking
+ * @async
  */
 const handleListingCreation = async (listingData) => {
   try {
@@ -239,6 +243,7 @@ const handleListingCreation = async (listingData) => {
  * @returns {Promise<void>}
  * @description Sends a POST request to update profile information, handling success and errors.
  * @memberof Networking
+ * @async
  */
 const saveProfileInfo = async (profileData) => {
   try {
@@ -269,6 +274,7 @@ const saveProfileInfo = async (profileData) => {
  * @returns {Promise<void>}
  * @description Deletes a user account on the backend, handling success and errors.
  * @memberof Networking
+ * @async
  */
 const handleDeleteAccount = async (username, password) => {
   try {

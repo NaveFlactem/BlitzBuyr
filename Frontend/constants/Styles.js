@@ -2096,7 +2096,8 @@ export const getThemedStyles = (theme) => {
         height: 45,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: theme === 'dark' ? Colors.violet : Colors.BB_darkRedPurple,
+        backgroundColor:
+          theme === 'dark' ? Colors.violet : Colors.BB_darkRedPurple,
         borderRadius: 10,
         marginHorizontal: 10,
         ...Platform.select({

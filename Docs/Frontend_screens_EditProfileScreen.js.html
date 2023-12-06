@@ -895,6 +895,16 @@
               >
             </li>
             <li data-type="method" style="display: none">
+              <a href="Screens.EditProfileScreen.html#.confirmDeletion"
+                >confirmDeletion</a
+              >
+            </li>
+            <li data-type="method" style="display: none">
+              <a href="Screens.EditProfileScreen.html#.deleteAccount"
+                >deleteAccount</a
+              >
+            </li>
+            <li data-type="method" style="display: none">
               <a href="Screens.EditProfileScreen.html#.handleCameraPick"
                 >handleCameraPick</a
               >
@@ -1479,12 +1489,16 @@ const EditProfileScreen = ({ navigation, route }) => {
   /**
    *
    * @function confirmDeletion
-   * @memberof EditProfile
+   * @memberof Screens.EditProfileScreen
    * @returns {void}
    * @async
    * @description Initiates the deletion process for the user account by calling the 'deleteAccount' function with the username and password.
    */
   const confirmDeletion = async () => {
+    if( confirmUsername === '' || confirmPassword === '') {
+      alert('Please fill out all fields.');
+      return;
+    }
     try {
       await handleDeleteAccount(confirmUsername, confirmPassword);
       await clearStoredCredentials();
@@ -1497,11 +1511,9 @@ const EditProfileScreen = ({ navigation, route }) => {
     }
   };
 
-  // #endregion
   /**
-   *
    * @function deleteAccount
-   * @memberof EditProfile
+   * @memberof Screens.EditProfileScreen
    * @async
    * @returns {void}
    * @description Sends a DELETE request to the server to delete the user account using the username and password.
@@ -1683,7 +1695,7 @@ const EditProfileScreen = ({ navigation, route }) => {
                 flexDirection: 'row',
               }}
             >
-              &lt;View style={styles.button}>
+              &lt;View style={[styles.button, {backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple}]}>
                 &lt;TouchableOpacity onPress={saveChanges}>
                   &lt;Text style={styles.buttonText}> Save Changes &lt;/Text>
                 &lt;/TouchableOpacity>
@@ -1691,7 +1703,7 @@ const EditProfileScreen = ({ navigation, route }) => {
               {/* DELETE ACCOUNT BUTTON */}
               &lt;TouchableOpacity
                 onPress={() => setConfirmationModalVisible(true)}
-                style={styles.button}
+              style={[styles.button, {backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_darkRedPurple}]}
               >
                 &lt;Text style={styles.buttonText}>Delete Account&lt;/Text>
               &lt;/TouchableOpacity>
@@ -1703,31 +1715,33 @@ const EditProfileScreen = ({ navigation, route }) => {
       &lt;Modal isVisible={isConfirmationModalVisible}>
         &lt;View style={styles.modalContainer}>
           &lt;Text style={styles.modalHeader}>Delete Account&lt;/Text>
-          &lt;Text style={styles.modalTitle}>
+          &lt;Text style={[styles.modalTitle, { color: theme === 'dark' ? Colors.BB_bone : Colors.black }]}>
             Deleting your account will also delete all your account data. Enter
             your information to confirm deletion of your account.
           &lt;/Text>
           &lt;TextInput
-            style={styles.input}
+            style={[styles.input, { color: theme === 'dark' ? Colors.BB_bone : Colors.black }]}
             placeholder="Username"
             value={confirmUsername}
             onChangeText={(text) => setConfirmUsername(text)}
+            placeholderTextColor={theme === 'dark' ? Colors.BB_bone : Colors.black}
           />
           &lt;TextInput
-            style={styles.input}
+            style={[styles.input, { color: theme === 'dark' ? Colors.BB_bone : Colors.black }]}
             placeholder="Password"
             secureTextEntry
             value={confirmPassword}
             onChangeText={(text) => setConfirmPassword(text)}
+            placeholderTextColor={theme === 'dark' ? Colors.BB_bone : Colors.black}
           />
           &lt;TouchableOpacity onPress={confirmDeletion}>
-            &lt;View style={styles.confirmButton}>
+            &lt;View style={[styles.confirmButton, {backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_red}]}>
               &lt;Text style={styles.confirmButtonText}>Delete&lt;/Text>
             &lt;/View>
           &lt;/TouchableOpacity>
           &lt;TouchableOpacity onPress={() => setConfirmationModalVisible(false)}>
             &lt;View style={styles.cancelButton}>
-              &lt;Text style={styles.cancelButtonText}>Cancel&lt;/Text>
+              &lt;Text style={[styles.cancelButtonText, { color: theme === 'dark' ? Colors.BB_bone : Colors.black }]}> Cancel &lt;/Text>
             &lt;/View>
           &lt;/TouchableOpacity>
         &lt;/View>
@@ -1791,7 +1805,7 @@ export default memo(EditProfileScreen);
     <footer>
       Documentation generated by
       <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Tue Dec 05
-      2023 17:52:12 GMT-0800 (Pacific Standard Time) using the
+      2023 19:02:13 GMT-0800 (Pacific Standard Time) using the
       <a href="https://github.com/clenemt/docdash">docdash</a> theme.
     </footer>
 
