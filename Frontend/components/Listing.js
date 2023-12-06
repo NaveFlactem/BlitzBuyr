@@ -657,7 +657,7 @@ const Listing = ({
                 <MemoizedImage
                   source={item.ProfilePicture}
                   style={styles.sellerPic}
-                  loadAnimSize={10}
+                  loadAnimSize={5}
                 />
               </TouchableOpacity>
               <Text style={styles.sellerName}>{item.Username}</Text>
