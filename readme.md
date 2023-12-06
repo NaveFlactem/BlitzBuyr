@@ -7,60 +7,11 @@ BlitzBuyr is a mobile app designed to revolutionize the online shopping experien
 ## Showcase
 
 Here's a showcase some of the features and user interface of BlitzBuyr:
-
-<style>
-  .gallery {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-  }
-  .item {
-    width: 200px;
-    overflow: hidden;
-    border-radius: 5px;
-  }
-  .item img {
-    width: 100%;
-    object-fit: cover;
-  }
-</style>
-</head>
-<body>
-  <div class="gallery">
-    <div class="item">
-      <img src="https://i.imgur.com/m5oda0w.jpeg" alt="Home Screen">
-    </div>
-    <div class="item">
-      <img src="https://i.imgur.com/ixuNI5O.png" alt="Listing Description">
-    </div>
-    <div class="item">
-      <img src="https://i.imgur.com/JTrY3GK.png" alt="Profile Page">
-    </div>
-    <div class="item">
-      <img src="https://i.imgur.com/KGWWFUV.png" alt="Profile Page 2">
-    </div>
-    <div class="item">
-      <img src="https://i.imgur.com/XAkpKKA.png" alt="Profile Page 3">
-    </div>
-    <div class="item">
-      <img src="https://i.imgur.com/qqDqE8F.png" alt="Filters">
-    </div>
-    <div class="item">
-      <img src="https://i.imgur.com/kFG6AZF.png" alt="Settings">
-    </div>
-    <div class="item">
-      <img src="https://i.imgur.com/zUfEE10.png" alt="Contact Info Dark Mode">
-    </div>
-    <div class="item">
-      <img src="https://i.imgur.com/azQ7J91.jpeg" alt="Home Screen Dark Mode">
-    </div>
-    <div class="item">
-      <img src="https://i.imgur.com/ej3Ei95.png" alt="Create Listing Dark Mode">
-    </div>
-  </div>
-</body>
-</html>
+| ![Home Screen](https://i.imgur.com/m5oda0w.jpeg) | ![Listing Description](https://i.imgur.com/ixuNI5O.png) | ![Profile Page](https://i.imgur.com/JTrY3GK.png) |
+| ------------------------------------------------- | ------------------------------------------------------- | ---------------------------------------------- |
+| ![Profile Page 2](https://i.imgur.com/KGWWFUV.png) | ![Profile Page 3](https://i.imgur.com/XAkpKKA.png) | ![Filters](https://i.imgur.com/qqDqE8F.png) |
+| ![Settings](https://i.imgur.com/kFG6AZF.png) | ![Contact Info Dark Mode](https://i.imgur.com/zUfEE10.png) | ![Home Screen Dark Mode](https://i.imgur.com/azQ7J91.jpeg) |
+| ![Create Listing Dark Mode](https://i.imgur.com/ej3Ei95.png) | |
 
 ## Table of Contents
 
