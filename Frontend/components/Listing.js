@@ -7,7 +7,6 @@
  * @memberof Components
  */
 
-
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, {
@@ -48,7 +47,11 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { calculateFontSize, calculateFontSizeLocation, calculateTransactionFontSize } from './CalculateFontSize.js';
+import {
+  calculateFontSize,
+  calculateFontSizeLocation,
+  calculateTransactionFontSize,
+} from './CalculateFontSize.js';
 
 /**
  * @constant default_blurhash

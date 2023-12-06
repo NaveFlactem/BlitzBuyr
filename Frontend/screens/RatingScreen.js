@@ -63,6 +63,11 @@ const RatingScreen = ({ navigation, route }) => {
    *              Logs errors if there's an issue while submitting the rating.
    */
   const handleSubmitRating = () => {
+    if (selectedRating === 0 || selectedRating > 5) {
+      Alert.alert('Please select a valid rating');
+      return;
+    }
+
     const ratingPayload = {
       username: getStoredUsername(),
       userRated: route.params.username,

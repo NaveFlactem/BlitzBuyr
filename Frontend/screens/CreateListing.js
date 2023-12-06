@@ -1,5 +1,3 @@
-
-
 /**
  * @namespace CreateListing
  * @memberof Screens
@@ -64,7 +62,7 @@ const LoadingView = memo(({ styles }) => (
  */
 const MinorLoadingView = memo(({ styles }) => (
   <View style={styles.minorLoadingContainer}>
-    <BouncePulse />
+    <BouncePulse bottom={0.6 * screenHeight} />
   </View>
 ));
 
@@ -90,7 +88,7 @@ const CreateListing = memo(({ navigation, route }) => {
   const [isPriceInvalid, setIsPriceInvalid] = useState(false);
   const [isConditionInvalid, setIsConditionInvalid] = useState(false);
   const [isTransactionPreferenceInvalid, setIsTransactionPreferenceInvalid] =
-  useState(false);
+    useState(false);
   const [isImageInvalid, setIsImageInvalid] = useState(false);
   const [isTagInvalid, setIsTagInvalid] = useState(false);
   const [isMinorLoading, setIsMinorLoading] = useState(false);
@@ -101,6 +99,9 @@ const CreateListing = memo(({ navigation, route }) => {
   const [tagsData, setTagsData] = useState([...tagOptions]);
   const [currencyOptions, setCurrencyOptions] = useState([...currencies]);
   const [selectImageModalVisible, setSelectImageModalVisible] = useState(false);
+  const [isCurrencyInvalid, setIsCurrencyInvalid] = useState(false);
+  const [pickerKeyTP, setpickerKeyTP] = useState(0);
+  const [pickerKeyC, setpickerKeyC] = useState(0);
   const { theme } = useThemeContext();
   const styles = getThemedStyles(theme).CreateListing;
 
@@ -125,6 +126,7 @@ const CreateListing = memo(({ navigation, route }) => {
     setpickerKeyC((prevKey) => prevKey + 1); // Increment key to force re-render of Condition Picker
     setData([]);
     setSelectedTags([]);
+    setTagsData(tagsData.map((tag) => ({ ...tag, selected: false })));
     setSelectedCurrency('USD');
     setSelectedCurrencySymbol('$');
     setIsScrollEnabled(true);
@@ -148,7 +150,7 @@ const CreateListing = memo(({ navigation, route }) => {
   const checkValidListing = async () => {
     const regex = /^(\d{0,6}(\.\d{2})?)$/;
 
-    setIsPriceInvalid(!regex.test(price) && price.length !== 0);
+    setIsPriceInvalid(price === '' || !regex.test(price) || price < 0);
     setIsTitleInvalid(title.length === 0 || title.length > 25);
     setIsDescriptionInvalid(
       description.length === 0 || description.length > 500,
@@ -163,6 +165,7 @@ const CreateListing = memo(({ navigation, route }) => {
     );
     setIsImageInvalid(data.length === 0 || data.length > 9);
     setIsTagInvalid(selectedTags.length === 0);
+    setIsCurrencyInvalid(selectedCurrency === '');
 
     if (
       Object.values({
@@ -173,6 +176,7 @@ const CreateListing = memo(({ navigation, route }) => {
         isTransactionPreferenceInvalid,
         isImageInvalid,
         isTagInvalid,
+        isCurrencyInvalid,
       }).includes(true)
     ) {
       return -1; // Invalid form
@@ -311,13 +315,21 @@ const CreateListing = memo(({ navigation, route }) => {
    * @memberof Screens.CreateListing
    */
   const handleCameraPick = async () => {
+    if (data.length >= 9) {
+      Alert.alert(
+        'Too many images',
+        'Please select no more than 9 images. Try deleting some images.',
+      );
+      return;
+    }
+
     setIsMinorLoading(true);
     const result = await ImagePicker.launchCameraAsync();
 
     if (!result.canceled) {
       processImage(result); // Process the first (and only) image
     }
-
+    setIsMinorLoading(false);
     hideModal();
   };
 
@@ -329,6 +341,15 @@ const CreateListing = memo(({ navigation, route }) => {
    * @memberof Screens.CreateListing
    */
   const handleLibraryPick = async () => {
+    if (data.length >= 9) {
+      Alert.alert(
+        'Too many images',
+        'Please select no more than 9 images. Try deleting some images.',
+      );
+      return;
+    }
+
+    setIsMinorLoading(true);
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: false,
@@ -336,11 +357,10 @@ const CreateListing = memo(({ navigation, route }) => {
       allowsMultipleSelection: true,
       selectionLimit: 9 - data.length,
     });
-
     if (!result.canceled && result.assets) {
       processSelectedImages(result.assets);
     }
-
+    setIsMinorLoading(false);
     hideModal();
   };
 
@@ -434,6 +454,9 @@ const CreateListing = memo(({ navigation, route }) => {
         text: 'Delete',
         onPress: () => {
           setData((currentData) => currentData.filter((_, i) => i !== index));
+          if (data.length >= 1 || data.length <= 9) {
+            setIsImageInvalid(false);
+          }
         },
       },
     ]);
@@ -788,11 +811,13 @@ const CreateListing = memo(({ navigation, route }) => {
                 setIsTransactionPreferenceInvalid(false);
               }}
               items={[
+                { label: 'Select an option...', value: 'Select an option...' },
                 { label: 'Pickup', value: 'Pickup' },
                 { label: 'Meetup', value: 'Meetup' },
                 { label: 'Delivery', value: 'Delivery' },
                 { label: 'No Preference', value: 'No Preference' },
               ]}
+              placeholder={{}}
               style={{
                 inputIOS: {
                   color: theme === 'dark' ? Colors.white : Colors.black,
@@ -848,10 +873,14 @@ const CreateListing = memo(({ navigation, route }) => {
                 { label: 'Poor', value: 'Poor' },
                 { label: 'For Parts', value: 'For Parts' },
               ]}
+              placeholder={{}}
               style={{
                 inputIOS: {
                   color: theme === 'dark' ? Colors.white : Colors.black,
                   left: 5,
+                  width: screenWidth * 0.9,
+                  height: 40,
+                  borderRadius: 5,
                 },
                 inputAndroid: {
                   color: theme === 'dark' ? Colors.white : Colors.black,
