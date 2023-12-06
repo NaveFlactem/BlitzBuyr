@@ -101,6 +101,13 @@ toggle dark mode and read our about us section.
 
 [View `SettingsScreen.js` source code](SettingsScreen.js.html)
 
+### EditProfileScreen
+
+The Edit Profile Screen allows users to edit their username, email, profile photo and banner photo. It
+also allows users to delete their account.  
+
+[View `EditProfileScreen.js` source code](EditProfileScreen.js.html)
+
 ## Conclusion
 
 This documentation serves as a reference for developers working on the BlitzBuyr project, as well as any interested in our workflow or codebase, outlining the structure and key components of both the backend and frontend.
