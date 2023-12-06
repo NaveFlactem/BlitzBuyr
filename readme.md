@@ -8,7 +8,7 @@ BlitzBuyr is a mobile app designed to revolutionize the online shopping experien
 
 Here's a showcase some of the features and user interface of BlitzBuyr:
 
-<blockquote class="imgur-embed-pub" lang="en" data-id="a/XNnaLyk"  ><a href="//imgur.com/a/XNnaLyk">BlitzBuyr Photos</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+<blockquote class="imgur-embed-pub" lang="en" data-id="a/XNnaLyk"  ><a href="//imgur.com/a/XNnaLyk">BlitzBuyr Photos</a></blockquote>
 
 ## Table of Contents
 
