@@ -225,7 +225,7 @@ const CardOverlay = memo(
  * @memberof Listing
  */
 const MemoizedImage = memo(
-  ({ source, blurhash, style, contentFit, transition, theme }) => {
+  ({ source, blurhash, style, contentFit, transition, theme, loadAnimSize }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     const PlaceholderOverlay = (
@@ -246,6 +246,7 @@ const MemoizedImage = memo(
       >
         <BouncePulse
           color={theme === 'dark' ? Colors.BB_violet : Colors.BB_darkOrange}
+          size={loadAnimSize}
         />
       </View>
     );
@@ -656,6 +657,7 @@ const Listing = ({
                 <MemoizedImage
                   source={item.ProfilePicture}
                   style={styles.sellerPic}
+                  loadAnimSize={10}
                 />
               </TouchableOpacity>
               <Text style={styles.sellerName}>{item.Username}</Text>

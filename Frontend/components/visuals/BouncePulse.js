@@ -131,6 +131,8 @@ const BouncePulse = memo((props) => {
             bottom: props.dotBottom,
             left: props.dotLeft,
             right: props.dotRight,
+            width: props.size ? props.size : 20,
+            height: props.size ? props.size : 20,
             backgroundColor: props.color
               ? props.color
               : theme === 'dark'
@@ -148,6 +150,8 @@ const BouncePulse = memo((props) => {
             bottom: props.dotBottom,
             left: props.dotLeft,
             right: props.dotRight,
+            width: props.size ? props.size : 20,
+            height: props.size ? props.size : 20,
             backgroundColor: props.color
               ? props.color
               : theme === 'dark'
@@ -165,6 +169,8 @@ const BouncePulse = memo((props) => {
             bottom: props.dotBottom,
             left: props.dotLeft,
             right: props.dotRight,
+            width: props.size ? props.size : 20,
+            height: props.size ? props.size : 20,
             backgroundColor: props.color
               ? props.color
               : theme === 'dark'
