@@ -81,7 +81,7 @@ Each of these screens plays a vital role in delivering a seamless user experienc
 
 ### CreateListing
 
-The Create Listing screen allows users to create and upolad a listing.  The user inputs a title,
+The Create Listing Screen allows users to create and upolad a listing.  The user inputs a title,
 descriptions, price, currency type, transaction preference, condition, and tags.  Then the user is able
 to upload images of the item they are trying to sell.
 
@@ -93,6 +93,13 @@ The Rating Screen allows users to rate another users out of 5.  The user selects
 to another profile that they compelted a transaction through.  
 
 [View `RatingScreen.js` source code](RatingScreen.js.html)
+
+### SettingsScreen
+
+The Settings Screen allows users to change their password, input contact info, toggle notifications,
+toggle dark mode and read our about us section.
+
+[View `SettingsScreen.js` source code](SettingsScreen.js.html)
 
 ## Conclusion
 
