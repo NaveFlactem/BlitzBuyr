@@ -1610,13 +1610,30 @@ export const getThemedStyles = (theme) => {
         height: 20,
         top: 2,
         right: 2,
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        backgroundColor:
+          theme === 'dark'
+            ? themeColors.BB_darkRedPurple
+            : 'rgba(255, 255, 255, 0.7)',
         borderRadius: 12,
         zIndex: 2,
         textAlign: 'center',
+        ...Platform.select({
+          ios: {
+            shadowColor: theme === 'dark' ? Colors.BB_violet : Colors.black,
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+          },
+          android: {
+            elevation: 10,
+          },
+        }),
       },
       deleteButtonText: {
-        color: 'red',
+        color: theme === 'dark' ? Colors.BB_violet : Colors.BB_red,
         fontWeight: 'bold',
         textAlign: 'center',
         alignSelf: 'center',

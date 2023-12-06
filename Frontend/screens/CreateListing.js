@@ -719,7 +719,7 @@ const CreateListing = memo(({ navigation, route }) => {
                       ? 'Must enter a valid price'
                       : price < 0
                         ? 'Invalid price'
-                        : price.length >= 7
+                        : price >= 1000000
                           ? 'Price too large'
                           : 'Must enter a valid price'}
                 </Text>
