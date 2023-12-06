@@ -1246,17 +1246,29 @@ export const getThemedStyles = (theme) => {
         zIndex: 1,
       },
       modalContainer: {
-        backgroundColor: 'white',
+        backgroundColor: theme === 'dark' ? Colors.black : Colors.BB_bone,
         padding: 20,
         borderRadius: 10,
         borderColor: 'black',
         borderWidth: 2,
         alignSelf: 'center',
         marginTop: '80%',
+        ...Platform.select({
+          ios: {
+            shadowColor: themeColors.black,
+            shadowOffset: { width: 1, height: 2 },
+            shadowOpacity: 0.6,
+            shadowRadius: 5,
+          },
+          android: {
+            elevation: 10,
+          },
+        }),
       },
       modalText: {
         fontSize: 18,
         marginBottom: 15,
+        color: theme === 'dark' ? Colors.BB_bone : Colors.black,
       },
       buttonContainer: {
         flexDirection: 'row',
@@ -1265,7 +1277,7 @@ export const getThemedStyles = (theme) => {
       },
       confirmButton: {
         flex: 1,
-        backgroundColor: 'red',
+        backgroundColor: theme === 'dark' ? Colors.BB_violet : Colors.BB_red,
         padding: 10,
         borderRadius: 5,
       },
