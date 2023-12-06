@@ -1,5 +1,18 @@
 ![BlitzBuyr Logo](https://i.imgur.com/EHeXa9f.png)
 
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Showcase](#showcase)
+- [Installation](#installation)
+- [Contributing](#contributing)
+- [Guides](#guides)
+  - [Generating/Updating Docs](#generatingupdating-docs)
+  - [Unit Testing](#unit-testing)
+- [Deliverables](#deliverables)
+- [Team](#team)
+- [Conclusion](#conclusion)
+
 ## Introduction
 
 BlitzBuyr is a mobile app designed to revolutionize the online shopping experience by offering users a personalized and interactive platform. With BlitzBuyr, users can discover unique products, compare prices, and connect with a community of like-minded shoppers, creating a vibrant space for individuality and engagement. BlitzBuyr is driven by the need for a more interactive and personalized online shopping experience, aligning with the preferences of users who value short-term, engaging interactions on popular social media platforms. By addressing this gap, we aim to redefine the online marketplace landscape and provide a unique space that highlights the individuality of each product. Beyond this, we aim to create a thriving community where users can connect, share experiences, and build relationships around their shared interests and purchases.
@@ -12,17 +25,6 @@ Here's a showcase some of the features and user interface of BlitzBuyr:
 | ![Profile Page 2](https://i.imgur.com/KGWWFUV.png) | ![Profile Page 3](https://i.imgur.com/XAkpKKA.png) | ![Filters](https://i.imgur.com/qqDqE8F.png) |
 | ![Settings](https://i.imgur.com/kFG6AZF.png) | ![Contact Info Dark Mode](https://i.imgur.com/zUfEE10.png) | ![Home Screen Dark Mode](https://i.imgur.com/azQ7J91.jpeg) |
 | ![Create Listing Dark Mode](https://i.imgur.com/ej3Ei95.png) | |
-
-## Table of Contents
-
-- [Installation](#installation)
-- [Contributing](#contributing)
-- [Guides](#guides)
-  - [Generating/Updating Docs](#generatingupdating-docs)
-  - [Unit Testing](#unit-testing)
-- [Deliverables](#deliverables)
-- [Team](#team)
-- [Conclusion](#conclusion)
 
 ## Installation
 
