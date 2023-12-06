@@ -4,7 +4,7 @@
  */
 
 import React, { memo, useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -14,9 +14,8 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import Colors from '../../constants/Colors';
-import { screenHeight } from '../../constants/ScreenDimensions.js';
-import { useThemeContext } from './ThemeProvider';
 import { getThemedStyles } from '../../constants/Styles';
+import { useThemeContext } from './ThemeProvider';
 
 /**
  * @namespace BouncePulse
@@ -45,6 +44,7 @@ import { getThemedStyles } from '../../constants/Styles';
  */
 
 const BouncePulse = memo((props) => {
+  const { theme } = useThemeContext();
   const styles = getThemedStyles(useThemeContext().theme).BouncePulse;
   const translateY1 = useSharedValue(0);
   const translateY2 = useSharedValue(0);
@@ -60,10 +60,10 @@ const BouncePulse = memo((props) => {
     animatedValue.value = withRepeat(
       withSequence(
         withDelay(delay, withTiming(1, { duration: 300 })),
-        withTiming(0, { duration: 300 }),
+        withTiming(0, { duration: 300 })
       ),
       -1, // infinite repeats
-      true, // reverse the animation on every second iteration
+      true // reverse the animation on every second iteration
     );
   };
 
@@ -131,6 +131,11 @@ const BouncePulse = memo((props) => {
             bottom: props.dotBottom,
             left: props.dotLeft,
             right: props.dotRight,
+            backgroundColor: props.color
+              ? props.color
+              : theme === 'dark'
+              ? Colors.BB_violet
+              : Colors.BB_darkRedPurple,
           },
         ]}
       />
@@ -143,6 +148,11 @@ const BouncePulse = memo((props) => {
             bottom: props.dotBottom,
             left: props.dotLeft,
             right: props.dotRight,
+            backgroundColor: props.color
+              ? props.color
+              : theme === 'dark'
+              ? Colors.BB_violet
+              : Colors.BB_darkRedPurple,
           },
         ]}
       />
@@ -155,6 +165,11 @@ const BouncePulse = memo((props) => {
             bottom: props.dotBottom,
             left: props.dotLeft,
             right: props.dotRight,
+            backgroundColor: props.color
+              ? props.color
+              : theme === 'dark'
+              ? Colors.BB_violet
+              : Colors.BB_darkRedPurple,
           },
         ]}
       />

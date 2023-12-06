@@ -7,7 +7,6 @@
  * @memberof Components
  */
 
-
 import { useNavigation } from '@react-navigation/native';
 import { Image } from 'expo-image';
 import React, {
@@ -19,36 +18,38 @@ import React, {
   useState,
 } from 'react';
 import {
-  Animated as AnimatedRN,
   Modal,
-  Platform,
   Pressable,
   SafeAreaView,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import FlipCard from './CustomFlipCard.js';
 import { PinchGestureHandler, ScrollView } from 'react-native-gesture-handler';
-import Carousel from 'react-native-reanimated-carousel';
-import Entypo from 'react-native-vector-icons/Entypo';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { serverIp } from '../config.js';
-import Colors from '../constants/Colors.js';
-import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
-import { handleDeleteListing, handleLike } from '../network/Service.js';
-import { getStoredUsername } from '../screens/auth/Authenticate.js';
-import { parallaxLayout } from './parallax.ts';
-import { useThemeContext } from './visuals/ThemeProvider';
-import { getThemedStyles } from '../constants/Styles';
 import Animated, {
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { calculateFontSize, calculateFontSizeLocation, calculateTransactionFontSize } from './CalculateFontSize.js';
+import Carousel from 'react-native-reanimated-carousel';
+import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { serverIp } from '../config.js';
+import Colors from '../constants/Colors.js';
+import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
+import { getThemedStyles } from '../constants/Styles';
+import { handleDeleteListing, handleLike } from '../network/Service.js';
+import { getStoredUsername } from '../screens/auth/Authenticate.js';
+import {
+  calculateFontSize,
+  calculateFontSizeLocation,
+  calculateTransactionFontSize,
+} from './CalculateFontSize.js';
+import FlipCard from './CustomFlipCard.js';
+import { parallaxLayout } from './parallax.ts';
+import BouncePulse from './visuals/BouncePulse.js';
+import { useThemeContext } from './visuals/ThemeProvider';
 
 /**
  * @constant default_blurhash
@@ -154,18 +155,18 @@ const TimeBox = memo(({ timeSince, styles }) => {
           {timeSince < 30
             ? 'Just now'
             : timeSince < 60
-              ? `${timeSince} seconds ago`
-              : timeSince < 120
-                ? `1 minute ago`
-                : timeSince < 3600
-                  ? `${Math.floor(timeSince / 60)} minutes ago`
-                  : timeSince < 7200
-                    ? `1 hour ago`
-                    : timeSince < 86400
-                      ? `${Math.floor(timeSince / 3600)} hours ago`
-                      : timeSince < 172800
-                        ? `1 day ago`
-                        : `${Math.floor(timeSince / 86400)} days ago`}
+            ? `${timeSince} seconds ago`
+            : timeSince < 120
+            ? `1 minute ago`
+            : timeSince < 3600
+            ? `${Math.floor(timeSince / 60)} minutes ago`
+            : timeSince < 7200
+            ? `1 hour ago`
+            : timeSince < 86400
+            ? `${Math.floor(timeSince / 3600)} hours ago`
+            : timeSince < 172800
+            ? `1 day ago`
+            : `${Math.floor(timeSince / 86400)} days ago`}
         </Text>
       </View>
     </React.Fragment>
@@ -209,7 +210,7 @@ const CardOverlay = memo(
         </View>
       </View>
     );
-  },
+  }
 );
 
 /**
@@ -224,19 +225,46 @@ const CardOverlay = memo(
  * @memberof Listing
  */
 const MemoizedImage = memo(
-  ({ source, blurhash, style, contentFit, transition }) => {
-    //console.log(`${serverIp}/img/${source.uri}`);
-    return (
-      <Image
-        source={{ uri: source }}
-        style={style}
-        contentFit={contentFit}
-        transition={transition}
-        placeholder={blurhash ? blurhash : default_blurhash}
-        cachePolicy="memory-disk"
-      />
+  ({ source, blurhash, style, contentFit, transition, theme }) => {
+    const [isLoading, setIsLoading] = useState(true);
+
+    const PlaceholderOverlay = (
+      <View
+        style={[
+          style,
+          {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1,
+          },
+        ]}
+      >
+        <BouncePulse
+          color={theme === 'dark' ? Colors.BB_violet : Colors.BB_darkOrange}
+        />
+      </View>
     );
-  },
+
+    return (
+      <View>
+        <Image
+          source={{ uri: source }}
+          style={style}
+          contentFit={contentFit}
+          transition={transition}
+          placeholder={blurhash ? blurhash : default_blurhash}
+          cachePolicy="memory-disk"
+          onLoad={() => setIsLoading(false)}
+        />
+        {isLoading && PlaceholderOverlay}
+      </View>
+    );
+  }
 );
 
 /**
@@ -265,6 +293,7 @@ const CustomItem = memo(
     onDeletePress,
     deleteVisible,
     styles,
+    theme,
   }) => {
     /**
      * @var {object} focalX
@@ -417,6 +446,7 @@ const CustomItem = memo(
               style={styles.image}
               contentFit="contain"
               transition={0}
+              theme={theme}
             />
           </Animated.View>
         </PinchGestureHandler>
@@ -430,7 +460,7 @@ const CustomItem = memo(
         )}
       </CardOverlay>
     );
-  },
+  }
 );
 
 /**
@@ -476,7 +506,7 @@ const Listing = ({
       item.Latitude,
       item.Longitude,
       userLocation.latitude,
-      userLocation.longitude,
+      userLocation.longitude
     );
   }, [
     item.Latitude,
@@ -487,7 +517,7 @@ const Listing = ({
 
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(
-    origin == 'profile' && item.Username == getStoredUsername(),
+    origin == 'profile' && item.Username == getStoredUsername()
   );
 
   const toggleDeleteModal = useCallback(() => {
@@ -551,6 +581,7 @@ const Listing = ({
                 deleteVisible={deleteVisible}
                 origin={origin}
                 styles={styles}
+                theme={theme}
               />
             )}
             customAnimation={parallaxLayout(
@@ -562,7 +593,7 @@ const Listing = ({
                 parallaxScrollingScale: 1,
                 parallaxAdjacentItemScale: 0.5,
                 parallaxScrollingOffset: 10,
-              },
+              }
             )}
           />
         </View>
@@ -703,7 +734,7 @@ const Listing = ({
                   ...styles.conditionText,
                   top: '30%',
                   fontSize: calculateTransactionFontSize(
-                    item.TransactionPreference,
+                    item.TransactionPreference
                   ),
                 }}
               >
@@ -805,4 +836,5 @@ const Listing = ({
   );
 };
 
+export { default_blurhash };
 export default memo(Listing);
