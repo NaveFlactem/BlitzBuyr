@@ -2,6 +2,7 @@
 
 Welcome to the official documentation for BlitzBuyr (BBC - BlitzBuyr Coders). This document provides an overview of the project's structure, key components, and how to use them effectively.
 
+<!-- 
 ## Table of Contents
 
 - [Backend](#backend)
@@ -12,7 +13,7 @@ Welcome to the official documentation for BlitzBuyr (BBC - BlitzBuyr Coders). Th
   - [CreateAccountScreen](#createaccountscreen)
   - [Login Screen](#login-screen)
   - [HomeScreen](#homescreen)
-  - [ProfileScreen](#profilescreen)
+  - [ProfileScreen](#profilescreen) -->
 
 ## Backend
 
