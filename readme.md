@@ -79,6 +79,14 @@ Each of these screens plays a vital role in delivering a seamless user experienc
 
 [View `ProfileScreen.js` source code](ProfileScreen.js.html)
 
+### CreateListing
+
+The Create Listing screen allows users to create and upolad a listing.  The user inputs a title,
+descriptions, price, currency type, transaction preference, condition, and tags.  Then the user is able
+to upload images of the item they are trying to sell.
+
+[View `CreateListing.js` source code](CreateListing.js.html)
+
 ## Conclusion
 
 This documentation serves as a reference for developers working on the BlitzBuyr project, as well as any interested in our workflow or codebase, outlining the structure and key components of both the backend and frontend.
