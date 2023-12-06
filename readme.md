@@ -8,7 +8,59 @@ BlitzBuyr is a mobile app designed to revolutionize the online shopping experien
 
 Here's a showcase some of the features and user interface of BlitzBuyr:
 
-<blockquote class="imgur-embed-pub" lang="en" data-id="a/XNnaLyk"  ><a href="//imgur.com/a/XNnaLyk">BlitzBuyr Photos</a></blockquote>
+<style>
+  .gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .item {
+    width: 200px;
+    overflow: hidden;
+    border-radius: 5px;
+  }
+  .item img {
+    width: 100%;
+    object-fit: cover;
+  }
+</style>
+</head>
+<body>
+  <div class="gallery">
+    <div class="item">
+      <img src="https://i.imgur.com/m5oda0w.jpeg" alt="Home Screen">
+    </div>
+    <div class="item">
+      <img src="https://i.imgur.com/ixuNI5O.png" alt="Listing Description">
+    </div>
+    <div class="item">
+      <img src="https://i.imgur.com/JTrY3GK.png" alt="Profile Page">
+    </div>
+    <div class="item">
+      <img src="https://i.imgur.com/KGWWFUV.png" alt="Profile Page 2">
+    </div>
+    <div class="item">
+      <img src="https://i.imgur.com/XAkpKKA.png" alt="Profile Page 3">
+    </div>
+    <div class="item">
+      <img src="https://i.imgur.com/qqDqE8F.png" alt="Filters">
+    </div>
+    <div class="item">
+      <img src="https://i.imgur.com/kFG6AZF.png" alt="Settings">
+    </div>
+    <div class="item">
+      <img src="https://i.imgur.com/zUfEE10.png" alt="Contact Info Dark Mode">
+    </div>
+    <div class="item">
+      <img src="https://i.imgur.com/azQ7J91.jpeg" alt="Home Screen Dark Mode">
+    </div>
+    <div class="item">
+      <img src="https://i.imgur.com/ej3Ei95.png" alt="Create Listing Dark Mode">
+    </div>
+  </div>
+</body>
+</html>
 
 ## Table of Contents
 
@@ -84,7 +136,7 @@ Unit testing is done with Mocha and Chai for the backend, and Jest for the front
 - [Test Plan and Report Document](https://docs.google.com/document/d/1421OKnpSpiZaO3-3GJeWJ5KHAnAvv0nNFfs30BBLBzc/edit#heading=h.2yy5cnnmsswp)
 - [Release Summary Document](https://docs.google.com/document/d/1WjgArigd5WFmqFfMzPfhd7Xs9remaX6HwLvQZ41PWoU/edit#heading=h.1tzgsuwnhc5v)
 - [Known Issues and Bugs](https://docs.google.com/document/d/1WjgArigd5WFmqFfMzPfhd7Xs9remaX6HwLvQZ41PWoU/edit#heading=h.6e8vzf4atd4x)
-- [Design Documents](TBD)
+- [Design Documents](<https://www.figma.com/file/MwLj7dRBdARcD1attEeKtE/Diagramming-101-(Community)-(Copy)?type=whiteboard&node-id=0-1&t=in6RSGhQpJVO2J82-0>)
 
 ## Team
 
