@@ -1,9 +1,7 @@
 import React, { memo } from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
-import Colors from '../constants/Colors';
-import { screenHeight, screenWidth } from '../constants/ScreenDimensions.js';
-import { useThemeContext } from './visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
+import { useThemeContext } from './visuals/ThemeProvider';
 
 /**
  *
