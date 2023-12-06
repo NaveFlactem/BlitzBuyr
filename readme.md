@@ -4,6 +4,100 @@
 
 BlitzBuyr is a mobile app designed to revolutionize the online shopping experience by offering users a personalized and interactive platform. With BlitzBuyr, users can discover unique products, compare prices, and connect with a community of like-minded shoppers, creating a vibrant space for individuality and engagement. BlitzBuyr is driven by the need for a more interactive and personalized online shopping experience, aligning with the preferences of users who value short-term, engaging interactions on popular social media platforms. By addressing this gap, we aim to redefine the online marketplace landscape and provide a unique space that highlights the individuality of each product. Beyond this, we aim to create a thriving community where users can connect, share experiences, and build relationships around their shared interests and purchases.
 
+## Showcase
+
+Here's a showcase some of the features and user interface of BlitzBuyr:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>BlitzBuyr Showcase Carousel</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+    .carousel-inner img {
+      width: 50%;
+      height: auto;
+      margin: auto;
+    }
+    #myCarousel {
+      width: 50%;
+      float: left;
+    }
+    .clearfix:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+      <li data-target="#myCarousel" data-slide-to="1"></li>
+      <li data-target="#myCarousel" data-slide-to="2"></li>
+      <li data-target="#myCarousel" data-slide-to="3"></li>
+      <li data-target="#myCarousel" data-slide-to="4"></li>
+      <li data-target="#myCarousel" data-slide-to="5"></li>
+      <li data-target="#myCarousel" data-slide-to="6"></li>
+      <li data-target="#myCarousel" data-slide-to="7"></li>
+      <li data-target="#myCarousel" data-slide-to="8"></li>
+      <li data-target="#myCarousel" data-slide-to="9"></li>
+      <li data-target="#myCarousel" data-slide-to="10"></li>
+    </ol>
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner">
+      <div class="item active">
+        <img src="https://i.imgur.com/m5oda0w.jpeg" alt="Home Screen">
+      </div>
+      <div class="item">
+        <img src="https://i.imgur.com/ixuNI5O.png" alt="Listing Description">
+      </div>
+      <div class="item">
+        <img src="https://i.imgur.com/JTrY3GK.png" alt="Profile Page">
+      </div>
+      <div class="item">
+        <img src="https://i.imgur.com/KGWWFUV.png" alt="Profile Page 2">
+      </div>
+      <div class="item">
+        <img src="https://i.imgur.com/XAkpKKA.png" alt="Profile Page 3">
+      </div>
+      <div class="item">
+        <img src="https://i.imgur.com/qqDqE8F.png" alt="Filters">
+      </div>
+      <div class="item">
+        <img src="https://i.imgur.com/kFG6AZF.png" alt="Settings">
+      </div>
+      <div class="item">
+        <img src="https://i.imgur.com/zUfEE10.png" alt="Contact Info Dark Mode">
+      </div>
+      <div class="item">
+        <img src="https://i.imgur.com/azQ7J91.jpeg" alt="Home Screen Dark Mode">
+      </div>
+      <div class="item">
+        <img src="https://i.imgur.com/ej3Ei95.png" alt="Create Listing Dark Mode">
+      </div>
+    </div>
+    <!-- Left and right controls -->
+    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+      <span class="glyphicon glyphicon-chevron-left"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" data-slide="next">
+      <span class="glyphicon glyphicon-chevron-right"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+</div>
+</body>
+</html>
+
 ## Table of Contents
 
 - [Installation](#installation)
