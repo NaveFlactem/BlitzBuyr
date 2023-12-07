@@ -45,6 +45,8 @@ import {
   calculateFontSize,
   calculateFontSizeLocation,
   calculateTransactionFontSize,
+  calculateTitleFontSize,
+  calculateDescriptionFontSize,
 } from './CalculateFontSize.js';
 import FlipCard from './CustomFlipCard.js';
 import { parallaxLayout } from './parallax.ts';
@@ -607,7 +609,8 @@ const Listing = ({
           cardStyle={styles.cardBackground2}
           styles={styles}
         >
-          <Text style={styles.title}>{item.Title}</Text>
+          <Text style={[styles.title, { fontSize: calculateTitleFontSize(item.Title) }]}
+          >{item.Title}</Text>
           <View style={styles.sellerInfoBox}>
             <View
               style={[
@@ -658,6 +661,7 @@ const Listing = ({
                   source={item.ProfilePicture}
                   style={styles.sellerPic}
                   loadAnimSize={5}
+                  theme={theme}
                 />
               </TouchableOpacity>
               <Text style={styles.sellerName}>{item.Username}</Text>
@@ -674,7 +678,7 @@ const Listing = ({
             >
               <Entypo
                 name="star"
-                size={34}
+                size={31}
                 color={theme === 'dark' ? Colors.BB_violet : 'gold'}
                 style={styles.ratingStar}
               />
@@ -784,8 +788,12 @@ const Listing = ({
             style={styles.descriptionContainer}
             showsVerticalScrollIndicator={true}
             scrollEnabled={true}
+            onScrollBeginDrag={handleInnerScolling}
+                onScrollEndDrag={handleInnerScollingEnd}
           >
-            <Text style={styles.description}>{item.Description}</Text>
+            <Text style={
+              [styles.description, { fontSize: calculateDescriptionFontSize(item.Description) }]}
+            >{item.Description}</Text>
           </ScrollView>
 
           <LikeButton

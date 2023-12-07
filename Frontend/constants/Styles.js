@@ -1133,6 +1133,7 @@ export const getThemedStyles = (theme) => {
         color: 'white',
         position: 'absolute',
         top: '62%',
+        marginTop: 0.01 * screenHeight,
       },
       ratingStar: {
         alignSelf: 'center',

@@ -72,3 +72,45 @@ export const calculateTagTextFontSize = (tag, defaultFontSize) => {
 
   return Math.min(20 - (numberOfCharacters - 4), defaultFontSize);
 };
+
+/**
+ * @function calculateTitleFontSize
+ * @param {String} title
+ * @returns {number} fontSize
+ * @example style={{ fontSize: calculateTitleFontSize(title) }}
+ * @memberof Components.CalculateFontSize
+ * @description Calculates the font size for the title based on the length of the title
+ */
+export const calculateTitleFontSize = (title) => {
+  if (title === undefined || title === null) {
+    return 16; // Default font size if price is not provided
+  }
+  const numberOfCharacters = title.length;
+  
+  console.log(numberOfCharacters);
+  if(numberOfCharacters < 30){
+    return 16;
+  }
+  return Math.min(60 - (numberOfCharacters - 4), 12);
+};
+
+/**
+ * @function calculateDescriptionFontSize
+ * @memberof Components.CalculateFontSize
+ * @param {String} description
+ * @returns {number} fontSize
+ * @example style={{ fontSize: calculateDescriptionFontSize(description) }}
+ * @description Calculates the font size for the description based on the length of the description
+ */
+export const calculateDescriptionFontSize = (description) => {
+  if (description === undefined || description === null) {
+    return 16; // Default font size if price is not provided
+  }
+  const numberOfCharacters = description.length;
+  if(numberOfCharacters < 100){
+    return 16;
+  }
+  
+  return Math.min(500 - (numberOfCharacters - 4), 12);
+};
+
