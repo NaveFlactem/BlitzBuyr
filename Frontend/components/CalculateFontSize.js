@@ -86,12 +86,12 @@ export const calculateTitleFontSize = (title) => {
     return 16; // Default font size if price is not provided
   }
   const numberOfCharacters = title.length;
-  
-  console.log(numberOfCharacters);
-  if(numberOfCharacters < 30){
-    return 16;
+
+  // console.log(numberOfCharacters);
+  if (numberOfCharacters < 30) {
+    return 20;
   }
-  return Math.min(60 - (numberOfCharacters - 4), 12);
+  return Math.min(60 - (numberOfCharacters - 4), 14);
 };
 
 /**
@@ -107,10 +107,9 @@ export const calculateDescriptionFontSize = (description) => {
     return 16; // Default font size if price is not provided
   }
   const numberOfCharacters = description.length;
-  if(numberOfCharacters < 100){
+  if (numberOfCharacters < 100) {
     return 16;
   }
-  
+
   return Math.min(500 - (numberOfCharacters - 4), 12);
 };
-
