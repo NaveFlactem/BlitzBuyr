@@ -68,6 +68,17 @@ const HomeScreen = ({ route }) => {
   const locationSliderHeight = useSharedValue(-100); // Start off-screen
   const { theme } = useThemeContext();
   const styles = getThemedStyles(useThemeContext().theme).HomeScreen;
+  
+  /**
+   * @function
+   * @name scrollToTop
+   * @memberof Screens.HomeScreen
+   * @returns {void}
+   * @description Scrolls to the top of the swiper component by scrolling to the offset of 0.
+   */
+  scrollToTop = () => {
+    swiperRef.current.scrollToOffset({ animated: true, offset: 0 });
+  };
 
   /**
    *
@@ -177,6 +188,7 @@ const HomeScreen = ({ route }) => {
   retryButtonHandler = () => {
     setRefreshing(true);
     fetchListingsAsync();
+    scrollToTop();
   };
 
   /**
@@ -205,6 +217,7 @@ const HomeScreen = ({ route }) => {
     console.log('refreshing...');
     setRefreshing(true);
     getUserLocation();
+    scrollToTop();
   }, [userLocation]);
 
   /**
@@ -303,6 +316,7 @@ const HomeScreen = ({ route }) => {
       setRefreshing(true);
       if (userLocation) fetchListingsAsync();
       else getUserLocation();
+      scrollToTop();
     }
   }, [route.params]);
 
@@ -336,7 +350,7 @@ const HomeScreen = ({ route }) => {
         onStartShouldSetResponder={() => true}
         onResponderRelease={() => {
           if (swiperRef.current) {
-            swiperRef.current.scrollToOffset({ animated: true, offset: 0 });
+            scrollToTop();
           }
         }}
       />
