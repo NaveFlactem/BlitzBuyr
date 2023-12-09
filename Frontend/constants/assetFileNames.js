@@ -1,0 +1,23 @@
+export const assetsToPreload = [
+  require('../assets/adaptive-icon.png'),
+  require('../assets/blitzbuyr_name.png'),
+  require('../assets/blitzbuyr_name_logo.png'),
+  require('../assets/blitzbuyr_name_logo_darkmode.png'),
+  require('../assets/blitzbuyr_name_transparent.png'),
+  require('../assets/blitzbuyr_name_transparent_horizontal.png'),
+  require('../assets/card_background.png'),
+  require('../assets/icon.png'),
+  require('../assets/icon_background_transparent.png'),
+  require('../assets/icon_background_transparent_upright.png'),
+  require('../assets/icon_background_transparent_upright_mini.png'),
+  require('../assets/icon_background_transparent_upright_mini_darkmode.png'),
+  require('../assets/icon_transparent.png'),
+  require('../assets/icon_transparent_background_filled.png'),
+  require('../assets/icon_transparent_background_filled_upright.png'),
+  require('../assets/icon_transparent_background_filled_upright_mini.png'),
+  require('../assets/ImageIcon.png'),
+  require('../assets/no_wifi_icon_transparent.png'),
+  require('../assets/no_wifi_icon_transparent_darkmode.png'),
+  require('../assets/splash.png'),
+  require('../assets/UploadImageIcon.png')
+];

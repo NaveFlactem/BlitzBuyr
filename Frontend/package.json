@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
+    "prestart": "node ../Backend/generateAssetList.js",
     "start": "npm install && npx expo install --fix && expo start -c",
     "android": "expo run:android",
     "ios": "expo run:ios",
@@ -46,7 +47,7 @@
     "expo-updates": "~0.18.17",
     "lodash": "^4.17.21",
     "memoize-state": "^2.0.15",
-    "react-native": "^0.72.6",
+    "react-native": "0.72.6",
     "react-native-a11y-slider": "^1.3.2",
     "react-native-animatable": "^1.4.0",
     "react-native-awesome-slider": "^2.4.5",

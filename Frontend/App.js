@@ -7,13 +7,16 @@ import {
   ThemeProvider,
   useThemeContext,
 } from './components/visuals/ThemeProvider';
+import { assetPreLoader } from './components/AssetPreLoader';
 
 
 const AppContainer = () => {
   console.disableYellowBox=true;
   LogBox.ignoreLogs(['Warning: ...']); //Hide warnings
+  LogBox.ignoreLogs([' WARN ...']); //Hide warnings
   LogBox.ignoreAllLogs();//Hide all warning notifications on front-end
   const { theme } = useThemeContext();
+  assetPreLoader();
 
   return (
     

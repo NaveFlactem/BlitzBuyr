@@ -20,29 +20,6 @@ import * as Settings from '../../hooks/UserSettings.js';
 import { useThemeContext } from '../../components/visuals/ThemeProvider.js';
 import { getThemedStyles } from '../../constants/Styles.js';
 
-/**
- * @constant assetsToPreload - Array of assets to be preloaded at the start of booting the app to improve performance and user experience
- * @memberof Screens.Auth.Authenticate
- */
-const assetsToPreload = [
-  require('../../assets/blitzbuyr_name_logo.png'),
-  require('../../assets/blitzbuyr_name_logo_darkmode.png'),
-  require('../../assets/blitzbuyr_name_transparent_horizontal.png'),
-  require('../../assets/blitzbuyr_name_transparent.png'),
-  require('../../assets/blitzbuyr_name.png'),
-  require('../../assets/icon_background_transparent_upright.png'),
-  require('../../assets/icon_background_transparent_upright_mini_darkmode.png'),
-  require('../../assets/icon_background_transparent.png'),
-  require('../../assets/icon_transparent_background_filled_upright.png'),
-  require('../../assets/icon_transparent_background_filled_upright_mini.png'),
-  require('../../assets/icon_transparent_background_filled.png'),
-  require('../../assets/icon_transparent.png'),
-  require('../../assets/icon.png'),
-  require('../../assets/no_wifi_icon_transparent.png'),
-  require('../../assets/no_wifi_icon_transparent_darkmode.png'),
-  require('../../assets/card_background.png'),
-];
-
 let storedUsername;
 let storedPassword;
 
@@ -107,23 +84,6 @@ const clearStoredCredentials = async () => {
  * @memberof Screens.Auth.Authenticate
  */
 const AuthenticateScreen = ({ navigation }) => {
-  useEffect(() => {
-    /**
-     * @function loadAssetsAsync
-     * @memberof Screens.Auth.Authenticate
-     * @returns {Promise<void>}
-     * @async
-     * @description Loads and caches the assets when the component mounts.
-     */
-    async function loadAssetsAsync() {
-      const assetPromises = assetsToPreload.map((asset) =>
-        Asset.fromModule(asset).downloadAsync(),
-      );
-      await Promise.all(assetPromises);
-    }
-
-    loadAssetsAsync();
-  }, []);
 
   useEffect(() => {
     /**
