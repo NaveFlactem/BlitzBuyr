@@ -33,11 +33,12 @@ import { handleListingCreation } from '../network/Service.js';
 import { getStoredUsername } from './auth/Authenticate.js';
 import { useThemeContext } from '../components/visuals/ThemeProvider';
 import { getThemedStyles } from '../constants/Styles';
-
+//test commit
 /**
  * @constant {string} blurhash - blurhash for the loading image in draggable grid
  * @memberof Screens.CreateListing
  */
+
 const blurhash = 'L5H2EC=PM+yV0g-mq.wG9c010J}I';
 
 /**
