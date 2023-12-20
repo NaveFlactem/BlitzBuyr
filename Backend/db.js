@@ -310,6 +310,35 @@ CREATE TABLE IF NOT EXISTS Likes (
   FOREIGN KEY (ListingId) REFERENCES Listings (ListingId) ON DELETE CASCADE ON UPDATE CASCADE
   );`;
 
+const inbox_participants = `
+CREATE TABLE IF NOT EXISTS Inbox_Participants (
+  Username TEXT,
+  Participant TEXT,
+  PRIMARY KEY (Username, Participant),
+  FOREIGN KEY (Username) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (Participant) REFERENCES Accounts (Username) ON DELETE CASCADE ON UPDATE CASCADE
+  );`;
+
+const inbox = `
+CREATE TABLE IF NOT EXISTS Inbox (
+  Username TEXT,
+  Participant TEXT,
+  MessageId INTEGER,
+  PRIMARY KEY (Username, Participant, MessageId),
+  FOREIGN KEY (Username, Participant) REFERENCES Inbox_Participants (Username, Participant) ON DELETE CASCADE ON UPDATE CASCADE
+  );`;
+
+const messages = `
+CREATE TABLE IF NOT EXISTS Messages (
+  MessageId INTEGER,
+  Sender TEXT,
+  Receiver TEXT,
+  Message TEXT,
+  TimeStamp TIMESTAMP,
+  PRIMARY KEY (MessageId),
+  FOREIGN KEY (Sender, Receiver, MessageId) REFERENCES Inbox (Username, Participant, MessageId) ON DELETE CASCADE ON UPDATE CASCADE
+  );`;
+ 
 /** Array containing table information.
  * @constant
  * @name tables
@@ -326,6 +355,9 @@ const tables = [
   { sql: tagDetails, name: 'TagDetails' },
   { sql: contactInfo, name: 'ContactInfo' },
   { sql: settings, name: 'Settings' },
+  { sql: inbox_participants, name: 'Inbox_Participants' },
+  { sql: inbox, name: 'Inbox' },
+  { sql: messages, name: 'Messages' },
 ];
 
 /** Loops through globally initialized list that holds all SQL create statements.
